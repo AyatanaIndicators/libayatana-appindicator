@@ -1,1 +1,4 @@
 data/indicator-custom.service
+compile
+indicator-custom-[0-9].[0-9].[0-9].tar.gz
+m4/
