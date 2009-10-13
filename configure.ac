@@ -5,7 +5,7 @@ AC_COPYRIGHT([Copyright 2009 Canonical])
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-custom, 0.2.6)
+AM_INIT_AUTOMAKE(indicator-custom, 0.0.1)
 
 AM_MAINTAINER_MODE
 
