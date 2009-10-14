@@ -58,4 +58,6 @@ BUILT_SOURCES = \
 	$(DBUS_SPECS:.xml=-client.h) \
 	$(DBUS_SPECS:.xml=-server.h)
 
-DIST_CLEAN = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = $(DBUS_SPECS)
