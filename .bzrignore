@@ -5,3 +5,7 @@ m4/
 src/indicator-custom-service
 src/libcustom.la
 src/libcustom_la-indicator-custom.lo
+src/notification-item-client.h
+src/notification-item-server.h
+src/notification-watcher-client.h
+src/notification-watcher-server.h
