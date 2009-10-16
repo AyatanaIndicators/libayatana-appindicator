@@ -1,3 +1,9 @@
+CLEANFILES = 
+DISTCLEANFILES = 
+BUILT_SOURCES = 
+EXTRA_DIST = 
+
+include $(top_srcdir)/Makefile.am.enum
 
 ##################################
 # Indicator
@@ -36,6 +42,10 @@ indicator_custom_service_LDADD = \
 # Library
 ##################################
 
+glib_enum_h = libcustomindicator/custom-indicator-enum.h
+glib_enum_c = libcustomindicator/custom-indicator-enum.c
+glib_enum_headers = $(libcustomindicator_headers)
+
 lib_LTLIBRARIES = \
 	libcustomindicator.la
 
@@ -45,7 +55,8 @@ libcustomindicator_headers = \
 	libcustomindicator/custom-indicator.h
 
 libcustomindicatorinclude_HEADERS = \
-	$(libcustomindicator_headers)
+	$(libcustomindicator_headers) \
+	$(glib_enum_h)
 
 libcustomindicator_la_SOURCES = \
 	$(libcustomindicator_headers) \
@@ -87,10 +98,10 @@ DBUS_SPECS = \
 		--output=$@ \
 		$<
 
-BUILT_SOURCES = \
+BUILT_SOURCES += \
 	$(DBUS_SPECS:.xml=-client.h) \
 	$(DBUS_SPECS:.xml=-server.h)
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES += $(BUILT_SOURCES)
 
-EXTRA_DIST = $(DBUS_SPECS)
+EXTRA_DIST += $(DBUS_SPECS)
