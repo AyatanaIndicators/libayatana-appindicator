@@ -60,6 +60,7 @@ libcustomindicatorinclude_HEADERS = \
 
 libcustomindicator_la_SOURCES = \
 	$(libcustomindicator_headers) \
+	$(glib_enum_c) \
 	notification-watcher-client.h \
 	notification-item-server.h \
 	libcustomindicator/custom-indicator.c
