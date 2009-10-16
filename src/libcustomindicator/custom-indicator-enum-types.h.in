@@ -21,14 +21,13 @@ G_END_DECLS
 
 /*** BEGIN value-header ***/
 /**
-	@enum_name@_get_type:
+	@EnumName@_get_type:
 
-	Builds a glib type for the @enum_name@ enumeration
-	defined in the file @filename@.
+	Builds a glib type for the @EnumName@ enumeration.
 
 	Return value: A registered type for the enum
 */
-GType @enum_name@_get_type (void) G_GNUC_CONST;
-#define CLUTTER_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+GType @EnumName@_get_type (void) G_GNUC_CONST;
+#define CLUTTER_TYPE_@ENUMSHORT@ (@EnumName@_get_type())
 
 /*** END value-header ***/
