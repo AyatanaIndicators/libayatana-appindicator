@@ -2,11 +2,17 @@
 #include "config.h"
 #endif
 
-#include "custom-indicator.h"
+#include "libcustomindicator/custom-indicator.h"
+#include "libcustomindicator/custom-indicator-enum-types.h"
 
 typedef struct _CustomIndicatorPrivate CustomIndicatorPrivate;
 struct _CustomIndicatorPrivate {
 	int placeholder;
+};
+
+enum properties {
+	PROP_0,
+	PROP_STATUS
 };
 
 #define CUSTOM_INDICATOR_GET_PRIVATE(o) \
@@ -33,6 +39,14 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 
 	object_class->set_property = custom_indicator_set_property;
 	object_class->get_property = custom_indicator_get_property;
+
+	g_object_class_install_property(object_class, PROP_STATUS,
+	                                g_param_spec_enum("status",
+	                                                  "Indicator Status",
+	                                                  "Whether the indicator is shown or requests attention.",
+	                                                  CUSTOM_INDICATOR_TYPE_CUSTOM_INDICATOR_STATUS_T,
+	                                                  CUSTOM_INDICATOR_STATUS_OFF,
+	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	return;
 }
