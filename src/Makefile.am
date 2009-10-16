@@ -33,6 +33,39 @@ indicator_custom_service_LDADD = \
 	$(INDICATOR_LIBS)
 
 ##################################
+# Library
+##################################
+
+lib_LTLIBRARIES = \
+	libcustomindicator.la
+
+libcustomindicatorincludedir=$(includedir)/libcustomindicator-0.1/libcustomindicator
+
+libcustomindicator_headers = \
+	libcustomindicator/custom-indicator.h
+
+libcustomindicatorinclude_HEADERS = \
+	$(libcustomindicator_headers)
+
+libcustomindicator_la_SOURCES = \
+	$(libcustomindicator_headers) \
+	notification-watcher-client.h \
+	notification-item-server.h \
+	libcustomindicator/custom-indicator.c
+
+libcustomindicator_la_LDFLAGS = \
+	-version-info 0:0:0 \
+	-no-undefined \
+	-export-symbols-regex "^[^_d].*"
+
+libcustomindicator_la_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror
+
+libcustomindicator_la_LIBADD = \
+	$(INDICATOR_LIBS)
+
+##################################
 # DBus Specs
 ##################################
 
