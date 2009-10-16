@@ -16,6 +16,8 @@ static void custom_indicator_class_init (CustomIndicatorClass *klass);
 static void custom_indicator_init       (CustomIndicator *self);
 static void custom_indicator_dispose    (GObject *object);
 static void custom_indicator_finalize   (GObject *object);
+static void custom_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
+static void custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 
 G_DEFINE_TYPE (CustomIndicator, custom_indicator, G_TYPE_OBJECT);
 
@@ -28,6 +30,9 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 
 	object_class->dispose = custom_indicator_dispose;
 	object_class->finalize = custom_indicator_finalize;
+
+	object_class->set_property = custom_indicator_set_property;
+	object_class->get_property = custom_indicator_get_property;
 
 	return;
 }
@@ -55,3 +60,18 @@ custom_indicator_finalize (GObject *object)
 	return;
 }
 
+static void
+custom_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+{
+
+
+	return;
+}
+
+static void
+custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
+{
+
+
+	return;
+}
