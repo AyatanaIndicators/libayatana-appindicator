@@ -42,8 +42,8 @@ indicator_custom_service_LDADD = \
 # Library
 ##################################
 
-glib_enum_h = libcustomindicator/custom-indicator-enum.h
-glib_enum_c = libcustomindicator/custom-indicator-enum.c
+glib_enum_h = libcustomindicator/custom-indicator-enum-types.h
+glib_enum_c = libcustomindicator/custom-indicator-enum-types.c
 glib_enum_headers = $(libcustomindicator_headers)
 
 lib_LTLIBRARIES = \

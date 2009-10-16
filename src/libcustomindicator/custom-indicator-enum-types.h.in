@@ -1,0 +1,34 @@
+/*** BEGIN file-header ***/
+#ifndef __CUSTOM_INDICATOR_ENUM_TYPES_H__
+#define __CUSTOM_INDICATOR_ENUM_TYPES_H__
+
+#include <glib-object.h>
+
+G_BEGIN_DECLS
+
+/*** END file-header ***/
+
+/*** BEGIN file-tail ***/
+
+G_END_DECLS
+
+#endif /* __CUSTOM_INDICATOR_ENUM_TYPES_H__ */
+/*** END file-tail ***/
+
+/*** BEGIN file-production ***/
+/* Enumerations from file: "@filename@" */
+/*** END file-production ***/
+
+/*** BEGIN value-header ***/
+/**
+	@enum_name@_get_type:
+
+	Builds a glib type for the @enum_name@ enumeration
+	defined in the file @filename@.
+
+	Return value: A registered type for the enum
+*/
+GType @enum_name@_get_type (void) G_GNUC_CONST;
+#define CLUTTER_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+
+/*** END value-header ***/

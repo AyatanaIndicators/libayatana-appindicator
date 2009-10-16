@@ -11,3 +11,6 @@ src/notification-watcher-client.h
 src/notification-watcher-server.h
 src/libcustomindicator.la
 src/libcustomindicator_la-custom-indicator.lo
+src/libcustomindicator/custom-indicator-enum-types.h
+src/libcustomindicator/custom-indicator-enum-types.c
+src/stamp-enum-types
