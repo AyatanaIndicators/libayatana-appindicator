@@ -52,7 +52,7 @@ lib_LTLIBRARIES = \
 libcustomindicatorincludedir=$(includedir)/libcustomindicator-0.1/libcustomindicator
 
 libcustomindicator_headers = \
-	libcustomindicator/custom-indicator.h
+	$(srcdir)/libcustomindicator/custom-indicator.h
 
 libcustomindicatorinclude_HEADERS = \
 	$(libcustomindicator_headers) \
