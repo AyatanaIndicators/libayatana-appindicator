@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/">
+	<interface name="org.ayatana.indicator.custom.NotificationWatcher">
+
+<!-- Properties -->
+		<!-- None currently -->
+
+<!-- Methods -->
+		<method name="RegisterService">
+			<arg type="s" name="service" direction="in" />
+		</method>
+		<method name="RegisteredServices">
+			<arg type="as" name="services" direction="out" />
+		</method>
+		<method name="ProtocolVersion">
+			<arg type="s" name="version" direction="out" />
+		</method>
+		<method name="RegisterNotificationHost">
+			<arg type="s" name="service" direction="in" />
+		</method>
+		<method name="IsNotificationHostRegistered">
+			<arg type="b" name="hasHost" direction="out" />
+		</method>
+
+<!-- Signals -->
+		<signal name="ServiceRegistered">
+			<arg type="s" name="service" direction="out" />
+		</signal>
+		<signal name="ServiceUnregistered">
+			<arg type="s" name="service" direction="out" />
+		</signal>
+		<signal name="NotificationHostRegistered">
+		</signal>
+		<signal name="NotificationHostUnegistered">
+		</signal>
+
+	</interface>
+</node>
