@@ -13,8 +13,41 @@ G_BEGIN_DECLS
 #define IS_CUSTOM_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CUSTOM_INDICATOR_TYPE))
 #define CUSTOM_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CUSTOM_INDICATOR_TYPE, CustomIndicatorClass))
 
-typedef int custom_indicator_category_t;
-typedef int custom_indicator_status_t;
+/**
+	custom_indicator_category_t:
+	@CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
+	@CUSTOM_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
+	@CUSTOM_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
+	@CUSTOM_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
+	@CUSTOM_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
+
+	The category provides grouping for the indicators so that
+	users can find indicators that are similar together.
+*/
+typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
+	CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS,
+	CUSTOM_INDICATOR_CATEGORY_COMMUNICATIONS,
+	CUSTOM_INDICATOR_CATEGORY_SYSTEM_SERVICES,
+	CUSTOM_INDICATOR_CATEGORY_HARDWARE,
+	CUSTOM_INDICATOR_CATEGORY_OTHER
+} custom_indicator_category_t;
+
+/**
+	custom_indicator_status_t:
+	@CUSTOM_INDICATOR_STATUS_OFF: The indicator should not be shown to the user.
+	@CUSTOM_INDICATOR_STATUS_ON: The indicator should be shown in it's default state.
+	@CUSTOM_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
+
+	These are the states that the indicator can be on in
+	the user's panel.  The indicator by default starts
+	in the state @CUSTOM_INDICATOR_STATUS_OFF and can be
+	shown by setting it to @CUSTOM_INDICATOR_STATUS_ON.
+*/
+typedef enum { /*< prefix=CUSTOM_INDICATOR_STATUS >*/
+	CUSTOM_INDICATOR_STATUS_OFF,
+	CUSTOM_INDICATOR_STATUS_ON,
+	CUSTOM_INDICATOR_STATUS_ATTENTION
+} custom_indicator_status_t;
 
 typedef struct _CustomIndicator      CustomIndicator;
 typedef struct _CustomIndicatorClass CustomIndicatorClass;
