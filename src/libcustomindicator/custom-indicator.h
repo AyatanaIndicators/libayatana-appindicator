@@ -14,7 +14,7 @@ G_BEGIN_DECLS
 #define CUSTOM_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CUSTOM_INDICATOR_TYPE, CustomIndicatorClass))
 
 /**
-	custom_indicator_category_t:
+	CustomIndicatorCategory:
 	@CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
 	@CUSTOM_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
 	@CUSTOM_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
@@ -30,10 +30,10 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
 	CUSTOM_INDICATOR_CATEGORY_SYSTEM_SERVICES,
 	CUSTOM_INDICATOR_CATEGORY_HARDWARE,
 	CUSTOM_INDICATOR_CATEGORY_OTHER
-} custom_indicator_category_t;
+} CustomIndicatorCategory;
 
 /**
-	custom_indicator_status_t:
+	CustomIndicatorStatus:
 	@CUSTOM_INDICATOR_STATUS_OFF: The indicator should not be shown to the user.
 	@CUSTOM_INDICATOR_STATUS_ON: The indicator should be shown in it's default state.
 	@CUSTOM_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
@@ -47,7 +47,7 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_STATUS >*/
 	CUSTOM_INDICATOR_STATUS_OFF,
 	CUSTOM_INDICATOR_STATUS_ON,
 	CUSTOM_INDICATOR_STATUS_ATTENTION
-} custom_indicator_status_t;
+} CustomIndicatorStatus;
 
 typedef struct _CustomIndicator      CustomIndicator;
 typedef struct _CustomIndicatorClass CustomIndicatorClass;
@@ -67,9 +67,9 @@ GType                           custom_indicator_get_type           (void);
 void                            custom_indicator_set_id             (CustomIndicator * ci,
                                                                      const gchar * id);
 void                            custom_indicator_set_category       (CustomIndicator * ci,
-                                                                     custom_indicator_category_t category);
+                                                                     CustomIndicatorCategory category);
 void                            custom_indicator_set_status         (CustomIndicator * ci,
-                                                                     custom_indicator_status_t status);
+                                                                     CustomIndicatorStatus status);
 void                            custom_indicator_set_icon           (CustomIndicator * ci,
                                                                      const gchar * icon_name);
 void                            custom_indicator_set_attention_icon (CustomIndicator * ci,
@@ -79,8 +79,8 @@ void                            custom_indicator_set_menu           (CustomIndic
 
 /* Get properties */
 const gchar *                   custom_indicator_get_id             (CustomIndicator * ci);
-custom_indicator_category_t     custom_indicator_get_category       (CustomIndicator * ci);
-custom_indicator_status_t       custom_indicator_get_status         (CustomIndicator * ci);
+CustomIndicatorCategory         custom_indicator_get_category       (CustomIndicator * ci);
+CustomIndicatorStatus           custom_indicator_get_status         (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_icon           (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_attention_icon (CustomIndicator * ci);
 void *                          custom_indicator_get_menu           (CustomIndicator * ci);
