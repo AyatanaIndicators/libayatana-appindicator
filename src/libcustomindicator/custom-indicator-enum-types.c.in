@@ -9,7 +9,7 @@
 
 /*** BEGIN value-header ***/
 GType
-@EnumName@_get_type (void)
+@enum_name@_get_type (void)
 {
 	static GType etype = 0;
 	if (G_UNLIKELY(etype == 0)) {
