@@ -20,6 +20,13 @@ enum properties {
 	PROP_MENU
 };
 
+#define PROP_ID_S                    "id"
+#define PROP_CATEGORY_S              "category"
+#define PROP_STATUS_S                "status"
+#define PROP_ICON_NAME_S             "icon-name"
+#define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
+#define PROP_MENU_S                  "menu"
+
 #define CUSTOM_INDICATOR_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), CUSTOM_INDICATOR_TYPE, CustomIndicatorPrivate))
 
@@ -46,7 +53,7 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	object_class->get_property = custom_indicator_get_property;
 
 	g_object_class_install_property(object_class, PROP_STATUS,
-	                                g_param_spec_enum("status",
+	                                g_param_spec_enum(PROP_STATUS_S,
 	                                                  "Indicator Status",
 	                                                  "Whether the indicator is shown or requests attention.",
 	                                                  CUSTOM_INDICATOR_TYPE_CUSTOM_INDICATOR_STATUS_T,
