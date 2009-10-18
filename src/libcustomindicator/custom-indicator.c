@@ -56,7 +56,7 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                g_param_spec_enum(PROP_STATUS_S,
 	                                                  "Indicator Status",
 	                                                  "Whether the indicator is shown or requests attention.",
-	                                                  CUSTOM_INDICATOR_TYPE_CUSTOM_INDICATOR_STATUS_T,
+	                                                  CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS,
 	                                                  CUSTOM_INDICATOR_STATUS_OFF,
 	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
