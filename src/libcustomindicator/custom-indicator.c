@@ -12,7 +12,12 @@ struct _CustomIndicatorPrivate {
 
 enum properties {
 	PROP_0,
-	PROP_STATUS
+	PROP_ID,
+	PROP_CATEGORY,
+	PROP_STATUS,
+	PROP_ICON_NAME,
+	PROP_ATTENTION_ICON_NAME,
+	PROP_MENU
 };
 
 #define CUSTOM_INDICATOR_GET_PRIVATE(o) \
@@ -77,7 +82,11 @@ custom_indicator_finalize (GObject *object)
 static void
 custom_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
 {
+	CustomIndicator * self = CUSTOM_INDICATOR(object);
+	g_return_if_fail(self != NULL);
 
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
+	g_return_if_fail(priv != NULL);
 
 	return;
 }
