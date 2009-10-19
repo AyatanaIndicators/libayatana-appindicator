@@ -38,7 +38,8 @@ enum {
 	PROP_STATUS,
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
-	PROP_MENU
+	PROP_MENU,
+	PROP_CONNECTED
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -48,6 +49,7 @@ enum {
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
 #define PROP_MENU_S                  "menu"
+#define PROP_CONNECTED_S             "connected"
 
 /* Private macro, shhhh! */
 #define CUSTOM_INDICATOR_GET_PRIVATE(o) \
@@ -124,6 +126,14 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                    "A DBus Menu Server object that can have a menu attached to it.  The object from this menu will be sent across the bus for the client to connect to and signal.",
 	                                                    DBUSMENU_TYPE_SERVER,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property(object_class, PROP_CONNECTED,
+	                                g_param_spec_boolean(PROP_CONNECTED_S,
+	                                                     "Whether we're conneced to a watcher",
+	                                                     "Pretty simple, true if we have a reasonable expectation of being displayed through this object.  You should hide your TrayIcon if so.",
+	                                                     FALSE,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
 
 	/* Signals */
 
