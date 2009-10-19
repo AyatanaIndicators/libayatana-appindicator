@@ -13,6 +13,11 @@ G_BEGIN_DECLS
 #define IS_CUSTOM_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CUSTOM_INDICATOR_TYPE))
 #define CUSTOM_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CUSTOM_INDICATOR_TYPE, CustomIndicatorClass))
 
+#define CUSTOM_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
+#define CUSTOM_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
+#define CUSTOM_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
+#define CUSTOM_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
+
 /**
 	CustomIndicatorCategory:
 	@CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.

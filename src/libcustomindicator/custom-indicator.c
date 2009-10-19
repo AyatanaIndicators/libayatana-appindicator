@@ -7,14 +7,31 @@
 #include "libcustomindicator/custom-indicator.h"
 #include "libcustomindicator/custom-indicator-enum-types.h"
 
+/**
+	CustomIndicatorPrivate:
+
+	All of the private data in an instance of a
+	custom indicator.
+*/
 typedef struct _CustomIndicatorPrivate CustomIndicatorPrivate;
 struct _CustomIndicatorPrivate {
 	int placeholder;
 };
 
+/* Signals Stuff */
+enum {
+	NEW_ICON,
+	NEW_ATTENTION_ICON,
+	NEW_STATUS,
+	CONNECTION_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 /* Enum for the properties so that they can be quickly
    found and looked up. */
-enum properties {
+enum {
 	PROP_0,
 	PROP_ID,
 	PROP_CATEGORY,
@@ -107,6 +124,69 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                    "A DBus Menu Server object that can have a menu attached to it.  The object from this menu will be sent across the bus for the client to connect to and signal.",
 	                                                    DBUSMENU_TYPE_SERVER,
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/* Signals */
+
+	/**
+		CustomIndicator::new-icon:
+		@arg0: The #CustomIndicator object
+		
+		Signaled when there is a new icon set for the
+		object.
+	*/
+	signals[NEW_ICON] = g_signal_new (CUSTOM_INDICATOR_SIGNAL_NEW_ICON,
+	                                  G_TYPE_FROM_CLASS(klass),
+	                                  G_SIGNAL_RUN_LAST,
+	                                  G_STRUCT_OFFSET (CustomIndicatorClass, new_icon),
+	                                  NULL, NULL,
+	                                  g_cclosure_marshal_VOID__VOID,
+	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
+
+	/**
+		CustomIndicator::new-attention-icon:
+		@arg0: The #CustomIndicator object
+		
+		Signaled when there is a new attention icon set for the
+		object.
+	*/
+	signals[NEW_ATTENTION_ICON] = g_signal_new (CUSTOM_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
+	                                            G_TYPE_FROM_CLASS(klass),
+	                                            G_SIGNAL_RUN_LAST,
+	                                            G_STRUCT_OFFSET (CustomIndicatorClass, new_attention_icon),
+	                                            NULL, NULL,
+	                                            g_cclosure_marshal_VOID__VOID,
+	                                            G_TYPE_NONE, 0, G_TYPE_NONE);
+
+	/**
+		CustomIndicator::new-status:
+		@arg0: The #CustomIndicator object
+		@arg1: The string value of the #CustomIndicatorStatus enum.
+		
+		Signaled when the status of the indicator changes.
+	*/
+	signals[NEW_STATUS] = g_signal_new (CUSTOM_INDICATOR_SIGNAL_NEW_STATUS,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (CustomIndicatorClass, new_status),
+	                                    NULL, NULL,
+	                                    g_cclosure_marshal_VOID__STRING,
+	                                    G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
+
+	/**
+		CustomIndicator::connection-changed:
+		@arg0: The #CustomIndicator object
+		@arg1: Whether we're connected or not
+		
+		Signaled when we connect to a watcher, or when it drops
+		away.
+	*/
+	signals[CONNECTION_CHANGED] = g_signal_new (CUSTOM_INDICATOR_SIGNAL_CONNECTION_CHANGED,
+	                                            G_TYPE_FROM_CLASS(klass),
+	                                            G_SIGNAL_RUN_LAST,
+	                                            G_STRUCT_OFFSET (CustomIndicatorClass, connection_changed),
+	                                            NULL, NULL,
+	                                            g_cclosure_marshal_VOID__BOOLEAN,
+	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
 
 	return;
 }
