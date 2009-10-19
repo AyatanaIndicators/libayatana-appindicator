@@ -52,12 +52,46 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_STATUS >*/
 typedef struct _CustomIndicator      CustomIndicator;
 typedef struct _CustomIndicatorClass CustomIndicatorClass;
 
+/**
+	CustomIndicatorClass:
+	@parent_class: Mia familia
+	@connection_changed: Slot for #CustomIndicator::connection-changed.
+	@custom_indicator_reserved_1: Reserved for future use.
+	@custom_indicator_reserved_2: Reserved for future use.
+	@custom_indicator_reserved_3: Reserved for future use.
+	@custom_indicator_reserved_4: Reserved for future use.
+
+	The signals and external functions that make up the #CustomIndicator
+	class object.
+*/
 struct _CustomIndicatorClass {
+	/* Parent */
 	GObjectClass parent_class;
+
+	/* Signals */
+	void (* connection_changed)     (CustomIndicator * indicator,
+	                                 gboolean          connected,
+	                                 gpointer          user_data);
+
+	/* Reserved */
+	void (*custom_indicator_reserved_1)(void);
+	void (*custom_indicator_reserved_2)(void);
+	void (*custom_indicator_reserved_3)(void);
+	void (*custom_indicator_reserved_4)(void);
 };
 
+/**
+	CustomIndicator:
+	@parent: Parent object.
+
+	A custom indicator represents the values that are needed to show a
+	unique status in the panel for an application.  In general, applications
+	should try to fit in the other indicators that are available on the
+	panel before using this.  But, sometimes it is necissary.
+*/
 struct _CustomIndicator {
 	GObject parent;
+	/* None.  We're a very private object. */
 };
 
 /* GObject Stuff */
