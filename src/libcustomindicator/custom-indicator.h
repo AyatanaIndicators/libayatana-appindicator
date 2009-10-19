@@ -55,6 +55,9 @@ typedef struct _CustomIndicatorClass CustomIndicatorClass;
 /**
 	CustomIndicatorClass:
 	@parent_class: Mia familia
+	@new_icon: Slot for #CustomIndicator::new-icon.
+	@new_attention_icon: Slot for #CustomIndicator::new-attention-icon.
+	@new_status: Slot for #CustomIndicator::new-status.
 	@connection_changed: Slot for #CustomIndicator::connection-changed.
 	@custom_indicator_reserved_1: Reserved for future use.
 	@custom_indicator_reserved_2: Reserved for future use.
@@ -68,7 +71,16 @@ struct _CustomIndicatorClass {
 	/* Parent */
 	GObjectClass parent_class;
 
-	/* Signals */
+	/* DBus Signals */
+	void (* new_icon)               (CustomIndicator * indicator,
+	                                 gpointer          user_data);
+	void (* new_attention_icon)     (CustomIndicator * indicator,
+	                                 gpointer          user_data);
+	void (* new_status)             (CustomIndicator * indicator,
+	                                 gchar *           status_string,
+	                                 gpointer          user_data);
+
+	/* Local Signals */
 	void (* connection_changed)     (CustomIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
