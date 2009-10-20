@@ -8,6 +8,9 @@
 #include "libcustomindicator/custom-indicator.h"
 #include "libcustomindicator/custom-indicator-enum-types.h"
 
+#include "notification-item-server.h"
+#include "notification-watcher-client.h"
+
 /**
 	CustomIndicatorPrivate:
 	@id: The ID of the indicator.  Maps to CustomIndicator::id.
@@ -216,6 +219,10 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                            NULL, NULL,
 	                                            g_cclosure_marshal_VOID__BOOLEAN,
 	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
+	
+	/* Initialize the object as a DBus type */
+	dbus_g_object_type_install_info(CUSTOM_INDICATOR_TYPE,
+	                                &dbus_glib__notification_item_server_object_info);
 
 	return;
 }
@@ -234,6 +241,18 @@ custom_indicator_init (CustomIndicator *self)
 	priv->menu = NULL;
 
 	priv->watcher_proxy = NULL;
+
+	/* Put the object on DBus */
+	GError * error = NULL;
+	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_error("Unable to connect to the session bus when creating custom indicator: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+	dbus_g_connection_register_g_object(connection,
+	                                    "/need/a/path",
+	                                    G_OBJECT(self));
 
 	return;
 }
