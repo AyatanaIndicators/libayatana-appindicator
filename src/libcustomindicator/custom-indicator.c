@@ -80,6 +80,8 @@ static void custom_indicator_finalize   (GObject *object);
 /* Property functions */
 static void custom_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
 static void custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
+/* Other stuff */
+static void check_connect (CustomIndicator * self);
 
 /* GObject type */
 G_DEFINE_TYPE (CustomIndicator, custom_indicator, G_TYPE_OBJECT);
@@ -263,6 +265,7 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 
 	switch (prop_id) {
 	case PROP_ID:
+		check_connect(self);
 		break;
 	case PROP_CATEGORY:
 		break;
@@ -284,6 +287,8 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 	return;
 }
 
+#define WARN_BAD_TYPE(prop, value)  g_warning("Can not get property '%s' with value of type '%s'.", prop, G_VALUE_TYPE_NAME(value))
+/* Function to fill our value with the property it's requesting. */
 static void
 custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
 {
@@ -294,24 +299,96 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 	g_return_if_fail(priv != NULL);
 
 	switch (prop_id) {
+	/* *********************** */
 	case PROP_ID:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			g_value_set_string(value, priv->id);
+		} else {
+			WARN_BAD_TYPE(PROP_ID_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_CATEGORY:
+		if (G_VALUE_HOLDS_INT(value)) {
+			/* We want the enum value */
+			g_value_set_int(value, priv->category);
+		} else if (G_VALUE_HOLDS_STRING(value)) {
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			if (enumspec != NULL) {
+				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->category);
+				g_value_set_string(value, enumval->value_nick);
+			} else {
+				g_assert_not_reached();
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_CATEGORY_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_STATUS:
+		if (G_VALUE_HOLDS_INT(value)) {
+			/* We want the enum value */
+			g_value_set_int(value, priv->status);
+		} else if (G_VALUE_HOLDS_STRING(value)) {
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			if (enumspec != NULL) {
+				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->status);
+				g_value_set_string(value, enumval->value_nick);
+			} else {
+				g_assert_not_reached();
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_STATUS_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_ICON_NAME:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			g_value_set_string(value, priv->icon_name);
+		} else {
+			WARN_BAD_TYPE(PROP_ICON_NAME_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_ATTENTION_ICON_NAME:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			g_value_set_string(value, priv->attention_icon_name);
+		} else {
+			WARN_BAD_TYPE(PROP_ATTENTION_ICON_NAME_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_MENU:
+		if (G_VALUE_HOLDS_OBJECT(value)) {
+			g_value_set_object(value, priv->menu);
+		} else {
+			WARN_BAD_TYPE(PROP_MENU_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_CONNECTED:
+		if (G_VALUE_HOLDS_BOOLEAN(value)) {
+			g_value_set_boolean(value, priv->watcher_proxy != NULL ? TRUE : FALSE);
+		} else {
+			WARN_BAD_TYPE(PROP_CONNECTED_S, value);
+		}
 		break;
+	/* *********************** */
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
 
 	return;
+}
+
+/* This function is used to see if we have enough information to
+   connect to things.  If we do, and we're not connected, it
+   connects for us. */
+static void
+check_connect (CustomIndicator * self)
+{
+
+
+
 }
