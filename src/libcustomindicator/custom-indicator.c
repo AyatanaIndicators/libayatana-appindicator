@@ -2,20 +2,37 @@
 #include "config.h"
 #endif
 
-#include "libdbusmenu-glib/server.h"
+#include <dbus/dbus-glib.h>
+#include <libdbusmenu-glib/server.h>
 
 #include "libcustomindicator/custom-indicator.h"
 #include "libcustomindicator/custom-indicator-enum-types.h"
 
 /**
 	CustomIndicatorPrivate:
+	@id: The ID of the indicator.  Maps to CustomIndicator::id.
+	@category: Which category the indicator is.  Maps to CustomIndicator::category.
+	@status: The status of the indicator.  Maps to CustomIndicator::status.
+	@icon_name: The name of the icon to use.  Maps to CustomIndicator::icon-name.
+	@attention_icon_name: The name of the attention icon to use.  Maps to CustomIndicator::attention-icon-name.
+	@menu: The menu for this indicator.  Maps to CustomIndicator::menu
+	@watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be #NULL.
 
 	All of the private data in an instance of a
 	custom indicator.
 */
 typedef struct _CustomIndicatorPrivate CustomIndicatorPrivate;
 struct _CustomIndicatorPrivate {
-	int placeholder;
+	/* Properties */
+	gchar * id;
+	CustomIndicatorCategory category;
+	CustomIndicatorStatus status;
+	gchar * icon_name;
+	gchar * attention_icon_name;
+	DbusmenuServer * menu;
+
+	/* Fun stuff */
+	DBusGProxy * watcher_proxy;
 };
 
 /* Signals Stuff */
@@ -204,6 +221,17 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 static void
 custom_indicator_init (CustomIndicator *self)
 {
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
+	g_return_if_fail(priv != NULL);
+
+	priv->id = NULL;
+	priv->category = CUSTOM_INDICATOR_CATEGORY_OTHER;
+	priv->status = CUSTOM_INDICATOR_STATUS_OFF;
+	priv->icon_name = NULL;
+	priv->attention_icon_name = NULL;
+	priv->menu = NULL;
+
+	priv->watcher_proxy = NULL;
 
 	return;
 }
