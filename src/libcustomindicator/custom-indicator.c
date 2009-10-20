@@ -254,6 +254,9 @@ custom_indicator_finalize (GObject *object)
 	return;
 }
 
+#define WARN_BAD_TYPE(prop, value)  g_warning("Can not work with property '%s' with value of type '%s'.", prop, G_VALUE_TYPE_NAME(value))
+
+/* Set some properties */
 static void
 custom_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
 {
@@ -264,21 +267,117 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 	g_return_if_fail(priv != NULL);
 
 	switch (prop_id) {
+	/* *********************** */
 	case PROP_ID:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			if (priv->id != NULL) {
+				g_warning("Resetting ID value when I already had a value of: %s", priv->id);
+				g_free(priv->id);
+				priv->id = NULL;
+			}
+			priv->id = g_strdup(g_value_get_string(value));
+		} else {
+			WARN_BAD_TYPE(PROP_ID_S, value);
+		}
 		check_connect(self);
 		break;
+	/* *********************** */
 	case PROP_CATEGORY:
+		if (G_VALUE_HOLDS_INT(value)) {
+			priv->category = g_value_get_int(value);
+		} else if (G_VALUE_HOLDS_STRING(value)) {
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			if (enumspec != NULL) {
+				GEnumValue * enumval = g_enum_get_value_by_nick(enumspec->enum_class, g_value_get_string(value));
+				if (enumval != NULL) {
+					priv->category = enumval->value;
+				} else {
+					g_error("Value '%s' is not in the '%s' property enum.", g_value_get_string(value), PROP_CATEGORY_S);
+				}
+			} else {
+				g_assert_not_reached();
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_CATEGORY_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_STATUS:
+		if (G_VALUE_HOLDS_INT(value)) {
+			priv->status = g_value_get_int(value);
+		} else if (G_VALUE_HOLDS_STRING(value)) {
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			if (enumspec != NULL) {
+				GEnumValue * enumval = g_enum_get_value_by_nick(enumspec->enum_class, g_value_get_string(value));
+				if (enumval != NULL) {
+					priv->status = enumval->value;
+				} else {
+					g_error("Value '%s' is not in the '%s' property enum.", g_value_get_string(value), PROP_STATUS_S);
+				}
+			} else {
+				g_assert_not_reached();
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_STATUS_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_ICON_NAME:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			const gchar * instr = g_value_get_string(value);
+			gboolean changed = FALSE;
+			if (priv->icon_name == NULL) {
+				priv->icon_name = g_strdup(instr);
+				changed = TRUE;
+			} else if (!g_strcmp0(instr, priv->icon_name)) {
+				changed = FALSE;
+			} else {
+				g_free(priv->icon_name);
+				priv->icon_name = g_strdup(instr);
+				changed = TRUE;
+			}
+			if (changed) {
+				g_signal_emit(object, signals[NEW_ICON], 0, TRUE);
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_ICON_NAME_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_ATTENTION_ICON_NAME:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			const gchar * instr = g_value_get_string(value);
+			gboolean changed = FALSE;
+			if (priv->attention_icon_name == NULL) {
+				priv->attention_icon_name = g_strdup(instr);
+				changed = TRUE;
+			} else if (!g_strcmp0(instr, priv->attention_icon_name)) {
+				changed = FALSE;
+			} else {
+				g_free(priv->attention_icon_name);
+				priv->attention_icon_name = g_strdup(instr);
+				changed = TRUE;
+			}
+			if (changed) {
+				g_signal_emit(object, signals[NEW_ATTENTION_ICON], 0, TRUE);
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_ATTENTION_ICON_NAME_S, value);
+		}
 		break;
+	/* *********************** */
 	case PROP_MENU:
+		if (G_VALUE_HOLDS_OBJECT(value)) {
+			if (priv->menu != NULL) {
+				g_object_unref(G_OBJECT(priv->menu));
+			}
+			priv->menu = DBUSMENU_SERVER(g_value_get_object(value));
+			g_object_ref(G_OBJECT(priv->menu));
+		} else {
+			WARN_BAD_TYPE(PROP_MENU_S, value);
+		}
 		break;
-	case PROP_CONNECTED:
-		break;
+	/* *********************** */
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -287,7 +386,6 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 	return;
 }
 
-#define WARN_BAD_TYPE(prop, value)  g_warning("Can not get property '%s' with value of type '%s'.", prop, G_VALUE_TYPE_NAME(value))
 /* Function to fill our value with the property it's requesting. */
 static void
 custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
