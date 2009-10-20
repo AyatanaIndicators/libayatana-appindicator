@@ -238,17 +238,66 @@ custom_indicator_init (CustomIndicator *self)
 	return;
 }
 
+/* Free all objects, make sure that all the dbus
+   signals are sent out before we shut this down. */
 static void
 custom_indicator_dispose (GObject *object)
 {
+	CustomIndicator * self = CUSTOM_INDICATOR(object);
+	g_return_if_fail(self != NULL);
+
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
+	g_return_if_fail(priv != NULL);
+
+	if (priv->status != CUSTOM_INDICATOR_STATUS_OFF) {
+		custom_indicator_set_status(self, CUSTOM_INDICATOR_STATUS_OFF);
+	}
+
+	if (priv->menu != NULL) {
+		g_object_unref(G_OBJECT(priv->menu));
+		priv->menu = NULL;
+	}
+
+	if (priv->watcher_proxy != NULL) {
+		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+		dbus_g_connection_flush(session_bus);
+		g_object_unref(G_OBJECT(priv->watcher_proxy));
+		priv->watcher_proxy = NULL;
+	}
 
 	G_OBJECT_CLASS (custom_indicator_parent_class)->dispose (object);
 	return;
 }
 
+/* Free all of the memory that we could be using in
+   the object. */
 static void
 custom_indicator_finalize (GObject *object)
 {
+	CustomIndicator * self = CUSTOM_INDICATOR(object);
+	g_return_if_fail(self != NULL);
+
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
+	g_return_if_fail(priv != NULL);
+
+	if (priv->status != CUSTOM_INDICATOR_STATUS_OFF) {
+		g_warning("Finalizing Custom Status with the status set to: %d", priv->status);
+	}
+
+	if (priv->id != NULL) {
+		g_free(priv->id);
+		priv->id = NULL;
+	}
+
+	if (priv->icon_name != NULL) {
+		g_free(priv->icon_name);
+		priv->icon_name = NULL;
+	}
+
+	if (priv->attention_icon_name != NULL) {
+		g_free(priv->attention_icon_name);
+		priv->attention_icon_name = NULL;
+	}
 
 	G_OBJECT_CLASS (custom_indicator_parent_class)->finalize (object);
 	return;
