@@ -233,13 +233,57 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
 	g_return_if_fail(priv != NULL);
 
+	switch (prop_id) {
+	case PROP_ID:
+		break;
+	case PROP_CATEGORY:
+		break;
+	case PROP_STATUS:
+		break;
+	case PROP_ICON_NAME:
+		break;
+	case PROP_ATTENTION_ICON_NAME:
+		break;
+	case PROP_MENU:
+		break;
+	case PROP_CONNECTED:
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+
 	return;
 }
 
 static void
 custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
 {
+	CustomIndicator * self = CUSTOM_INDICATOR(object);
+	g_return_if_fail(self != NULL);
 
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
+	g_return_if_fail(priv != NULL);
+
+	switch (prop_id) {
+	case PROP_ID:
+		break;
+	case PROP_CATEGORY:
+		break;
+	case PROP_STATUS:
+		break;
+	case PROP_ICON_NAME:
+		break;
+	case PROP_ATTENTION_ICON_NAME:
+		break;
+	case PROP_MENU:
+		break;
+	case PROP_CONNECTED:
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
 
 	return;
 }
