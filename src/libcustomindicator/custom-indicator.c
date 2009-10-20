@@ -558,3 +558,93 @@ check_connect (CustomIndicator * self)
 
 
 }
+
+
+/* ************************* */
+/*    Public Functions       */
+/* ************************* */
+
+void
+custom_indicator_set_id (CustomIndicator * ci, const gchar * id)
+{
+
+	return;
+}
+
+void
+custom_indicator_set_category (CustomIndicator * ci, CustomIndicatorCategory category)
+{
+
+	return;
+}
+
+void
+custom_indicator_set_status (CustomIndicator * ci, CustomIndicatorStatus status)
+{
+
+	return;
+}
+
+void custom_indicator_set_icon (CustomIndicator * ci, const gchar * icon_name)
+{
+
+	return;
+}
+
+void
+custom_indicator_set_attention_icon (CustomIndicator * ci, const gchar * icon_name)
+{
+
+	return;
+}
+
+void
+custom_indicator_set_menu (CustomIndicator * ci, void * menu)
+{
+
+	return;
+}
+
+const gchar *
+custom_indicator_get_id (CustomIndicator * ci)
+{
+
+	return NULL;
+}
+
+CustomIndicatorCategory
+custom_indicator_get_category (CustomIndicator * ci)
+{
+
+	return CUSTOM_INDICATOR_CATEGORY_OTHER;
+}
+
+CustomIndicatorStatus
+custom_indicator_get_status (CustomIndicator * ci)
+{
+
+	return CUSTOM_INDICATOR_STATUS_OFF;
+}
+
+const gchar *
+custom_indicator_get_icon (CustomIndicator * ci)
+{
+
+	return NULL;
+}
+
+const gchar *
+custom_indicator_get_attention_icon (CustomIndicator * ci)
+{
+
+	return NULL;
+}
+
+DbusmenuServer *
+custom_indicator_get_menu (CustomIndicator * ci)
+{
+
+	return NULL;
+}
+
+

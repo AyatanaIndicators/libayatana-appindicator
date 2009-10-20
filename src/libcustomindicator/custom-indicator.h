@@ -3,6 +3,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libdbusmenu-glib/server.h>
 
 G_BEGIN_DECLS
 
@@ -134,7 +135,7 @@ CustomIndicatorCategory         custom_indicator_get_category       (CustomIndic
 CustomIndicatorStatus           custom_indicator_get_status         (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_icon           (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_attention_icon (CustomIndicator * ci);
-void *                          custom_indicator_get_menu           (CustomIndicator * ci);
+DbusmenuServer *                custom_indicator_get_menu           (CustomIndicator * ci);
 
 G_END_DECLS
 
