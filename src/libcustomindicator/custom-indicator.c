@@ -592,7 +592,7 @@ void
 custom_indicator_set_category (CustomIndicator * ci, CustomIndicatorCategory category)
 {
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_ENUM);
+	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_CATEGORY);
 	g_value_set_enum(&value, category);
 	g_object_set_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
 	return;
@@ -609,7 +609,7 @@ void
 custom_indicator_set_status (CustomIndicator * ci, CustomIndicatorStatus status)
 {
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_ENUM);
+	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS);
 	g_value_set_enum(&value, status);
 	g_object_set_property(G_OBJECT(ci), PROP_STATUS_S, &value);
 	return;
@@ -694,7 +694,7 @@ CustomIndicatorCategory
 custom_indicator_get_category (CustomIndicator * ci)
 {
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_ENUM);
+	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_CATEGORY);
 	g_object_get_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
 	return g_value_get_enum(&value);
 }
@@ -711,7 +711,7 @@ CustomIndicatorStatus
 custom_indicator_get_status (CustomIndicator * ci)
 {
 	GValue value = {0};
-	g_value_init(&value, G_TYPE_ENUM);
+	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS);
 	g_object_get_property(G_OBJECT(ci), PROP_STATUS_S, &value);
 	return g_value_get_enum(&value);
 }
