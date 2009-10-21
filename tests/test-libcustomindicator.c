@@ -5,7 +5,7 @@
 #include <libcustomindicator/custom-indicator.h>
 
 void
-test_libcustomindicator_prop_signals_status_helper (CustomIndicator * ci, CustomIndicatorStatus status, gboolean * signalactivated)
+test_libcustomindicator_prop_signals_status_helper (CustomIndicator * ci, gchar * status, gboolean * signalactivated)
 {
 	*signalactivated = TRUE;
 	return;
