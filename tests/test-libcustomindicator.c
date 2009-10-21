@@ -10,6 +10,7 @@ test_libcustomindicator_init (void)
 	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, NULL));
 	g_assert(ci != NULL);
 	g_object_unref(G_OBJECT(ci));
+	return;
 }
 
 void
