@@ -370,14 +370,21 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		}
 		break;
 	/* *********************** */
-	case PROP_STATUS:
+	case PROP_STATUS: {
+		gboolean changed = FALSE;
 		if (G_VALUE_HOLDS_ENUM(value)) {
+			if (priv->status != g_value_get_enum(value)) {
+				changed = TRUE;
+			}
 			priv->status = g_value_get_enum(value);
 		} else if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
 				GEnumValue * enumval = g_enum_get_value_by_nick(enumspec->enum_class, g_value_get_string(value));
 				if (enumval != NULL) {
+					if (priv->status != enumval->value) {
+						changed = TRUE;
+					}
 					priv->status = enumval->value;
 				} else {
 					g_error("Value '%s' is not in the '%s' property enum.", g_value_get_string(value), PROP_STATUS_S);
@@ -388,7 +395,11 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		} else {
 			WARN_BAD_TYPE(PROP_STATUS_S, value);
 		}
+		if (changed) {
+			g_signal_emit(object, signals[NEW_STATUS], 0, priv->status, TRUE);
+		}
 		break;
+	}
 	/* *********************** */
 	case PROP_ICON_NAME:
 		if (G_VALUE_HOLDS_STRING(value)) {
