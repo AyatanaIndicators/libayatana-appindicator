@@ -396,7 +396,11 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 			WARN_BAD_TYPE(PROP_STATUS_S, value);
 		}
 		if (changed) {
-			g_signal_emit(object, signals[NEW_STATUS], 0, priv->status, TRUE);
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			if (enumspec != NULL) {
+				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->status);
+				g_signal_emit(object, signals[NEW_STATUS], 0, enumval->value_nick, TRUE);
+			}
 		}
 		break;
 	}
