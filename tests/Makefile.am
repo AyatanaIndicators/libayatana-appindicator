@@ -18,7 +18,7 @@ XML_REPORT   = libcustomindicator-check-results.xml
 HTML_REPORT  = libcustomindicator-check-results.html
 
 libcustomindicator-tester: test-libcustomindicator
-	gtester -o=$(XML_REPORT) ./test-libcustomindicator
+	gtester -k --verbose -o=$(XML_REPORT) ./test-libcustomindicator
 
 check-local: libcustomindicator-tester
 
