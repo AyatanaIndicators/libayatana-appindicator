@@ -665,46 +665,106 @@ custom_indicator_set_menu (CustomIndicator * ci, DbusmenuServer * menu)
 	return;
 }
 
+/**
+	custom_indicator_get_id:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::id.
+
+	Return value: The current ID
+*/
 const gchar *
 custom_indicator_get_id (CustomIndicator * ci)
 {
-
-	return NULL;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_object_get_property(G_OBJECT(ci), PROP_ID_S, &value);
+	return g_value_get_string(&value);
 }
 
+/**
+	custom_indicator_get_category:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::category.
+
+	Return value: The current category.
+*/
 CustomIndicatorCategory
 custom_indicator_get_category (CustomIndicator * ci)
 {
-
-	return CUSTOM_INDICATOR_CATEGORY_OTHER;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_ENUM);
+	g_object_get_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
+	return g_value_get_enum(&value);
 }
 
+/**
+	custom_indicator_get_status:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::status.
+
+	Return value: The current status.
+*/
 CustomIndicatorStatus
 custom_indicator_get_status (CustomIndicator * ci)
 {
-
-	return CUSTOM_INDICATOR_STATUS_OFF;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_ENUM);
+	g_object_get_property(G_OBJECT(ci), PROP_STATUS_S, &value);
+	return g_value_get_enum(&value);
 }
 
+/**
+	custom_indicator_get_icon:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::icon-name.
+
+	Return value: The current icon name.
+*/
 const gchar *
 custom_indicator_get_icon (CustomIndicator * ci)
 {
-
-	return NULL;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_object_get_property(G_OBJECT(ci), PROP_ICON_NAME_S, &value);
+	return g_value_get_string(&value);
 }
 
+/**
+	custom_indicator_get_attention_icon:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::attention-icon-name.
+
+	Return value: The current attention icon name.
+*/
 const gchar *
 custom_indicator_get_attention_icon (CustomIndicator * ci)
 {
-
-	return NULL;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_object_get_property(G_OBJECT(ci), PROP_ATTENTION_ICON_NAME_S, &value);
+	return g_value_get_string(&value);
 }
 
+/**
+	custom_indicator_get_menu:
+	@ci: The #CustomIndicator object to use
+
+	Wrapper function for property #CustomIndicator::menu.
+
+	Return value: The current menu being used.
+*/
 DbusmenuServer *
 custom_indicator_get_menu (CustomIndicator * ci)
 {
-
-	return NULL;
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_OBJECT);
+	g_object_get_property(G_OBJECT(ci), PROP_MENU_S, &value);
+	return DBUSMENU_SERVER(g_value_get_object(&value));
 }
 
 
