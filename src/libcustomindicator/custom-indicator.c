@@ -351,8 +351,8 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		break;
 	/* *********************** */
 	case PROP_CATEGORY:
-		if (G_VALUE_HOLDS_INT(value)) {
-			priv->category = g_value_get_int(value);
+		if (G_VALUE_HOLDS_ENUM(value)) {
+			priv->category = g_value_get_enum(value);
 		} else if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
@@ -371,8 +371,8 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		break;
 	/* *********************** */
 	case PROP_STATUS:
-		if (G_VALUE_HOLDS_INT(value)) {
-			priv->status = g_value_get_int(value);
+		if (G_VALUE_HOLDS_ENUM(value)) {
+			priv->status = g_value_get_enum(value);
 		} else if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
@@ -475,9 +475,9 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		break;
 	/* *********************** */
 	case PROP_CATEGORY:
-		if (G_VALUE_HOLDS_INT(value)) {
+		if (G_VALUE_HOLDS_ENUM(value)) {
 			/* We want the enum value */
-			g_value_set_int(value, priv->category);
+			g_value_set_enum(value, priv->category);
 		} else if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
@@ -492,9 +492,9 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		break;
 	/* *********************** */
 	case PROP_STATUS:
-		if (G_VALUE_HOLDS_INT(value)) {
+		if (G_VALUE_HOLDS_ENUM(value)) {
 			/* We want the enum value */
-			g_value_set_int(value, priv->status);
+			g_value_set_enum(value, priv->status);
 		} else if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
