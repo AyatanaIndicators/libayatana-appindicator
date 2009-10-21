@@ -5,6 +5,87 @@
 #include <libcustomindicator/custom-indicator.h>
 
 void
+test_libcustomindicator_prop_signals_status_helper (CustomIndicator * ci, CustomIndicatorStatus status, gboolean * signalactivated)
+{
+	*signalactivated = TRUE;
+	return;
+}
+
+void
+test_libcustomindicator_prop_signals_helper (CustomIndicator * ci, gboolean * signalactivated)
+{
+	*signalactivated = TRUE;
+	return;
+}
+
+void
+test_libcustomindicator_prop_signals (void)
+{
+	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, NULL));
+	g_assert(ci != NULL);
+
+	gboolean signaled = FALSE;
+	gulong handlerid;
+
+	handlerid = 0;
+	handlerid = g_signal_connect(G_OBJECT(ci), "new-icon", G_CALLBACK(test_libcustomindicator_prop_signals_helper), &signaled);
+	g_assert(handlerid != 0);
+
+	handlerid = 0;
+	handlerid = g_signal_connect(G_OBJECT(ci), "new-attention-icon", G_CALLBACK(test_libcustomindicator_prop_signals_helper), &signaled);
+	g_assert(handlerid != 0);
+
+	handlerid = 0;
+	handlerid = g_signal_connect(G_OBJECT(ci), "new-status", G_CALLBACK(test_libcustomindicator_prop_signals_status_helper), &signaled);
+	g_assert(handlerid != 0);
+
+
+	signaled = FALSE;
+	custom_indicator_set_icon(ci, "bob");
+	g_assert(signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_icon(ci, "bob");
+	g_assert(!signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_icon(ci, "al");
+	g_assert(signaled);
+
+
+	signaled = FALSE;
+	custom_indicator_set_attention_icon(ci, "bob");
+	g_assert(signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_attention_icon(ci, "bob");
+	g_assert(!signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_attention_icon(ci, "al");
+	g_assert(signaled);
+
+
+	signaled = FALSE;
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_OFF);
+	g_assert(!signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ON);
+	g_assert(signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ON);
+	g_assert(!signaled);
+
+	signaled = FALSE;
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ATTENTION);
+	g_assert(signaled);
+
+	return;
+}
+
+void
 test_libcustomindicator_init_set_props (void)
 {
 	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, NULL));
@@ -63,7 +144,7 @@ test_libcustomindicator_props_suite (void)
 	g_test_add_func ("/indicator-custom/libcustomindicator/init",        test_libcustomindicator_init);
 	g_test_add_func ("/indicator-custom/libcustomindicator/init_props",  test_libcustomindicator_init_with_props);
 	g_test_add_func ("/indicator-custom/libcustomindicator/init_set_props",  test_libcustomindicator_init_set_props);
-
+	g_test_add_func ("/indicator-custom/libcustomindicator/prop_signals",  test_libcustomindicator_prop_signals);
 
 	return;
 }
