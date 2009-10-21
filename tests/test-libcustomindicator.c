@@ -67,15 +67,15 @@ test_libcustomindicator_prop_signals (void)
 
 
 	signaled = FALSE;
-	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_OFF);
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_PASSIVE);
 	g_assert(!signaled);
 
 	signaled = FALSE;
-	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ON);
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ACTIVE);
 	g_assert(signaled);
 
 	signaled = FALSE;
-	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ON);
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ACTIVE);
 	g_assert(!signaled);
 
 	signaled = FALSE;
@@ -93,14 +93,14 @@ test_libcustomindicator_init_set_props (void)
 
 	custom_indicator_set_id(ci, "my-id");
 	custom_indicator_set_category(ci, CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS);
-	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ON);
+	custom_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ACTIVE);
 	custom_indicator_set_icon(ci, "my-name");
 	custom_indicator_set_attention_icon(ci, "my-attention-name");
 
 	g_assert(!g_strcmp0("my-id", custom_indicator_get_id(ci)));
 	g_assert(!g_strcmp0("my-name", custom_indicator_get_icon(ci)));
 	g_assert(!g_strcmp0("my-attention-name", custom_indicator_get_attention_icon(ci)));
-	g_assert(custom_indicator_get_status(ci) == CUSTOM_INDICATOR_STATUS_ON);
+	g_assert(custom_indicator_get_status(ci) == CUSTOM_INDICATOR_STATUS_ACTIVE);
 	g_assert(custom_indicator_get_category(ci) == CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
 	g_object_unref(G_OBJECT(ci));
@@ -113,7 +113,7 @@ test_libcustomindicator_init_with_props (void)
 	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, 
 	                                                     "id", "my-id",
 	                                                     "category", CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS,
-	                                                     "status", CUSTOM_INDICATOR_STATUS_ON,
+	                                                     "status", CUSTOM_INDICATOR_STATUS_ACTIVE,
 	                                                     "icon-name", "my-name",
 	                                                     "attention-icon-name", "my-attention-name",
 	                                                     NULL));
@@ -122,7 +122,7 @@ test_libcustomindicator_init_with_props (void)
 	g_assert(!g_strcmp0("my-id", custom_indicator_get_id(ci)));
 	g_assert(!g_strcmp0("my-name", custom_indicator_get_icon(ci)));
 	g_assert(!g_strcmp0("my-attention-name", custom_indicator_get_attention_icon(ci)));
-	g_assert(custom_indicator_get_status(ci) == CUSTOM_INDICATOR_STATUS_ON);
+	g_assert(custom_indicator_get_status(ci) == CUSTOM_INDICATOR_STATUS_ACTIVE);
 	g_assert(custom_indicator_get_category(ci) == CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
 	g_object_unref(G_OBJECT(ci));

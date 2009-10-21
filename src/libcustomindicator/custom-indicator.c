@@ -125,7 +125,7 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                  "Indicator Status",
 	                                                  "Whether the indicator is shown or requests attention.  Defaults to 'off'.",
 	                                                  CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS,
-	                                                  CUSTOM_INDICATOR_STATUS_OFF,
+	                                                  CUSTOM_INDICATOR_STATUS_PASSIVE,
 	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_ICON_NAME,
@@ -235,7 +235,7 @@ custom_indicator_init (CustomIndicator *self)
 
 	priv->id = NULL;
 	priv->category = CUSTOM_INDICATOR_CATEGORY_OTHER;
-	priv->status = CUSTOM_INDICATOR_STATUS_OFF;
+	priv->status = CUSTOM_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
 	priv->menu = NULL;
@@ -268,8 +268,8 @@ custom_indicator_dispose (GObject *object)
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
 	g_return_if_fail(priv != NULL);
 
-	if (priv->status != CUSTOM_INDICATOR_STATUS_OFF) {
-		custom_indicator_set_status(self, CUSTOM_INDICATOR_STATUS_OFF);
+	if (priv->status != CUSTOM_INDICATOR_STATUS_PASSIVE) {
+		custom_indicator_set_status(self, CUSTOM_INDICATOR_STATUS_PASSIVE);
 	}
 
 	if (priv->menu != NULL) {
@@ -299,7 +299,7 @@ custom_indicator_finalize (GObject *object)
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
 	g_return_if_fail(priv != NULL);
 
-	if (priv->status != CUSTOM_INDICATOR_STATUS_OFF) {
+	if (priv->status != CUSTOM_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Custom Status with the status set to: %d", priv->status);
 	}
 

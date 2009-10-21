@@ -40,8 +40,8 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
 
 /**
 	CustomIndicatorStatus:
-	@CUSTOM_INDICATOR_STATUS_OFF: The indicator should not be shown to the user.
-	@CUSTOM_INDICATOR_STATUS_ON: The indicator should be shown in it's default state.
+	@CUSTOM_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
+	@CUSTOM_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
 	@CUSTOM_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
 
 	These are the states that the indicator can be on in
@@ -50,8 +50,8 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
 	shown by setting it to @CUSTOM_INDICATOR_STATUS_ON.
 */
 typedef enum { /*< prefix=CUSTOM_INDICATOR_STATUS >*/
-	CUSTOM_INDICATOR_STATUS_OFF,
-	CUSTOM_INDICATOR_STATUS_ON,
+	CUSTOM_INDICATOR_STATUS_PASSIVE,
+	CUSTOM_INDICATOR_STATUS_ACTIVE,
 	CUSTOM_INDICATOR_STATUS_ATTENTION
 } CustomIndicatorStatus;
 
