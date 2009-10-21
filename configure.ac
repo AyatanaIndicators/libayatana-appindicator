@@ -80,6 +80,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 data/Makefile
+tests/Makefile
 ])
 
 ###########################
