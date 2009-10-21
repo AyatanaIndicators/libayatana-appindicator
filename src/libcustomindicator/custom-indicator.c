@@ -564,44 +564,104 @@ check_connect (CustomIndicator * self)
 /*    Public Functions       */
 /* ************************* */
 
+/**
+	custom_indicator_set_id:
+	@ci: The #CustomIndicator object to use
+	@id: ID to set for this indicator
+
+	Wrapper function for property #CustomIndicator::id.
+*/
 void
 custom_indicator_set_id (CustomIndicator * ci, const gchar * id)
 {
-
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_string(&value, id);
+	g_object_set_property(G_OBJECT(ci), PROP_ID_S, &value);
 	return;
 }
 
+/**
+	custom_indicator_set_category:
+	@ci: The #CustomIndicator object to use
+	@category: The category to set for this indicator
+
+	Wrapper function for property #CustomIndicator::category.
+*/
 void
 custom_indicator_set_category (CustomIndicator * ci, CustomIndicatorCategory category)
 {
-
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_ENUM);
+	g_value_set_enum(&value, category);
+	g_object_set_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
 	return;
 }
 
+/**
+	custom_indicator_set_status:
+	@ci: The #CustomIndicator object to use
+	@status: The status to set for this indicator
+
+	Wrapper function for property #CustomIndicator::status.
+*/
 void
 custom_indicator_set_status (CustomIndicator * ci, CustomIndicatorStatus status)
 {
-
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_ENUM);
+	g_value_set_enum(&value, status);
+	g_object_set_property(G_OBJECT(ci), PROP_STATUS_S, &value);
 	return;
 }
 
+/**
+	custom_indicator_set_icon:
+	@ci: The #CustomIndicator object to use
+	@icon_name: The name of the icon to set for this indicator
+
+	Wrapper function for property #CustomIndicator::icon.
+*/
 void custom_indicator_set_icon (CustomIndicator * ci, const gchar * icon_name)
 {
-
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_string(&value, icon_name);
+	g_object_set_property(G_OBJECT(ci), PROP_ICON_NAME_S, &value);
 	return;
 }
 
+/**
+	custom_indicator_set_attention_icon:
+	@ci: The #CustomIndicator object to use
+	@icon_name: The name of the attention icon to set for this indicator
+
+	Wrapper function for property #CustomIndicator::attention-icon.
+*/
 void
 custom_indicator_set_attention_icon (CustomIndicator * ci, const gchar * icon_name)
 {
-
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_STRING);
+	g_value_set_string(&value, icon_name);
+	g_object_set_property(G_OBJECT(ci), PROP_ATTENTION_ICON_NAME_S, &value);
 	return;
 }
 
-void
-custom_indicator_set_menu (CustomIndicator * ci, void * menu)
-{
+/**
+	custom_indicator_set_menu:
+	@ci: The #CustomIndicator object to use
+	@menu: The object with the menu for the indicator
 
+	Wrapper function for property #CustomIndicator::menu.
+*/
+void
+custom_indicator_set_menu (CustomIndicator * ci, DbusmenuServer * menu)
+{
+	GValue value = {0};
+	g_value_init(&value, G_TYPE_OBJECT);
+	g_value_set_object(&value, G_OBJECT(menu));
+	g_object_set_property(G_OBJECT(ci), PROP_MENU_S, &value);
 	return;
 }
 

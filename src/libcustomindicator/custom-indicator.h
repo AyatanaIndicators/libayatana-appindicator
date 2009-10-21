@@ -127,7 +127,7 @@ void                            custom_indicator_set_icon           (CustomIndic
 void                            custom_indicator_set_attention_icon (CustomIndicator * ci,
                                                                      const gchar * icon_name);
 void                            custom_indicator_set_menu           (CustomIndicator * ci,
-                                                                     void * menu);
+                                                                     DbusmenuServer * menu);
 
 /* Get properties */
 const gchar *                   custom_indicator_get_id             (CustomIndicator * ci);
