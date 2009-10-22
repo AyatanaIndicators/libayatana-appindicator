@@ -68,6 +68,24 @@ prop_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
 	propcount++;
 
+	GError * error = NULL;
+	GValue value = {0};
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting icon name failed: %s", error->message);
+		g_error_free(error);
+		passed = FALSE;
+		check_propcount();
+		return;
+	}
+
+	if (g_strcmp0(TEST_ICON_NAME, g_value_get_string(&value))) {
+		g_debug("Property icon name Returned: FAILED");
+		passed = FALSE;
+	} else {
+		g_debug("Property icon name Returned: PASSED");
+	}
+
 	check_propcount();
 	return;
 }
@@ -76,6 +94,24 @@ static void
 prop_attention_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
 	propcount++;
+
+	GError * error = NULL;
+	GValue value = {0};
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting attention icon name failed: %s", error->message);
+		g_error_free(error);
+		passed = FALSE;
+		check_propcount();
+		return;
+	}
+
+	if (g_strcmp0(TEST_ATTENTION_ICON_NAME, g_value_get_string(&value))) {
+		g_debug("Property attention icon name Returned: FAILED");
+		passed = FALSE;
+	} else {
+		g_debug("Property attention icon name Returned: PASSED");
+	}
 
 	check_propcount();
 	return;
