@@ -50,6 +50,24 @@ prop_category_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
 	propcount++;
 
+	GError * error = NULL;
+	GValue value = {0};
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting category failed: %s", error->message);
+		g_error_free(error);
+		passed = FALSE;
+		check_propcount();
+		return;
+	}
+
+	if (g_strcmp0(TEST_CATEGORY_S, g_value_get_string(&value))) {
+		g_debug("Property category Returned: FAILED");
+		passed = FALSE;
+	} else {
+		g_debug("Property category Returned: PASSED");
+	}
+
 	check_propcount();
 	return;
 }
@@ -58,6 +76,24 @@ static void
 prop_status_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
 	propcount++;
+
+	GError * error = NULL;
+	GValue value = {0};
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting status failed: %s", error->message);
+		g_error_free(error);
+		passed = FALSE;
+		check_propcount();
+		return;
+	}
+
+	if (g_strcmp0(TEST_STATE_S, g_value_get_string(&value))) {
+		g_debug("Property status Returned: FAILED");
+		passed = FALSE;
+	} else {
+		g_debug("Property status Returned: PASSED");
+	}
 
 	check_propcount();
 	return;
