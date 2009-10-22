@@ -510,6 +510,7 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		} else {
 			WARN_BAD_TYPE(PROP_CATEGORY_ENUM_S, value);
 		}
+		break;
 	/* *********************** */
 	case PROP_STATUS:
 		if (G_VALUE_HOLDS_STRING(value)) {
