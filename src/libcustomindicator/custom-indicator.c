@@ -491,7 +491,8 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 	/* *********************** */
 	case PROP_CATEGORY:
 		if (G_VALUE_HOLDS_STRING(value)) {
-			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			GParamSpec * spec_for_enum = g_object_class_find_property(G_OBJECT_GET_CLASS(object), PROP_CATEGORY_ENUM_S);
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(spec_for_enum);
 			if (enumspec != NULL) {
 				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->category);
 				g_value_set_string(value, enumval->value_nick);
@@ -514,7 +515,8 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 	/* *********************** */
 	case PROP_STATUS:
 		if (G_VALUE_HOLDS_STRING(value)) {
-			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
+			GParamSpec * spec_for_enum = g_object_class_find_property(G_OBJECT_GET_CLASS(object), PROP_STATUS_ENUM_S);
+			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(spec_for_enum);
 			if (enumspec != NULL) {
 				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->status);
 				g_value_set_string(value, enumval->value_nick);
