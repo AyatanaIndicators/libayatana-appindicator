@@ -22,3 +22,5 @@ tests/libcustomindicator-check-results.html
 tests/test-libcustomindicator
 tests/test-libcustomindicator-dbus-client
 tests/test-libcustomindicator-dbus-server
+tests/libcustomindicator-tests
+tests/test-libcustomindicator-dbus
