@@ -77,6 +77,15 @@ prop_menu_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 	return;
 }
 
+gboolean
+kill_func (gpointer userdata)
+{
+	g_main_loop_quit(mainloop);
+	g_warning("Forced to Kill");
+	passed = FALSE;
+	return FALSE;
+}
+
 gint
 main (gint argc, gchar * argv[])
 {
@@ -143,6 +152,8 @@ main (gint argc, gchar * argv[])
 	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
 	                         G_TYPE_STRING, "Menu",
 	                         G_TYPE_INVALID);
+
+	g_timeout_add_seconds(2, kill_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
