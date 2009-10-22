@@ -23,8 +23,8 @@ main (gint argc, gchar * argv[])
 
 	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, 
 	                                                     "id", TEST_ID,
-	                                                     "category", TEST_CATEGORY,
-	                                                     "status", TEST_STATE,
+	                                                     "category-enum", TEST_CATEGORY,
+	                                                     "status-enum", TEST_STATE,
 	                                                     "icon-name", TEST_ICON_NAME,
 	                                                     "attention-icon-name", TEST_ATTENTION_ICON_NAME,
 	                                                     NULL));
