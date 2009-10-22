@@ -449,7 +449,7 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		}
 		break;
 	/* *********************** */
-	case PROP_MENU:
+	case PROP_MENU_OBJECT:
 		if (G_VALUE_HOLDS_OBJECT(value)) {
 			if (priv->menu != NULL) {
 				g_object_unref(G_OBJECT(priv->menu));
