@@ -11,7 +11,9 @@ static int propcount = 0;
 static void
 check_propcount (void)
 {
-
+	if (propcount >= 6) {
+		g_main_loop_quit(mainloop);
+	}
 	return;
 }
 
@@ -39,41 +41,52 @@ prop_id_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 		g_debug("Property ID Returned: PASSED");
 	}
 
+	check_propcount();
 	return;
 }
 
 static void
 prop_category_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	propcount++;
 
+	check_propcount();
 	return;
 }
 
 static void
 prop_status_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	propcount++;
 
+	check_propcount();
 	return;
 }
 
 static void
 prop_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	propcount++;
 
+	check_propcount();
 	return;
 }
 
 static void
 prop_attention_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	propcount++;
 
+	check_propcount();
 	return;
 }
 
 static void
 prop_menu_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
+	propcount++;
 
+	check_propcount();
 	return;
 }
 
