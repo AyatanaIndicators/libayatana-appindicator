@@ -55,20 +55,26 @@ enum {
 	PROP_0,
 	PROP_ID,
 	PROP_CATEGORY,
+	PROP_CATEGORY_ENUM,
 	PROP_STATUS,
+	PROP_STATUS_ENUM,
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
 	PROP_MENU,
+	PROP_MENU_OBJECT,
 	PROP_CONNECTED
 };
 
 /* The strings so that they can be slowly looked up. */
 #define PROP_ID_S                    "id"
 #define PROP_CATEGORY_S              "category"
+#define PROP_CATEGORY_ENUM_S         "category-enum"
 #define PROP_STATUS_S                "status"
+#define PROP_STATUS_ENUM_S           "status-enum"
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
 #define PROP_MENU_S                  "menu"
+#define PROP_MENU_OBJECT_S           "menu-object"
 #define PROP_CONNECTED_S             "connected"
 
 /* Private macro, shhhh! */
@@ -113,7 +119,14 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_CATEGORY,
-	                                g_param_spec_enum(PROP_CATEGORY_S,
+	                                g_param_spec_string(PROP_CATEGORY_S,
+	                                                    "Indicator Category as a string",
+	                                                    "The type of indicator that this represents as a string.  For DBus.",
+	                                                    NULL,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property(object_class, PROP_CATEGORY_ENUM,
+	                                g_param_spec_enum(PROP_CATEGORY_ENUM_S,
 	                                                  "Indicator Category",
 	                                                  "The type of indicator that this represents.  Please don't use 'other'.  Defaults to 'Application Status'.",
 	                                                  CUSTOM_INDICATOR_TYPE_INDICATOR_CATEGORY,
@@ -121,7 +134,14 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_STATUS,
-	                                g_param_spec_enum(PROP_STATUS_S,
+	                                g_param_spec_string(PROP_STATUS_S,
+	                                                    "Indicator Status as a string",
+	                                                    "The status of the indicator represented as a string.  For DBus.",
+	                                                    NULL,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property(object_class, PROP_STATUS_ENUM,
+	                                g_param_spec_enum(PROP_STATUS_ENUM_S,
 	                                                  "Indicator Status",
 	                                                  "Whether the indicator is shown or requests attention.  Defaults to 'off'.",
 	                                                  CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS,
@@ -143,7 +163,14 @@ custom_indicator_class_init (CustomIndicatorClass *klass)
 	                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_MENU,
-	                                g_param_spec_object(PROP_MENU_S,
+	                                g_param_spec_string(PROP_MENU_S,
+	                                                    "The object path of the menu on DBus.",
+	                                                    "A method for getting the menu path as a string for DBus.",
+	                                                    NULL,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property(object_class, PROP_MENU_OBJECT,
+	                                g_param_spec_object(PROP_MENU_OBJECT_S,
 	                                                    "The Menu for the indicator",
 	                                                    "A DBus Menu Server object that can have a menu attached to it.  The object from this menu will be sent across the bus for the client to connect to and signal.",
 	                                                    DBUSMENU_TYPE_SERVER,
@@ -350,50 +377,23 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		check_connect(self);
 		break;
 	/* *********************** */
-	case PROP_CATEGORY:
+	case PROP_CATEGORY_ENUM:
 		if (G_VALUE_HOLDS_ENUM(value)) {
 			priv->category = g_value_get_enum(value);
-		} else if (G_VALUE_HOLDS_STRING(value)) {
-			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
-			if (enumspec != NULL) {
-				GEnumValue * enumval = g_enum_get_value_by_nick(enumspec->enum_class, g_value_get_string(value));
-				if (enumval != NULL) {
-					priv->category = enumval->value;
-				} else {
-					g_error("Value '%s' is not in the '%s' property enum.", g_value_get_string(value), PROP_CATEGORY_S);
-				}
-			} else {
-				g_assert_not_reached();
-			}
 		} else {
-			WARN_BAD_TYPE(PROP_CATEGORY_S, value);
+			WARN_BAD_TYPE(PROP_CATEGORY_ENUM_S, value);
 		}
 		break;
 	/* *********************** */
-	case PROP_STATUS: {
+	case PROP_STATUS_ENUM: {
 		gboolean changed = FALSE;
 		if (G_VALUE_HOLDS_ENUM(value)) {
 			if (priv->status != g_value_get_enum(value)) {
 				changed = TRUE;
 			}
 			priv->status = g_value_get_enum(value);
-		} else if (G_VALUE_HOLDS_STRING(value)) {
-			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
-			if (enumspec != NULL) {
-				GEnumValue * enumval = g_enum_get_value_by_nick(enumspec->enum_class, g_value_get_string(value));
-				if (enumval != NULL) {
-					if (priv->status != enumval->value) {
-						changed = TRUE;
-					}
-					priv->status = enumval->value;
-				} else {
-					g_error("Value '%s' is not in the '%s' property enum.", g_value_get_string(value), PROP_STATUS_S);
-				}
-			} else {
-				g_assert_not_reached();
-			}
 		} else {
-			WARN_BAD_TYPE(PROP_STATUS_S, value);
+			WARN_BAD_TYPE(PROP_STATUS_ENUM_S, value);
 		}
 		if (changed) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
@@ -490,10 +490,7 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		break;
 	/* *********************** */
 	case PROP_CATEGORY:
-		if (G_VALUE_HOLDS_ENUM(value)) {
-			/* We want the enum value */
-			g_value_set_enum(value, priv->category);
-		} else if (G_VALUE_HOLDS_STRING(value)) {
+		if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
 				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->category);
@@ -506,11 +503,16 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		}
 		break;
 	/* *********************** */
-	case PROP_STATUS:
+	case PROP_CATEGORY_ENUM:
 		if (G_VALUE_HOLDS_ENUM(value)) {
 			/* We want the enum value */
-			g_value_set_enum(value, priv->status);
-		} else if (G_VALUE_HOLDS_STRING(value)) {
+			g_value_set_enum(value, priv->category);
+		} else {
+			WARN_BAD_TYPE(PROP_CATEGORY_ENUM_S, value);
+		}
+	/* *********************** */
+	case PROP_STATUS:
+		if (G_VALUE_HOLDS_STRING(value)) {
 			GParamSpecEnum * enumspec = G_PARAM_SPEC_ENUM(pspec);
 			if (enumspec != NULL) {
 				GEnumValue * enumval = g_enum_get_value(enumspec->enum_class, priv->status);
@@ -520,6 +522,15 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 			}
 		} else {
 			WARN_BAD_TYPE(PROP_STATUS_S, value);
+		}
+		break;
+	/* *********************** */
+	case PROP_STATUS_ENUM:
+		if (G_VALUE_HOLDS_ENUM(value)) {
+			/* We want the enum value */
+			g_value_set_enum(value, priv->status);
+		} else {
+			WARN_BAD_TYPE(PROP_STATUS_ENUM_S, value);
 		}
 		break;
 	/* *********************** */
@@ -540,10 +551,20 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 		break;
 	/* *********************** */
 	case PROP_MENU:
+		if (G_VALUE_HOLDS_STRING(value)) {
+			if (priv->menu != NULL) {
+				g_object_get_property(G_OBJECT(priv->menu), DBUSMENU_SERVER_PROP_DBUS_OBJECT, value);
+			}
+		} else {
+			WARN_BAD_TYPE(PROP_MENU_S, value);
+		}
+		break;
+	/* *********************** */
+	case PROP_MENU_OBJECT:
 		if (G_VALUE_HOLDS_OBJECT(value)) {
 			g_value_set_object(value, priv->menu);
 		} else {
-			WARN_BAD_TYPE(PROP_MENU_S, value);
+			WARN_BAD_TYPE(PROP_MENU_OBJECT_S, value);
 		}
 		break;
 	/* *********************** */
@@ -609,7 +630,7 @@ custom_indicator_set_category (CustomIndicator * ci, CustomIndicatorCategory cat
 	GValue value = {0};
 	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_CATEGORY);
 	g_value_set_enum(&value, category);
-	g_object_set_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
+	g_object_set_property(G_OBJECT(ci), PROP_CATEGORY_ENUM_S, &value);
 	return;
 }
 
@@ -626,7 +647,7 @@ custom_indicator_set_status (CustomIndicator * ci, CustomIndicatorStatus status)
 	GValue value = {0};
 	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS);
 	g_value_set_enum(&value, status);
-	g_object_set_property(G_OBJECT(ci), PROP_STATUS_S, &value);
+	g_object_set_property(G_OBJECT(ci), PROP_STATUS_ENUM_S, &value);
 	return;
 }
 
@@ -676,7 +697,7 @@ custom_indicator_set_menu (CustomIndicator * ci, DbusmenuServer * menu)
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_OBJECT);
 	g_value_set_object(&value, G_OBJECT(menu));
-	g_object_set_property(G_OBJECT(ci), PROP_MENU_S, &value);
+	g_object_set_property(G_OBJECT(ci), PROP_MENU_OBJECT_S, &value);
 	return;
 }
 
@@ -710,7 +731,7 @@ custom_indicator_get_category (CustomIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_CATEGORY);
-	g_object_get_property(G_OBJECT(ci), PROP_CATEGORY_S, &value);
+	g_object_get_property(G_OBJECT(ci), PROP_CATEGORY_ENUM_S, &value);
 	return g_value_get_enum(&value);
 }
 
@@ -727,7 +748,7 @@ custom_indicator_get_status (CustomIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, CUSTOM_INDICATOR_TYPE_INDICATOR_STATUS);
-	g_object_get_property(G_OBJECT(ci), PROP_STATUS_S, &value);
+	g_object_get_property(G_OBJECT(ci), PROP_STATUS_ENUM_S, &value);
 	return g_value_get_enum(&value);
 }
 
@@ -778,7 +799,7 @@ custom_indicator_get_menu (CustomIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_OBJECT);
-	g_object_get_property(G_OBJECT(ci), PROP_MENU_S, &value);
+	g_object_get_property(G_OBJECT(ci), PROP_MENU_OBJECT_S, &value);
 	return DBUSMENU_SERVER(g_value_get_object(&value));
 }
 
