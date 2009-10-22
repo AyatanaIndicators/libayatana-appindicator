@@ -6,4 +6,5 @@
 #define  TEST_STATE_S              "active"
 #define  TEST_CATEGORY             CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS
 #define  TEST_CATEGORY_S           "application-status"
+#define  TEST_OBJECT               "/an/object/path/to/use"
 

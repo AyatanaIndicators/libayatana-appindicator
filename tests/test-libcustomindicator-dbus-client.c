@@ -158,6 +158,24 @@ prop_menu_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
 {
 	propcount++;
 
+	GError * error = NULL;
+	GValue value = {0};
+
+	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+		g_warning("Getting menu object failed: %s", error->message);
+		g_error_free(error);
+		passed = FALSE;
+		check_propcount();
+		return;
+	}
+
+	if (g_strcmp0(TEST_OBJECT, g_value_get_string(&value))) {
+		g_debug("Property menu object Returned: FAILED");
+		passed = FALSE;
+	} else {
+		g_debug("Property menu object Returned: PASSED");
+	}
+
 	check_propcount();
 	return;
 }
