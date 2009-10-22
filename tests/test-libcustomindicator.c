@@ -112,8 +112,8 @@ test_libcustomindicator_init_with_props (void)
 {
 	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, 
 	                                                     "id", "my-id",
-	                                                     "category", CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS,
-	                                                     "status", CUSTOM_INDICATOR_STATUS_ACTIVE,
+	                                                     "category-enum", CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS,
+	                                                     "status-enum", CUSTOM_INDICATOR_STATUS_ACTIVE,
 	                                                     "icon-name", "my-name",
 	                                                     "attention-icon-name", "my-attention-name",
 	                                                     NULL));
