@@ -163,7 +163,7 @@ main (gint argc, gchar * argv[])
 		return 0;
 	} else {
 		g_debug("Quiting as we're a failure");
-		return 0;
+		return 1;
 	}
 	return 0;
 }
