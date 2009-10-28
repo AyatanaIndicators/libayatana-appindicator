@@ -42,12 +42,29 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 	object_class->dispose = custom_service_appstore_dispose;
 	object_class->finalize = custom_service_appstore_finalize;
 
+	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
+	                                &dbus_glib__notification_watcher_server_object_info);
+	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
+	                                &dbus_glib__custom_service_server_object_info);
+
 	return;
 }
 
 static void
 custom_service_appstore_init (CustomServiceAppstore *self)
 {
+	
+	GError * error = NULL;
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_error("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	dbus_g_connection_register_g_object(session_bus,
+	                                    "/my/path",
+	                                    G_OBJECT(self));
 
 	return;
 }
