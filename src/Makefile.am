@@ -82,6 +82,7 @@ libcustomindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	custom-service.xml \
 	notification-item.xml \
 	notification-watcher.xml
 

@@ -24,3 +24,5 @@ tests/test-libcustomindicator-dbus-client
 tests/test-libcustomindicator-dbus-server
 tests/libcustomindicator-tests
 tests/test-libcustomindicator-dbus
+src/custom-service-client.h
+src/custom-service-server.h
