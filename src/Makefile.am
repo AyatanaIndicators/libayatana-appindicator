@@ -30,6 +30,9 @@ libexec_PROGRAMS = indicator-custom-service
 
 indicator_custom_service_SOURCES = \
 	custom-service.c \
+	custom-service-appstore.h \
+	custom-service-appstore.c \
+	custom-service-server.h \
 	notification-item-client.h \
 	notification-watcher-server.h
 indicator_custom_service_CFLAGS = \
