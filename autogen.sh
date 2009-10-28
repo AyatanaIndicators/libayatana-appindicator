@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKG_NAME="upanel"
+PKG_NAME="indicator-custom"
 
 which gnome-autogen.sh || {
 	echo "You need gnome-common from GNOME SVN"
