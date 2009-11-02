@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/gnome.mk
+
+DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper
+LDFLAGS += -Wl,-z,defs -Wl,--as-needed
+
+#binary-install/indicator-messages::
+#	# remove .a/.la clutter
+#	rm -f debian/$(cdbs_curpkg)/usr/lib/indicators/*/*.a
+#	rm -f debian/$(cdbs_curpkg)/usr/lib/indicators/*/*.la
