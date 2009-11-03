@@ -1,4 +1,4 @@
-Source: cape-girardeau
+Source: indicator-custom
 Section: gnome
 Priority: optional
 Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -15,10 +15,10 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-gtk-dev (>= 0.1.1),
                libdbusmenu-glib-dev (>= 0.1.1)
 Standards-Version: 3.8.0
-Homepage: https://launchpad.net/wasilla
+Homepage: https://launchpad.net/cape-girardeau
 Vcs-Bzr: http://bazaar.launchpa.net/~canonical-dx-team/cape-girardeau/karmic
 
-Package: cape-girardeau
+Package: indicator-custom
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: cape-girardeau project
