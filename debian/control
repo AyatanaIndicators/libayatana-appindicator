@@ -25,3 +25,22 @@ Description: cape-girardeau project
  .
  This package is the cape-girardeau project
 
+Package: libcustomindicator0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: cape-girardeau project
+ .
+ This package is the cape-girardeau project
+
+Package: libcustomindicator-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbus-glib-1-dev (>= 0.76)
+Description: cape-girardeau project
+ .
+ This package is the cape-girardeau project
+

@@ -1,3 +1,13 @@
+indicator-custom (0.0.1-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/control: Splitting out libcustomindicator
+  * Adding debian/libcustomindicator0.install,
+    debian/libcustomindicator-dev.install,
+    debian/indicator-custom.install
+    to make all the different packages.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:24:10 -0600
+
 indicator-custom (0.0.1-0ubuntu1) karmic; urgency=low
 
   * Development packaging edition.
