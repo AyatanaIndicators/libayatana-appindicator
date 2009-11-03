@@ -1,8 +1,18 @@
-indicator-custom (0.0.1-0ubuntu2~ppa1~service1) karmic; urgency=low
+indicator-custom (0.0.1-0ubuntu3~ppa1~service1) karmic; urgency=low
 
   * Grabbing from the service development branch
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 20:34:54 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:56:33 -0600
+
+indicator-custom (0.0.1-0ubuntu2) karmic; urgency=low
+
+  * debian/control: Splitting out libcustomindicator
+  * Adding debian/libcustomindicator0.install,
+    debian/libcustomindicator-dev.install,
+    debian/indicator-custom.install
+    to make all the different packages.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:41:20 -0600
 
 indicator-custom (0.0.1-0ubuntu1) karmic; urgency=low
 
