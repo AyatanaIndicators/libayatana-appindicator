@@ -1,3 +1,9 @@
+cape-girardeau (0.0.1-0ubuntu2~ppa1~service1) UNRELEASED; urgency=low
+
+  * Grabbing from the service development branch
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 20:18:01 -0600
+
 cape-girardeau (0.0.1-0ubuntu1) karmic; urgency=low
 
   * Development packaging edition.

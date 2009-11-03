@@ -12,6 +12,7 @@ include $(top_srcdir)/Makefile.am.enum
 customlibdir = $(INDICATORDIR)
 customlib_LTLIBRARIES = libcustom.la
 libcustom_la_SOURCES = \
+	dbus-shared.h \
 	indicator-custom.c
 libcustom_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \
@@ -30,6 +31,10 @@ libexec_PROGRAMS = indicator-custom-service
 
 indicator_custom_service_SOURCES = \
 	custom-service.c \
+	custom-service-appstore.h \
+	custom-service-appstore.c \
+	custom-service-server.h \
+	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
 indicator_custom_service_CFLAGS = \
@@ -82,6 +87,7 @@ libcustomindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	custom-service.xml \
 	notification-item.xml \
 	notification-watcher.xml
 

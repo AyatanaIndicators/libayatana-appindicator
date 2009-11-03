@@ -15,3 +15,14 @@ src/libcustomindicator/custom-indicator-enum-types.h
 src/libcustomindicator/custom-indicator-enum-types.c
 src/stamp-enum-types
 src/libcustomindicator_la-custom-indicator-enum-types.lo
+tests/.deps
+tests/.libs
+tests/libcustomindicator-check-results.xml
+tests/libcustomindicator-check-results.html
+tests/test-libcustomindicator
+tests/test-libcustomindicator-dbus-client
+tests/test-libcustomindicator-dbus-server
+tests/libcustomindicator-tests
+tests/test-libcustomindicator-dbus
+src/custom-service-client.h
+src/custom-service-server.h
