@@ -3,6 +3,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <libdbusmenu-glib/server.h>
 
 G_BEGIN_DECLS
 
@@ -12,6 +13,11 @@ G_BEGIN_DECLS
 #define IS_CUSTOM_INDICATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CUSTOM_INDICATOR_TYPE))
 #define IS_CUSTOM_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CUSTOM_INDICATOR_TYPE))
 #define CUSTOM_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), CUSTOM_INDICATOR_TYPE, CustomIndicatorClass))
+
+#define CUSTOM_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
+#define CUSTOM_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
+#define CUSTOM_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
+#define CUSTOM_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 
 /**
 	CustomIndicatorCategory:
@@ -34,8 +40,8 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
 
 /**
 	CustomIndicatorStatus:
-	@CUSTOM_INDICATOR_STATUS_OFF: The indicator should not be shown to the user.
-	@CUSTOM_INDICATOR_STATUS_ON: The indicator should be shown in it's default state.
+	@CUSTOM_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
+	@CUSTOM_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
 	@CUSTOM_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
 
 	These are the states that the indicator can be on in
@@ -44,20 +50,66 @@ typedef enum { /*< prefix=CUSTOM_INDICATOR_CATEGORY >*/
 	shown by setting it to @CUSTOM_INDICATOR_STATUS_ON.
 */
 typedef enum { /*< prefix=CUSTOM_INDICATOR_STATUS >*/
-	CUSTOM_INDICATOR_STATUS_OFF,
-	CUSTOM_INDICATOR_STATUS_ON,
+	CUSTOM_INDICATOR_STATUS_PASSIVE,
+	CUSTOM_INDICATOR_STATUS_ACTIVE,
 	CUSTOM_INDICATOR_STATUS_ATTENTION
 } CustomIndicatorStatus;
 
 typedef struct _CustomIndicator      CustomIndicator;
 typedef struct _CustomIndicatorClass CustomIndicatorClass;
 
+/**
+	CustomIndicatorClass:
+	@parent_class: Mia familia
+	@new_icon: Slot for #CustomIndicator::new-icon.
+	@new_attention_icon: Slot for #CustomIndicator::new-attention-icon.
+	@new_status: Slot for #CustomIndicator::new-status.
+	@connection_changed: Slot for #CustomIndicator::connection-changed.
+	@custom_indicator_reserved_1: Reserved for future use.
+	@custom_indicator_reserved_2: Reserved for future use.
+	@custom_indicator_reserved_3: Reserved for future use.
+	@custom_indicator_reserved_4: Reserved for future use.
+
+	The signals and external functions that make up the #CustomIndicator
+	class object.
+*/
 struct _CustomIndicatorClass {
+	/* Parent */
 	GObjectClass parent_class;
+
+	/* DBus Signals */
+	void (* new_icon)               (CustomIndicator * indicator,
+	                                 gpointer          user_data);
+	void (* new_attention_icon)     (CustomIndicator * indicator,
+	                                 gpointer          user_data);
+	void (* new_status)             (CustomIndicator * indicator,
+	                                 gchar *           status_string,
+	                                 gpointer          user_data);
+
+	/* Local Signals */
+	void (* connection_changed)     (CustomIndicator * indicator,
+	                                 gboolean          connected,
+	                                 gpointer          user_data);
+
+	/* Reserved */
+	void (*custom_indicator_reserved_1)(void);
+	void (*custom_indicator_reserved_2)(void);
+	void (*custom_indicator_reserved_3)(void);
+	void (*custom_indicator_reserved_4)(void);
 };
 
+/**
+	CustomIndicator:
+	@parent: Parent object.
+
+	A custom indicator represents the values that are needed to show a
+	unique status in the panel for an application.  In general, applications
+	should try to fit in the other indicators that are available on the
+	panel before using this.  But, sometimes it is necissary.
+*/
 struct _CustomIndicator {
 	GObject parent;
+	/* None.  We're a very private object. */
 };
 
 /* GObject Stuff */
@@ -75,7 +127,7 @@ void                            custom_indicator_set_icon           (CustomIndic
 void                            custom_indicator_set_attention_icon (CustomIndicator * ci,
                                                                      const gchar * icon_name);
 void                            custom_indicator_set_menu           (CustomIndicator * ci,
-                                                                     void * menu);
+                                                                     DbusmenuServer * menu);
 
 /* Get properties */
 const gchar *                   custom_indicator_get_id             (CustomIndicator * ci);
@@ -83,7 +135,7 @@ CustomIndicatorCategory         custom_indicator_get_category       (CustomIndic
 CustomIndicatorStatus           custom_indicator_get_status         (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_icon           (CustomIndicator * ci);
 const gchar *                   custom_indicator_get_attention_icon (CustomIndicator * ci);
-void *                          custom_indicator_get_menu           (CustomIndicator * ci);
+DbusmenuServer *                custom_indicator_get_menu           (CustomIndicator * ci);
 
 G_END_DECLS
 
