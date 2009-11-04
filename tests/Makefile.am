@@ -74,8 +74,8 @@ libcustomindicator-tests-gtester: test-libcustomindicator Makefile.am
 	@echo gtester -k --verbose -o=$(XML_REPORT) ./test-libcustomindicator >> $@
 	@chmod +x $@
 
-TESTS += libcustomindicator-tests libcustomindicator-tests-gtester
-DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT)
+TESTS += libcustomindicator-tests
+DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libcustomindicator-tests-gtester
 
 
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
