@@ -10,14 +10,7 @@
 /* DBus Prototypes */
 static gboolean _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps);
 
-static gboolean _notification_watcher_server_register_service (CustomServiceAppstore * appstore, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_registered_services (CustomServiceAppstore * appstore, GArray ** apps);
-static gboolean _notification_watcher_server_protocol_version (CustomServiceAppstore * appstore, char ** version);
-static gboolean _notification_watcher_server_register_notification_host (CustomServiceAppstore * appstore, const gchar * host);
-static gboolean _notification_watcher_server_is_notification_host_registered (CustomServiceAppstore * appstore, gboolean * haveHost);
-
 #include "custom-service-server.h"
-#include "notification-watcher-server.h"
 
 /* Private Stuff */
 typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
@@ -72,8 +65,6 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 
 
 	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
-	                                &dbus_glib__notification_watcher_server_object_info);
-	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__custom_service_server_object_info);
 
 	return;
@@ -121,42 +112,3 @@ _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArra
 
 	return FALSE;
 }
-
-static gboolean
-_notification_watcher_server_register_service (CustomServiceAppstore * appstore, const gchar * service, DBusGMethodInvocation * method)
-{
-
-
-
-	dbus_g_method_return(method, G_TYPE_NONE);
-	return TRUE;
-}
-
-static gboolean
-_notification_watcher_server_registered_services (CustomServiceAppstore * appstore, GArray ** apps)
-{
-
-	return FALSE;
-}
-
-static gboolean
-_notification_watcher_server_protocol_version (CustomServiceAppstore * appstore, char ** version)
-{
-	*version = g_strdup("Ayatana Version 1");
-	return TRUE;
-}
-
-static gboolean
-_notification_watcher_server_register_notification_host (CustomServiceAppstore * appstore, const gchar * host)
-{
-
-	return FALSE;
-}
-
-static gboolean
-_notification_watcher_server_is_notification_host_registered (CustomServiceAppstore * appstore, gboolean * haveHost)
-{
-	*haveHost = TRUE;
-	return TRUE;
-}
-
