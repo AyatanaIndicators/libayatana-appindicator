@@ -1,14 +1,19 @@
 
+/* G Stuff */
 #include <glib.h>
 #include <glib-object.h>
 
+/* DBus Stuff */
 #include <dbus/dbus-glib.h>
 
+/* Indicator Stuff */
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
-#include "dbus-shared.h"
 
+/* Local Stuff */
+#include "dbus-shared.h"
+#include "custom-service-client.h"
 
 #define INDICATOR_CUSTOM_TYPE            (indicator_custom_get_type ())
 #define INDICATOR_CUSTOM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_CUSTOM_TYPE, IndicatorCustom))
@@ -54,8 +59,11 @@ static void indicator_custom_class_init (IndicatorCustomClass *klass);
 static void indicator_custom_init       (IndicatorCustom *self);
 static void indicator_custom_dispose    (GObject *object);
 static void indicator_custom_finalize   (GObject *object);
-GList * get_entries (IndicatorObject * io);
-void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * custom);
+static GList * get_entries (IndicatorObject * io);
+static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * custom);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom);
+static void application_removed (DBusGProxy * proxy, gint position , IndicatorCustom * custom);
+static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 
 G_DEFINE_TYPE (IndicatorCustom, indicator_custom, INDICATOR_OBJECT_TYPE);
 
@@ -132,6 +140,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 
 	GError * error = NULL;
 
+	/* Grab the session bus */
 	if (priv->bus == NULL) {
 		priv->bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 
@@ -142,18 +151,69 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 		}
 	}
 
+	/* Build the service proxy */
 	priv->service_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
 	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
 	                                                      INDICATOR_CUSTOM_DBUS_OBJ,
 	                                                      INDICATOR_CUSTOM_DBUS_IFACE,
 	                                                      &error);
 
+	/* Set up proxy signals */
+	dbus_g_proxy_add_signal(priv->service_proxy,
+	                        "ApplicationAdded",
+	                        G_TYPE_STRING,
+	                        G_TYPE_INT,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_NONE);
+	dbus_g_proxy_add_signal(priv->service_proxy,
+	                        "ApplicationRemoved",
+	                        G_TYPE_INT,
+	                        G_TYPE_NONE);
+
+	dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            "ApplicationAdded",
+	                            G_CALLBACK(application_added),
+	                            custom,
+	                            NULL /* Disconnection Signal */);
+	dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            "ApplicationRemoved",
+	                            G_CALLBACK(application_removed),
+	                            custom,
+	                            NULL /* Disconnection Signal */);
+
+	/* Query it for existing applications */
+	org_ayatana_indicator_custom_service_get_applications_async(priv->service_proxy,
+	                                                            get_applications,
+	                                                            custom);
+
 	return;
 }
 
-GList *
+static GList *
 get_entries (IndicatorObject * io)
 {
 
 	return NULL;
+}
+
+static void
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom)
+{
+
+	return;
+}
+
+static void
+application_removed (DBusGProxy * proxy, gint position , IndicatorCustom * custom)
+{
+
+	return;
+}
+
+static void
+get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata)
+{
+
+	return;
 }
