@@ -2,6 +2,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <dbus/dbus-glib.h>
+
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
@@ -41,6 +43,8 @@ typedef struct _IndicatorCustomPrivate IndicatorCustomPrivate;
 struct _IndicatorCustomPrivate
 {
 	IndicatorServiceManager * sm;
+	DBusGConnection * bus;
+	DBusGProxy * service_proxy;
 };
 
 #define INDICATOR_CUSTOM_GET_PRIVATE(o) \
@@ -77,8 +81,13 @@ indicator_custom_init (IndicatorCustom *self)
 {
 	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(self);
 
+	/* These are built in the connection phase */
+	priv->bus = NULL;
+	priv->service_proxy = NULL;
+
 	priv->sm = indicator_service_manager_new(INDICATOR_CUSTOM_DBUS_ADDR);	
 	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connected), self);
+
 
 	return;
 }
@@ -91,6 +100,16 @@ indicator_custom_dispose (GObject *object)
 	if (priv->sm != NULL) {
 		g_object_unref(priv->sm);
 		priv->sm = NULL;
+	}
+
+	if (priv->bus != NULL) {
+		/* We're not incrementing the ref count on this one. */
+		priv->bus = NULL;
+	}
+
+	if (priv->service_proxy != NULL) {
+		g_object_unref(G_OBJECT(priv->service_proxy));
+		priv->service_proxy = NULL;
 	}
 
 	G_OBJECT_CLASS (indicator_custom_parent_class)->dispose (object);
@@ -108,6 +127,26 @@ indicator_custom_finalize (GObject *object)
 void
 connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * custom)
 {
+	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
+	g_debug("Connected to Custom Indicator Service.");
+
+	GError * error = NULL;
+
+	if (priv->bus == NULL) {
+		priv->bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+
+		if (error != NULL) {
+			g_error("Unable to get session bus: %s", error->message);
+			g_error_free(error);
+			return;
+		}
+	}
+
+	priv->service_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
+	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
+	                                                      INDICATOR_CUSTOM_DBUS_OBJ,
+	                                                      INDICATOR_CUSTOM_DBUS_IFACE,
+	                                                      &error);
 
 	return;
 }
