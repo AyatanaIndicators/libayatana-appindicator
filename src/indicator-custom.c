@@ -44,12 +44,17 @@ INDICATOR_SET_TYPE(INDICATOR_CUSTOM_TYPE)
 #endif
 
 typedef struct _IndicatorCustomPrivate IndicatorCustomPrivate;
-
-struct _IndicatorCustomPrivate
-{
+struct _IndicatorCustomPrivate {
 	IndicatorServiceManager * sm;
 	DBusGConnection * bus;
 	DBusGProxy * service_proxy;
+	GList * applications;
+};
+
+typedef struct _ApplicationEntry ApplicationEntry;
+struct _ApplicationEntry {
+	guint position;
+	IndicatorObjectEntry entry;
 };
 
 #define INDICATOR_CUSTOM_GET_PRIVATE(o) \
@@ -96,6 +101,7 @@ indicator_custom_init (IndicatorCustom *self)
 	priv->sm = indicator_service_manager_new(INDICATOR_CUSTOM_DBUS_ADDR);	
 	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connected), self);
 
+	priv->applications = NULL;
 
 	return;
 }
@@ -104,6 +110,12 @@ static void
 indicator_custom_dispose (GObject *object)
 {
 	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(object);
+
+	while (priv->applications != NULL) {
+		application_removed(priv->service_proxy,
+		                    ((ApplicationEntry *)priv->applications->data)->position,
+		                    INDICATOR_CUSTOM(object));
+	}
 
 	if (priv->sm != NULL) {
 		g_object_unref(priv->sm);
