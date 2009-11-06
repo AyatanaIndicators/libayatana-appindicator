@@ -202,11 +202,28 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	return;
 }
 
+/* Goes through the list of applications that we're maintaining and
+   pulls out the IndicatorObjectEntry and returns that in a list
+   for the caller. */
 static GList *
 get_entries (IndicatorObject * io)
 {
+	g_return_val_if_fail(IS_INDICATOR_CUSTOM(io), NULL);
 
-	return NULL;
+	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(io);
+	GList * retval = NULL;
+	GList * apppointer = NULL;
+
+	for (apppointer = priv->applications; apppointer != NULL; apppointer = g_list_next(apppointer)) {
+		IndicatorObjectEntry * entry = &(((ApplicationEntry *)apppointer->data)->entry);
+		retval = g_list_prepend(retval, entry);
+	}
+
+	if (retval != NULL) {
+		retval = g_list_reverse(retval);
+	}
+
+	return retval;
 }
 
 static void
