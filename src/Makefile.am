@@ -4,6 +4,7 @@ BUILT_SOURCES =
 EXTRA_DIST = 
 
 include $(top_srcdir)/Makefile.am.enum
+include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
 # Indicator
@@ -33,6 +34,8 @@ indicator_custom_service_SOURCES = \
 	custom-service.c \
 	custom-service-appstore.h \
 	custom-service-appstore.c \
+	custom-service-marshal.h \
+	custom-service-marshal.c \
 	custom-service-server.h \
 	dbus-shared.h \
 	notification-item-client.h \
@@ -42,6 +45,9 @@ indicator_custom_service_CFLAGS = \
 	-Wall -Werror
 indicator_custom_service_LDADD = \
 	$(INDICATOR_LIBS)
+
+glib_marshal_list = custom-service-marshal.list
+glib_marshal_prefix = _custom_service_marshal
 
 ##################################
 # Library

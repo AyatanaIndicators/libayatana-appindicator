@@ -4,6 +4,7 @@
 
 #include <dbus/dbus-glib.h>
 #include "custom-service-appstore.h"
+#include "custom-service-marshal.h"
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
@@ -59,7 +60,7 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_added),
 	                                           NULL, NULL,
-	                                           g_cclosure_marshal_VOID__POINTER,
+	                                           _custom_service_marshal_VOID__STRING_INT_STRING_STRING,
 	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
