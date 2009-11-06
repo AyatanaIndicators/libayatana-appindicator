@@ -22,6 +22,9 @@ struct _CustomServiceAppstoreClass {
 
 struct _CustomServiceAppstore {
 	GObject parent;
+
+	void (*application_added) (CustomServiceAppstore * appstore, gchar *, gint, gchar *, gchar *, gpointer);
+	void (*application_removed) (CustomServiceAppstore * appstore, gint, gpointer);
 };
 
 GType custom_service_appstore_get_type (void);

@@ -18,8 +18,8 @@ static gboolean _notification_watcher_server_is_notification_host_registered (Cu
 #include "custom-service-server.h"
 #include "notification-watcher-server.h"
 
+/* Private Stuff */
 typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
-
 struct _CustomServiceAppstorePrivate {
 	int demo;
 };
@@ -27,6 +27,16 @@ struct _CustomServiceAppstorePrivate {
 #define CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(o) \
 			(G_TYPE_INSTANCE_GET_PRIVATE ((o), CUSTOM_SERVICE_APPSTORE_TYPE, CustomServiceAppstorePrivate))
 
+/* Signals Stuff */
+enum {
+	APPLICATION_ADDED,
+	APPLICATION_REMOVED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+/* GObject stuff */
 static void custom_service_appstore_class_init (CustomServiceAppstoreClass *klass);
 static void custom_service_appstore_init       (CustomServiceAppstore *self);
 static void custom_service_appstore_dispose    (GObject *object);
@@ -43,6 +53,22 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 
 	object_class->dispose = custom_service_appstore_dispose;
 	object_class->finalize = custom_service_appstore_finalize;
+
+	signals[APPLICATION_ADDED] = g_signal_new ("application-added",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_added),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__POINTER,
+	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_removed),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__INT,
+	                                           G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_NONE);
+
 
 	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__notification_watcher_server_object_info);
