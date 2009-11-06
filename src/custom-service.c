@@ -2,10 +2,12 @@
 #include "libindicator/indicator-service.h"
 #include "notification-item-client.h"
 #include "custom-service-appstore.h"
+#include "custom-service-watcher.h"
 #include "dbus-shared.h"
 
 static GMainLoop * mainloop = NULL;
 static CustomServiceAppstore * appstore = NULL;
+static CustomServiceWatcher * watcher = NULL;
 static IndicatorService * service = NULL;
  
 int
@@ -15,6 +17,7 @@ main (int argc, char ** argv)
 
 	service = indicator_service_new(INDICATOR_CUSTOM_DBUS_ADDR);
 	appstore = CUSTOM_SERVICE_APPSTORE(g_object_new(CUSTOM_SERVICE_APPSTORE_TYPE, NULL));
+	watcher = custom_service_watcher_new(appstore);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);

@@ -16,7 +16,7 @@ static gboolean _notification_watcher_server_is_notification_host_registered (Cu
 
 typedef struct _CustomServiceWatcherPrivate CustomServiceWatcherPrivate;
 struct _CustomServiceWatcherPrivate {
-	int dummy;
+	CustomServiceAppstore * appstore;
 };
 
 #define CUSTOM_SERVICE_WATCHER_GET_PRIVATE(o) \
@@ -48,6 +48,10 @@ custom_service_watcher_class_init (CustomServiceWatcherClass *klass)
 static void
 custom_service_watcher_init (CustomServiceWatcher *self)
 {
+	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(self);
+
+	priv->appstore = NULL;
+
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (error != NULL) {
@@ -66,6 +70,12 @@ custom_service_watcher_init (CustomServiceWatcher *self)
 static void
 custom_service_watcher_dispose (GObject *object)
 {
+	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(object);
+	
+	if (priv->appstore != NULL) {
+		g_object_unref(G_OBJECT(priv->appstore));
+		priv->appstore = NULL;
+	}
 
 	G_OBJECT_CLASS (custom_service_watcher_parent_class)->dispose (object);
 	return;
@@ -77,6 +87,16 @@ custom_service_watcher_finalize (GObject *object)
 
 	G_OBJECT_CLASS (custom_service_watcher_parent_class)->finalize (object);
 	return;
+}
+
+CustomServiceWatcher *
+custom_service_watcher_new (CustomServiceAppstore * appstore)
+{
+	GObject * obj = g_object_new(CUSTOM_SERVICE_WATCHER_TYPE, NULL);
+	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(obj);
+	priv->appstore = appstore;
+	g_object_ref(G_OBJECT(priv->appstore));
+	return CUSTOM_SERVICE_WATCHER(obj);
 }
 
 static gboolean

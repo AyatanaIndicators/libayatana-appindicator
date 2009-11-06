@@ -4,6 +4,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "custom-service-appstore.h"
+
 G_BEGIN_DECLS
 
 #define CUSTOM_SERVICE_WATCHER_TYPE            (custom_service_watcher_get_type ())
@@ -25,6 +27,7 @@ struct _CustomServiceWatcher {
 };
 
 GType custom_service_watcher_get_type (void);
+CustomServiceWatcher * custom_service_watcher_new (CustomServiceAppstore * appstore);
 
 G_END_DECLS
 
