@@ -37,6 +37,8 @@ indicator_custom_service_SOURCES = \
 	custom-service-marshal.h \
 	custom-service-marshal.c \
 	custom-service-server.h \
+	custom-service-watcher.h \
+	custom-service-watcher.c \
 	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
