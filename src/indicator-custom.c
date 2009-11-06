@@ -2,9 +2,11 @@
 /* G Stuff */
 #include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 /* DBus Stuff */
 #include <dbus/dbus-glib.h>
+#include <libdbusmenu-gtk/menu.h>
 
 /* Indicator Stuff */
 #include <libindicator/indicator.h>
@@ -226,10 +228,23 @@ get_entries (IndicatorObject * io)
 	return retval;
 }
 
+/* Here we respond to new applications by building up the
+   ApplicationEntry and signaling the indicator host that
+   we've got a new indicator. */
 static void
 application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom)
 {
+	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
+	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
+	app->position = position;
+	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
+	app->entry.label = NULL;
+	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
+
+	priv->applications = g_list_prepend(priv->applications, app);
+
+	g_signal_emit(G_OBJECT(custom), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	return;
 }
 
@@ -240,6 +255,8 @@ application_removed (DBusGProxy * proxy, gint position , IndicatorCustom * custo
 	return;
 }
 
+/* This repsonds to the list of applications that the service
+   has and calls application_added on each one of them. */
 static void
 get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata)
 {
