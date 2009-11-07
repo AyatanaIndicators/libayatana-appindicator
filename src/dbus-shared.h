@@ -6,6 +6,5 @@
 #define NOTIFICATION_WATCHER_DBUS_OBJ     "/org/ayatana/indicator/custom/NotificationWatcher"
 #define NOTIFICATION_WATCHER_DBUS_IFACE   "org.ayatana.indicator.custom.NotificationWatcher"
 
-#define NOTIFICATION_ITEM_DBUS_OBJ        "/org/ayatana/indicator/custom/NotificationItem"
 #define NOTIFICATION_ITEM_DBUS_IFACE      "org.ayatana.indicator.custom.NotificationItem"
 
