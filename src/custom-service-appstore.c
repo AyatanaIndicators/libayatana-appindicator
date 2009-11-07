@@ -24,6 +24,7 @@ struct _Application {
 	gchar * dbus_name;
 	gchar * dbus_object;
 	DBusGProxy * dbus_proxy;
+	DBusGProxy * prop_proxy;
 };
 
 #define CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -142,6 +143,7 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 	                                                  app->dbus_object,
 	                                                  NOTIFICATION_ITEM_DBUS_IFACE,
 	                                                  &error);
+
 	if (error != NULL) {
 		g_warning("Unable to get notification item proxy for object '%s' on host '%s': %s", dbus_object, dbus_name, error->message);
 		g_error_free(error);
@@ -149,6 +151,19 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 		return;
 	}
 
+	app->prop_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
+	                                                  app->dbus_name,
+	                                                  app->dbus_object,
+	                                                  DBUS_INTERFACE_PROPERTIES,
+	                                                  &error);
+
+	if (error != NULL) {
+		g_warning("Unable to get property proxy for object '%s' on host '%s': %s", dbus_object, dbus_name, error->message);
+		g_error_free(error);
+		g_object_unref(app->dbus_proxy);
+		g_free(app);
+		return;
+	}
 
 
 
