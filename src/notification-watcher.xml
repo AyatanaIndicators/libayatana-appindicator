@@ -31,7 +31,7 @@
 		</signal>
 		<signal name="NotificationHostRegistered">
 		</signal>
-		<signal name="NotificationHostUnegistered">
+		<signal name="NotificationHostUnregistered">
 		</signal>
 
 	</interface>

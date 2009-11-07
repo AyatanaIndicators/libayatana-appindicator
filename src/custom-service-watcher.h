@@ -20,6 +20,12 @@ typedef struct _CustomServiceWatcherClass CustomServiceWatcherClass;
 
 struct _CustomServiceWatcherClass {
 	GObjectClass parent_class;
+
+	/* Signals */
+	void (*service_registered) (CustomServiceWatcher * watcher, gchar * object, gpointer data);
+	void (*service_unregistered) (CustomServiceWatcher * watcher, gchar * object, gpointer data);
+	void (*notification_host_registered) (CustomServiceWatcher * watcher, gpointer data);
+	void (*notification_host_unregistered) (CustomServiceWatcher * watcher, gpointer data);
 };
 
 struct _CustomServiceWatcher {

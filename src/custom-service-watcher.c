@@ -14,6 +14,7 @@ static gboolean _notification_watcher_server_is_notification_host_registered (Cu
 
 #include "notification-watcher-server.h"
 
+/* Private Stuff */
 typedef struct _CustomServiceWatcherPrivate CustomServiceWatcherPrivate;
 struct _CustomServiceWatcherPrivate {
 	CustomServiceAppstore * appstore;
@@ -22,6 +23,18 @@ struct _CustomServiceWatcherPrivate {
 #define CUSTOM_SERVICE_WATCHER_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), CUSTOM_SERVICE_WATCHER_TYPE, CustomServiceWatcherPrivate))
 
+/* Signals Stuff */
+enum {
+	SERVICE_REGISTERED,
+	SERVICE_UNREGISTERED,
+	NOTIFICATION_HOST_REGISTERED,
+	NOTIFICATION_HOST_UNREGISTERED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+/* GObject stuff */
 static void custom_service_watcher_class_init (CustomServiceWatcherClass *klass);
 static void custom_service_watcher_init       (CustomServiceWatcher *self);
 static void custom_service_watcher_dispose    (GObject *object);
@@ -38,6 +51,35 @@ custom_service_watcher_class_init (CustomServiceWatcherClass *klass)
 
 	object_class->dispose = custom_service_watcher_dispose;
 	object_class->finalize = custom_service_watcher_finalize;
+
+	signals[SERVICE_REGISTERED] = g_signal_new ("service-registered",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, service_registered),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__STRING,
+	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
+	signals[SERVICE_UNREGISTERED] = g_signal_new ("service-unregistered",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, service_unregistered),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__STRING,
+	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
+	signals[NOTIFICATION_HOST_REGISTERED] = g_signal_new ("notification-host-registered",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, notification_host_registered),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__VOID,
+	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
+	signals[NOTIFICATION_HOST_UNREGISTERED] = g_signal_new ("notification-host-unregistered",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, notification_host_unregistered),
+	                                           NULL, NULL,
+	                                           g_cclosure_marshal_VOID__VOID,
+	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	dbus_g_object_type_install_info(CUSTOM_SERVICE_WATCHER_TYPE,
 	                                &dbus_glib__notification_watcher_server_object_info);
