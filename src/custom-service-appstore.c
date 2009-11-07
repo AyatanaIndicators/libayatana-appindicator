@@ -15,6 +15,7 @@ static gboolean _custom_service_server_get_applications (CustomServiceAppstore *
 /* Private Stuff */
 typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
 struct _CustomServiceAppstorePrivate {
+	DBusGConnection * bus;
 	GList * applications;
 };
 
@@ -85,14 +86,14 @@ custom_service_appstore_init (CustomServiceAppstore *self)
 	priv->applications = NULL;
 	
 	GError * error = NULL;
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
 	if (error != NULL) {
 		g_error("Unable to get session bus: %s", error->message);
 		g_error_free(error);
 		return;
 	}
 
-	dbus_g_connection_register_g_object(session_bus,
+	dbus_g_connection_register_g_object(priv->bus,
 	                                    INDICATOR_CUSTOM_DBUS_OBJ,
 	                                    G_OBJECT(self));
 
@@ -128,7 +129,25 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
+	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
+	Application * app = g_new(Application, 1);
+
+	app->dbus_name = g_strdup(dbus_name);
+	app->dbus_object = g_strdup(dbus_object);
+
+	GError * error = NULL;
+	app->dbus_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
+	                                                  app->dbus_name,
+	                                                  app->dbus_object,
+	                                                  NOTIFICATION_ITEM_DBUS_IFACE,
+	                                                  &error);
+	if (error != NULL) {
+		g_warning("Unable to get notification item proxy for object '%s' on host '%s': %s", dbus_object, dbus_name, error->message);
+		g_error_free(error);
+		g_free(app);
+		return;
+	}
 
 	return;
 }
