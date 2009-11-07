@@ -39,6 +39,7 @@ indicator_custom_service_SOURCES = \
 	custom-service-server.h \
 	custom-service-watcher.h \
 	custom-service-watcher.c \
+	dbus-properties-client.h \
 	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
@@ -96,6 +97,7 @@ libcustomindicator_la_LIBADD = \
 
 DBUS_SPECS = \
 	custom-service.xml \
+	dbus-properties.xml \
 	notification-item.xml \
 	notification-watcher.xml
 
