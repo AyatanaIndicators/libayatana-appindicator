@@ -5,12 +5,20 @@
 #include <dbus/dbus-glib.h>
 #include "custom-service-appstore.h"
 #include "custom-service-marshal.h"
+#include "dbus-properties-client.h"
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
 static gboolean _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps);
 
 #include "custom-service-server.h"
+
+#define NOTIFICATION_ITEM_PROP_ID         "Id"
+#define NOTIFICATION_ITEM_PROP_CATEGORY   "Category"
+#define NOTIFICATION_ITEM_PROP_STATUS     "Status"
+#define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
+#define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 /* Private Stuff */
 typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
@@ -23,6 +31,7 @@ typedef struct _Application Application;
 struct _Application {
 	gchar * dbus_name;
 	gchar * dbus_object;
+	CustomServiceAppstore * appstore; /* not ref'd */
 	DBusGProxy * dbus_proxy;
 	DBusGProxy * prop_proxy;
 };
@@ -124,6 +133,37 @@ custom_service_appstore_finalize (GObject *object)
 	return;
 }
 
+static void
+get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
+{
+	if (error != NULL) {
+		g_warning("Unable to get properties: %s", error->message);
+		return;
+	}
+
+	Application * app = (Application *)data;
+
+	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME) == NULL) {
+		g_warning("Notification Item on object %s of %s doesn't have enough properties.", app->dbus_object, app->dbus_name);
+		g_free(app); // Need to do more than this, but it gives the idea of the flow we're going for.
+		return;
+	}
+
+	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	priv->applications = g_list_prepend(priv->applications, app);
+
+	g_signal_emit(G_OBJECT(app->appstore),
+	              signals[APPLICATION_ADDED], 0, 
+	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME)),
+	              0, /* Position */
+	              app->dbus_name,
+	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU)),
+	              TRUE);
+
+	return;
+}
+
 void
 custom_service_appstore_application_add (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
@@ -136,6 +176,7 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 
 	app->dbus_name = g_strdup(dbus_name);
 	app->dbus_object = g_strdup(dbus_object);
+	app->appstore = appstore;
 
 	GError * error = NULL;
 	app->dbus_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
@@ -165,7 +206,10 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 		return;
 	}
 
-
+	org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
+	                                              NOTIFICATION_ITEM_DBUS_IFACE,
+	                                              get_all_properties_cb,
+	                                              app);
 
 	return;
 }
