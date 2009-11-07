@@ -105,6 +105,28 @@ custom_service_appstore_finalize (GObject *object)
 	return;
 }
 
+void
+custom_service_appstore_application_add (CustomServiceAppstore * appstore, gchar * dbus_name, gchar * dbus_object)
+{
+	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
+	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
+
+
+	return;
+}
+
+void
+custom_service_appstore_application_remove (CustomServiceAppstore * appstore, gchar * dbus_name, gchar * dbus_object)
+{
+	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
+	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
+
+
+	return;
+}
+
 /* DBus Interface */
 static gboolean
 _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps)
@@ -112,3 +134,4 @@ _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArra
 
 	return FALSE;
 }
+
