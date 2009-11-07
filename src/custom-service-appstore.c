@@ -106,7 +106,7 @@ custom_service_appstore_finalize (GObject *object)
 }
 
 void
-custom_service_appstore_application_add (CustomServiceAppstore * appstore, gchar * dbus_name, gchar * dbus_object)
+custom_service_appstore_application_add (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
 	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
@@ -117,7 +117,7 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, gchar
 }
 
 void
-custom_service_appstore_application_remove (CustomServiceAppstore * appstore, gchar * dbus_name, gchar * dbus_object)
+custom_service_appstore_application_remove (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
 	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');

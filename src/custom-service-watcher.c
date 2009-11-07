@@ -3,14 +3,15 @@
 #endif
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 #include "custom-service-watcher.h"
 #include "dbus-shared.h"
 
-static gboolean _notification_watcher_server_register_service (CustomServiceWatcher * appstore, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_registered_services (CustomServiceWatcher * appstore, GArray ** apps);
-static gboolean _notification_watcher_server_protocol_version (CustomServiceWatcher * appstore, char ** version);
-static gboolean _notification_watcher_server_register_notification_host (CustomServiceWatcher * appstore, const gchar * host);
-static gboolean _notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appstore, gboolean * haveHost);
+static gboolean _notification_watcher_server_register_service (CustomServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
+static gboolean _notification_watcher_server_registered_services (CustomServiceWatcher * appwatcher, GArray ** apps);
+static gboolean _notification_watcher_server_protocol_version (CustomServiceWatcher * appwatcher, char ** version);
+static gboolean _notification_watcher_server_register_notification_host (CustomServiceWatcher * appwatcher, const gchar * host);
+static gboolean _notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appwatcher, gboolean * haveHost);
 
 #include "notification-watcher-server.h"
 
@@ -142,38 +143,39 @@ custom_service_watcher_new (CustomServiceAppstore * appstore)
 }
 
 static gboolean
-_notification_watcher_server_register_service (CustomServiceWatcher * appstore, const gchar * service, DBusGMethodInvocation * method)
+_notification_watcher_server_register_service (CustomServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method)
 {
+	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
 
-
+	custom_service_appstore_application_add(priv->appstore, dbus_g_method_get_sender(method), service);
 
 	dbus_g_method_return(method, G_TYPE_NONE);
 	return TRUE;
 }
 
 static gboolean
-_notification_watcher_server_registered_services (CustomServiceWatcher * appstore, GArray ** apps)
+_notification_watcher_server_registered_services (CustomServiceWatcher * appwatcher, GArray ** apps)
 {
 
 	return FALSE;
 }
 
 static gboolean
-_notification_watcher_server_protocol_version (CustomServiceWatcher * appstore, char ** version)
+_notification_watcher_server_protocol_version (CustomServiceWatcher * appwatcher, char ** version)
 {
 	*version = g_strdup("Ayatana Version 1");
 	return TRUE;
 }
 
 static gboolean
-_notification_watcher_server_register_notification_host (CustomServiceWatcher * appstore, const gchar * host)
+_notification_watcher_server_register_notification_host (CustomServiceWatcher * appwatcher, const gchar * host)
 {
 
 	return FALSE;
 }
 
 static gboolean
-_notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appstore, gboolean * haveHost)
+_notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appwatcher, gboolean * haveHost)
 {
 	*haveHost = TRUE;
 	return TRUE;

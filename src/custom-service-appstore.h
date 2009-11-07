@@ -29,11 +29,11 @@ struct _CustomServiceAppstore {
 
 GType custom_service_appstore_get_type               (void);
 void  custom_service_appstore_application_add        (CustomServiceAppstore *   appstore,
-                                                      gchar *                   dbus_name,
-                                                      gchar *                   dbus_object);
+                                                      const gchar *             dbus_name,
+                                                      const gchar *             dbus_object);
 void  custom_service_appstore_application_remove     (CustomServiceAppstore *   appstore,
-                                                      gchar *                   dbus_name,
-                                                      gchar *                   dbus_object);
+                                                      const gchar *             dbus_name,
+                                                      const gchar *             dbus_object);
 
 G_END_DECLS
 
