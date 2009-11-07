@@ -15,7 +15,14 @@ static gboolean _custom_service_server_get_applications (CustomServiceAppstore *
 /* Private Stuff */
 typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
 struct _CustomServiceAppstorePrivate {
-	int demo;
+	GList * applications;
+};
+
+typedef struct _Application Application;
+struct _Application {
+	gchar * dbus_name;
+	gchar * dbus_object;
+	DBusGProxy * dbus_proxy;
 };
 
 #define CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -73,6 +80,9 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 static void
 custom_service_appstore_init (CustomServiceAppstore *self)
 {
+	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(self);
+
+	priv->applications = NULL;
 	
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -92,6 +102,13 @@ custom_service_appstore_init (CustomServiceAppstore *self)
 static void
 custom_service_appstore_dispose (GObject *object)
 {
+	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(object);
+
+	while (priv->applications != NULL) {
+		custom_service_appstore_application_remove(CUSTOM_SERVICE_APPSTORE(object),
+		                                           ((Application *)priv->applications->data)->dbus_name,
+		                                           ((Application *)priv->applications->data)->dbus_object);
+	}
 
 	G_OBJECT_CLASS (custom_service_appstore_parent_class)->dispose (object);
 	return;
