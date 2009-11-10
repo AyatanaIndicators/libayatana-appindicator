@@ -11,6 +11,8 @@
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
 
+#include "../dbus-shared.h"
+
 /**
 	CustomIndicatorPrivate:
 	@id: The ID of the indicator.  Maps to CustomIndicator::id.
