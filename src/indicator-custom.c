@@ -55,7 +55,6 @@ struct _IndicatorCustomPrivate {
 
 typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
-	guint position;
 	IndicatorObjectEntry entry;
 };
 
@@ -115,7 +114,7 @@ indicator_custom_dispose (GObject *object)
 
 	while (priv->applications != NULL) {
 		application_removed(priv->service_proxy,
-		                    ((ApplicationEntry *)priv->applications->data)->position,
+		                    0,
 		                    INDICATOR_CUSTOM(object));
 	}
 
@@ -237,20 +236,44 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
-	app->position = position;
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
 	app->entry.label = NULL;
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
-	priv->applications = g_list_prepend(priv->applications, app);
+	priv->applications = g_list_insert(priv->applications, app, position);
 
+	/* TODO: Need to deal with position here somehow */
 	g_signal_emit(G_OBJECT(custom), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	return;
 }
 
+/* This removes the application from the list and free's all
+   of the memory associated with it. */
 static void
-application_removed (DBusGProxy * proxy, gint position , IndicatorCustom * custom)
+application_removed (DBusGProxy * proxy, gint position, IndicatorCustom * custom)
 {
+	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
+
+	priv->applications = g_list_remove(priv->applications, app);
+	g_signal_emit(G_OBJECT(custom), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+
+	if (app->entry.image != NULL) {
+		g_object_unref(G_OBJECT(app->entry.image));
+	}
+	if (app->entry.label != NULL) {
+		g_warning("Odd, an application indicator with a label?");
+		g_object_unref(G_OBJECT(app->entry.label));
+	}
+	if (app->entry.menu != NULL) {
+		g_object_unref(G_OBJECT(app->entry.menu));
+	}
+	g_free(app);
 
 	return;
 }
