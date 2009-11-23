@@ -104,7 +104,7 @@ custom_service_watcher_init (CustomServiceWatcher *self)
 	}
 
 	dbus_g_connection_register_g_object(session_bus,
-	                                    INDICATOR_CUSTOM_DBUS_OBJ "/more",
+	                                    NOTIFICATION_WATCHER_DBUS_OBJ,
 	                                    G_OBJECT(self));
 
 	return;
