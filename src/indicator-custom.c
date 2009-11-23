@@ -172,11 +172,8 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                                                      INDICATOR_CUSTOM_DBUS_IFACE,
 	                                                      &error);
 
-	/* Register the marshallers for the dbus signals */
-	dbus_g_object_register_marshaller(g_cclosure_marshal_VOID__INT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-
 	/* Set up proxy signals */
+	g_debug("Setup proxy signals");
 	dbus_g_proxy_add_signal(priv->service_proxy,
 	                        "ApplicationAdded",
 	                        G_TYPE_STRING,
@@ -190,6 +187,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                        G_TYPE_NONE);
 
 	/* Connect to them */
+	g_debug("Connect to them.");
 	dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            "ApplicationAdded",
 	                            G_CALLBACK(application_added),
@@ -202,6 +200,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                            NULL /* Disconnection Signal */);
 
 	/* Query it for existing applications */
+	g_debug("Request current apps");
 	org_ayatana_indicator_custom_service_get_applications_async(priv->service_proxy,
 	                                                            get_applications,
 	                                                            custom);
