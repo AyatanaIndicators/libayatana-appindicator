@@ -31,3 +31,4 @@ src/custom-service-marshal.h
 src/stamp-marshal
 src/dbus-properties-client.h
 src/dbus-properties-server.h
+tests/test-simple-app
