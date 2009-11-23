@@ -11,7 +11,7 @@
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
 
-#include "../dbus-shared.h"
+#include "dbus-shared.h"
 
 /**
 	CustomIndicatorPrivate:
@@ -93,6 +93,7 @@ static void custom_indicator_set_property (GObject * object, guint prop_id, cons
 static void custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
 static void check_connect (CustomIndicator * self);
+static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
 
 /* GObject type */
 G_DEFINE_TYPE (CustomIndicator, custom_indicator, G_TYPE_OBJECT);
@@ -279,9 +280,24 @@ custom_indicator_init (CustomIndicator *self)
 		g_error_free(error);
 		return;
 	}
+
 	dbus_g_connection_register_g_object(connection,
 	                                    "/need/a/path",
 	                                    G_OBJECT(self));
+
+	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(connection,
+	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
+	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
+	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
+	                                                      &error);
+	if (error != NULL) {
+		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
+		/* TODO: This is where we should start looking at fallbacks */
+		g_error_free(error);
+		return;
+	}
+
+	org_ayatana_indicator_custom_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }
@@ -598,6 +614,15 @@ check_connect (CustomIndicator * self)
 
 
 
+}
+
+static void
+register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
+{
+	if (error != NULL) {
+		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
+	}
+	return;
 }
 
 
