@@ -152,6 +152,10 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
 	priv->applications = g_list_prepend(priv->applications, app);
+	
+	/* TODO: We need to have the position determined better.  This
+	   would involve looking at the name and category and sorting
+	   it with the other entries. */
 
 	g_signal_emit(G_OBJECT(app->appstore),
 	              signals[APPLICATION_ADDED], 0, 
