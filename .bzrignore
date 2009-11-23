@@ -32,3 +32,6 @@ src/stamp-marshal
 src/dbus-properties-client.h
 src/dbus-properties-server.h
 tests/test-simple-app
+example/.deps
+example/.libs
+example/simple-client

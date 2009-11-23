@@ -13,6 +13,7 @@ include $(top_srcdir)/Makefile.am.marshal
 customlibdir = $(INDICATORDIR)
 customlib_LTLIBRARIES = libcustom.la
 libcustom_la_SOURCES = \
+	custom-service-marshal.c \
 	dbus-shared.h \
 	indicator-custom.c
 libcustom_la_CFLAGS = $(INDICATOR_CFLAGS) \

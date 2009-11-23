@@ -1,3 +1,9 @@
+indicator-custom (0.0.1-0ubuntu3~ppa1~service4) karmic; urgency=low
+
+  * Adding marshallers
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 16:37:51 -0600
+
 indicator-custom (0.0.1-0ubuntu3~ppa1~service3) karmic; urgency=low
 
   * Adding more fun.  Now we're cookin'!
