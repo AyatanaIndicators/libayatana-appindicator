@@ -174,6 +174,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 void
 custom_service_appstore_application_add (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
+	g_debug("Adding new application: %s:%s", dbus_name, dbus_object);
+
 	/* Make sure we got a sensible request */
 	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
