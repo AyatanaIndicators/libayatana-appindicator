@@ -1,8 +1,8 @@
-indicator-custom (0.0.1-0ubuntu3~ppa1~service3) UNRELEASED; urgency=low
+indicator-custom (0.0.1-0ubuntu3~ppa1~service3) karmic; urgency=low
 
   * Adding more fun.  Now we're cookin'!
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 14:54:43 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 14:56:35 -0600
 
 indicator-custom (0.0.1-0ubuntu3~ppa1~service2) karmic; urgency=low
 
