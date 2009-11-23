@@ -164,20 +164,27 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	return;
 }
 
+/* Adding a new NotificationItem object from DBus in to the
+   appstore.  First, we need to get the information on it
+   though. */
 void
 custom_service_appstore_application_add (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
+	/* Make sure we got a sensible request */
 	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
+	/* Build the application entry.  This will be carried
+	   along until we're sure we've got everything. */
 	Application * app = g_new(Application, 1);
 
 	app->dbus_name = g_strdup(dbus_name);
 	app->dbus_object = g_strdup(dbus_object);
 	app->appstore = appstore;
 
+	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
 	app->dbus_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
 	                                                  app->dbus_name,
@@ -192,6 +199,7 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 		return;
 	}
 
+	/* Grab the property proxy interface */
 	app->prop_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
 	                                                  app->dbus_name,
 	                                                  app->dbus_object,
@@ -206,11 +214,14 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 		return;
 	}
 
+	/* Get all the propertiees */
 	org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
 	                                              NOTIFICATION_ITEM_DBUS_IFACE,
 	                                              get_all_properties_cb,
 	                                              app);
 
+	/* We're returning, nothing is yet added until the properties
+	   come back and give us more info. */
 	return;
 }
 
