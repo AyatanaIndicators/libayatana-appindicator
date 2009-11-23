@@ -1,3 +1,9 @@
+indicator-custom (0.0.1-0ubuntu3~ppa1~service6) karmic; urgency=low
+
+  * Debug messages
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 17:39:18 -0600
+
 indicator-custom (0.0.1-0ubuntu3~ppa1~service5) karmic; urgency=low
 
   * Forgot return types.
