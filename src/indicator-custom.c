@@ -16,6 +16,7 @@
 /* Local Stuff */
 #include "dbus-shared.h"
 #include "custom-service-client.h"
+#include "custom-service-marshal.h"
 
 #define INDICATOR_CUSTOM_TYPE            (indicator_custom_get_type ())
 #define INDICATOR_CUSTOM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_CUSTOM_TYPE, IndicatorCustom))
@@ -86,6 +87,10 @@ indicator_custom_class_init (IndicatorCustomClass *klass)
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
 
 	io_class->get_entries = get_entries;
+
+	/* Register the marshallers for the dbus signals */
+	dbus_g_object_register_marshaller(g_cclosure_marshal_VOID__INT, G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 
 	return;
 }
@@ -184,6 +189,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                        G_TYPE_INT,
 	                        G_TYPE_NONE);
 
+	/* Connect to them */
 	dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            "ApplicationAdded",
 	                            G_CALLBACK(application_added),
