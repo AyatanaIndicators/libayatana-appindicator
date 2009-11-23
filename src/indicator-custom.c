@@ -88,10 +88,6 @@ indicator_custom_class_init (IndicatorCustomClass *klass)
 
 	io_class->get_entries = get_entries;
 
-	/* Register the marshallers for the dbus signals */
-	dbus_g_object_register_marshaller(g_cclosure_marshal_VOID__INT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_INVALID);
-	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-
 	return;
 }
 
@@ -175,6 +171,10 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                                                      INDICATOR_CUSTOM_DBUS_OBJ,
 	                                                      INDICATOR_CUSTOM_DBUS_IFACE,
 	                                                      &error);
+
+	/* Register the marshallers for the dbus signals */
+	dbus_g_object_register_marshaller(g_cclosure_marshal_VOID__INT, G_TYPE_NONE, G_TYPE_INT, G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 
 	/* Set up proxy signals */
 	dbus_g_proxy_add_signal(priv->service_proxy,
