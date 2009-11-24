@@ -261,7 +261,6 @@ static void
 custom_indicator_init (CustomIndicator *self)
 {
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
-	g_return_if_fail(priv != NULL);
 
 	priv->id = NULL;
 	priv->category = CUSTOM_INDICATOR_CATEGORY_OTHER;
@@ -311,7 +310,6 @@ custom_indicator_dispose (GObject *object)
 	g_return_if_fail(self != NULL);
 
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
-	g_return_if_fail(priv != NULL);
 
 	if (priv->status != CUSTOM_INDICATOR_STATUS_PASSIVE) {
 		custom_indicator_set_status(self, CUSTOM_INDICATOR_STATUS_PASSIVE);
@@ -342,7 +340,6 @@ custom_indicator_finalize (GObject *object)
 	g_return_if_fail(self != NULL);
 
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
-	g_return_if_fail(priv != NULL);
 
 	if (priv->status != CUSTOM_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Custom Status with the status set to: %d", priv->status);
@@ -377,7 +374,6 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 	g_return_if_fail(self != NULL);
 
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
-	g_return_if_fail(priv != NULL);
 
 	switch (prop_id) {
 	/* *********************** */
@@ -495,7 +491,6 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 	g_return_if_fail(self != NULL);
 
 	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
-	g_return_if_fail(priv != NULL);
 
 	switch (prop_id) {
 	/* *********************** */

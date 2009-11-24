@@ -36,3 +36,4 @@ example/.deps
 example/.libs
 example/simple-client
 src/libcustom_la-custom-service-marshal.lo
+tests/libcustomindicator-tests-gtester
