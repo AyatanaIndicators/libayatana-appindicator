@@ -65,13 +65,18 @@ test_libcustomindicator_dbus_server_LDADD = \
 XML_REPORT   = libcustomindicator-check-results.xml
 HTML_REPORT  = libcustomindicator-check-results.html
 
-libcustomindicator-tests: test-libcustomindicator
-	@echo "#!/bin/sh" > libcustomindicator-tests
-	@echo gtester -k --verbose -o=$(XML_REPORT) ./test-libcustomindicator >> libcustomindicator-tests
-	@chmod +x libcustomindicator-tests
+libcustomindicator-tests: libcustomindicator-tests-gtester Makefile.am
+	@echo "#!/bin/sh" > $@
+	@echo $(DBUS_RUNNER) --task ./libcustomindicator-tests-gtester >> $@
+	@chmod +x $@
+
+libcustomindicator-tests-gtester: test-libcustomindicator Makefile.am
+	@echo "#!/bin/sh" > $@
+	@echo gtester -k --verbose -o=$(XML_REPORT) ./test-libcustomindicator >> $@
+	@chmod +x $@
 
 TESTS += libcustomindicator-tests
-DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT)
+DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libcustomindicator-tests-gtester
 
 
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
