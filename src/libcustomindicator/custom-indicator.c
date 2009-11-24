@@ -38,6 +38,7 @@ struct _CustomIndicatorPrivate {
 
 	/* Fun stuff */
 	DBusGProxy * watcher_proxy;
+	DBusGConnection * connection;
 };
 
 /* Signals Stuff */
@@ -270,33 +271,20 @@ custom_indicator_init (CustomIndicator *self)
 	priv->menu = NULL;
 
 	priv->watcher_proxy = NULL;
+	priv->connection = NULL;
 
 	/* Put the object on DBus */
 	GError * error = NULL;
-	DBusGConnection * connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (error != NULL) {
 		g_error("Unable to connect to the session bus when creating custom indicator: %s", error->message);
 		g_error_free(error);
 		return;
 	}
 
-	dbus_g_connection_register_g_object(connection,
+	dbus_g_connection_register_g_object(priv->connection,
 	                                    "/need/a/path",
 	                                    G_OBJECT(self));
-
-	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(connection,
-	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
-	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
-	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
-	                                                      &error);
-	if (error != NULL) {
-		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
-		/* TODO: This is where we should start looking at fallbacks */
-		g_error_free(error);
-		return;
-	}
-
-	org_ayatana_indicator_custom_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }
@@ -321,8 +309,7 @@ custom_indicator_dispose (GObject *object)
 	}
 
 	if (priv->watcher_proxy != NULL) {
-		DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-		dbus_g_connection_flush(session_bus);
+		dbus_g_connection_flush(priv->connection);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 	}
@@ -439,6 +426,7 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		} else {
 			WARN_BAD_TYPE(PROP_ICON_NAME_S, value);
 		}
+		check_connect(self);
 		break;
 	/* *********************** */
 	case PROP_ATTENTION_ICON_NAME:
@@ -473,6 +461,7 @@ custom_indicator_set_property (GObject * object, guint prop_id, const GValue * v
 		} else {
 			WARN_BAD_TYPE(PROP_MENU_S, value);
 		}
+		check_connect(self);
 		break;
 	/* *********************** */
 	default:
@@ -606,16 +595,43 @@ custom_indicator_get_property (GObject * object, guint prop_id, GValue * value, 
 static void
 check_connect (CustomIndicator * self)
 {
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(self);
 
+	/* We're alreadying connecting or trying to connect. */
+	if (priv->watcher_proxy != NULL) return;
 
+	/* Do we have enough information? */
+	if (priv->menu == NULL) return;
+	if (priv->icon_name == NULL) return;
+	if (priv->id == NULL) return;
 
+	GError * error = NULL;
+	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
+	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
+	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
+	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
+	                                                      &error);
+	if (error != NULL) {
+		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
+		/* TODO: This is where we should start looking at fallbacks */
+		g_error_free(error);
+		return;
+	}
+
+	org_ayatana_indicator_custom_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+
+	return;
 }
 
 static void
 register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 {
+	CustomIndicatorPrivate * priv = CUSTOM_INDICATOR_GET_PRIVATE(data);
+
 	if (error != NULL) {
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
+		g_object_unref(G_OBJECT(priv->watcher_proxy));
+		priv->watcher_proxy = NULL;
 	}
 	return;
 }
