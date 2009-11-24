@@ -20,7 +20,14 @@ main (int argc, char ** argv)
 	custom_indicator_set_attention_icon(ci, "indicator-messages-new");
 
 	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
-	dbusmenu_menuitem_property_set(root, "label", "Root");
+
+	DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, "Item 1");
+	dbusmenu_menuitem_child_append(root, item);
+
+	item = dbusmenu_menuitem_new();
+	dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, "Item 2");
+	dbusmenu_menuitem_child_append(root, item);
 
 	DbusmenuServer * menuservice = dbusmenu_server_new ("/need/a/menu/path");
 	dbusmenu_server_set_root(menuservice, root);
