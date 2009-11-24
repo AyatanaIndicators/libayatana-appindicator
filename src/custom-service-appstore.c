@@ -168,6 +168,51 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	return;
 }
 
+/* A simple global function for dealing with freeing the information
+   in an Application structure */
+static void
+application_free (Application * app)
+{
+	if (app == NULL) return;
+
+	if (app->dbus_name != NULL) {
+		g_free(app->dbus_name);
+	}
+	if (app->dbus_object != NULL) {
+		g_free(app->dbus_object);
+	}
+
+	g_free(app);
+	return;
+}
+
+/* Gets called when the proxy is destroyed, which is usually when it
+   drops off of the bus. */
+static void
+application_removed_cb (DBusGProxy * proxy, gpointer userdata)
+{
+	Application * app = (Application *)userdata;
+	CustomServiceAppstore * appstore = app->appstore;
+	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+
+	GList * applistitem = g_list_find(priv->applications, app);
+	if (applistitem == NULL) {
+		g_warning("Removing an application that isn't in the application list?");
+		return;
+	}
+
+	gint position = g_list_position(priv->applications, applistitem);
+
+	g_signal_emit(G_OBJECT(appstore),
+	              signals[APPLICATION_REMOVED], 0, 
+	              position, TRUE);
+
+	priv->applications = g_list_remove(priv->applications, app);
+
+	application_free(app);
+	return;
+}
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -204,6 +249,9 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 		g_free(app);
 		return;
 	}
+	
+	/* We've got it, let's watch it for destruction */
+	g_signal_connect(G_OBJECT(app->dbus_proxy), "destroy", G_CALLBACK(application_removed_cb), app);
 
 	/* Grab the property proxy interface */
 	app->prop_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
