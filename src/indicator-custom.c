@@ -88,6 +88,14 @@ indicator_custom_class_init (IndicatorCustomClass *klass)
 
 	io_class->get_entries = get_entries;
 
+	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+
 	return;
 }
 
@@ -180,11 +188,11 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	                        G_TYPE_INT,
 	                        G_TYPE_STRING,
 	                        G_TYPE_STRING,
-	                        G_TYPE_NONE);
+	                        G_TYPE_INVALID);
 	dbus_g_proxy_add_signal(priv->service_proxy,
 	                        "ApplicationRemoved",
 	                        G_TYPE_INT,
-	                        G_TYPE_NONE);
+	                        G_TYPE_INVALID);
 
 	/* Connect to them */
 	g_debug("Connect to them.");
@@ -238,12 +246,15 @@ get_entries (IndicatorObject * io)
 static void
 application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom)
 {
+	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
 	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
 	app->entry.label = NULL;
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
+
+	gtk_widget_show(GTK_WIDGET(app->entry.image));
 
 	priv->applications = g_list_insert(priv->applications, app, position);
 

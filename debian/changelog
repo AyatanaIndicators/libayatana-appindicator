@@ -1,3 +1,9 @@
+indicator-custom (0.0.1-0ubuntu3~ppa1~service7) karmic; urgency=low
+
+  * More updates and getting kinda stable-ish
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 24 Nov 2009 16:31:53 -0600
+
 indicator-custom (0.0.1-0ubuntu3~ppa1~service6) karmic; urgency=low
 
   * Debug messages
