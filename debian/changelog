@@ -1,9 +1,9 @@
-indicator-custom (0.0.1-0ubuntu3~ppa1~service8) UNRELEASED; urgency=low
+indicator-custom (0.0.1-0ubuntu3~ppa1~service8) karmic; urgency=low
 
   * Sync to trunk and fix distcheck by delaying connecting to
     the service by checking for data.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 24 Nov 2009 17:07:07 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 24 Nov 2009 17:08:34 -0600
 
 indicator-custom (0.0.1-0ubuntu3~ppa1~service7) karmic; urgency=low
 
