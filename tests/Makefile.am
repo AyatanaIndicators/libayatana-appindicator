@@ -2,7 +2,8 @@
 check_PROGRAMS = \
 	test-libcustomindicator \
 	test-libcustomindicator-dbus-client \
-	test-libcustomindicator-dbus-server
+	test-libcustomindicator-dbus-server \
+	test-simple-app
 
 TESTS =
 DISTCLEANFILES = $(TESTS)
@@ -86,4 +87,20 @@ test-libcustomindicator-dbus: test-libcustomindicator-dbus-client test-libcustom
 	@chmod +x test-libcustomindicator-dbus
 
 TESTS += test-libcustomindicator-dbus
+
+#########################################
+##  test-simple-app
+#########################################
+
+test_simple_app_SOURCES = \
+	test-simple-app.c
+
+test_simple_app_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_simple_app_LDADD = \
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libcustomindicator.la
 
