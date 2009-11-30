@@ -16,4 +16,4 @@ simple_client_CFLAGS = \
 
 simple_client_LDADD = \
 	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libcustomindicator.la
+	$(top_builddir)/src/libappindicator.la

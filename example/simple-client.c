@@ -10,12 +10,12 @@ main (int argc, char ** argv)
 {
 	g_type_init();
 
-	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, NULL));
+	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE, NULL));
 	g_assert(ci != NULL);
 
 	app_indicator_set_id(ci, "example-simple-client");
-	app_indicator_set_category(ci, CUSTOM_INDICATOR_CATEGORY_APPLICATION_STATUS);
-	app_indicator_set_status(ci, CUSTOM_INDICATOR_STATUS_ACTIVE);
+	app_indicator_set_category(ci, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+	app_indicator_set_status(ci, APP_INDICATOR_STATUS_ACTIVE);
 	app_indicator_set_icon(ci, "indicator-messages");
 	app_indicator_set_attention_icon(ci, "indicator-messages-new");
 
