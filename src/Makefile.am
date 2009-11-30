@@ -10,86 +10,86 @@ include $(top_srcdir)/Makefile.am.marshal
 # Indicator
 ##################################
 
-customlibdir = $(INDICATORDIR)
-customlib_LTLIBRARIES = libcustom.la
-libcustom_la_SOURCES = \
-	custom-service-marshal.c \
+applicationlibdir = $(INDICATORDIR)
+applicationlib_LTLIBRARIES = libapplication.la
+libapplication_la_SOURCES = \
+	application-service-marshal.c \
 	dbus-shared.h \
-	indicator-custom.c
-libcustom_la_CFLAGS = $(INDICATOR_CFLAGS) \
+	indicator-application.c
+libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \
 	-Wl,-Bsymbolic-functions \
 	-Wl,-z,defs \
 	-Wl,--as-needed \
 	-Werror
-libcustom_la_LIBADD = $(INDICATOR_LIBS)
-libcustom_la_LDFLAGS = -module -avoid-version
+libapplication_la_LIBADD = $(INDICATOR_LIBS)
+libapplication_la_LDFLAGS = -module -avoid-version
 
 ##################################
 # Service
 ##################################
 
-libexec_PROGRAMS = indicator-custom-service
+libexec_PROGRAMS = indicator-application-service
 
-indicator_custom_service_SOURCES = \
-	custom-service.c \
-	custom-service-appstore.h \
-	custom-service-appstore.c \
-	custom-service-marshal.h \
-	custom-service-marshal.c \
-	custom-service-server.h \
-	custom-service-watcher.h \
-	custom-service-watcher.c \
+indicator_application_service_SOURCES = \
+	application-service.c \
+	application-service-appstore.h \
+	application-service-appstore.c \
+	application-service-marshal.h \
+	application-service-marshal.c \
+	application-service-server.h \
+	application-service-watcher.h \
+	application-service-watcher.c \
 	dbus-properties-client.h \
 	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
-indicator_custom_service_CFLAGS = \
+indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror
-indicator_custom_service_LDADD = \
+indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS)
 
-glib_marshal_list = custom-service-marshal.list
-glib_marshal_prefix = _custom_service_marshal
+glib_marshal_list = application-service-marshal.list
+glib_marshal_prefix = _application_service_marshal
 
 ##################################
 # Library
 ##################################
 
-glib_enum_h = libcustomindicator/custom-indicator-enum-types.h
-glib_enum_c = libcustomindicator/custom-indicator-enum-types.c
-glib_enum_headers = $(libcustomindicator_headers)
+glib_enum_h = libapplicationindicator/application-indicator-enum-types.h
+glib_enum_c = libapplicationindicator/application-indicator-enum-types.c
+glib_enum_headers = $(libapplicationindicator_headers)
 
 lib_LTLIBRARIES = \
-	libcustomindicator.la
+	libapplicationindicator.la
 
-libcustomindicatorincludedir=$(includedir)/libcustomindicator-0.1/libcustomindicator
+libapplicationindicatorincludedir=$(includedir)/libapplicationindicator-0.1/libapplicationindicator
 
-libcustomindicator_headers = \
-	$(srcdir)/libcustomindicator/custom-indicator.h
+libapplicationindicator_headers = \
+	$(srcdir)/libapplicationindicator/application-indicator.h
 
-libcustomindicatorinclude_HEADERS = \
-	$(libcustomindicator_headers) \
+libapplicationindicatorinclude_HEADERS = \
+	$(libapplicationindicator_headers) \
 	$(glib_enum_h)
 
-libcustomindicator_la_SOURCES = \
-	$(libcustomindicator_headers) \
+libapplicationindicator_la_SOURCES = \
+	$(libapplicationindicator_headers) \
 	$(glib_enum_c) \
 	notification-watcher-client.h \
 	notification-item-server.h \
-	libcustomindicator/custom-indicator.c
+	libapplicationindicator/application-indicator.c
 
-libcustomindicator_la_LDFLAGS = \
+libapplicationindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
-libcustomindicator_la_CFLAGS = \
+libapplicationindicator_la_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror
 
-libcustomindicator_la_LIBADD = \
+libapplicationindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
 
 ##################################
@@ -97,7 +97,7 @@ libcustomindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
-	custom-service.xml \
+	application-service.xml \
 	dbus-properties.xml \
 	notification-item.xml \
 	notification-watcher.xml
