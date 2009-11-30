@@ -1,8 +1,8 @@
 
 #include "libindicator/indicator-service.h"
 #include "notification-item-client.h"
-#include "custom-service-appstore.h"
-#include "custom-service-watcher.h"
+#include "application-service-appstore.h"
+#include "application-service-watcher.h"
 #include "dbus-shared.h"
 
 /* The base main loop */

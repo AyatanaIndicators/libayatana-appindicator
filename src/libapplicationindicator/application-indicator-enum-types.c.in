@@ -1,5 +1,5 @@
 /*** BEGIN file-header ***/
-#include "libcustomindicator/custom-indicator-enum-types.h"
+#include "libapplicationindicator/application-indicator-enum-types.h"
 
 /*** END file-header ***/
 

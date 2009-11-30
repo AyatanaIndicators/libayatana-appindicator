@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "custom-service-appstore.h"
+#include "application-service-appstore.h"
 
 G_BEGIN_DECLS
 

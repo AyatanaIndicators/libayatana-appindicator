@@ -15,8 +15,8 @@
 
 /* Local Stuff */
 #include "dbus-shared.h"
-#include "custom-service-client.h"
-#include "custom-service-marshal.h"
+#include "application-service-client.h"
+#include "application-service-marshal.h"
 
 #define INDICATOR_CUSTOM_TYPE            (indicator_custom_get_type ())
 #define INDICATOR_CUSTOM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_CUSTOM_TYPE, IndicatorCustom))
@@ -88,7 +88,7 @@ indicator_custom_class_init (IndicatorCustomClass *klass)
 
 	io_class->get_entries = get_entries;
 
-	dbus_g_object_register_marshaller(_custom_service_marshal_VOID__STRING_INT_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
@@ -209,9 +209,9 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 
 	/* Query it for existing applications */
 	g_debug("Request current apps");
-	org_ayatana_indicator_custom_service_get_applications_async(priv->service_proxy,
-	                                                            get_applications,
-	                                                            custom);
+	org_ayatana_indicator_application_service_get_applications_async(priv->service_proxy,
+	                                                                 get_applications,
+	                                                                 custom);
 
 	return;
 }

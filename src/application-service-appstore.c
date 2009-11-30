@@ -3,15 +3,15 @@
 #endif
 
 #include <dbus/dbus-glib.h>
-#include "custom-service-appstore.h"
-#include "custom-service-marshal.h"
+#include "application-service-appstore.h"
+#include "application-service-marshal.h"
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
-static gboolean _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps);
+static gboolean _application_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps);
 
-#include "custom-service-server.h"
+#include "application-service-server.h"
 
 #define NOTIFICATION_ITEM_PROP_ID         "Id"
 #define NOTIFICATION_ITEM_PROP_CATEGORY   "Category"
@@ -71,7 +71,7 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_added),
 	                                           NULL, NULL,
-	                                           _custom_service_marshal_VOID__STRING_INT_STRING_STRING,
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING,
 	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
@@ -83,7 +83,7 @@ custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
 
 
 	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
-	                                &dbus_glib__custom_service_server_object_info);
+	                                &dbus_glib__application_service_server_object_info);
 
 	return;
 }
@@ -292,7 +292,7 @@ custom_service_appstore_application_remove (CustomServiceAppstore * appstore, co
 
 /* DBus Interface */
 static gboolean
-_custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps)
+_application_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps)
 {
 
 	return FALSE;

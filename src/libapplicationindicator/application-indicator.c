@@ -5,8 +5,8 @@
 #include <dbus/dbus-glib.h>
 #include <libdbusmenu-glib/server.h>
 
-#include "libcustomindicator/custom-indicator.h"
-#include "libcustomindicator/custom-indicator-enum-types.h"
+#include "libapplicationindicator/application-indicator.h"
+#include "libapplicationindicator/application-indicator-enum-types.h"
 
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
@@ -618,7 +618,7 @@ check_connect (CustomIndicator * self)
 		return;
 	}
 
-	org_ayatana_indicator_custom_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+	org_ayatana_indicator_application_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }

@@ -4,7 +4,7 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include "custom-service-watcher.h"
+#include "application-service-watcher.h"
 #include "dbus-shared.h"
 
 static gboolean _notification_watcher_server_register_service (CustomServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
