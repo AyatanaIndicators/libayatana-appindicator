@@ -1,5 +1,5 @@
-#ifndef __APPLICATION_INDICATOR_H__
-#define __APPLICATION_INDICATOR_H__
+#ifndef __APP_INDICATOR_H__
+#define __APP_INDICATOR_H__
 
 #include <glib.h>
 #include <glib-object.h>
@@ -7,99 +7,99 @@
 
 G_BEGIN_DECLS
 
-#define APPLICATION_INDICATOR_TYPE            (application_indicator_get_type ())
-#define APPLICATION_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APPLICATION_INDICATOR_TYPE, ApplicationIndicator))
-#define APPLICATION_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APPLICATION_INDICATOR_TYPE, ApplicationIndicatorClass))
-#define IS_APPLICATION_INDICATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APPLICATION_INDICATOR_TYPE))
-#define IS_APPLICATION_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APPLICATION_INDICATOR_TYPE))
-#define APPLICATION_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APPLICATION_INDICATOR_TYPE, ApplicationIndicatorClass))
+#define APP_INDICATOR_TYPE            (app_indicator_get_type ())
+#define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
+#define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
+#define IS_APP_INDICATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APP_INDICATOR_TYPE))
+#define IS_APP_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APP_INDICATOR_TYPE))
+#define APP_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APP_INDICATOR_TYPE, AppIndicatorClass))
 
-#define APPLICATION_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
-#define APPLICATION_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
-#define APPLICATION_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
-#define APPLICATION_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
+#define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
+#define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
+#define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
+#define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 
 /**
-	ApplicationIndicatorCategory:
-	@APPLICATION_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
-	@APPLICATION_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
-	@APPLICATION_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
-	@APPLICATION_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
-	@APPLICATION_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
+	AppIndicatorCategory:
+	@APP_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
+	@APP_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
+	@APP_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
+	@APP_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
+	@APP_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
 
 	The category provides grouping for the indicators so that
 	users can find indicators that are similar together.
 */
-typedef enum { /*< prefix=APPLICATION_INDICATOR_CATEGORY >*/
-	APPLICATION_INDICATOR_CATEGORY_APPLICATION_STATUS,
-	APPLICATION_INDICATOR_CATEGORY_COMMUNICATIONS,
-	APPLICATION_INDICATOR_CATEGORY_SYSTEM_SERVICES,
-	APPLICATION_INDICATOR_CATEGORY_HARDWARE,
-	APPLICATION_INDICATOR_CATEGORY_OTHER
-} ApplicationIndicatorCategory;
+typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
+	APP_INDICATOR_CATEGORY_APPLICATION_STATUS,
+	APP_INDICATOR_CATEGORY_COMMUNICATIONS,
+	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES,
+	APP_INDICATOR_CATEGORY_HARDWARE,
+	APP_INDICATOR_CATEGORY_OTHER
+} AppIndicatorCategory;
 
 /**
-	ApplicationIndicatorStatus:
-	@APPLICATION_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
-	@APPLICATION_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
-	@APPLICATION_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
+	AppIndicatorStatus:
+	@APP_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
+	@APP_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
+	@APP_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
 
 	These are the states that the indicator can be on in
 	the user's panel.  The indicator by default starts
-	in the state @APPLICATION_INDICATOR_STATUS_OFF and can be
-	shown by setting it to @APPLICATION_INDICATOR_STATUS_ON.
+	in the state @APP_INDICATOR_STATUS_OFF and can be
+	shown by setting it to @APP_INDICATOR_STATUS_ON.
 */
-typedef enum { /*< prefix=APPLICATION_INDICATOR_STATUS >*/
-	APPLICATION_INDICATOR_STATUS_PASSIVE,
-	APPLICATION_INDICATOR_STATUS_ACTIVE,
-	APPLICATION_INDICATOR_STATUS_ATTENTION
-} ApplicationIndicatorStatus;
+typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
+	APP_INDICATOR_STATUS_PASSIVE,
+	APP_INDICATOR_STATUS_ACTIVE,
+	APP_INDICATOR_STATUS_ATTENTION
+} AppIndicatorStatus;
 
-typedef struct _ApplicationIndicator      ApplicationIndicator;
-typedef struct _ApplicationIndicatorClass ApplicationIndicatorClass;
+typedef struct _AppIndicator      AppIndicator;
+typedef struct _AppIndicatorClass AppIndicatorClass;
 
 /**
-	ApplicationIndicatorClass:
+	AppIndicatorClass:
 	@parent_class: Mia familia
-	@new_icon: Slot for #ApplicationIndicator::new-icon.
-	@new_attention_icon: Slot for #ApplicationIndicator::new-attention-icon.
-	@new_status: Slot for #ApplicationIndicator::new-status.
-	@connection_changed: Slot for #ApplicationIndicator::connection-changed.
-	@application_indicator_reserved_1: Reserved for future use.
-	@application_indicator_reserved_2: Reserved for future use.
-	@application_indicator_reserved_3: Reserved for future use.
-	@application_indicator_reserved_4: Reserved for future use.
+	@new_icon: Slot for #AppIndicator::new-icon.
+	@new_attention_icon: Slot for #AppIndicator::new-attention-icon.
+	@new_status: Slot for #AppIndicator::new-status.
+	@connection_changed: Slot for #AppIndicator::connection-changed.
+	@app_indicator_reserved_1: Reserved for future use.
+	@app_indicator_reserved_2: Reserved for future use.
+	@app_indicator_reserved_3: Reserved for future use.
+	@app_indicator_reserved_4: Reserved for future use.
 
-	The signals and external functions that make up the #ApplicationIndicator
+	The signals and external functions that make up the #AppIndicator
 	class object.
 */
-struct _ApplicationIndicatorClass {
+struct _AppIndicatorClass {
 	/* Parent */
 	GObjectClass parent_class;
 
 	/* DBus Signals */
-	void (* new_icon)               (ApplicationIndicator * indicator,
+	void (* new_icon)               (AppIndicator * indicator,
 	                                 gpointer          user_data);
-	void (* new_attention_icon)     (ApplicationIndicator * indicator,
+	void (* new_attention_icon)     (AppIndicator * indicator,
 	                                 gpointer          user_data);
-	void (* new_status)             (ApplicationIndicator * indicator,
+	void (* new_status)             (AppIndicator * indicator,
 	                                 gchar *           status_string,
 	                                 gpointer          user_data);
 
 	/* Local Signals */
-	void (* connection_changed)     (ApplicationIndicator * indicator,
+	void (* connection_changed)     (AppIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
 
 	/* Reserved */
-	void (*application_indicator_reserved_1)(void);
-	void (*application_indicator_reserved_2)(void);
-	void (*application_indicator_reserved_3)(void);
-	void (*application_indicator_reserved_4)(void);
+	void (*app_indicator_reserved_1)(void);
+	void (*app_indicator_reserved_2)(void);
+	void (*app_indicator_reserved_3)(void);
+	void (*app_indicator_reserved_4)(void);
 };
 
 /**
-	ApplicationIndicator:
+	AppIndicator:
 	@parent: Parent object.
 
 	A application indicator represents the values that are needed to show a
@@ -107,35 +107,35 @@ struct _ApplicationIndicatorClass {
 	should try to fit in the other indicators that are available on the
 	panel before using this.  But, sometimes it is necissary.
 */
-struct _ApplicationIndicator {
+struct _AppIndicator {
 	GObject parent;
 	/* None.  We're a very private object. */
 };
 
 /* GObject Stuff */
-GType                           application_indicator_get_type           (void);
+GType                           app_indicator_get_type           (void);
 
 /* Set properties */
-void                            application_indicator_set_id             (ApplicationIndicator * ci,
-                                                                          const gchar * id);
-void                            application_indicator_set_category       (ApplicationIndicator * ci,
-                                                                          ApplicationIndicatorCategory category);
-void                            application_indicator_set_status         (ApplicationIndicator * ci,
-                                                                          ApplicationIndicatorStatus status);
-void                            application_indicator_set_icon           (ApplicationIndicator * ci,
-                                                                          const gchar * icon_name);
-void                            application_indicator_set_attention_icon (ApplicationIndicator * ci,
-                                                                          const gchar * icon_name);
-void                            application_indicator_set_menu           (ApplicationIndicator * ci,
-                                                                          DbusmenuServer * menu);
+void                            app_indicator_set_id             (AppIndicator * ci,
+                                                                  const gchar * id);
+void                            app_indicator_set_category       (AppIndicator * ci,
+                                                                  AppIndicatorCategory category);
+void                            app_indicator_set_status         (AppIndicator * ci,
+                                                                  AppIndicatorStatus status);
+void                            app_indicator_set_icon           (AppIndicator * ci,
+                                                                  const gchar * icon_name);
+void                            app_indicator_set_attention_icon (AppIndicator * ci,
+                                                                  const gchar * icon_name);
+void                            app_indicator_set_menu           (AppIndicator * ci,
+                                                                  DbusmenuServer * menu);
 
 /* Get properties */
-const gchar *                   application_indicator_get_id             (ApplicationIndicator * ci);
-ApplicationIndicatorCategory    application_indicator_get_category       (ApplicationIndicator * ci);
-ApplicationIndicatorStatus      application_indicator_get_status         (ApplicationIndicator * ci);
-const gchar *                   application_indicator_get_icon           (ApplicationIndicator * ci);
-const gchar *                   application_indicator_get_attention_icon (ApplicationIndicator * ci);
-DbusmenuServer *                application_indicator_get_menu           (ApplicationIndicator * ci);
+const gchar *                   app_indicator_get_id             (AppIndicator * ci);
+AppIndicatorCategory            app_indicator_get_category       (AppIndicator * ci);
+AppIndicatorStatus              app_indicator_get_status         (AppIndicator * ci);
+const gchar *                   app_indicator_get_icon           (AppIndicator * ci);
+const gchar *                   app_indicator_get_attention_icon (AppIndicator * ci);
+DbusmenuServer *                app_indicator_get_menu           (AppIndicator * ci);
 
 G_END_DECLS
 

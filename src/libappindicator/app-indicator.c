@@ -14,24 +14,24 @@
 #include "dbus-shared.h"
 
 /**
-	ApplicationIndicatorPrivate:
-	@id: The ID of the indicator.  Maps to ApplicationIndicator::id.
-	@category: Which category the indicator is.  Maps to ApplicationIndicator::category.
-	@status: The status of the indicator.  Maps to ApplicationIndicator::status.
-	@icon_name: The name of the icon to use.  Maps to ApplicationIndicator::icon-name.
-	@attention_icon_name: The name of the attention icon to use.  Maps to ApplicationIndicator::attention-icon-name.
-	@menu: The menu for this indicator.  Maps to ApplicationIndicator::menu
+	AppIndicatorPrivate:
+	@id: The ID of the indicator.  Maps to AppIndicator::id.
+	@category: Which category the indicator is.  Maps to AppIndicator::category.
+	@status: The status of the indicator.  Maps to AppIndicator::status.
+	@icon_name: The name of the icon to use.  Maps to AppIndicator::icon-name.
+	@attention_icon_name: The name of the attention icon to use.  Maps to AppIndicator::attention-icon-name.
+	@menu: The menu for this indicator.  Maps to AppIndicator::menu
 	@watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be #NULL.
 
 	All of the private data in an instance of a
 	application indicator.
 */
-typedef struct _ApplicationIndicatorPrivate ApplicationIndicatorPrivate;
-struct _ApplicationIndicatorPrivate {
+typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
+struct _AppIndicatorPrivate {
 	/* Properties */
 	gchar * id;
-	ApplicationIndicatorCategory category;
-	ApplicationIndicatorStatus status;
+	AppIndicatorCategory category;
+	AppIndicatorStatus status;
 	gchar * icon_name;
 	gchar * attention_icon_name;
 	DbusmenuServer * menu;
@@ -81,38 +81,38 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 
 /* Private macro, shhhh! */
-#define APPLICATION_INDICATOR_GET_PRIVATE(o) \
-                             (G_TYPE_INSTANCE_GET_PRIVATE ((o), APPLICATION_INDICATOR_TYPE, ApplicationIndicatorPrivate))
+#define APP_INDICATOR_GET_PRIVATE(o) \
+                             (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
 /* Boiler plate */
-static void application_indicator_class_init (ApplicationIndicatorClass *klass);
-static void application_indicator_init       (ApplicationIndicator *self);
-static void application_indicator_dispose    (GObject *object);
-static void application_indicator_finalize   (GObject *object);
+static void app_indicator_class_init (AppIndicatorClass *klass);
+static void app_indicator_init       (AppIndicator *self);
+static void app_indicator_dispose    (GObject *object);
+static void app_indicator_finalize   (GObject *object);
 /* Property functions */
-static void application_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
-static void application_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
+static void app_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
+static void app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
-static void check_connect (ApplicationIndicator * self);
+static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
 
 /* GObject type */
-G_DEFINE_TYPE (ApplicationIndicator, application_indicator, G_TYPE_OBJECT);
+G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
 
 static void
-application_indicator_class_init (ApplicationIndicatorClass *klass)
+app_indicator_class_init (AppIndicatorClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (ApplicationIndicatorPrivate));
+	g_type_class_add_private (klass, sizeof (AppIndicatorPrivate));
 
 	/* Clean up */
-	object_class->dispose = application_indicator_dispose;
-	object_class->finalize = application_indicator_finalize;
+	object_class->dispose = app_indicator_dispose;
+	object_class->finalize = app_indicator_finalize;
 
 	/* Property funcs */
-	object_class->set_property = application_indicator_set_property;
-	object_class->get_property = application_indicator_get_property;
+	object_class->set_property = app_indicator_set_property;
+	object_class->get_property = app_indicator_get_property;
 
 	/* Properties */
 	g_object_class_install_property(object_class, PROP_ID,
@@ -133,8 +133,8 @@ application_indicator_class_init (ApplicationIndicatorClass *klass)
 	                                g_param_spec_enum(PROP_CATEGORY_ENUM_S,
 	                                                  "Indicator Category",
 	                                                  "The type of indicator that this represents.  Please don't use 'other'.  Defaults to 'Application Status'.",
-	                                                  APPLICATION_INDICATOR_TYPE_INDICATOR_CATEGORY,
-	                                                  APPLICATION_INDICATOR_CATEGORY_APPLICATION_STATUS,
+	                                                  APP_INDICATOR_TYPE_INDICATOR_CATEGORY,
+	                                                  APP_INDICATOR_CATEGORY_APPLICATION_STATUS,
 	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_STATUS,
@@ -148,8 +148,8 @@ application_indicator_class_init (ApplicationIndicatorClass *klass)
 	                                g_param_spec_enum(PROP_STATUS_ENUM_S,
 	                                                  "Indicator Status",
 	                                                  "Whether the indicator is shown or requests attention.  Defaults to 'off'.",
-	                                                  APPLICATION_INDICATOR_TYPE_INDICATOR_STATUS,
-	                                                  APPLICATION_INDICATOR_STATUS_PASSIVE,
+	                                                  APP_INDICATOR_TYPE_INDICATOR_STATUS,
+	                                                  APP_INDICATOR_STATUS_PASSIVE,
 	                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class, PROP_ICON_NAME,
@@ -191,81 +191,81 @@ application_indicator_class_init (ApplicationIndicatorClass *klass)
 	/* Signals */
 
 	/**
-		ApplicationIndicator::new-icon:
-		@arg0: The #ApplicationIndicator object
+		AppIndicator::new-icon:
+		@arg0: The #AppIndicator object
 		
 		Signaled when there is a new icon set for the
 		object.
 	*/
-	signals[NEW_ICON] = g_signal_new (APPLICATION_INDICATOR_SIGNAL_NEW_ICON,
+	signals[NEW_ICON] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ICON,
 	                                  G_TYPE_FROM_CLASS(klass),
 	                                  G_SIGNAL_RUN_LAST,
-	                                  G_STRUCT_OFFSET (ApplicationIndicatorClass, new_icon),
+	                                  G_STRUCT_OFFSET (AppIndicatorClass, new_icon),
 	                                  NULL, NULL,
 	                                  g_cclosure_marshal_VOID__VOID,
 	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	/**
-		ApplicationIndicator::new-attention-icon:
-		@arg0: The #ApplicationIndicator object
+		AppIndicator::new-attention-icon:
+		@arg0: The #AppIndicator object
 		
 		Signaled when there is a new attention icon set for the
 		object.
 	*/
-	signals[NEW_ATTENTION_ICON] = g_signal_new (APPLICATION_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
+	signals[NEW_ATTENTION_ICON] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
 	                                            G_TYPE_FROM_CLASS(klass),
 	                                            G_SIGNAL_RUN_LAST,
-	                                            G_STRUCT_OFFSET (ApplicationIndicatorClass, new_attention_icon),
+	                                            G_STRUCT_OFFSET (AppIndicatorClass, new_attention_icon),
 	                                            NULL, NULL,
 	                                            g_cclosure_marshal_VOID__VOID,
 	                                            G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	/**
-		ApplicationIndicator::new-status:
-		@arg0: The #ApplicationIndicator object
-		@arg1: The string value of the #ApplicationIndicatorStatus enum.
+		AppIndicator::new-status:
+		@arg0: The #AppIndicator object
+		@arg1: The string value of the #AppIndicatorStatus enum.
 		
 		Signaled when the status of the indicator changes.
 	*/
-	signals[NEW_STATUS] = g_signal_new (APPLICATION_INDICATOR_SIGNAL_NEW_STATUS,
+	signals[NEW_STATUS] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_STATUS,
 	                                    G_TYPE_FROM_CLASS(klass),
 	                                    G_SIGNAL_RUN_LAST,
-	                                    G_STRUCT_OFFSET (ApplicationIndicatorClass, new_status),
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_status),
 	                                    NULL, NULL,
 	                                    g_cclosure_marshal_VOID__STRING,
 	                                    G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
 
 	/**
-		ApplicationIndicator::connection-changed:
-		@arg0: The #ApplicationIndicator object
+		AppIndicator::connection-changed:
+		@arg0: The #AppIndicator object
 		@arg1: Whether we're connected or not
 		
 		Signaled when we connect to a watcher, or when it drops
 		away.
 	*/
-	signals[CONNECTION_CHANGED] = g_signal_new (APPLICATION_INDICATOR_SIGNAL_CONNECTION_CHANGED,
+	signals[CONNECTION_CHANGED] = g_signal_new (APP_INDICATOR_SIGNAL_CONNECTION_CHANGED,
 	                                            G_TYPE_FROM_CLASS(klass),
 	                                            G_SIGNAL_RUN_LAST,
-	                                            G_STRUCT_OFFSET (ApplicationIndicatorClass, connection_changed),
+	                                            G_STRUCT_OFFSET (AppIndicatorClass, connection_changed),
 	                                            NULL, NULL,
 	                                            g_cclosure_marshal_VOID__BOOLEAN,
 	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
 	
 	/* Initialize the object as a DBus type */
-	dbus_g_object_type_install_info(APPLICATION_INDICATOR_TYPE,
+	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
 	                                &dbus_glib__notification_item_server_object_info);
 
 	return;
 }
 
 static void
-application_indicator_init (ApplicationIndicator *self)
+app_indicator_init (AppIndicator *self)
 {
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	priv->id = NULL;
-	priv->category = APPLICATION_INDICATOR_CATEGORY_OTHER;
-	priv->status = APPLICATION_INDICATOR_STATUS_PASSIVE;
+	priv->category = APP_INDICATOR_CATEGORY_OTHER;
+	priv->status = APP_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
 	priv->menu = NULL;
@@ -292,15 +292,15 @@ application_indicator_init (ApplicationIndicator *self)
 /* Free all objects, make sure that all the dbus
    signals are sent out before we shut this down. */
 static void
-application_indicator_dispose (GObject *object)
+app_indicator_dispose (GObject *object)
 {
-	ApplicationIndicator * self = APPLICATION_INDICATOR(object);
+	AppIndicator * self = APP_INDICATOR(object);
 	g_return_if_fail(self != NULL);
 
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
-	if (priv->status != APPLICATION_INDICATOR_STATUS_PASSIVE) {
-		application_indicator_set_status(self, APPLICATION_INDICATOR_STATUS_PASSIVE);
+	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
+		app_indicator_set_status(self, APP_INDICATOR_STATUS_PASSIVE);
 	}
 
 	if (priv->menu != NULL) {
@@ -314,21 +314,21 @@ application_indicator_dispose (GObject *object)
 		priv->watcher_proxy = NULL;
 	}
 
-	G_OBJECT_CLASS (application_indicator_parent_class)->dispose (object);
+	G_OBJECT_CLASS (app_indicator_parent_class)->dispose (object);
 	return;
 }
 
 /* Free all of the memory that we could be using in
    the object. */
 static void
-application_indicator_finalize (GObject *object)
+app_indicator_finalize (GObject *object)
 {
-	ApplicationIndicator * self = APPLICATION_INDICATOR(object);
+	AppIndicator * self = APP_INDICATOR(object);
 	g_return_if_fail(self != NULL);
 
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
-	if (priv->status != APPLICATION_INDICATOR_STATUS_PASSIVE) {
+	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Application Status with the status set to: %d", priv->status);
 	}
 
@@ -347,7 +347,7 @@ application_indicator_finalize (GObject *object)
 		priv->attention_icon_name = NULL;
 	}
 
-	G_OBJECT_CLASS (application_indicator_parent_class)->finalize (object);
+	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
 	return;
 }
 
@@ -355,12 +355,12 @@ application_indicator_finalize (GObject *object)
 
 /* Set some properties */
 static void
-application_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+app_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
 {
-	ApplicationIndicator * self = APPLICATION_INDICATOR(object);
+	AppIndicator * self = APP_INDICATOR(object);
 	g_return_if_fail(self != NULL);
 
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	switch (prop_id) {
 	/* *********************** */
@@ -474,12 +474,12 @@ application_indicator_set_property (GObject * object, guint prop_id, const GValu
 
 /* Function to fill our value with the property it's requesting. */
 static void
-application_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
+app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
 {
-	ApplicationIndicator * self = APPLICATION_INDICATOR(object);
+	AppIndicator * self = APP_INDICATOR(object);
 	g_return_if_fail(self != NULL);
 
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	switch (prop_id) {
 	/* *********************** */
@@ -593,9 +593,9 @@ application_indicator_get_property (GObject * object, guint prop_id, GValue * va
    connect to things.  If we do, and we're not connected, it
    connects for us. */
 static void
-check_connect (ApplicationIndicator * self)
+check_connect (AppIndicator * self)
 {
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	/* We're alreadying connecting or trying to connect. */
 	if (priv->watcher_proxy != NULL) return;
@@ -626,7 +626,7 @@ check_connect (ApplicationIndicator * self)
 static void
 register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 {
-	ApplicationIndicatorPrivate * priv = APPLICATION_INDICATOR_GET_PRIVATE(data);
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
 
 	if (error != NULL) {
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
@@ -642,14 +642,14 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 /* ************************* */
 
 /**
-	application_indicator_set_id:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_id:
+	@ci: The #AppIndicator object to use
 	@id: ID to set for this indicator
 
-	Wrapper function for property #ApplicationIndicator::id.
+	Wrapper function for property #AppIndicator::id.
 */
 void
-application_indicator_set_id (ApplicationIndicator * ci, const gchar * id)
+app_indicator_set_id (AppIndicator * ci, const gchar * id)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -659,47 +659,47 @@ application_indicator_set_id (ApplicationIndicator * ci, const gchar * id)
 }
 
 /**
-	application_indicator_set_category:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_category:
+	@ci: The #AppIndicator object to use
 	@category: The category to set for this indicator
 
-	Wrapper function for property #ApplicationIndicator::category.
+	Wrapper function for property #AppIndicator::category.
 */
 void
-application_indicator_set_category (ApplicationIndicator * ci, ApplicationIndicatorCategory category)
+app_indicator_set_category (AppIndicator * ci, AppIndicatorCategory category)
 {
 	GValue value = {0};
-	g_value_init(&value, APPLICATION_INDICATOR_TYPE_INDICATOR_CATEGORY);
+	g_value_init(&value, APP_INDICATOR_TYPE_INDICATOR_CATEGORY);
 	g_value_set_enum(&value, category);
 	g_object_set_property(G_OBJECT(ci), PROP_CATEGORY_ENUM_S, &value);
 	return;
 }
 
 /**
-	application_indicator_set_status:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_status:
+	@ci: The #AppIndicator object to use
 	@status: The status to set for this indicator
 
-	Wrapper function for property #ApplicationIndicator::status.
+	Wrapper function for property #AppIndicator::status.
 */
 void
-application_indicator_set_status (ApplicationIndicator * ci, ApplicationIndicatorStatus status)
+app_indicator_set_status (AppIndicator * ci, AppIndicatorStatus status)
 {
 	GValue value = {0};
-	g_value_init(&value, APPLICATION_INDICATOR_TYPE_INDICATOR_STATUS);
+	g_value_init(&value, APP_INDICATOR_TYPE_INDICATOR_STATUS);
 	g_value_set_enum(&value, status);
 	g_object_set_property(G_OBJECT(ci), PROP_STATUS_ENUM_S, &value);
 	return;
 }
 
 /**
-	application_indicator_set_icon:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_icon:
+	@ci: The #AppIndicator object to use
 	@icon_name: The name of the icon to set for this indicator
 
-	Wrapper function for property #ApplicationIndicator::icon.
+	Wrapper function for property #AppIndicator::icon.
 */
-void application_indicator_set_icon (ApplicationIndicator * ci, const gchar * icon_name)
+void app_indicator_set_icon (AppIndicator * ci, const gchar * icon_name)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -709,14 +709,14 @@ void application_indicator_set_icon (ApplicationIndicator * ci, const gchar * ic
 }
 
 /**
-	application_indicator_set_attention_icon:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_attention_icon:
+	@ci: The #AppIndicator object to use
 	@icon_name: The name of the attention icon to set for this indicator
 
-	Wrapper function for property #ApplicationIndicator::attention-icon.
+	Wrapper function for property #AppIndicator::attention-icon.
 */
 void
-application_indicator_set_attention_icon (ApplicationIndicator * ci, const gchar * icon_name)
+app_indicator_set_attention_icon (AppIndicator * ci, const gchar * icon_name)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -726,14 +726,14 @@ application_indicator_set_attention_icon (ApplicationIndicator * ci, const gchar
 }
 
 /**
-	application_indicator_set_menu:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_set_menu:
+	@ci: The #AppIndicator object to use
 	@menu: The object with the menu for the indicator
 
-	Wrapper function for property #ApplicationIndicator::menu.
+	Wrapper function for property #AppIndicator::menu.
 */
 void
-application_indicator_set_menu (ApplicationIndicator * ci, DbusmenuServer * menu)
+app_indicator_set_menu (AppIndicator * ci, DbusmenuServer * menu)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_OBJECT);
@@ -743,15 +743,15 @@ application_indicator_set_menu (ApplicationIndicator * ci, DbusmenuServer * menu
 }
 
 /**
-	application_indicator_get_id:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_id:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::id.
+	Wrapper function for property #AppIndicator::id.
 
 	Return value: The current ID
 */
 const gchar *
-application_indicator_get_id (ApplicationIndicator * ci)
+app_indicator_get_id (AppIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -760,49 +760,49 @@ application_indicator_get_id (ApplicationIndicator * ci)
 }
 
 /**
-	application_indicator_get_category:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_category:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::category.
+	Wrapper function for property #AppIndicator::category.
 
 	Return value: The current category.
 */
-ApplicationIndicatorCategory
-application_indicator_get_category (ApplicationIndicator * ci)
+AppIndicatorCategory
+app_indicator_get_category (AppIndicator * ci)
 {
 	GValue value = {0};
-	g_value_init(&value, APPLICATION_INDICATOR_TYPE_INDICATOR_CATEGORY);
+	g_value_init(&value, APP_INDICATOR_TYPE_INDICATOR_CATEGORY);
 	g_object_get_property(G_OBJECT(ci), PROP_CATEGORY_ENUM_S, &value);
 	return g_value_get_enum(&value);
 }
 
 /**
-	application_indicator_get_status:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_status:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::status.
+	Wrapper function for property #AppIndicator::status.
 
 	Return value: The current status.
 */
-ApplicationIndicatorStatus
-application_indicator_get_status (ApplicationIndicator * ci)
+AppIndicatorStatus
+app_indicator_get_status (AppIndicator * ci)
 {
 	GValue value = {0};
-	g_value_init(&value, APPLICATION_INDICATOR_TYPE_INDICATOR_STATUS);
+	g_value_init(&value, APP_INDICATOR_TYPE_INDICATOR_STATUS);
 	g_object_get_property(G_OBJECT(ci), PROP_STATUS_ENUM_S, &value);
 	return g_value_get_enum(&value);
 }
 
 /**
-	application_indicator_get_icon:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_icon:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::icon-name.
+	Wrapper function for property #AppIndicator::icon-name.
 
 	Return value: The current icon name.
 */
 const gchar *
-application_indicator_get_icon (ApplicationIndicator * ci)
+app_indicator_get_icon (AppIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -811,15 +811,15 @@ application_indicator_get_icon (ApplicationIndicator * ci)
 }
 
 /**
-	application_indicator_get_attention_icon:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_attention_icon:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::attention-icon-name.
+	Wrapper function for property #AppIndicator::attention-icon-name.
 
 	Return value: The current attention icon name.
 */
 const gchar *
-application_indicator_get_attention_icon (ApplicationIndicator * ci)
+app_indicator_get_attention_icon (AppIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_STRING);
@@ -828,15 +828,15 @@ application_indicator_get_attention_icon (ApplicationIndicator * ci)
 }
 
 /**
-	application_indicator_get_menu:
-	@ci: The #ApplicationIndicator object to use
+	app_indicator_get_menu:
+	@ci: The #AppIndicator object to use
 
-	Wrapper function for property #ApplicationIndicator::menu.
+	Wrapper function for property #AppIndicator::menu.
 
 	Return value: The current menu being used.
 */
 DbusmenuServer *
-application_indicator_get_menu (ApplicationIndicator * ci)
+app_indicator_get_menu (AppIndicator * ci)
 {
 	GValue value = {0};
 	g_value_init(&value, G_TYPE_OBJECT);
