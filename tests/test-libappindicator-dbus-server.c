@@ -2,7 +2,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <glib.h>
-#include <libcustomindicator/custom-indicator.h>
+#include <libappindicator/app-indicator.h>
 #include "test-defines.h"
 
 static GMainLoop * mainloop = NULL;
@@ -23,14 +23,14 @@ main (gint argc, gchar * argv[])
 
 	DbusmenuServer * dms = dbusmenu_server_new(TEST_OBJECT);
 
-	CustomIndicator * ci = CUSTOM_INDICATOR(g_object_new(CUSTOM_INDICATOR_TYPE, 
-	                                                     "id", TEST_ID,
-	                                                     "category-enum", TEST_CATEGORY,
-	                                                     "status-enum", TEST_STATE,
-	                                                     "icon-name", TEST_ICON_NAME,
-	                                                     "attention-icon-name", TEST_ATTENTION_ICON_NAME,
-	                                                     "menu-object", dms,
-	                                                     NULL));
+	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE, 
+	                                               "id", TEST_ID,
+	                                               "category-enum", TEST_CATEGORY,
+	                                               "status-enum", TEST_STATE,
+	                                               "icon-name", TEST_ICON_NAME,
+	                                               "attention-icon-name", TEST_ATTENTION_ICON_NAME,
+	                                               "menu-object", dms,
+	                                               NULL));
 
 	g_timeout_add_seconds(2, kill_func, NULL);
 
