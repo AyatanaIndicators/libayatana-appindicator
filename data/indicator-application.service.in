@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.ayatana.indicator.application
+Exec=@libexecdir@/indicator-application-service

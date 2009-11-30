@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKG_NAME="indicator-custom"
+PKG_NAME="indicator-application"
 
 which gnome-autogen.sh || {
 	echo "You need gnome-common from GNOME SVN"

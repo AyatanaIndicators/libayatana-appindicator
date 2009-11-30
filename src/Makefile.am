@@ -4,77 +4,92 @@ BUILT_SOURCES =
 EXTRA_DIST = 
 
 include $(top_srcdir)/Makefile.am.enum
+include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
 # Indicator
 ##################################
 
-customlibdir = $(INDICATORDIR)
-customlib_LTLIBRARIES = libcustom.la
-libcustom_la_SOURCES = \
-	indicator-custom.c
-libcustom_la_CFLAGS = $(INDICATOR_CFLAGS) \
+applicationlibdir = $(INDICATORDIR)
+applicationlib_LTLIBRARIES = libapplication.la
+libapplication_la_SOURCES = \
+	application-service-marshal.c \
+	dbus-shared.h \
+	indicator-application.c
+libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \
 	-Wl,-Bsymbolic-functions \
 	-Wl,-z,defs \
 	-Wl,--as-needed \
 	-Werror
-libcustom_la_LIBADD = $(INDICATOR_LIBS)
-libcustom_la_LDFLAGS = -module -avoid-version
+libapplication_la_LIBADD = $(INDICATOR_LIBS)
+libapplication_la_LDFLAGS = -module -avoid-version
 
 ##################################
 # Service
 ##################################
 
-libexec_PROGRAMS = indicator-custom-service
+libexec_PROGRAMS = indicator-application-service
 
-indicator_custom_service_SOURCES = \
-	custom-service.c \
+indicator_application_service_SOURCES = \
+	application-service.c \
+	application-service-appstore.h \
+	application-service-appstore.c \
+	application-service-marshal.h \
+	application-service-marshal.c \
+	application-service-server.h \
+	application-service-watcher.h \
+	application-service-watcher.c \
+	dbus-properties-client.h \
+	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
-indicator_custom_service_CFLAGS = \
+indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror
-indicator_custom_service_LDADD = \
+indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS)
+
+glib_marshal_list = application-service-marshal.list
+glib_marshal_prefix = _application_service_marshal
 
 ##################################
 # Library
 ##################################
 
-glib_enum_h = libcustomindicator/custom-indicator-enum-types.h
-glib_enum_c = libcustomindicator/custom-indicator-enum-types.c
-glib_enum_headers = $(libcustomindicator_headers)
+glib_enum_h = libappindicator/app-indicator-enum-types.h
+glib_enum_c = libappindicator/app-indicator-enum-types.c
+glib_enum_headers = $(libappindicator_headers)
 
 lib_LTLIBRARIES = \
-	libcustomindicator.la
+	libappindicator.la
 
-libcustomindicatorincludedir=$(includedir)/libcustomindicator-0.1/libcustomindicator
+libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
-libcustomindicator_headers = \
-	$(srcdir)/libcustomindicator/custom-indicator.h
+libappindicator_headers = \
+	$(srcdir)/libappindicator/app-indicator.h
 
-libcustomindicatorinclude_HEADERS = \
-	$(libcustomindicator_headers) \
+libappindicatorinclude_HEADERS = \
+	$(libappindicator_headers) \
 	$(glib_enum_h)
 
-libcustomindicator_la_SOURCES = \
-	$(libcustomindicator_headers) \
+libappindicator_la_SOURCES = \
+	$(libappindicator_headers) \
 	$(glib_enum_c) \
 	notification-watcher-client.h \
 	notification-item-server.h \
-	libcustomindicator/custom-indicator.c
+	libappindicator/app-indicator.c
 
-libcustomindicator_la_LDFLAGS = \
+libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
-libcustomindicator_la_CFLAGS = \
+libappindicator_la_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror
 
-libcustomindicator_la_LIBADD = \
+libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
 
 ##################################
@@ -82,6 +97,8 @@ libcustomindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	application-service.xml \
+	dbus-properties.xml \
 	notification-item.xml \
 	notification-watcher.xml
 

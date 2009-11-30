@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <node name="/">
-	<interface name="org.ayatana.indicator.custom.NotificationWatcher">
+	<interface name="org.ayatana.indicator.application.NotificationWatcher">
 
 <!-- Properties -->
 		<!-- None currently -->
 
 <!-- Methods -->
 		<method name="RegisterService">
+		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<arg type="s" name="service" direction="in" />
 		</method>
 		<method name="RegisteredServices">
@@ -31,7 +32,7 @@
 		</signal>
 		<signal name="NotificationHostRegistered">
 		</signal>
-		<signal name="NotificationHostUnegistered">
+		<signal name="NotificationHostUnregistered">
 		</signal>
 
 	</interface>

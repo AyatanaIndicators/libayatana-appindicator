@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-custom, 0.0.1, ted@canonical.com)
+AC_INIT(indicator-application, 0.0.1, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-custom, 0.0.1)
+AM_INIT_AUTOMAKE(indicator-application, 0.0.1)
 
 AM_MAINTAINER_MODE
 
@@ -81,6 +81,7 @@ Makefile
 src/Makefile
 data/Makefile
 tests/Makefile
+example/Makefile
 ])
 
 ###########################
@@ -89,7 +90,7 @@ tests/Makefile
 
 AC_MSG_NOTICE([
 
-Custom Indicator Configuration:
+Application Indicator Configuration:
 
 	Prefix:        $prefix
 	Indicator Dir: $INDICATORDIR

@@ -1,7 +1,7 @@
 
 #include <glib.h>
 #include <dbus/dbus-glib.h>
-#include <libcustomindicator/custom-indicator.h>
+#include <libappindicator/app-indicator.h>
 #include "test-defines.h"
 
 static GMainLoop * mainloop = NULL;
@@ -217,42 +217,42 @@ main (gint argc, gchar * argv[])
 	                         "Get",
 	                         prop_id_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "Id",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_category_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "Category",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_status_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "Status",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_icon_name_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "IconName",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_attention_icon_name_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "AttentionIconName",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_menu_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.custom.NotificationItem",
+	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
 	                         G_TYPE_STRING, "Menu",
 	                         G_TYPE_INVALID);
 

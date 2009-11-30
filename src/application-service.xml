@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/">
+	<interface name="org.ayatana.indicator.application.service">
+<!-- Properties -->
+		<!-- None currently -->
+
+<!-- Methods -->
+		<method name="GetApplications">
+			<arg type="a(siso)" name="applications" direction="out" />
+		</method>
+
+<!-- Signals -->
+		<signal name="ApplicationAdded">
+			<arg type="s" name="iconname" direction="out" />
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="dbusaddress" direction="out" />
+			<arg type="o" name="dbusobject" direction="out" />
+		</signal>
+		<signal name="ApplicationRemoved">
+			<arg type="i" name="position" direction="out" />
+		</signal>
+
+	</interface>
+</node>
