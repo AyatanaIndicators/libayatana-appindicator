@@ -5,8 +5,8 @@
 #include <dbus/dbus-glib.h>
 #include <libdbusmenu-glib/server.h>
 
-#include "libappindicator/application-indicator.h"
-#include "libappindicator/application-indicator-enum-types.h"
+#include "libappindicator/app-indicator.h"
+#include "libappindicator/app-indicator-enum-types.h"
 
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"

@@ -57,8 +57,8 @@ glib_marshal_prefix = _application_service_marshal
 # Library
 ##################################
 
-glib_enum_h = libappindicator/application-indicator-enum-types.h
-glib_enum_c = libappindicator/application-indicator-enum-types.c
+glib_enum_h = libappindicator/app-indicator-enum-types.h
+glib_enum_c = libappindicator/app-indicator-enum-types.c
 glib_enum_headers = $(libappindicator_headers)
 
 lib_LTLIBRARIES = \
@@ -67,7 +67,7 @@ lib_LTLIBRARIES = \
 libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
 libappindicator_headers = \
-	$(srcdir)/libappindicator/application-indicator.h
+	$(srcdir)/libappindicator/app-indicator.h
 
 libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
@@ -78,7 +78,7 @@ libappindicator_la_SOURCES = \
 	$(glib_enum_c) \
 	notification-watcher-client.h \
 	notification-item-server.h \
-	libappindicator/application-indicator.c
+	libappindicator/app-indicator.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
