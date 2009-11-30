@@ -57,39 +57,39 @@ glib_marshal_prefix = _application_service_marshal
 # Library
 ##################################
 
-glib_enum_h = libapplicationindicator/application-indicator-enum-types.h
-glib_enum_c = libapplicationindicator/application-indicator-enum-types.c
-glib_enum_headers = $(libapplicationindicator_headers)
+glib_enum_h = libappindicator/application-indicator-enum-types.h
+glib_enum_c = libappindicator/application-indicator-enum-types.c
+glib_enum_headers = $(libappindicator_headers)
 
 lib_LTLIBRARIES = \
-	libapplicationindicator.la
+	libappindicator.la
 
-libapplicationindicatorincludedir=$(includedir)/libapplicationindicator-0.1/libapplicationindicator
+libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
-libapplicationindicator_headers = \
-	$(srcdir)/libapplicationindicator/application-indicator.h
+libappindicator_headers = \
+	$(srcdir)/libappindicator/application-indicator.h
 
-libapplicationindicatorinclude_HEADERS = \
-	$(libapplicationindicator_headers) \
+libappindicatorinclude_HEADERS = \
+	$(libappindicator_headers) \
 	$(glib_enum_h)
 
-libapplicationindicator_la_SOURCES = \
-	$(libapplicationindicator_headers) \
+libappindicator_la_SOURCES = \
+	$(libappindicator_headers) \
 	$(glib_enum_c) \
 	notification-watcher-client.h \
 	notification-item-server.h \
-	libapplicationindicator/application-indicator.c
+	libappindicator/application-indicator.c
 
-libapplicationindicator_la_LDFLAGS = \
+libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
-libapplicationindicator_la_CFLAGS = \
+libappindicator_la_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror
 
-libapplicationindicator_la_LIBADD = \
+libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
 
 ##################################
