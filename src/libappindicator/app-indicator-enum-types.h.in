@@ -1,6 +1,6 @@
 /*** BEGIN file-header ***/
-#ifndef __CUSTOM_INDICATOR_ENUM_TYPES_H__
-#define __CUSTOM_INDICATOR_ENUM_TYPES_H__
+#ifndef __APPLICATION_INDICATOR_ENUM_TYPES_H__
+#define __APPLICATION_INDICATOR_ENUM_TYPES_H__
 
 #include <glib-object.h>
 
@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 G_END_DECLS
 
-#endif /* __CUSTOM_INDICATOR_ENUM_TYPES_H__ */
+#endif /* __APPLICATION_INDICATOR_ENUM_TYPES_H__ */
 /*** END file-tail ***/
 
 /*** BEGIN file-production ***/
@@ -28,6 +28,6 @@ G_END_DECLS
 	Return value: A registered type for the enum
 */
 GType @enum_name@_get_type (void) G_GNUC_CONST;
-#define CUSTOM_INDICATOR_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+#define APPLICATION_INDICATOR_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
 
 /*** END value-header ***/

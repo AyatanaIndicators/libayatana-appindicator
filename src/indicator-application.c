@@ -18,36 +18,36 @@
 #include "application-service-client.h"
 #include "application-service-marshal.h"
 
-#define INDICATOR_CUSTOM_TYPE            (indicator_custom_get_type ())
-#define INDICATOR_CUSTOM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_CUSTOM_TYPE, IndicatorCustom))
-#define INDICATOR_CUSTOM_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), INDICATOR_CUSTOM_TYPE, IndicatorCustomClass))
-#define IS_INDICATOR_CUSTOM(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), INDICATOR_CUSTOM_TYPE))
-#define IS_INDICATOR_CUSTOM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), INDICATOR_CUSTOM_TYPE))
-#define INDICATOR_CUSTOM_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), INDICATOR_CUSTOM_TYPE, IndicatorCustomClass))
+#define INDICATOR_APPLICATION_TYPE            (indicator_application_get_type ())
+#define INDICATOR_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_APPLICATION_TYPE, IndicatorApplication))
+#define INDICATOR_APPLICATION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), INDICATOR_APPLICATION_TYPE, IndicatorApplicationClass))
+#define IS_INDICATOR_APPLICATION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), INDICATOR_APPLICATION_TYPE))
+#define IS_INDICATOR_APPLICATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), INDICATOR_APPLICATION_TYPE))
+#define INDICATOR_APPLICATION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), INDICATOR_APPLICATION_TYPE, IndicatorApplicationClass))
 
-typedef struct _IndicatorCustom      IndicatorCustom;
-typedef struct _IndicatorCustomClass IndicatorCustomClass;
+typedef struct _IndicatorApplication      IndicatorApplication;
+typedef struct _IndicatorApplicationClass IndicatorApplicationClass;
 
-struct _IndicatorCustomClass {
+struct _IndicatorApplicationClass {
 	IndicatorObjectClass parent_class;
 };
 
-struct _IndicatorCustom {
+struct _IndicatorApplication {
 	IndicatorObject parent;
 };
 
-GType indicator_custom_get_type (void);
+GType indicator_application_get_type (void);
 
 INDICATOR_SET_VERSION
-INDICATOR_SET_TYPE(INDICATOR_CUSTOM_TYPE)
+INDICATOR_SET_TYPE(INDICATOR_APPLICATION_TYPE)
 
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-typedef struct _IndicatorCustomPrivate IndicatorCustomPrivate;
-struct _IndicatorCustomPrivate {
+typedef struct _IndicatorApplicationPrivate IndicatorApplicationPrivate;
+struct _IndicatorApplicationPrivate {
 	IndicatorServiceManager * sm;
 	DBusGConnection * bus;
 	DBusGProxy * service_proxy;
@@ -59,30 +59,30 @@ struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
 };
 
-#define INDICATOR_CUSTOM_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), INDICATOR_CUSTOM_TYPE, IndicatorCustomPrivate))
+#define INDICATOR_APPLICATION_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), INDICATOR_APPLICATION_TYPE, IndicatorApplicationPrivate))
 
-static void indicator_custom_class_init (IndicatorCustomClass *klass);
-static void indicator_custom_init       (IndicatorCustom *self);
-static void indicator_custom_dispose    (GObject *object);
-static void indicator_custom_finalize   (GObject *object);
+static void indicator_application_class_init (IndicatorApplicationClass *klass);
+static void indicator_application_init       (IndicatorApplication *self);
+static void indicator_application_dispose    (GObject *object);
+static void indicator_application_finalize   (GObject *object);
 static GList * get_entries (IndicatorObject * io);
-static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * custom);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom);
-static void application_removed (DBusGProxy * proxy, gint position , IndicatorCustom * custom);
+static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application);
+static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 
-G_DEFINE_TYPE (IndicatorCustom, indicator_custom, INDICATOR_OBJECT_TYPE);
+G_DEFINE_TYPE (IndicatorApplication, indicator_application, INDICATOR_OBJECT_TYPE);
 
 static void
-indicator_custom_class_init (IndicatorCustomClass *klass)
+indicator_application_class_init (IndicatorApplicationClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (IndicatorCustomPrivate));
+	g_type_class_add_private (klass, sizeof (IndicatorApplicationPrivate));
 
-	object_class->dispose = indicator_custom_dispose;
-	object_class->finalize = indicator_custom_finalize;
+	object_class->dispose = indicator_application_dispose;
+	object_class->finalize = indicator_application_finalize;
 
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
 
@@ -100,15 +100,15 @@ indicator_custom_class_init (IndicatorCustomClass *klass)
 }
 
 static void
-indicator_custom_init (IndicatorCustom *self)
+indicator_application_init (IndicatorApplication *self)
 {
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(self);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(self);
 
 	/* These are built in the connection phase */
 	priv->bus = NULL;
 	priv->service_proxy = NULL;
 
-	priv->sm = indicator_service_manager_new(INDICATOR_CUSTOM_DBUS_ADDR);	
+	priv->sm = indicator_service_manager_new(INDICATOR_APPLICATION_DBUS_ADDR);	
 	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connected), self);
 
 	priv->applications = NULL;
@@ -117,14 +117,14 @@ indicator_custom_init (IndicatorCustom *self)
 }
 
 static void
-indicator_custom_dispose (GObject *object)
+indicator_application_dispose (GObject *object)
 {
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(object);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(object);
 
 	while (priv->applications != NULL) {
 		application_removed(priv->service_proxy,
 		                    0,
-		                    INDICATOR_CUSTOM(object));
+		                    INDICATOR_APPLICATION(object));
 	}
 
 	if (priv->sm != NULL) {
@@ -142,23 +142,23 @@ indicator_custom_dispose (GObject *object)
 		priv->service_proxy = NULL;
 	}
 
-	G_OBJECT_CLASS (indicator_custom_parent_class)->dispose (object);
+	G_OBJECT_CLASS (indicator_application_parent_class)->dispose (object);
 	return;
 }
 
 static void
-indicator_custom_finalize (GObject *object)
+indicator_application_finalize (GObject *object)
 {
 
-	G_OBJECT_CLASS (indicator_custom_parent_class)->finalize (object);
+	G_OBJECT_CLASS (indicator_application_parent_class)->finalize (object);
 	return;
 }
 
 void
-connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * custom)
+connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application)
 {
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
-	g_debug("Connected to Custom Indicator Service.");
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	g_debug("Connected to Application Indicator Service.");
 
 	GError * error = NULL;
 
@@ -175,9 +175,9 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 
 	/* Build the service proxy */
 	priv->service_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
-	                                                      INDICATOR_CUSTOM_DBUS_ADDR,
-	                                                      INDICATOR_CUSTOM_DBUS_OBJ,
-	                                                      INDICATOR_CUSTOM_DBUS_IFACE,
+	                                                      INDICATOR_APPLICATION_DBUS_ADDR,
+	                                                      INDICATOR_APPLICATION_DBUS_OBJ,
+	                                                      INDICATOR_APPLICATION_DBUS_IFACE,
 	                                                      &error);
 
 	/* Set up proxy signals */
@@ -199,19 +199,19 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 	dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            "ApplicationAdded",
 	                            G_CALLBACK(application_added),
-	                            custom,
+	                            application,
 	                            NULL /* Disconnection Signal */);
 	dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            "ApplicationRemoved",
 	                            G_CALLBACK(application_removed),
-	                            custom,
+	                            application,
 	                            NULL /* Disconnection Signal */);
 
 	/* Query it for existing applications */
 	g_debug("Request current apps");
 	org_ayatana_indicator_application_service_get_applications_async(priv->service_proxy,
 	                                                                 get_applications,
-	                                                                 custom);
+	                                                                 application);
 
 	return;
 }
@@ -222,9 +222,9 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorCustom * c
 static GList *
 get_entries (IndicatorObject * io)
 {
-	g_return_val_if_fail(IS_INDICATOR_CUSTOM(io), NULL);
+	g_return_val_if_fail(IS_INDICATOR_APPLICATION(io), NULL);
 
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(io);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(io);
 	GList * retval = NULL;
 	GList * apppointer = NULL;
 
@@ -244,10 +244,10 @@ get_entries (IndicatorObject * io)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorCustom * custom)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application)
 {
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
@@ -259,16 +259,16 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	priv->applications = g_list_insert(priv->applications, app, position);
 
 	/* TODO: Need to deal with position here somehow */
-	g_signal_emit(G_OBJECT(custom), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	return;
 }
 
 /* This removes the application from the list and free's all
    of the memory associated with it. */
 static void
-application_removed (DBusGProxy * proxy, gint position, IndicatorCustom * custom)
+application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * application)
 {
-	IndicatorCustomPrivate * priv = INDICATOR_CUSTOM_GET_PRIVATE(custom);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
 
 	if (app == NULL) {
@@ -277,7 +277,7 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorCustom * custom
 	}
 
 	priv->applications = g_list_remove(priv->applications, app);
-	g_signal_emit(G_OBJECT(custom), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
 
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));

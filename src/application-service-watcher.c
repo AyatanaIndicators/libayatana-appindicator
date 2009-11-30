@@ -7,22 +7,22 @@
 #include "application-service-watcher.h"
 #include "dbus-shared.h"
 
-static gboolean _notification_watcher_server_register_service (CustomServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_registered_services (CustomServiceWatcher * appwatcher, GArray ** apps);
-static gboolean _notification_watcher_server_protocol_version (CustomServiceWatcher * appwatcher, char ** version);
-static gboolean _notification_watcher_server_register_notification_host (CustomServiceWatcher * appwatcher, const gchar * host);
-static gboolean _notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appwatcher, gboolean * haveHost);
+static gboolean _notification_watcher_server_register_service (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
+static gboolean _notification_watcher_server_registered_services (ApplicationServiceWatcher * appwatcher, GArray ** apps);
+static gboolean _notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version);
+static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
+static gboolean _notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost);
 
 #include "notification-watcher-server.h"
 
 /* Private Stuff */
-typedef struct _CustomServiceWatcherPrivate CustomServiceWatcherPrivate;
-struct _CustomServiceWatcherPrivate {
-	CustomServiceAppstore * appstore;
+typedef struct _ApplicationServiceWatcherPrivate ApplicationServiceWatcherPrivate;
+struct _ApplicationServiceWatcherPrivate {
+	ApplicationServiceAppstore * appstore;
 };
 
-#define CUSTOM_SERVICE_WATCHER_GET_PRIVATE(o) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((o), CUSTOM_SERVICE_WATCHER_TYPE, CustomServiceWatcherPrivate))
+#define APPLICATION_SERVICE_WATCHER_GET_PRIVATE(o) \
+(G_TYPE_INSTANCE_GET_PRIVATE ((o), APPLICATION_SERVICE_WATCHER_TYPE, ApplicationServiceWatcherPrivate))
 
 /* Signals Stuff */
 enum {
@@ -36,62 +36,62 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* GObject stuff */
-static void custom_service_watcher_class_init (CustomServiceWatcherClass *klass);
-static void custom_service_watcher_init       (CustomServiceWatcher *self);
-static void custom_service_watcher_dispose    (GObject *object);
-static void custom_service_watcher_finalize   (GObject *object);
+static void application_service_watcher_class_init (ApplicationServiceWatcherClass *klass);
+static void application_service_watcher_init       (ApplicationServiceWatcher *self);
+static void application_service_watcher_dispose    (GObject *object);
+static void application_service_watcher_finalize   (GObject *object);
 
-G_DEFINE_TYPE (CustomServiceWatcher, custom_service_watcher, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ApplicationServiceWatcher, application_service_watcher, G_TYPE_OBJECT);
 
 static void
-custom_service_watcher_class_init (CustomServiceWatcherClass *klass)
+application_service_watcher_class_init (ApplicationServiceWatcherClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (CustomServiceWatcherPrivate));
+	g_type_class_add_private (klass, sizeof (ApplicationServiceWatcherPrivate));
 
-	object_class->dispose = custom_service_watcher_dispose;
-	object_class->finalize = custom_service_watcher_finalize;
+	object_class->dispose = application_service_watcher_dispose;
+	object_class->finalize = application_service_watcher_finalize;
 
 	signals[SERVICE_REGISTERED] = g_signal_new ("service-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, service_registered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
 	signals[SERVICE_UNREGISTERED] = g_signal_new ("service-unregistered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, service_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_unregistered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
 	signals[NOTIFICATION_HOST_REGISTERED] = g_signal_new ("notification-host-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, notification_host_registered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__VOID,
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 	signals[NOTIFICATION_HOST_UNREGISTERED] = g_signal_new ("notification-host-unregistered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceWatcherClass, notification_host_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_unregistered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__VOID,
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
 
-	dbus_g_object_type_install_info(CUSTOM_SERVICE_WATCHER_TYPE,
+	dbus_g_object_type_install_info(APPLICATION_SERVICE_WATCHER_TYPE,
 	                                &dbus_glib__notification_watcher_server_object_info);
 
 	return;
 }
 
 static void
-custom_service_watcher_init (CustomServiceWatcher *self)
+application_service_watcher_init (ApplicationServiceWatcher *self)
 {
-	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(self);
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(self);
 
 	priv->appstore = NULL;
 
@@ -111,71 +111,71 @@ custom_service_watcher_init (CustomServiceWatcher *self)
 }
 
 static void
-custom_service_watcher_dispose (GObject *object)
+application_service_watcher_dispose (GObject *object)
 {
-	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(object);
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(object);
 	
 	if (priv->appstore != NULL) {
 		g_object_unref(G_OBJECT(priv->appstore));
 		priv->appstore = NULL;
 	}
 
-	G_OBJECT_CLASS (custom_service_watcher_parent_class)->dispose (object);
+	G_OBJECT_CLASS (application_service_watcher_parent_class)->dispose (object);
 	return;
 }
 
 static void
-custom_service_watcher_finalize (GObject *object)
+application_service_watcher_finalize (GObject *object)
 {
 
-	G_OBJECT_CLASS (custom_service_watcher_parent_class)->finalize (object);
+	G_OBJECT_CLASS (application_service_watcher_parent_class)->finalize (object);
 	return;
 }
 
-CustomServiceWatcher *
-custom_service_watcher_new (CustomServiceAppstore * appstore)
+ApplicationServiceWatcher *
+application_service_watcher_new (ApplicationServiceAppstore * appstore)
 {
-	GObject * obj = g_object_new(CUSTOM_SERVICE_WATCHER_TYPE, NULL);
-	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(obj);
+	GObject * obj = g_object_new(APPLICATION_SERVICE_WATCHER_TYPE, NULL);
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(obj);
 	priv->appstore = appstore;
 	g_object_ref(G_OBJECT(priv->appstore));
-	return CUSTOM_SERVICE_WATCHER(obj);
+	return APPLICATION_SERVICE_WATCHER(obj);
 }
 
 static gboolean
-_notification_watcher_server_register_service (CustomServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method)
+_notification_watcher_server_register_service (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method)
 {
-	CustomServiceWatcherPrivate * priv = CUSTOM_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
 
-	custom_service_appstore_application_add(priv->appstore, dbus_g_method_get_sender(method), service);
+	application_service_appstore_application_add(priv->appstore, dbus_g_method_get_sender(method), service);
 
 	dbus_g_method_return(method, G_TYPE_NONE);
 	return TRUE;
 }
 
 static gboolean
-_notification_watcher_server_registered_services (CustomServiceWatcher * appwatcher, GArray ** apps)
+_notification_watcher_server_registered_services (ApplicationServiceWatcher * appwatcher, GArray ** apps)
 {
 
 	return FALSE;
 }
 
 static gboolean
-_notification_watcher_server_protocol_version (CustomServiceWatcher * appwatcher, char ** version)
+_notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version)
 {
 	*version = g_strdup("Ayatana Version 1");
 	return TRUE;
 }
 
 static gboolean
-_notification_watcher_server_register_notification_host (CustomServiceWatcher * appwatcher, const gchar * host)
+_notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host)
 {
 
 	return FALSE;
 }
 
 static gboolean
-_notification_watcher_server_is_notification_host_registered (CustomServiceWatcher * appwatcher, gboolean * haveHost)
+_notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost)
 {
 	*haveHost = TRUE;
 	return TRUE;
