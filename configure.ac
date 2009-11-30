@@ -90,7 +90,7 @@ example/Makefile
 
 AC_MSG_NOTICE([
 
-Custom Indicator Configuration:
+Application Indicator Configuration:
 
 	Prefix:        $prefix
 	Indicator Dir: $INDICATORDIR
