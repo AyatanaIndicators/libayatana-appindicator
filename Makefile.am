@@ -1,5 +1,6 @@
 SUBDIRS = data \
-          src
+          src \
+		  tests
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall
 
