@@ -1,9 +1,9 @@
-indicator-custom (0.0.1-0ubuntu3~ppa1) UNRELEASED; urgency=low
+indicator-custom (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
 
   * Flesh out the library to have stuff working.
   * Updating test suite to run under dbus-test-runner.
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 01 Dec 2009 09:14:18 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 01 Dec 2009 09:17:24 -0600
 
 indicator-custom (0.0.1-0ubuntu2) karmic; urgency=low
 
