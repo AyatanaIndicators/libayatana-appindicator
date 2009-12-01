@@ -4,6 +4,7 @@ BUILT_SOURCES =
 EXTRA_DIST = 
 
 include $(top_srcdir)/Makefile.am.enum
+include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
 # Indicator
@@ -12,6 +13,8 @@ include $(top_srcdir)/Makefile.am.enum
 customlibdir = $(INDICATORDIR)
 customlib_LTLIBRARIES = libcustom.la
 libcustom_la_SOURCES = \
+	custom-service-marshal.c \
+	dbus-shared.h \
 	indicator-custom.c
 libcustom_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \
@@ -30,6 +33,15 @@ libexec_PROGRAMS = indicator-custom-service
 
 indicator_custom_service_SOURCES = \
 	custom-service.c \
+	custom-service-appstore.h \
+	custom-service-appstore.c \
+	custom-service-marshal.h \
+	custom-service-marshal.c \
+	custom-service-server.h \
+	custom-service-watcher.h \
+	custom-service-watcher.c \
+	dbus-properties-client.h \
+	dbus-shared.h \
 	notification-item-client.h \
 	notification-watcher-server.h
 indicator_custom_service_CFLAGS = \
@@ -37,6 +49,9 @@ indicator_custom_service_CFLAGS = \
 	-Wall -Werror
 indicator_custom_service_LDADD = \
 	$(INDICATOR_LIBS)
+
+glib_marshal_list = custom-service-marshal.list
+glib_marshal_prefix = _custom_service_marshal
 
 ##################################
 # Library
@@ -82,6 +97,8 @@ libcustomindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	custom-service.xml \
+	dbus-properties.xml \
 	notification-item.xml \
 	notification-watcher.xml
 

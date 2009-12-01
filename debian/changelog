@@ -1,3 +1,52 @@
+indicator-custom (0.0.1-0ubuntu3~ppa1~service8) karmic; urgency=low
+
+  * Sync to trunk and fix distcheck by delaying connecting to
+    the service by checking for data.
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 24 Nov 2009 17:08:34 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service7) karmic; urgency=low
+
+  * More updates and getting kinda stable-ish
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 24 Nov 2009 16:31:53 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service6) karmic; urgency=low
+
+  * Debug messages
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 17:39:18 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service5) karmic; urgency=low
+
+  * Forgot return types.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 16:52:16 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service4) karmic; urgency=low
+
+  * Adding marshallers
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 16:37:51 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service3) karmic; urgency=low
+
+  * Adding more fun.  Now we're cookin'!
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 23 Nov 2009 14:56:35 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service2) karmic; urgency=low
+
+  * Building the service and getting things in better shape.
+
+ -- Ted Gould <ted@ubuntu.com>  Sun, 08 Nov 2009 23:04:48 -0600
+
+indicator-custom (0.0.1-0ubuntu3~ppa1~service1) karmic; urgency=low
+
+  * Grabbing from the service development branch
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:56:33 -0600
+
 indicator-custom (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
 
   * Flesh out the library to have stuff working.
