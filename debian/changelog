@@ -1,3 +1,9 @@
+indicator-custom (0.0.1-0ubuntu3~ppa1~newname1) UNRELEASED; urgency=low
+
+  * Massive name change.
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 01 Dec 2009 09:21:54 -0600
+
 indicator-custom (0.0.1-0ubuntu3~ppa1~service8) karmic; urgency=low
 
   * Sync to trunk and fix distcheck by delaying connecting to

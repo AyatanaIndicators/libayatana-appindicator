@@ -3,15 +3,15 @@
 #endif
 
 #include <dbus/dbus-glib.h>
-#include "custom-service-appstore.h"
-#include "custom-service-marshal.h"
+#include "application-service-appstore.h"
+#include "application-service-marshal.h"
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
-static gboolean _custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps);
+static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps);
 
-#include "custom-service-server.h"
+#include "application-service-server.h"
 
 #define NOTIFICATION_ITEM_PROP_ID         "Id"
 #define NOTIFICATION_ITEM_PROP_CATEGORY   "Category"
@@ -21,8 +21,8 @@ static gboolean _custom_service_server_get_applications (CustomServiceAppstore *
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 /* Private Stuff */
-typedef struct _CustomServiceAppstorePrivate CustomServiceAppstorePrivate;
-struct _CustomServiceAppstorePrivate {
+typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePrivate;
+struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
 };
@@ -31,13 +31,13 @@ typedef struct _Application Application;
 struct _Application {
 	gchar * dbus_name;
 	gchar * dbus_object;
-	CustomServiceAppstore * appstore; /* not ref'd */
+	ApplicationServiceAppstore * appstore; /* not ref'd */
 	DBusGProxy * dbus_proxy;
 	DBusGProxy * prop_proxy;
 };
 
-#define CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(o) \
-			(G_TYPE_INSTANCE_GET_PRIVATE ((o), CUSTOM_SERVICE_APPSTORE_TYPE, CustomServiceAppstorePrivate))
+#define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
+			(G_TYPE_INSTANCE_GET_PRIVATE ((o), APPLICATION_SERVICE_APPSTORE_TYPE, ApplicationServiceAppstorePrivate))
 
 /* Signals Stuff */
 enum {
@@ -49,49 +49,49 @@ enum {
 static guint signals[LAST_SIGNAL] = { 0 };
 
 /* GObject stuff */
-static void custom_service_appstore_class_init (CustomServiceAppstoreClass *klass);
-static void custom_service_appstore_init       (CustomServiceAppstore *self);
-static void custom_service_appstore_dispose    (GObject *object);
-static void custom_service_appstore_finalize   (GObject *object);
+static void application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass);
+static void application_service_appstore_init       (ApplicationServiceAppstore *self);
+static void application_service_appstore_dispose    (GObject *object);
+static void application_service_appstore_finalize   (GObject *object);
 
-G_DEFINE_TYPE (CustomServiceAppstore, custom_service_appstore, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
 static void
-custom_service_appstore_class_init (CustomServiceAppstoreClass *klass)
+application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (CustomServiceAppstorePrivate));
+	g_type_class_add_private (klass, sizeof (ApplicationServiceAppstorePrivate));
 
-	object_class->dispose = custom_service_appstore_dispose;
-	object_class->finalize = custom_service_appstore_finalize;
+	object_class->dispose = application_service_appstore_dispose;
+	object_class->finalize = application_service_appstore_finalize;
 
 	signals[APPLICATION_ADDED] = g_signal_new ("application-added",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_added),
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
 	                                           NULL, NULL,
-	                                           _custom_service_marshal_VOID__STRING_INT_STRING_STRING,
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING,
 	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (CustomServiceAppstore, application_removed),
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_removed),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__INT,
 	                                           G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_NONE);
 
 
-	dbus_g_object_type_install_info(CUSTOM_SERVICE_APPSTORE_TYPE,
-	                                &dbus_glib__custom_service_server_object_info);
+	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
+	                                &dbus_glib__application_service_server_object_info);
 
 	return;
 }
 
 static void
-custom_service_appstore_init (CustomServiceAppstore *self)
+application_service_appstore_init (ApplicationServiceAppstore *self)
 {
-	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(self);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
 
 	priv->applications = NULL;
 	
@@ -104,32 +104,32 @@ custom_service_appstore_init (CustomServiceAppstore *self)
 	}
 
 	dbus_g_connection_register_g_object(priv->bus,
-	                                    INDICATOR_CUSTOM_DBUS_OBJ,
+	                                    INDICATOR_APPLICATION_DBUS_OBJ,
 	                                    G_OBJECT(self));
 
 	return;
 }
 
 static void
-custom_service_appstore_dispose (GObject *object)
+application_service_appstore_dispose (GObject *object)
 {
-	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(object);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(object);
 
 	while (priv->applications != NULL) {
-		custom_service_appstore_application_remove(CUSTOM_SERVICE_APPSTORE(object),
+		application_service_appstore_application_remove(APPLICATION_SERVICE_APPSTORE(object),
 		                                           ((Application *)priv->applications->data)->dbus_name,
 		                                           ((Application *)priv->applications->data)->dbus_object);
 	}
 
-	G_OBJECT_CLASS (custom_service_appstore_parent_class)->dispose (object);
+	G_OBJECT_CLASS (application_service_appstore_parent_class)->dispose (object);
 	return;
 }
 
 static void
-custom_service_appstore_finalize (GObject *object)
+application_service_appstore_finalize (GObject *object)
 {
 
-	G_OBJECT_CLASS (custom_service_appstore_parent_class)->finalize (object);
+	G_OBJECT_CLASS (application_service_appstore_parent_class)->finalize (object);
 	return;
 }
 
@@ -150,7 +150,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		return;
 	}
 
-	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
 	priv->applications = g_list_prepend(priv->applications, app);
 	
 	/* TODO: We need to have the position determined better.  This
@@ -192,8 +192,8 @@ static void
 application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 {
 	Application * app = (Application *)userdata;
-	CustomServiceAppstore * appstore = app->appstore;
-	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstore * appstore = app->appstore;
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
 	GList * applistitem = g_list_find(priv->applications, app);
 	if (applistitem == NULL) {
@@ -217,15 +217,15 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
    appstore.  First, we need to get the information on it
    though. */
 void
-custom_service_appstore_application_add (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
+application_service_appstore_application_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
 	g_debug("Adding new application: %s:%s", dbus_name, dbus_object);
 
 	/* Make sure we got a sensible request */
-	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
-	CustomServiceAppstorePrivate * priv = CUSTOM_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
@@ -280,9 +280,9 @@ custom_service_appstore_application_add (CustomServiceAppstore * appstore, const
 }
 
 void
-custom_service_appstore_application_remove (CustomServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
+application_service_appstore_application_remove (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
-	g_return_if_fail(IS_CUSTOM_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
@@ -292,7 +292,7 @@ custom_service_appstore_application_remove (CustomServiceAppstore * appstore, co
 
 /* DBus Interface */
 static gboolean
-_custom_service_server_get_applications (CustomServiceAppstore * appstore, GArray ** apps)
+_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps)
 {
 
 	return FALSE;
