@@ -1,4 +1,4 @@
-debian/tmp/usr/include/libcustomindicator-0.1/*
-debian/tmp/usr/lib/libcustomindicator.so
-debian/tmp/usr/lib/libcustomindicator.a
-debian/tmp/usr/lib/libcustomindicator.la
+debian/tmp/usr/include/libappindicator-0.1/*
+debian/tmp/usr/lib/libappindicator.so
+debian/tmp/usr/lib/libappindicator.a
+debian/tmp/usr/lib/libappindicator.la
