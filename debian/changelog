@@ -1,10 +1,10 @@
-indicator-application (0.0.1-0ubuntu3~ppa3) UNRELEASED; urgency=low
+indicator-application (0.0.1-0ubuntu3~ppa3) karmic; urgency=low
 
   * Massive name change.
   * debian/* changing packaging to not be "custom" anymore and now
     everything is "application"
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 12:05:07 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 12:06:25 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa2) karmic; urgency=low
 
