@@ -1,2 +1,2 @@
 version=3
-http://launchpad.net/cape-girardeau/+download .*/indicator-custom-([0-9.]+)\.tar\.gz
+http://launchpad.net/cape-girardeau/+download .*/indicator-application-([0-9.]+)\.tar\.gz

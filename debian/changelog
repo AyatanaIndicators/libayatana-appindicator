@@ -1,28 +1,36 @@
-indicator-custom (0.0.1-0ubuntu3~ppa2) karmic; urgency=low
+indicator-application (0.0.1-0ubuntu3~ppa3) UNRELEASED; urgency=low
+
+  * Massive name change.
+  * debian/* changing packaging to not be "custom" anymore and now
+    everything is "application"
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 12:05:07 -0600
+
+indicator-application (0.0.1-0ubuntu3~ppa2) karmic; urgency=low
 
   * Implementing the service and having the indicator and app
     library start using it.
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 11:58:08 -0600
 
-indicator-custom (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
+indicator-application (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
 
   * Flesh out the library to have stuff working.
   * Updating test suite to run under dbus-test-runner.
 
  -- Ted Gould <ted@ubuntu.com>  Tue, 01 Dec 2009 09:17:24 -0600
 
-indicator-custom (0.0.1-0ubuntu2) karmic; urgency=low
+indicator-application (0.0.1-0ubuntu2) karmic; urgency=low
 
-  * debian/control: Splitting out libcustomindicator
-  * Adding debian/libcustomindicator0.install,
-    debian/libcustomindicator-dev.install,
-    debian/indicator-custom.install
+  * debian/control: Splitting out libappindicator
+  * Adding debian/libappindicator0.install,
+    debian/libappindicator-dev.install,
+    debian/indicator-application.install
     to make all the different packages.
 
  -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:41:20 -0600
 
-indicator-custom (0.0.1-0ubuntu1) karmic; urgency=low
+indicator-application (0.0.1-0ubuntu1) karmic; urgency=low
 
   * Development packaging edition.
 
