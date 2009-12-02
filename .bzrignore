@@ -24,4 +24,16 @@ tests/test-libcustomindicator-dbus-client
 tests/test-libcustomindicator-dbus-server
 tests/libcustomindicator-tests
 tests/test-libcustomindicator-dbus
+src/custom-service-client.h
+src/custom-service-server.h
+src/custom-service-marshal.c
+src/custom-service-marshal.h
+src/stamp-marshal
+src/dbus-properties-client.h
+src/dbus-properties-server.h
+tests/test-simple-app
+example/.deps
+example/.libs
+example/simple-client
+src/libcustom_la-custom-service-marshal.lo
 tests/libcustomindicator-tests-gtester

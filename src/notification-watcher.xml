@@ -7,6 +7,7 @@
 
 <!-- Methods -->
 		<method name="RegisterService">
+		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<arg type="s" name="service" direction="in" />
 		</method>
 		<method name="RegisteredServices">
@@ -31,7 +32,7 @@
 		</signal>
 		<signal name="NotificationHostRegistered">
 		</signal>
-		<signal name="NotificationHostUnegistered">
+		<signal name="NotificationHostUnregistered">
 		</signal>
 
 	</interface>
