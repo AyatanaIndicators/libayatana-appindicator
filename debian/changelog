@@ -1,9 +1,9 @@
-indicator-custom (0.0.1-0ubuntu3~ppa2) UNRELEASED; urgency=low
+indicator-custom (0.0.1-0ubuntu3~ppa2) karmic; urgency=low
 
   * Implementing the service and having the indicator and app
     library start using it.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 11:55:56 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 11:58:08 -0600
 
 indicator-custom (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
 
