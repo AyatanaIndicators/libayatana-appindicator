@@ -1,92 +1,92 @@
 
 check_PROGRAMS = \
-	test-libcustomindicator \
-	test-libcustomindicator-dbus-client \
-	test-libcustomindicator-dbus-server \
+	test-libappindicator \
+	test-libappindicator-dbus-client \
+	test-libappindicator-dbus-server \
 	test-simple-app
 
 TESTS =
 DISTCLEANFILES = $(TESTS)
 
 #########################################
-##  test-libcustomindicator
+##  test-libappindicator
 #########################################
 
-test_libcustomindicator_SOURCES = \
-	test-libcustomindicator.c
+test_libappindicator_SOURCES = \
+	test-libappindicator.c
 
-test_libcustomindicator_CFLAGS = \
+test_libappindicator_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
-test_libcustomindicator_LDADD = \
+test_libappindicator_LDADD = \
 	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libcustomindicator.la
+	$(top_builddir)/src/libappindicator.la
 
 #########################################
-##  test-libcustomindicator-dbus-client
+##  test-libappindicator-dbus-client
 #########################################
 
-test_libcustomindicator_dbus_client_SOURCES = \
+test_libappindicator_dbus_client_SOURCES = \
 	test-defines.h \
-	test-libcustomindicator-dbus-client.c
+	test-libappindicator-dbus-client.c
 
-test_libcustomindicator_dbus_client_CFLAGS = \
+test_libappindicator_dbus_client_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
-test_libcustomindicator_dbus_client_LDADD = \
+test_libappindicator_dbus_client_LDADD = \
 	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libcustomindicator.la
+	$(top_builddir)/src/libappindicator.la
 
 #########################################
-##  test-libcustomindicator-dbus-server
+##  test-libappindicator-dbus-server
 #########################################
 
-test_libcustomindicator_dbus_server_SOURCES = \
+test_libappindicator_dbus_server_SOURCES = \
 	test-defines.h \
-	test-libcustomindicator-dbus-server.c
+	test-libappindicator-dbus-server.c
 
-test_libcustomindicator_dbus_server_CFLAGS = \
+test_libappindicator_dbus_server_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
-test_libcustomindicator_dbus_server_LDADD = \
+test_libappindicator_dbus_server_LDADD = \
 	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libcustomindicator.la
+	$(top_builddir)/src/libappindicator.la
 
 #########################################
 ##  Actual tests
 #########################################
 
-XML_REPORT   = libcustomindicator-check-results.xml
-HTML_REPORT  = libcustomindicator-check-results.html
+XML_REPORT   = libappindicator-check-results.xml
+HTML_REPORT  = libappindicator-check-results.html
 
-libcustomindicator-tests: libcustomindicator-tests-gtester Makefile.am
+libappindicator-tests: libappindicator-tests-gtester Makefile.am
 	@echo "#!/bin/sh" > $@
-	@echo $(DBUS_RUNNER) --task ./libcustomindicator-tests-gtester >> $@
+	@echo $(DBUS_RUNNER) --task ./libappindicator-tests-gtester >> $@
 	@chmod +x $@
 
-libcustomindicator-tests-gtester: test-libcustomindicator Makefile.am
+libappindicator-tests-gtester: test-libappindicator Makefile.am
 	@echo "#!/bin/sh" > $@
-	@echo gtester -k --verbose -o=$(XML_REPORT) ./test-libcustomindicator >> $@
+	@echo gtester -k --verbose -o=$(XML_REPORT) ./test-libappindicator >> $@
 	@chmod +x $@
 
-TESTS += libcustomindicator-tests
-DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libcustomindicator-tests-gtester
+TESTS += libappindicator-tests
+DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libappindicator-tests-gtester
 
 
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
 
-test-libcustomindicator-dbus: test-libcustomindicator-dbus-client test-libcustomindicator-dbus-server Makefile.am
-	@echo "#!/bin/sh" > test-libcustomindicator-dbus
-	@echo $(DBUS_RUNNER) --task ./test-libcustomindicator-dbus-client --task-name Client --task ./test-libcustomindicator-dbus-server --task-name Server --ignore-return >> test-libcustomindicator-dbus
-	@chmod +x test-libcustomindicator-dbus
+test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator-dbus-server Makefile.am
+	@echo "#!/bin/sh" > test-libappindicator-dbus
+	@echo $(DBUS_RUNNER) --task ./test-libappindicator-dbus-client --task-name Client --task ./test-libappindicator-dbus-server --task-name Server --ignore-return >> test-libappindicator-dbus
+	@chmod +x test-libappindicator-dbus
 
-TESTS += test-libcustomindicator-dbus
+TESTS += test-libappindicator-dbus
 
 #########################################
 ##  test-simple-app
@@ -102,5 +102,5 @@ test_simple_app_CFLAGS = \
 
 test_simple_app_LDADD = \
 	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libcustomindicator.la
+	$(top_builddir)/src/libappindicator.la
 
