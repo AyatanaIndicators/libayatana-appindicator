@@ -1,10 +1,10 @@
-indicator-application (0.0.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.0.2
     * Updates API to use GTK instead of dbusmenu to make it
       easier for upstream developers to use.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:47:25 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
 
