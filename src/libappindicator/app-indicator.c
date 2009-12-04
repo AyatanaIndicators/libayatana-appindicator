@@ -544,6 +544,14 @@ category_from_enum (AppIndicatorCategory category)
 /*    Public Functions       */
 /* ************************* */
 
+/**
+        app_indicator_new:
+        @id: The unique id of the indicator to create.
+        @icon_name: The icon name for this indicator
+        @category: The category of indicator.
+
+        @returns: A pointer to a new #AppIndicator object.
+ */
 AppIndicator *
 app_indicator_new (const gchar          *id,
                    const gchar          *icon_name,
@@ -603,6 +611,11 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
     }
 }
 
+/**
+        app_indicator_set_icon:
+        @self: The #AppIndicator object to use
+        @icon_name: The icon name to set.
+**/
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
@@ -651,6 +664,11 @@ setup_dbusmenu (AppIndicator *self)
   dbusmenu_server_set_root (priv->menuservice, root);
 }
 
+/**
+        app_indicator_set_menu:
+        @self: The #AppIndicator
+        @menu: A #GtkMenu to set
+**/
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 {
