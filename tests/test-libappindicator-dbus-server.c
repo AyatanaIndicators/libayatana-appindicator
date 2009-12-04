@@ -46,10 +46,10 @@ main (gint argc, gchar * argv[])
 
 	DbusmenuServer * dms = dbusmenu_server_new(TEST_OBJECT);
 
-	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE, 
+	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE,
 	                                               "id", TEST_ID,
-	                                               "category-enum", TEST_CATEGORY,
-	                                               "status-enum", TEST_STATE,
+	                                               "category", TEST_CATEGORY,
+	                                               "status", TEST_STATE,
 	                                               "icon-name", TEST_ICON_NAME,
 	                                               "attention-icon-name", TEST_ATTENTION_ICON_NAME,
 	                                               "menu-object", dms,

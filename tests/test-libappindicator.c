@@ -115,6 +115,7 @@ test_libappindicator_init_set_props (void)
         AppIndicator * ci = app_indicator_new ("my-id",
                                                "my-name",
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
 	g_assert(ci != NULL);
 
 	app_indicator_set_status(ci, APP_INDICATOR_STATUS_ACTIVE);
@@ -133,13 +134,13 @@ test_libappindicator_init_set_props (void)
 void
 test_libappindicator_init_with_props (void)
 {
-	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE, 
-	                                                     "id", "my-id",
-	                                                     "category-enum", APP_INDICATOR_CATEGORY_APPLICATION_STATUS,
-	                                                     "status-enum", APP_INDICATOR_STATUS_ACTIVE,
-	                                                     "icon-name", "my-name",
-	                                                     "attention-icon-name", "my-attention-name",
-	                                                     NULL));
+        AppIndicator * ci = app_indicator_new ("my-id",
+                                               "my-name",
+                                               APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+        app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
+        app_indicator_set_attention_icon (ci, "my-attention-name");
+
 	g_assert(ci != NULL);
 
 	g_assert(!g_strcmp0("my-id", app_indicator_get_id(ci)));
@@ -155,7 +156,7 @@ test_libappindicator_init_with_props (void)
 void
 test_libappindicator_init (void)
 {
-	AppIndicator * ci = APP_INDICATOR(g_object_new(APP_INDICATOR_TYPE, NULL));
+        AppIndicator * ci = app_indicator_new ("my-id", "my-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 	g_assert(ci != NULL);
 	g_object_unref(G_OBJECT(ci));
 	return;
