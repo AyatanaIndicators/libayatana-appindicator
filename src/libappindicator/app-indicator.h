@@ -6,32 +6,31 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Cody Russell <cody.russell@canonical.com>
 
-This program is free software: you can redistribute it and/or modify it 
+This program is free software: you can redistribute it and/or modify it
 under the terms of either or both of the following licenses:
 
-1) the GNU Lesser General Public License version 3, as published by the 
+1) the GNU Lesser General Public License version 3, as published by the
    Free Software Foundation; and/or
-2) the GNU Lesser General Public License version 2.1, as published by 
+2) the GNU Lesser General Public License version 2.1, as published by
    the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but 
-WITHOUT ANY WARRANTY; without even the implied warranties of 
-MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR 
-PURPOSE.  See the applicable version of the GNU Lesser General Public 
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the applicable version of the GNU Lesser General Public
 License for more details.
 
-You should have received a copy of both the GNU Lesser General Public 
-License version 3 and version 2.1 along with this program.  If not, see 
+You should have received a copy of both the GNU Lesser General Public
+License version 3 and version 2.1 along with this program.  If not, see
 <http://www.gnu.org/licenses/>
 */
 
 #ifndef __APP_INDICATOR_H__
 #define __APP_INDICATOR_H__
 
-#include <glib.h>
-#include <glib-object.h>
-#include <libdbusmenu-glib/server.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -83,8 +82,9 @@ typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
 	APP_INDICATOR_STATUS_ATTENTION
 } AppIndicatorStatus;
 
-typedef struct _AppIndicator      AppIndicator;
-typedef struct _AppIndicatorClass AppIndicatorClass;
+typedef struct _AppIndicator        AppIndicator;
+typedef struct _AppIndicatorClass   AppIndicatorClass;
+typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 
 /**
 	AppIndicatorClass:
@@ -106,13 +106,13 @@ struct _AppIndicatorClass {
 	GObjectClass parent_class;
 
 	/* DBus Signals */
-	void (* new_icon)               (AppIndicator * indicator,
-	                                 gpointer          user_data);
-	void (* new_attention_icon)     (AppIndicator * indicator,
-	                                 gpointer          user_data);
-	void (* new_status)             (AppIndicator * indicator,
-	                                 gchar *           status_string,
-	                                 gpointer          user_data);
+	void (* new_icon)               (AppIndicator       *indicator,
+	                                 gpointer            user_data);
+	void (* new_attention_icon)     (AppIndicator       *indicator,
+	                                 gpointer            user_data);
+	void (* new_status)             (AppIndicator       *indicator,
+	                                 const gchar        *status,
+	                                 gpointer            user_data);
 
 	/* Local Signals */
 	void (* connection_changed)     (AppIndicator * indicator,
@@ -137,33 +137,33 @@ struct _AppIndicatorClass {
 */
 struct _AppIndicator {
 	GObject parent;
-	/* None.  We're a very private object. */
+
+        AppIndicatorPrivate *priv;
 };
 
 /* GObject Stuff */
-GType                           app_indicator_get_type           (void);
+GType                           app_indicator_get_type           (void) G_GNUC_CONST;
+
+AppIndicator                   *app_indicator_new                (const gchar          *id,
+                                                                  const gchar          *icon_name,
+                                                                  AppIndicatorCategory  category);
 
 /* Set properties */
-void                            app_indicator_set_id             (AppIndicator * ci,
-                                                                  const gchar * id);
-void                            app_indicator_set_category       (AppIndicator * ci,
-                                                                  AppIndicatorCategory category);
-void                            app_indicator_set_status         (AppIndicator * ci,
-                                                                  AppIndicatorStatus status);
-void                            app_indicator_set_icon           (AppIndicator * ci,
-                                                                  const gchar * icon_name);
-void                            app_indicator_set_attention_icon (AppIndicator * ci,
-                                                                  const gchar * icon_name);
-void                            app_indicator_set_menu           (AppIndicator * ci,
-                                                                  DbusmenuServer * menu);
+void                            app_indicator_set_status         (AppIndicator       *self,
+                                                                  AppIndicatorStatus  status);
+void                            app_indicator_set_attention_icon (AppIndicator       *self,
+                                                                  const gchar        *icon_name);
+void                            app_indicator_set_menu           (AppIndicator       *self,
+                                                                  GtkMenu            *menu);
+void                            app_indicator_set_icon           (AppIndicator       *self,
+                                                                  const gchar        *icon_name);
 
 /* Get properties */
-const gchar *                   app_indicator_get_id             (AppIndicator * ci);
-AppIndicatorCategory            app_indicator_get_category       (AppIndicator * ci);
-AppIndicatorStatus              app_indicator_get_status         (AppIndicator * ci);
-const gchar *                   app_indicator_get_icon           (AppIndicator * ci);
-const gchar *                   app_indicator_get_attention_icon (AppIndicator * ci);
-DbusmenuServer *                app_indicator_get_menu           (AppIndicator * ci);
+const gchar *                   app_indicator_get_id             (AppIndicator *self);
+AppIndicatorCategory            app_indicator_get_category       (AppIndicator *self);
+AppIndicatorStatus              app_indicator_get_status         (AppIndicator *self);
+const gchar *                   app_indicator_get_icon           (AppIndicator *self);
+const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
 
 G_END_DECLS
 
