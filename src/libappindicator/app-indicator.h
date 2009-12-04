@@ -6,6 +6,7 @@ Copyright 2009 Canonical Ltd.
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Cody Russell <cody.russell@canonical.com>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of either or both of the following licenses:
