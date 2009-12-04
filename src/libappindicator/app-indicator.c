@@ -364,7 +364,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 {
         AppIndicator *self = APP_INDICATOR (object);
         AppIndicatorPrivate *priv = self->priv;
-        gboolean changed = FALSE;
         const gchar *instr;
         GEnumValue *enum_val;
 
@@ -388,7 +387,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           if (priv->category != enum_val->value)
             {
               priv->category = enum_val->value;
-              changed = TRUE;
             }
 
           break;
