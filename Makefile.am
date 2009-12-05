@@ -1,9 +1,10 @@
-SUBDIRS = data \
-          src \
-		  example \
-		  tests
+SUBDIRS = data		\
+          src		\
+	  docs		\
+	  example	\
+	  tests
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall
+DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall --enable-gtk-doc
 
 dist-hook:
 	@if test -d "$(top_srcdir)/.bzr"; \

@@ -26,6 +26,13 @@ AC_PATH_PROG([GLIB_GENMARSHAL], [glib-genmarshal])
 PKG_PROG_PKG_CONFIG
 
 ###########################
+# GTK Doc 
+###########################
+
+GTK_DOC_CHECK([1.9])
+AC_CONFIG_MACRO_DIR(m4)
+
+###########################
 # Dependencies 
 ###########################
 
@@ -82,6 +89,9 @@ src/Makefile
 data/Makefile
 tests/Makefile
 example/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/version.xml
 ])
 
 ###########################
