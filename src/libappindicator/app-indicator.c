@@ -633,6 +633,14 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 static void
+activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
+{
+  GtkWidget *widget = (GtkWidget *)user_data;
+
+  gtk_menu_item_activate (GTK_MENU_ITEM (widget));
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
@@ -643,6 +651,9 @@ container_iterate (GtkWidget *widget,
   dbusmenu_menuitem_property_set (child,
                                   DBUSMENU_MENUITEM_PROP_LABEL,
                                   gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+  g_signal_connect (G_OBJECT(child),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
 }
 
