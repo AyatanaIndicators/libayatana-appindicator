@@ -91,5 +91,12 @@ EXTRA_DIST += version.xml.in
 #DISTCLEANFILES +=
 
 # Comment this out if you want your docs-status tested during 'make check'
-TESTS = $(GTKDOC_CHECK)
+TESTS = gtkdoc-in-srcdir
+
+gtkdoc-in-srcdir: Makefile.am
+	@echo "#!/bin/sh" > $@
+	@echo "cd \"$(srcdir)\"" >> $@
+	@echo "$(GTKDOC_CHECK)" >> $@
+	@chmod +x $@
+DISTCLEANFILES = gtkdoc-in-srcdir
 
