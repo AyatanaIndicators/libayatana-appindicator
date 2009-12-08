@@ -76,9 +76,8 @@ expand_content_files=
 # e.g. GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src/libappindicator $(INDICATOR_CFLAGS)
-GTKDOC_LIBS=$(top_builddir)/src/libappindicator.la 
-
 #GTKDOC_LIBS=$(top_builddir)/src/libappindicator.la $(top_builddir)/src/libapplication.la $(top_builddir)/src/indicator_application_service-application-service-appstore.o $(top_builddir)/src/indicator_application_service-application-service-watcher.o
+GTKDOC_LIBS=$(top_builddir)/src/libappindicator.la $(top_builddir)/src/libapplication.la 
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
