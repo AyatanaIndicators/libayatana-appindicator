@@ -34,6 +34,41 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
+/**
+	APP_INDICATOR_TYPE:
+
+	Get the #GType for a #AppIndicator.
+*/
+/**
+	APP_INDICATOR:
+	@obj: The object to convert
+
+	Safely convert a #GObject into an #AppIndicator.
+*/
+/**
+	APP_INDICATOR_CLASS:
+	@klass: #GObjectClass based class to convert.
+
+	Safely convert a #GObjectClass into a #AppIndicatorClass.
+*/
+/**
+	IS_APP_INDICATOR:
+	@obj: An #GObject to check
+
+	Checks to see if @obj is in the object hierarchy of #AppIndicator.
+*/
+/**
+	IS_APP_INDICATOR_CLASS:
+	@klass: An #GObjectClass to check
+
+	Checks to see if @klass is in the object class hierarchy of #AppIndicatorClass.
+*/
+/**
+	APP_INDICATOR_GET_CLASS:
+	@obj: A #GObject in the class hierarchy of #AppIndicator.
+
+	Gets a pointer to the #AppIndicatorClass for the object @obj.
+*/
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
 #define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
