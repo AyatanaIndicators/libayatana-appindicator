@@ -91,5 +91,5 @@ EXTRA_DIST += version.xml.in
 #DISTCLEANFILES +=
 
 # Comment this out if you want your docs-status tested during 'make check'
-#TESTS = $(GTKDOC_CHECK)
+TESTS = $(GTKDOC_CHECK)
 
