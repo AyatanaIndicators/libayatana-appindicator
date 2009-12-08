@@ -1,10 +1,15 @@
 SUBDIRS = data		\
           src		\
-	  docs		\
 	  example	\
-	  tests
+	  tests		\
+	  docs
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall --enable-gtk-doc
+EXTRA_DIST = \
+	gtk-doc.make \
+	omf.make \
+	xmldocs.make
+
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-localinstall
 
 dist-hook:
 	@if test -d "$(top_srcdir)/.bzr"; \
