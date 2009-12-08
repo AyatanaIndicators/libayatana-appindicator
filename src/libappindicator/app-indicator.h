@@ -222,4 +222,21 @@ const gchar *                   app_indicator_get_attention_icon (AppIndicator *
 
 G_END_DECLS
 
+/**
+	SECTION:app-indicator
+	@short_description: An object to put application information
+		into the panel.
+	@stability: Unstable
+	@include: libappindicator/app-indicator.h
+
+	An application indicator is a way for an application to put
+	a menu into the panel on the user's screen.  This allows the
+	user to interact with the application even though it might
+	not be visible to the user at the time.  In most cases this
+	is not a good solution as there are other ways to inform the
+	user.  It should only be use if persistence is a desired
+	feature for the user (not for your marketing purpose of
+	having your logo in the panel).
+*/
+
 #endif
