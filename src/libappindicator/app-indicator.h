@@ -76,6 +76,26 @@ G_BEGIN_DECLS
 #define IS_APP_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APP_INDICATOR_TYPE))
 #define APP_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APP_INDICATOR_TYPE, AppIndicatorClass))
 
+/**
+	APP_INDICATOR_SIGNAL_NEW_ICON:
+
+	String identifier for the #AppIndicator::new-icon signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON:
+
+	String identifier for the #AppIndicator::new-attention-icon signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_NEW_STATUS:
+
+	String identifier for the #AppIndicator::new-status signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
+
+	String identifier for the #AppIndicator::connection-changed signal.
+*/
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
