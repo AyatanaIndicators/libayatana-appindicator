@@ -1,6 +1,6 @@
 <gapi-parser-input>
-	<api filename="../src/libappindicator-api.raw">
-		<library name="libappindicator-0.0-0.dll">
+	<api filename="libappindicator-api.raw">
+		<library name="libappindicator.so">
 			<namespace name="AppIndicator">
 				<directory path="../src/libappindicator">
 					<exclude>app-indicator-enum-types.h.in</exclude>
