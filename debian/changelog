@@ -1,4 +1,4 @@
-indicator-application (0.0.2-0ubuntu1~ppa2) UNRELEASED; urgency=low
+indicator-application (0.0.2-0ubuntu1~ppa2) karmic; urgency=low
 
   * Upstream update
     * Adding in documentation
@@ -6,7 +6,7 @@ indicator-application (0.0.2-0ubuntu1~ppa2) UNRELEASED; urgency=low
   * debian/libappindicator-dev.install: Adding pkgconfig files. 
   * debian/control: Adding a build dep on gtk-doc-tools 
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 09 Dec 2009 12:01:29 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 09 Dec 2009 12:08:33 -0600
 
 indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
 
