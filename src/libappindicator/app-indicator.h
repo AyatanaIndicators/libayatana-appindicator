@@ -34,6 +34,41 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
+/**
+	APP_INDICATOR_TYPE:
+
+	Get the #GType for a #AppIndicator.
+*/
+/**
+	APP_INDICATOR:
+	@obj: The object to convert
+
+	Safely convert a #GObject into an #AppIndicator.
+*/
+/**
+	APP_INDICATOR_CLASS:
+	@klass: #GObjectClass based class to convert.
+
+	Safely convert a #GObjectClass into a #AppIndicatorClass.
+*/
+/**
+	IS_APP_INDICATOR:
+	@obj: An #GObject to check
+
+	Checks to see if @obj is in the object hierarchy of #AppIndicator.
+*/
+/**
+	IS_APP_INDICATOR_CLASS:
+	@klass: An #GObjectClass to check
+
+	Checks to see if @klass is in the object class hierarchy of #AppIndicatorClass.
+*/
+/**
+	APP_INDICATOR_GET_CLASS:
+	@obj: A #GObject in the class hierarchy of #AppIndicator.
+
+	Gets a pointer to the #AppIndicatorClass for the object @obj.
+*/
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
 #define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
@@ -41,6 +76,26 @@ G_BEGIN_DECLS
 #define IS_APP_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APP_INDICATOR_TYPE))
 #define APP_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APP_INDICATOR_TYPE, AppIndicatorClass))
 
+/**
+	APP_INDICATOR_SIGNAL_NEW_ICON:
+
+	String identifier for the #AppIndicator::new-icon signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON:
+
+	String identifier for the #AppIndicator::new-attention-icon signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_NEW_STATUS:
+
+	String identifier for the #AppIndicator::new-status signal.
+*/
+/**
+	APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
+
+	String identifier for the #AppIndicator::connection-changed signal.
+*/
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
@@ -166,5 +221,22 @@ const gchar *                   app_indicator_get_icon           (AppIndicator *
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
 
 G_END_DECLS
+
+/**
+	SECTION:app-indicator
+	@short_description: An object to put application information
+		into the panel.
+	@stability: Unstable
+	@include: libappindicator/app-indicator.h
+
+	An application indicator is a way for an application to put
+	a menu into the panel on the user's screen.  This allows the
+	user to interact with the application even though it might
+	not be visible to the user at the time.  In most cases this
+	is not a good solution as there are other ways to inform the
+	user.  It should only be use if persistence is a desired
+	feature for the user (not for your marketing purpose of
+	having your logo in the panel).
+*/
 
 #endif

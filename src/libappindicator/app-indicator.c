@@ -549,7 +549,12 @@ category_from_enum (AppIndicatorCategory category)
         @icon_name: The icon name for this indicator
         @category: The category of indicator.
 
-        @returns: A pointer to a new #AppIndicator object.
+		Creates a new #AppIndicator setting the properties:
+		#AppIndicator::id with @id, #AppIndicator::category
+		with @category and #AppIndicator::icon-name with
+		@icon_name.
+
+        Return value: A pointer to a new #AppIndicator object.
  */
 AppIndicator *
 app_indicator_new (const gchar          *id,
@@ -566,8 +571,16 @@ app_indicator_new (const gchar          *id,
 }
 
 /**
+	app_indicator_get_type:
+
+	Generates or returns the unique #GType for #AppIndicator.
+
+	Return value: A unique #GType for #AppIndicator objects.
+*/
+
+/**
 	app_indicator_set_status:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 	@status: The status to set for this indicator
 
 	Wrapper function for property #AppIndicator::status.
@@ -588,7 +601,7 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 
 /**
 	app_indicator_set_attention_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 	@icon_name: The name of the attention icon to set for this indicator
 
 	Wrapper function for property #AppIndicator::attention-icon.
@@ -614,6 +627,10 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
         app_indicator_set_icon:
         @self: The #AppIndicator object to use
         @icon_name: The icon name to set.
+
+		Sets the default icon to use when the status is active but
+		not set to attention.  In most cases, this should be the
+		application icon for the program.
 **/
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
@@ -735,6 +752,10 @@ setup_dbusmenu (AppIndicator *self)
         app_indicator_set_menu:
         @self: The #AppIndicator
         @menu: A #GtkMenu to set
+
+		Sets the menu that should be shown when the Application Indicator
+		is clicked on in the panel.  An application indicator will not
+		be rendered unless it has a menu.
 **/
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
@@ -761,7 +782,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
 /**
 	app_indicator_get_id:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::id.
 
@@ -777,7 +798,7 @@ app_indicator_get_id (AppIndicator *self)
 
 /**
 	app_indicator_get_category:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::category.
 
@@ -793,7 +814,7 @@ app_indicator_get_category (AppIndicator *self)
 
 /**
 	app_indicator_get_status:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::status.
 
@@ -809,7 +830,7 @@ app_indicator_get_status (AppIndicator *self)
 
 /**
 	app_indicator_get_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::icon-name.
 
@@ -825,7 +846,7 @@ app_indicator_get_icon (AppIndicator *self)
 
 /**
 	app_indicator_get_attention_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::attention-icon-name.
 
