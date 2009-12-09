@@ -86,6 +86,7 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/libappindicator/appindicator-0.1.pc
 data/Makefile
 tests/Makefile
 example/Makefile
