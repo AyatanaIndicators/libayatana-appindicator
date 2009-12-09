@@ -2,3 +2,4 @@ debian/tmp/usr/include/libappindicator-0.1/*
 debian/tmp/usr/lib/libappindicator.so
 debian/tmp/usr/lib/libappindicator.a
 debian/tmp/usr/lib/libappindicator.la
+debian/tmp/usr/lib/pkgconfig/*
