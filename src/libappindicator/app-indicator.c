@@ -633,16 +633,84 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 static void
+activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
+{
+  GtkWidget *widget = (GtkWidget *)user_data;
+
+  gtk_menu_item_activate (GTK_MENU_ITEM (widget));
+}
+
+static void
+menuitem_iterate (GtkWidget *widget,
+                  gpointer   data)
+{
+  if (GTK_IS_LABEL (widget))
+    {
+      DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      gtk_label_get_text (GTK_LABEL (widget)));
+    }
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
   DbusmenuMenuitem *child;
+  const gchar *label;
+  gboolean label_set = FALSE;
+
+  label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
 
   child = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (child,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+
+  if (GTK_IS_IMAGE_MENU_ITEM (widget))
+    {
+      GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+
+      if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
+        {
+          GtkStockItem stock;
+
+          gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_ICON,
+                                          GTK_IMAGE (image)->data.stock.stock_id);
+
+          if (stock.label != NULL)
+            {
+              dbusmenu_menuitem_property_set (child,
+                                              DBUSMENU_MENUITEM_PROP_LABEL,
+                                              stock.label);
+              label_set = TRUE;
+            }
+        }
+    }
+
+  if (!label_set)
+    {
+      if (label != NULL)
+        {
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+        }
+      else
+        {
+          /* find label child widget */
+          gtk_container_forall (GTK_CONTAINER (widget),
+                                menuitem_iterate,
+                                child);
+        }
+    }
+
+  g_signal_connect (G_OBJECT (child),
+                    DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                    G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
 }
 

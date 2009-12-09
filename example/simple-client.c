@@ -26,6 +26,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GMainLoop * mainloop = NULL;
 
+static void
+item_clicked_cb (GtkWidget *widget, gpointer data)
+{
+  const gchar *text = (const gchar *)data;
+
+  g_print ("%s clicked!\n", text);
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -46,12 +54,18 @@ main (int argc, char ** argv)
 
         menu = gtk_menu_new ();
         GtkWidget *item = gtk_menu_item_new_with_label ("1");
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (item_clicked_cb), "1");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
         item = gtk_menu_item_new_with_label ("2");
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (item_clicked_cb), "2");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
         item = gtk_menu_item_new_with_label ("3");
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (item_clicked_cb), "3");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
         app_indicator_set_menu (ci, GTK_MENU (menu));
