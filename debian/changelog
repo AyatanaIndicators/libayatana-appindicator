@@ -4,6 +4,7 @@ indicator-application (0.0.2-0ubuntu1~ppa2) UNRELEASED; urgency=low
     * Adding in documentation
     * Adding a pkg-config .pc file for libappindicator
   * debian/libappindicator-dev.install: Adding pkgconfig files. 
+  * debian/control: Adding a build dep on gtk-doc-tools 
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 09 Dec 2009 12:01:29 -0600
 
