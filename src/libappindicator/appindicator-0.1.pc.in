@@ -5,8 +5,8 @@ bindir=@bindir@
 includedir=@includedir@
 
 Cflags: -I${includedir}/libappindicator-0.1
-Requires: indicator dbusmenu-gtk gtk+-2.0
-Libs: -L${libdir} -ldbusmenu-glib
+Requires: dbusmenu-glib gtk+-2.0
+Libs: -L${libdir} -lappindicator
 
 Name: appindicator-0.1
 Description: Application indicators
