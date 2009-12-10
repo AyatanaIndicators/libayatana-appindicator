@@ -20,6 +20,8 @@ indicator-application (0.0.3-0ubuntu1) UNRELEASED; urgency=low
     - added simple-patchsys.mk
   * debian/patches/clean_up_docs.patch
     - Remove template values and set a proper title
+  * debian/copyright
+    - Include the proper licenses (LGPL-2.1 and LGPL-3)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
