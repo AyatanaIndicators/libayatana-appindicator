@@ -1,0 +1,21 @@
+=== modified file 'docs/reference/libappindicator-docs.sgml'
+--- docs/reference/libappindicator-docs.sgml	2009-12-08 19:22:45 +0000
++++ docs/reference/libappindicator-docs.sgml	2009-12-10 20:40:50 +0000
+@@ -7,15 +7,10 @@
+ <book id="index">
+   <bookinfo>
+     <title>libappindicator Reference Manual</title>
+-    <releaseinfo>
+-      for libappindicator [VERSION]
+-      The latest version of this documentation can be found on-line at
+-      <ulink role="online-location" url="http://[SERVER]/libappindicator/index.html">http://[SERVER]/libappindicator/</ulink>.
+-    </releaseinfo>
+   </bookinfo>
+ 
+   <chapter>
+-    <title>[Insert title here]</title>
++    <title>Base Classes for Applications</title>
+         <xi:include href="xml/app-indicator.xml"/>
+ 
+   </chapter>
+
