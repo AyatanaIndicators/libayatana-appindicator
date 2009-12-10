@@ -6,6 +6,7 @@ indicator-application (0.0.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * More GtkMenu support in libappindicator
   * debian/libappindicator-dev.install: Adding pkgconfig files. 
   * debian/control: Adding a build dep on gtk-doc-tools 
+  * debian/control: Increasing libdbusmenu requirements to 0.1.8
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:21:57 -0600
 
