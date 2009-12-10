@@ -11,6 +11,10 @@ indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
   [Ken VanDine]
   * debian/control
     - set Vcs-Bzr to ~ubuntu-desktop
+  * debian/libappindicator-doc.install
+    - install the developer docs
+  * debian/rules
+    - enable-gtk-doc
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
