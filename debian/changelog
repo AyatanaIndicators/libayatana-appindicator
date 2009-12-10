@@ -1,4 +1,4 @@
-indicator-application (0.0.3-0ubuntu1~ppa1) karmic; urgency=low
+indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.0.3
     * Adding in documentation
@@ -7,6 +7,17 @@ indicator-application (0.0.3-0ubuntu1~ppa1) karmic; urgency=low
   * debian/libappindicator-dev.install: Adding pkgconfig files. 
   * debian/control: Adding a build dep on gtk-doc-tools 
   * debian/control: Increasing libdbusmenu requirements to 0.1.8
+
+  [Ken VanDine]
+  * debian/control
+    - set Vcs-Bzr to ~ubuntu-desktop
+  * debian/libappindicator-doc.install
+    - install the developer docs
+  * debian/rules
+    - enable-gtk-doc
+    - added simple-patchsys.mk
+  * debian/patches/clean_up_docs.patch
+    - Remove template values and set a proper title
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
