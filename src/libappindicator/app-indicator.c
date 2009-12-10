@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <dbus/dbus-glib.h>
 #include <libdbusmenu-glib/server.h>
+#include <libdbusmenu-gtk/client.h>
 
 #include "libappindicator/app-indicator.h"
 #include "libappindicator/app-indicator-enum-types.h"
@@ -677,33 +678,42 @@ container_iterate (GtkWidget *widget,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
   DbusmenuMenuitem *child;
-  const gchar *label;
+  const gchar *label = NULL;
   gboolean label_set = FALSE;
-
-  label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
 
   child = dbusmenu_menuitem_new ();
 
-  if (GTK_IS_IMAGE_MENU_ITEM (widget))
+  if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
     {
-      GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+      dbusmenu_menuitem_property_set (child,
+                                      "type",
+                                      DBUSMENU_CLIENT_TYPES_SEPARATOR);
+    }
+  else
+    {
+      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
 
-      if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
+      if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
-          GtkStockItem stock;
+          GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 
-          gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
-
-          dbusmenu_menuitem_property_set (child,
-                                          DBUSMENU_MENUITEM_PROP_ICON,
-                                          GTK_IMAGE (image)->data.stock.stock_id);
-
-          if (stock.label != NULL)
+          if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
             {
+              GtkStockItem stock;
+
+              gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
+
               dbusmenu_menuitem_property_set (child,
-                                              DBUSMENU_MENUITEM_PROP_LABEL,
-                                              stock.label);
-              label_set = TRUE;
+                                              DBUSMENU_MENUITEM_PROP_ICON,
+                                              GTK_IMAGE (image)->data.stock.stock_id);
+
+              if (stock.label != NULL)
+                {
+                  dbusmenu_menuitem_property_set (child,
+                                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                                  stock.label);
+                  label_set = TRUE;
+                }
             }
         }
     }
