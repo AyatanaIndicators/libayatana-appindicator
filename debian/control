@@ -42,7 +42,8 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libdbus-glib-1-dev (>= 0.76)
+         libdbus-glib-1-dev (>= 0.76),
+         libappindicator0 (= ${binary:Version})
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in 
  the panel.
@@ -51,7 +52,7 @@ Description: Application Indicators
 
 Package: libappindicator-doc
 Section: doc
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libappindicator0 (= ${binary:Version})

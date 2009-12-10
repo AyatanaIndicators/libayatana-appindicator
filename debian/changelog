@@ -11,6 +11,8 @@ indicator-application (0.0.3-0ubuntu1) UNRELEASED; urgency=low
   [Ken VanDine]
   * debian/control
     - set Vcs-Bzr to ~ubuntu-desktop
+    - set libappindicator-doc arch all
+    - make libappindicator-dev depend on libappindicator0
   * debian/libappindicator-doc.install
     - install the developer docs
   * debian/rules
