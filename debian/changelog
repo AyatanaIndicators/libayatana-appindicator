@@ -1,7 +1,9 @@
-indicator-application (0.0.2-0ubuntu1~ppa3) lucid; urgency=low
+indicator-application (0.0.2-0~ppa3) karmic; urgency=low
 
   * debian/watch:
     - Updated url to point to the LP project 
+  * debian/control
+    - Updated Vcs-Bzr, project urls and description
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
 
