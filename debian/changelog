@@ -1,3 +1,10 @@
+indicator-application (0.0.2-0ubuntu1~ppa3) lucid; urgency=low
+
+  * debian/watch:
+    - Updated url to point to the LP project 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
+
 indicator-application (0.0.2-0ubuntu1~ppa2) karmic; urgency=low
 
   * Upstream update
