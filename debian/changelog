@@ -15,6 +15,7 @@ indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
     - install the developer docs
   * debian/rules
     - enable-gtk-doc
+    - added simple-patchsys.mk
   * debian/patches/clean_up_docs.patch
     - Remove template values and set a proper title
 
