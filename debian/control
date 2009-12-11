@@ -7,7 +7,6 @@ Build-Depends: debhelper (>= 5.0),
                libgtk2.0-dev (>= 2.12.0),
                libdbus-glib-1-dev,
                gnome-doc-utils,
-               scrollkeeper,
                gtk-doc-tools,
                intltool,
                libindicate-dev (>= 0.2.0),
@@ -42,7 +41,8 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libdbus-glib-1-dev (>= 0.76)
+         libdbus-glib-1-dev (>= 0.76),
+         libappindicator0 (= ${binary:Version})
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in 
  the panel.
@@ -51,7 +51,7 @@ Description: Application Indicators
 
 Package: libappindicator-doc
 Section: doc
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libappindicator0 (= ${binary:Version})
