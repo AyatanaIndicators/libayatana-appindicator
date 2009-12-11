@@ -3,6 +3,7 @@ indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
   * Upstream release 0.0.4
   * debian/rules:
     - removed the disable-scrollkeeper configure arg
+    - don't include .la and .a files
   * debian/patches/clean_up_docs.patch
     - removed, merged upstream
   * debian/control:

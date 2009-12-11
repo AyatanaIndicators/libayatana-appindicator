@@ -7,3 +7,6 @@ include /usr/share/cdbs/1/rules/simple-patchsys.mk
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
+binary-post-install/indicator-application::
+	find debian/tmp/usr/lib -name \*.la -exec rm {} \;
+	find debian/tmp/usr/lib -name \*.a -exec rm {} \;
