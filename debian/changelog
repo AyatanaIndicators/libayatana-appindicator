@@ -2,8 +2,7 @@ indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.4
   * debian/rules:
-    - removed disable-scrollkeeper
-    - set DOC_SERVER used for docs
+    - removed the disable-scrollkeeper configure arg
   * debian/patches/clean_up_docs.patch
     - removed, merged upstream
   * debian/control:

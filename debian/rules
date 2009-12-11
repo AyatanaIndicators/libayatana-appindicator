@@ -4,7 +4,6 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-DOC_SERVER = people.canonical.com/~ted
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
 LDFLAGS += -Wl,-z,defs -Wl,--as-needed
 
