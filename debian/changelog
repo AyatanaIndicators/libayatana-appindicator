@@ -1,3 +1,9 @@
+indicator-application (0.0.3-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * debian/patches/clean_up_docs.patch: Remove as merged upstream.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 20:29:24 -0600
+
 indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
 
   * Upstream release 0.0.3
