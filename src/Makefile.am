@@ -1,7 +1,7 @@
 CLEANFILES = 
 DISTCLEANFILES = 
 BUILT_SOURCES = 
-EXTRA_DIST = 
+EXTRA_DIST = libappindicator/appindicator-0.1.pc.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -56,6 +56,9 @@ glib_marshal_prefix = _application_service_marshal
 ##################################
 # Library
 ##################################
+
+pkgconfig_DATA = libappindicator/appindicator-0.1.pc
+pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = libappindicator/app-indicator-enum-types.h
 glib_enum_c = libappindicator/app-indicator-enum-types.c

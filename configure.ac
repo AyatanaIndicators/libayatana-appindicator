@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-application, 0.0.2, ted@canonical.com)
+AC_INIT(indicator-application, 0.0.4, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-application, 0.0.2)
+AM_INIT_AUTOMAKE(indicator-application, 0.0.4)
 
 AM_MAINTAINER_MODE
 
@@ -26,11 +26,19 @@ AC_PATH_PROG([GLIB_GENMARSHAL], [glib-genmarshal])
 PKG_PROG_PKG_CONFIG
 
 ###########################
+# GTK Doc
+###########################
+
+GTK_DOC_CHECK([1.9])
+AC_CONFIG_MACRO_DIR(m4)
+
+
+###########################
 # Dependencies
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-INDICATOR_REQUIRED_VERSION=0.2.0
+INDICATOR_REQUIRED_VERSION=0.3.0
 DBUSMENUGTK_REQUIRED_VERSION=0.1.1
 
 PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
@@ -128,6 +136,7 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/libappindicator/appindicator-0.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config
@@ -135,6 +144,10 @@ bindings/mono/appindicator-sharp.pc
 data/Makefile
 tests/Makefile
 example/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/version.xml
+docs/reference/libappindicator-docs.sgml
 ])
 
 ###########################

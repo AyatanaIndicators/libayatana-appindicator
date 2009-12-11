@@ -33,6 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <dbus/dbus-glib.h>
 #include <libdbusmenu-glib/server.h>
+#include <libdbusmenu-gtk/client.h>
 
 #include "libappindicator/app-indicator.h"
 #include "libappindicator/app-indicator-enum-types.h"
@@ -549,7 +550,12 @@ category_from_enum (AppIndicatorCategory category)
         @icon_name: The icon name for this indicator
         @category: The category of indicator.
 
-        @returns: A pointer to a new #AppIndicator object.
+		Creates a new #AppIndicator setting the properties:
+		#AppIndicator::id with @id, #AppIndicator::category
+		with @category and #AppIndicator::icon-name with
+		@icon_name.
+
+        Return value: A pointer to a new #AppIndicator object.
  */
 AppIndicator *
 app_indicator_new (const gchar          *id,
@@ -566,8 +572,16 @@ app_indicator_new (const gchar          *id,
 }
 
 /**
+	app_indicator_get_type:
+
+	Generates or returns the unique #GType for #AppIndicator.
+
+	Return value: A unique #GType for #AppIndicator objects.
+*/
+
+/**
 	app_indicator_set_status:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 	@status: The status to set for this indicator
 
 	Wrapper function for property #AppIndicator::status.
@@ -588,7 +602,7 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 
 /**
 	app_indicator_set_attention_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 	@icon_name: The name of the attention icon to set for this indicator
 
 	Wrapper function for property #AppIndicator::attention-icon.
@@ -614,6 +628,10 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
         app_indicator_set_icon:
         @self: The #AppIndicator object to use
         @icon_name: The icon name to set.
+
+		Sets the default icon to use when the status is active but
+		not set to attention.  In most cases, this should be the
+		application icon for the program.
 **/
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
@@ -641,17 +659,83 @@ activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
 }
 
 static void
+menuitem_iterate (GtkWidget *widget,
+                  gpointer   data)
+{
+  if (GTK_IS_LABEL (widget))
+    {
+      DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      gtk_label_get_text (GTK_LABEL (widget)));
+    }
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
   DbusmenuMenuitem *child;
+  const gchar *label = NULL;
+  gboolean label_set = FALSE;
 
   child = dbusmenu_menuitem_new ();
-  dbusmenu_menuitem_property_set (child,
-                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                  gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
-  g_signal_connect (G_OBJECT(child),
+
+  if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
+    {
+      dbusmenu_menuitem_property_set (child,
+                                      "type",
+                                      DBUSMENU_CLIENT_TYPES_SEPARATOR);
+    }
+  else
+    {
+      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+
+      if (GTK_IS_IMAGE_MENU_ITEM (widget))
+        {
+          GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+
+          if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
+            {
+              GtkStockItem stock;
+
+              gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
+
+              dbusmenu_menuitem_property_set (child,
+                                              DBUSMENU_MENUITEM_PROP_ICON,
+                                              GTK_IMAGE (image)->data.stock.stock_id);
+
+              if (stock.label != NULL)
+                {
+                  dbusmenu_menuitem_property_set (child,
+                                                  DBUSMENU_MENUITEM_PROP_LABEL,
+                                                  stock.label);
+                  label_set = TRUE;
+                }
+            }
+        }
+    }
+
+  if (!label_set)
+    {
+      if (label != NULL)
+        {
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+        }
+      else
+        {
+          /* find label child widget */
+          gtk_container_forall (GTK_CONTAINER (widget),
+                                menuitem_iterate,
+                                child);
+        }
+    }
+
+  g_signal_connect (G_OBJECT (child),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
@@ -678,6 +762,10 @@ setup_dbusmenu (AppIndicator *self)
         app_indicator_set_menu:
         @self: The #AppIndicator
         @menu: A #GtkMenu to set
+
+		Sets the menu that should be shown when the Application Indicator
+		is clicked on in the panel.  An application indicator will not
+		be rendered unless it has a menu.
 **/
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
@@ -704,7 +792,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
 /**
 	app_indicator_get_id:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::id.
 
@@ -720,7 +808,7 @@ app_indicator_get_id (AppIndicator *self)
 
 /**
 	app_indicator_get_category:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::category.
 
@@ -736,7 +824,7 @@ app_indicator_get_category (AppIndicator *self)
 
 /**
 	app_indicator_get_status:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::status.
 
@@ -752,7 +840,7 @@ app_indicator_get_status (AppIndicator *self)
 
 /**
 	app_indicator_get_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::icon-name.
 
@@ -768,7 +856,7 @@ app_indicator_get_icon (AppIndicator *self)
 
 /**
 	app_indicator_get_attention_icon:
-	@ci: The #AppIndicator object to use
+	@self: The #AppIndicator object to use
 
 	Wrapper function for property #AppIndicator::attention-icon-name.
 
