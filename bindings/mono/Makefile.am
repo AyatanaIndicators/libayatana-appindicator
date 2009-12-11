@@ -1,5 +1,5 @@
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = appindicator-sharp.pc
+pkgconfig_DATA = appindicator-sharp-0.1.pc
 
 API = libappindicator-api.xml
 RAW_API = libappindicator-api.raw
@@ -11,7 +11,7 @@ assemblydir = $(libdir)/appindicator-sharp
 assembly_DATA = $(TARGET)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API)
 DISTCLEANFILES = $(ASSEMBLY).config
-EXTRA_DIST = $(RAW_API) $(METADATA) appindicator-sharp.pc.in appindicator-sharp.dll.config.in
+EXTRA_DIST = $(RAW_API) $(METADATA) appindicator-sharp-0.1.pc.in appindicator-sharp.dll.config.in
 
 references = $(GTK_SHARP_LIBS)
 

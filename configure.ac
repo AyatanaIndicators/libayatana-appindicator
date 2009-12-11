@@ -140,7 +140,7 @@ src/libappindicator/appindicator-0.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config
-bindings/mono/appindicator-sharp.pc
+bindings/mono/appindicator-sharp-0.1.pc
 data/Makefile
 tests/Makefile
 example/Makefile
