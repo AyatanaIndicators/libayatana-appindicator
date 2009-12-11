@@ -11,6 +11,8 @@ indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
 
+indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
+
   * Upstream release 0.0.3
     * Adding in documentation
     * Adding a pkg-config .pc file for libappindicator
