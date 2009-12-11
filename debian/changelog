@@ -1,8 +1,12 @@
-indicator-application (0.0.3-0ubuntu2~ppa1) karmic; urgency=low
+indicator-application (0.0.4-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  * Upstream release 0.0.4
+    * Adding files to the tarball
+    * Putting version number in docs
+    * Removing cruft in docs
   * debian/patches/clean_up_docs.patch: Remove as merged upstream.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 20:31:52 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 11 Dec 2009 10:37:42 -0600
 
 indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
 

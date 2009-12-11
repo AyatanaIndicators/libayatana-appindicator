@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-application, 0.0.3, ted@canonical.com)
+AC_INIT(indicator-application, 0.0.4, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-application, 0.0.3)
+AM_INIT_AUTOMAKE(indicator-application, 0.0.4)
 
 AM_MAINTAINER_MODE
 
@@ -93,6 +93,7 @@ example/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/version.xml
+docs/reference/libappindicator-docs.sgml
 ])
 
 ###########################
