@@ -7,6 +7,9 @@
 <book id="index">
   <bookinfo>
     <title>libappindicator Reference Manual</title>
+    <releaseinfo>
+      for libappindicator @VERSION@
+    </releaseinfo>
   </bookinfo>
 
   <chapter>

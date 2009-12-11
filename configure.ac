@@ -93,6 +93,7 @@ example/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/version.xml
+docs/reference/libappindicator-docs.sgml
 ])
 
 ###########################
