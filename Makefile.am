@@ -1,8 +1,9 @@
-SUBDIRS = data \
-          src \
-          sources \
-		  example \
-		  tests
+SUBDIRS =		\
+	data		\
+	src		\
+	bindings	\
+	example		\
+	tests
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-localinstall
 

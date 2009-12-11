@@ -128,9 +128,10 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
-sources/Makefile
-sources/appindicator-sharp.dll.config
-sources/appindicator-sharp.pc
+bindings/Makefile
+bindings/mono/Makefile
+bindings/mono/appindicator-sharp.dll.config
+bindings/mono/appindicator-sharp.pc
 data/Makefile
 tests/Makefile
 example/Makefile
