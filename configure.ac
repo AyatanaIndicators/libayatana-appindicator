@@ -26,7 +26,7 @@ AC_PATH_PROG([GLIB_GENMARSHAL], [glib-genmarshal])
 PKG_PROG_PKG_CONFIG
 
 ###########################
-# Dependencies 
+# Dependencies
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
@@ -39,6 +39,55 @@ PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
+
+###########################
+# Check for Mono support
+###########################
+MONO_REQUIRED_VERSION=1.0
+PKG_CHECK_MODULES(MONO_DEPENDENCY, mono >= $MONO_REQUIRED_VERSION, has_mono=true, has_mono=false)
+
+AC_PATH_PROG(AL, al, no)
+if test "x$AL" = "xno" ; then
+   AC_MSG_ERROR([No al tool found.  You need to install Mono.])
+fi
+
+if test "x$has_mono" = "xtrue" ; then
+   GENERATED_SOURCES=generated/*.cs
+   AC_PATH_PROG(RUNTIME, mono, no)
+
+   if test "x$RUNTIME" != "no" ; then
+      RUNTIME=mono
+   fi
+
+   AC_PATH_PROG(CSC, gmcs, no)
+   LIB_PREFIX=.so
+   LIB_SUFFIX=
+fi
+
+if test "x$CSC" = "xno" ; then
+   AC_MSG_ERROR([No Mono compiler found.])
+fi
+
+AC_SUBST(RUNTIME)
+AC_SUBST(CSC)
+AC_SUBST(LIB_PREFIX)
+AC_SUBST(LIB_SUFFIX)
+AC_SUBST(GENERATED_SOURCES)
+
+GLIB_SHARP_REQ_VERSION=2.12.1
+GTK_SHARP_REQ_VERSION=2.12
+PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 >= $GTK_SHARP_REQ_VERSION)
+AC_SUBST(GTK_SHARP_LIBS)
+AC_SUBST(GTK_SHARP_CFLAGS)
+
+PKG_CHECK_MODULES(GAPI, gapi-2.0 >= $GLIB_SHARP_REQ_VERSION)
+AC_PATH_PROG(GAPI_PARSER, gapi2-parser, no)
+AC_SUBST(GAPI_PARSER)
+AC_PATH_PROG(GAPI_CODEGEN, gapi2-codegen, no)
+AC_SUBST(GAPI_CODEGEN)
+AC_PATH_PROG(GAPI_FIXUP, gapi2-fixup, no)
+AC_SUBST(GAPI_FIXUP)
+
 
 ###########################
 # Check to see if we're local
@@ -79,6 +128,9 @@ AC_SUBST(DBUSSERVICEDIR)
 AC_OUTPUT([
 Makefile
 src/Makefile
+sources/Makefile
+sources/appindicator-sharp.dll.config
+sources/appindicator-sharp.pc
 data/Makefile
 tests/Makefile
 example/Makefile

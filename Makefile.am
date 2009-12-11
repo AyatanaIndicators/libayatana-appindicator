@@ -1,5 +1,6 @@
 SUBDIRS = data \
           src \
+          sources \
 		  example \
 		  tests
 
