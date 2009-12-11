@@ -1,4 +1,13 @@
-indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
+indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.4
+  * debian/rules:
+    - removed disable-scrollkeeper
+    - set DOC_SERVER used for docs
+  * debian/patches/clean_up_docs.patch
+    - removed, merged upstream
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
 
   * Upstream release 0.0.3
     * Adding in documentation
