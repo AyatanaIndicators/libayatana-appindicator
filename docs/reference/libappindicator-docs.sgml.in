@@ -8,14 +8,12 @@
   <bookinfo>
     <title>libappindicator Reference Manual</title>
     <releaseinfo>
-      for libappindicator [VERSION]
-      The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://[SERVER]/libappindicator/index.html">http://[SERVER]/libappindicator/</ulink>.
+      for libappindicator @VERSION@
     </releaseinfo>
   </bookinfo>
 
   <chapter>
-    <title>[Insert title here]</title>
+    <title>Base Classes for Applications</title>
         <xi:include href="xml/app-indicator.xml"/>
 
   </chapter>
