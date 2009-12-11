@@ -6,6 +6,8 @@ indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
     - set DOC_SERVER used for docs
   * debian/patches/clean_up_docs.patch
     - removed, merged upstream
+  * debian/control:
+    - removed Build-Depend for scrollkeeper
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
 
