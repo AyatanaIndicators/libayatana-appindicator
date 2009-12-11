@@ -8,6 +8,7 @@ indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
     - removed, merged upstream
   * debian/control:
     - removed Build-Depend for scrollkeeper
+    - libappindicator-dev needs to depend on libdbusmenu-glib-dev
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
 

@@ -41,6 +41,7 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         libdbusmenu-glib-dev (>= 0.1.8),
          libdbus-glib-1-dev (>= 0.76),
          libappindicator0 (= ${binary:Version})
 Description: Application Indicators
