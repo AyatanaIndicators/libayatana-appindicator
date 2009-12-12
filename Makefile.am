@@ -1,8 +1,9 @@
 SUBDIRS = data		\
-          src		\
-	  example	\
-	  tests		\
-	  docs
+	src	\
+	python \
+	example	\
+	tests \
+	docs
 
 EXTRA_DIST = \
 	gtk-doc.make \
