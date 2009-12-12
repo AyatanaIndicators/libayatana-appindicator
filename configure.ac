@@ -96,6 +96,8 @@ AC_SUBST(GAPI_CODEGEN)
 AC_PATH_PROG(GAPI_FIXUP, gapi2-fixup, no)
 AC_SUBST(GAPI_FIXUP)
 
+PKG_CHECK_MODULES(NUNIT, nunit-2.4 >= 2.4.7)
+AC_SUBST(NUNIT_LIBS)
 
 ###########################
 # Check to see if we're local
@@ -141,6 +143,8 @@ bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config
 bindings/mono/appindicator-sharp-0.1.pc
+bindings/mono/examples/Makefile
+bindings/mono/examples/indicator-example
 data/Makefile
 tests/Makefile
 example/Makefile

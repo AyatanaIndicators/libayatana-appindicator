@@ -1,5 +1,9 @@
+SUBDIRS = . examples
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = appindicator-sharp-0.1.pc
+
+TEST = AppIndicator.Test.dll
 
 API = libappindicator-api.xml
 RAW_API = libappindicator-api.raw
@@ -9,11 +13,14 @@ ASSEMBLY = appindicator-sharp.dll
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config
 assemblydir = $(libdir)/appindicator-sharp
 assembly_DATA = $(TARGET)
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API)
+CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
 EXTRA_DIST = $(RAW_API) $(METADATA) appindicator-sharp-0.1.pc.in appindicator-sharp.dll.config.in app-indicator.sources.xml
 
+TEST_SOURCES = TestIndicator.cs
+
 references = $(GTK_SHARP_LIBS)
+test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
 
 $(RAW_API): app-indicator.sources.xml
 	$(GAPI_PARSER) app-indicator.sources.xml
@@ -37,3 +44,8 @@ generated-stamp: $(API)
 $(ASSEMBLY): generated-stamp
 	@rm -f $(ASSEMBLY).mdb
 	$(CSC) $(CSFLAGS) -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(GENERATED_SOURCES)
+
+$(TEST): $(ASSEMBLY)
+	$(CSC) -out:$(TEST) -target:library $(test_references) $(TEST_SOURCES)
+
+all: $(TEST)
