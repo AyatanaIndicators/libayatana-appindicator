@@ -3,6 +3,7 @@ defs_DATA = appindicator.defs
 
 #CFLAGS = -Wall -Werror
 INCLUDES = \
+		-I$(top_srcdir)/src \
         -DG_LOG_DOMAIN=\"appindicator-python\" \
         -DDATADIR=\"$(datadir)\" \
         -DLIBDIR=\"$(libdir)\" \
@@ -19,7 +20,7 @@ appindicatordir = $(pkgpyexecdir)/appindicator
 appindicator_LTLIBRARIES = _appindicator.la
 
 _appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator -lpyglib-2.0-python2.6
-_appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) 
+_appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) -L$(top_builddir)/src/.libs -lappindicator
 _appindicator_la_SOURCES = appindicatormodule.c
 nodist__appindicator_la_SOURCES = appindicator.c
 
