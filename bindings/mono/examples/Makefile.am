@@ -6,7 +6,7 @@ EXTRA_DIST = $(CSFILES)
 
 references = $(GTK_SHARP_LIBS) -r:$(top_builddir)/bindings/mono/appindicator-sharp.dll
 
-$(ASSEMBLY):
-	$(CSC) $(CSFLAGS) -out:$(ASSEMBLY) -target:exe $(references) $(CSFILES)
+$(ASSEMBLY): $(CSFILES) Makefile.am
+	$(CSC) $(CSFLAGS) -out:$(ASSEMBLY) -target:exe $(references) $(srcdir)/$(CSFILES)
 
 all: $(ASSEMBLY)
