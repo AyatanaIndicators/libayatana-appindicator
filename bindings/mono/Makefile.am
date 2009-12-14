@@ -33,7 +33,7 @@ $(API): $(METADATA) $(RAW_API)
 		$(GAPI_FIXUP) --api=$(API) --metadata=$(srcdir)/$(METADATA);		\
 	fi
 
-api_includes = `pkg-config --cflags gtk-sharp-2.0`
+api_includes = $(GTK_SHARP_CFLAGS)
 
 generated-stamp: $(API)
 	rm -f generated/* &&					\
