@@ -15,7 +15,13 @@ assemblydir = $(libdir)/appindicator-sharp
 assembly_DATA = $(TARGET)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
-EXTRA_DIST = $(RAW_API) $(METADATA) appindicator-sharp-0.1.pc.in appindicator-sharp.dll.config.in app-indicator.sources.xml
+EXTRA_DIST = \
+	$(RAW_API) \
+	$(METADATA) \
+	appindicator-sharp-0.1.pc.in \
+	appindicator-sharp.dll.config.in \
+	app-indicator.sources.xml \
+	$(TEST_SOURCES)
 
 TEST_SOURCES = TestIndicator.cs
 
@@ -43,9 +49,9 @@ generated-stamp: $(API)
 
 $(ASSEMBLY): generated-stamp
 	@rm -f $(ASSEMBLY).mdb
-	$(CSC) $(CSFLAGS) -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(GENERATED_SOURCES)
+	$(CSC) $(CSFLAGS) -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES)
 
-$(TEST): $(ASSEMBLY)
-	$(CSC) -out:$(TEST) -target:library $(test_references) $(TEST_SOURCES)
+$(TEST): $(ASSEMBLY) $(TEST_SOURCES)
+	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
