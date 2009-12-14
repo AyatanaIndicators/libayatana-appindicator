@@ -11,6 +11,7 @@
 	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ICON_NAME_S']" name="name">IconName</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ATTENTION_ICON_NAME_S']" name="name">AttentionIconName</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="name">Menu</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="type">GtkMenu*</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CONNECTED_S']" name="name">Connected</attr>
         <attr path="/api/namespace/object[@cname='AppIndicator']/method[@name='SetMenu']" name="name">SetMenu</attr>
 </metadata>
