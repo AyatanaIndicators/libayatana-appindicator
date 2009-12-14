@@ -1,10 +1,10 @@
-indicator-application (0.0.4-0ubuntu1~ppa2) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu1~ppa2) karmic; urgency=low
 
   * Upstream work
     * Mono bindings
   * debian/control: Adding in mono build depends.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 14 Dec 2009 11:15:01 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 14 Dec 2009 11:25:45 -0600
 
 indicator-application (0.0.4-0ubuntu1~ppa1) karmic; urgency=low
 
