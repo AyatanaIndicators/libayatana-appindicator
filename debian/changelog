@@ -1,7 +1,7 @@
 indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
 
   * debian/control
-    - make libappindicator0 depend on indicator-application
+    - make libappindicator0 recommend indicator-application
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 15 Dec 2009 10:40:07 -0500
 
