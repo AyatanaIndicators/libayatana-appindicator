@@ -107,14 +107,14 @@ DBUS_SPECS = \
 
 %-client.h: %.xml
 	dbus-binding-tool \
-		--prefix=_$(subst -,_,$(<:.xml=))_client \
+		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_client \
 		--mode=glib-client \
 		--output=$@ \
 		$<
 
 %-server.h: %.xml
 	dbus-binding-tool \
-		--prefix=_$(subst -,_,$(<:.xml=))_server \
+		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_server \
 		--mode=glib-server \
 		--output=$@ \
 		$<
