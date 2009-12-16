@@ -1,0 +1,3 @@
+SUBDIRS =		\
+	mono		\
+	python

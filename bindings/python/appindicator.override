@@ -1,0 +1,65 @@
+/*
+Python bindings for libappindicator.
+
+Copyright 2009 Canonical Ltd.
+
+Authors:
+    Eitan Isaacson <eitan@ascender.com> (original)
+    Neil Jagdish Patel <neil.patel@canonical.com>
+
+This program is free software: you can redistribute it and/or modify it 
+under the terms of either or both of the following licenses:
+
+1) the GNU Lesser General Public License version 3, as published by the 
+Free Software Foundation; and/or
+2) the GNU Lesser General Public License version 2.1, as published by 
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranties of 
+MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the applicable version of the GNU Lesser General Public 
+License for more details.
+
+You should have received a copy of both the GNU Lesser General Public 
+License version 3 and version 2.1 along with this program.  If not, see 
+<http://www.gnu.org/licenses/>
+*/
+%%
+headers
+#include <Python.h>
+#include "../src/libappindicator/app-indicator.h"
+#include "../src/libappindicator/app-indicator-enum-types.h"
+#include <glib.h>
+#include "pygobject.h"
+#include "pyglib.h"
+#include <pygtk/pygtk.h>
+
+typedef PyObject* (*to_pyobject_func) (gpointer data);
+
+#define APP_TYPE_INDICATOR APP_INDICATOR_TYPE
+
+void
+_appindicator_add_constants(PyObject *module, const gchar *strip_prefix)
+{
+#ifdef VERSION
+        PyModule_AddStringConstant(module, "__version__", VERSION);
+#endif
+        pyg_enum_add(module,
+                     "IndicatorCategory", 
+                     strip_prefix,
+                     APP_INDICATOR_TYPE_INDICATOR_CATEGORY);
+
+        pyg_enum_add(module,
+                     "IndicatorStatus", 
+                     strip_prefix,
+                     APP_INDICATOR_TYPE_INDICATOR_STATUS);
+
+        if (PyErr_Occurred())
+                PyErr_Print();
+}
+%%
+modulename appindicator
+%%
+import gobject.GObject as PyGObject_Type
+import gtk.Menu as PyGtkMenu_Type
