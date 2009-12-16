@@ -19,13 +19,13 @@ configure-stamp-%:
 configure/python-appindicator:: $(addprefix configure-stamp-, $(PY_VERSIONS))
 
 build-stamp-%:
-	make -C build-$*/python
+	make -C build-$*/bindings/python
 	touch $@
 
 build/python-appindicator:: $(addprefix build-stamp-, $(PY_VERSIONS))
 
 install-stamp-%:
-	make -C build-$*/python install DESTDIR=$(CURDIR)/debian/tmp
+	make -C build-$*/bindings/python install DESTDIR=$(CURDIR)/debian/tmp
 	touch $@
 
 install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
