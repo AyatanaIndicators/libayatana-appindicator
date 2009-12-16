@@ -1,3 +1,17 @@
+indicator-application (0.0.4.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * debian/rules
+    - don't use gnome.mk, specify all the targets to build python
+      bindings for each supported python version
+
+  [Ted Gould]
+  * Adding in Python bindings.
+  * debian/control, debian/python-appindicator.install: Building
+    a binary package for the python bindings.
+  * debian/control: Adding python building build deps
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 16 Dec 2009 14:36:05 -0500
+
 indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
 
   * debian/control
