@@ -1,4 +1,4 @@
-indicator-application (0.0.5-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu3) UNRELEASED; urgency=low
 
   * Added mono bindings 
   * debian/rules
