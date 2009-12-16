@@ -1,14 +1,16 @@
 #!/usr/bin/make -f
 
-
 DEB_PYTHON_SYSTEM=pycentral
 PY_VERSIONS = $(shell pyversions --requested debian/control)
+export MONO_SHARED_DIR=$(CURDIR)
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools-vars.mk
+include /usr/share/cdbs/1/rules/utils.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
+API_VERSION = 0.1
 
 configure-stamp-%:
 	mkdir build-$*
@@ -29,7 +31,6 @@ install-stamp-%:
 	touch $@
 
 install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
-
 
 binary-install/python-appindicator::
 	dh_pycentral
@@ -56,9 +57,20 @@ binary-post-install/indicator-application::
 	find debian/indicator-application/usr/lib -name \*.la -exec rm {} \;
 	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
 
+binary/libappindicator0-cil:: binary-arch
+binary-arch: 
+	dh_clifixperms -i
+	dh_installdeb -i
+	dh_makeclilibs -m $(API_VERSION)
+	dh_clideps -i -d
+
+
+common-binary-predeb-arch:: list-missing
+
 clean::
 	-rm -rf $(addprefix build-, $(PY_VERSIONS))
 	-rm -rf $(addprefix configure-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
+	rm -rf $(MONO_SHARED_DIR)/.wapi
 
