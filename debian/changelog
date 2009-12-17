@@ -1,3 +1,9 @@
+indicator-application (0.0.4-0ubuntu3~ppa1) UNRELEASED; urgency=low
+
+  * Integrating a ton of work.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 00:20:59 -0600
+
 indicator-application (0.0.4-0ubuntu3) UNRELEASED; urgency=low
 
   * Added mono bindings 
