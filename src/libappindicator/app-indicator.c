@@ -754,8 +754,13 @@ setup_dbusmenu (AppIndicator *self)
                         container_iterate,
                         root);
 
-  priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+  if (priv->menuservice == NULL) {
+      priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+  }
+
   dbusmenu_server_set_root (priv->menuservice, root);
+
+  return;
 }
 
 /**
