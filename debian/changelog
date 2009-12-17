@@ -1,11 +1,11 @@
-indicator-application (0.0.4-0ubuntu3~ppa2) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu3~ppa2) karmic; urgency=low
 
   * Upstream updates:
     * Mono build fixes.
     * Mono metadata file cleanups.
   * debian/control: Adding a build-dep on nunit
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 08:33:58 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 08:42:33 -0600
 
 indicator-application (0.0.4-0ubuntu3~ppa1) karmic; urgency=low
 
