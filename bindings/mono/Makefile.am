@@ -13,8 +13,9 @@ ASSEMBLY = appindicator-sharp.dll
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config
 assemblydir = $(libdir)/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
+CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(ASSEMBLY_NAME).snk $(API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
+TEST_SOURCES = TestIndicator.cs
 EXTRA_DIST = \
 	$(RAW_API) \
 	$(METADATA) \
@@ -23,7 +24,7 @@ EXTRA_DIST = \
 	app-indicator.sources.xml \
 	$(TEST_SOURCES)
 
-TEST_SOURCES = TestIndicator.cs
+GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
 
 references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
@@ -49,7 +50,16 @@ generated-stamp: $(API)
 
 $(ASSEMBLY): generated-stamp
 	@rm -f $(ASSEMBLY).mdb
-	$(CSC) $(CSFLAGS) -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES)
+	$(SN) -k $(ASSEMBLY_NAME).snk
+	$(CSC) $(CSFLAGS) -keyfile:$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES)
+
+install-data-local:
+	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib";  \
+            $(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
+
+uninstall-local:
+	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"; \
+            $(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
 
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
