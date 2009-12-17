@@ -1,47 +1,23 @@
-indicator-application (0.0.4-0ubuntu3~ppa4) karmic; urgency=low
+indicator-application (0.0.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream updates:
-    * Fixing when menus are set twice.  (LP: #497812)
+  * Upstream release 0.0.5
+    * Include Python binding
+    * Include Mono binding
+    * Minor bug fixes
+      * Fixing when menus are set twice.  (LP: #497812)
+  * debian/control, debian/python-appindicator.install: Building
+    a binary package for the python bindings.
+  * debian/control: Adding python building build deps
+  * debian/control, debian/libappindicator0-cil.install: Building
+    a binary package for the Mono bindings.
+  * debian/control: Adding Mono building build deps
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 10:45:01 -0600
-
-indicator-application (0.0.4-0ubuntu3~ppa3) karmic; urgency=low
-
-  * debian/control: Removing architecture independent build
-    dependencies are no architecture dependent.
-  * debian/control: Fixing the libdbusmenu-glib version dep.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 09:13:58 -0600
-
-indicator-application (0.0.4-0ubuntu3~ppa2) karmic; urgency=low
-
-  * Upstream updates:
-    * Mono build fixes.
-    * Mono metadata file cleanups.
-  * debian/control: Adding a build-dep on nunit
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 08:42:33 -0600
-
-indicator-application (0.0.4-0ubuntu3~ppa1) karmic; urgency=low
-
-  * Integrating a ton of work.
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 00:24:13 -0600
-
-indicator-application (0.0.4-0ubuntu3) UNRELEASED; urgency=low
-
-  * Added mono bindings 
+  [ Ken VanDine ]
   * debian/rules
     - don't use gnome.mk, specify all the targets to build python
       bindings for each supported python version
 
-  [ Ted Gould ]
-  * Adding in Python bindings.
-  * debian/control, debian/python-appindicator.install: Building
-    a binary package for the python bindings.
-  * debian/control: Adding python building build deps
-
- -- Ken VanDine <ken.vandine@canonical.com>  Wed, 16 Dec 2009 14:36:05 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 13:14:53 -0600
 
 indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
 
