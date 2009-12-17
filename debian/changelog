@@ -1,4 +1,4 @@
-indicator-application (0.0.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.5-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.0.5
     * Include Python binding
@@ -17,7 +17,7 @@ indicator-application (0.0.5-0ubuntu1~ppa1) UNRELEASED; urgency=low
     - don't use gnome.mk, specify all the targets to build python
       bindings for each supported python version
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 13:14:53 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 13:21:47 -0600
 
 indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
 
