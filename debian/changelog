@@ -1,9 +1,9 @@
-indicator-application (0.0.4-0ubuntu3~ppa4) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu3~ppa4) karmic; urgency=low
 
   * Upstream updates:
     * Fixing when menus are set twice.  (LP: #497812)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 10:37:30 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 10:45:01 -0600
 
 indicator-application (0.0.4-0ubuntu3~ppa3) karmic; urgency=low
 
