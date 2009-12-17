@@ -1,3 +1,10 @@
+indicator-application (0.0.4-0ubuntu3~ppa3) UNRELEASED; urgency=low
+
+  * debian/control: Removing architecture independent build
+    dependencies are no architecture dependent.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 09:05:40 -0600
+
 indicator-application (0.0.4-0ubuntu3~ppa2) karmic; urgency=low
 
   * Upstream updates:
