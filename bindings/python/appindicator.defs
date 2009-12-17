@@ -1,0 +1,121 @@
+;; -*- scheme -*-
+; object definitions ...
+(define-object Indicator
+  (in-module "App")
+  (parent "GObject")
+  (c-name "AppIndicator")
+  (gtype-id "APP_TYPE_INDICATOR")
+)
+
+;; Enumerations and flags ...
+
+(define-enum IndicatorCategory
+  (in-module "App")
+  (c-name "AppIndicatorCategory")
+  (gtype-id "APP_INDICATOR_TYPE_INDICATOR_CATEGORY")
+  (values
+    '("application-status" "APP_INDICATOR_CATEGORY_APPLICATION_STATUS")
+    '("communications" "APP_INDICATOR_CATEGORY_COMMUNICATIONS")
+    '("system-services" "APP_INDICATOR_CATEGORY_SYSTEM_SERVICES")
+    '("hardware" "APP_INDICATOR_CATEGORY_HARDWARE")
+    '("other" "APP_INDICATOR_CATEGORY_OTHER")
+  )
+)
+
+(define-enum IndicatorStatus
+  (in-module "App")
+  (c-name "AppIndicatorStatus")
+  (gtype-id "APP_INDICATOR_TYPE_INDICATOR_STATUS")
+  (values
+    '("passive" "APP_INDICATOR_STATUS_PASSIVE")
+    '("active" "APP_INDICATOR_STATUS_ACTIVE")
+    '("attention" "APP_INDICATOR_STATUS_ATTENTION")
+  )
+)
+
+
+;; From app-indicator.h
+
+(define-function app_indicator_get_type
+  (c-name "app_indicator_get_type")
+  (return-type "GType")
+)
+
+(define-function app_indicator_new
+  (c-name "app_indicator_new")
+  (is-constructor-of "AppIndicator")
+  (return-type "AppIndicator*")
+  (parameters
+    '("const-gchar*" "id")
+    '("const-gchar*" "icon_name")
+    '("AppIndicatorCategory" "category")
+  )
+)
+
+(define-method set_status
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_status")
+  (return-type "none")
+  (parameters
+    '("AppIndicatorStatus" "status")
+  )
+)
+
+(define-method set_attention_icon
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_attention_icon")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_name")
+  )
+)
+
+(define-method set_menu
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_menu")
+  (return-type "none")
+  (parameters
+    '("GtkMenu*" "menu")
+  )
+)
+
+(define-method set_icon
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_icon")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_name")
+  )
+)
+
+(define-method get_id
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_id")
+  (return-type "const-gchar*")
+)
+
+(define-method get_category
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_category")
+  (return-type "AppIndicatorCategory")
+)
+
+(define-method get_status
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_status")
+  (return-type "AppIndicatorStatus")
+)
+
+(define-method get_icon
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_icon")
+  (return-type "const-gchar*")
+)
+
+(define-method get_attention_icon
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_attention_icon")
+  (return-type "const-gchar*")
+)
+
+
