@@ -1,10 +1,10 @@
-indicator-application (0.0.4-0ubuntu3~ppa3) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu3~ppa3) karmic; urgency=low
 
   * debian/control: Removing architecture independent build
     dependencies are no architecture dependent.
   * debian/control: Fixing the libdbusmenu-glib version dep.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 09:05:40 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 09:13:58 -0600
 
 indicator-application (0.0.4-0ubuntu3~ppa2) karmic; urgency=low
 
