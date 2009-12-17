@@ -278,6 +278,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
 	priv->menu = NULL;
+	priv->menuservice = NULL;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
