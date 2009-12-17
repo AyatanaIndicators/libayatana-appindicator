@@ -76,8 +76,20 @@ if test "x$CSC" = "xno" ; then
    AC_MSG_ERROR([No Mono compiler found.])
 fi
 
+AC_PATH_PROG(GACUTIL, gacutil, no)
+if test "x$GACUTIL" = "xno" ; then
+   AC_MSG_ERROR([No gacutil tool found])
+fi
+
+AC_PATH_PROG(SN, sn, no)
+if test "x$SN" = "xno" ; then
+   AC_MSG_ERROR([No sn tool found])
+fi
+
 AC_SUBST(RUNTIME)
 AC_SUBST(CSC)
+AC_SUBST(GACUTIL)
+AC_SUBST(SN)
 AC_SUBST(LIB_PREFIX)
 AC_SUBST(LIB_SUFFIX)
 AC_SUBST(GENERATED_SOURCES)
