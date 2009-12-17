@@ -13,7 +13,7 @@ ASSEMBLY = appindicator-sharp.dll
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config
 assemblydir = $(libdir)/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(ASSEMBLY_NAME).snk $(API) $(RAW_API) $(TEST)
+CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
 EXTRA_DIST = \
@@ -22,6 +22,7 @@ EXTRA_DIST = \
 	appindicator-sharp-0.1.pc.in \
 	appindicator-sharp.dll.config.in \
 	app-indicator.sources.xml \
+	$(ASSEMBLY_NAME).snk \
 	$(TEST_SOURCES)
 
 GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
@@ -50,7 +51,6 @@ generated-stamp: $(API)
 
 $(ASSEMBLY): generated-stamp
 	@rm -f $(ASSEMBLY).mdb
-	$(SN) -k $(ASSEMBLY_NAME).snk
 	$(CSC) $(CSFLAGS) -keyfile:$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES)
 
 install-data-local:
