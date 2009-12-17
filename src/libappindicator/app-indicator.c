@@ -278,6 +278,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
 	priv->menu = NULL;
+	priv->menuservice = NULL;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -754,8 +755,13 @@ setup_dbusmenu (AppIndicator *self)
                         container_iterate,
                         root);
 
-  priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+  if (priv->menuservice == NULL) {
+    priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+  }
+
   dbusmenu_server_set_root (priv->menuservice, root);
+
+  return;
 }
 
 /**
