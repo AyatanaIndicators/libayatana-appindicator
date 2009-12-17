@@ -1,30 +1,42 @@
-indicator-application (0.0.4-0ubuntu1~ppa3) UNRELEASED; urgency=low
+indicator-application (0.0.4-0ubuntu3) UNRELEASED; urgency=low
 
-  * Upstream work
-    * Python bindings
-    * Mono binding clean up
+  * Added mono bindings 
+  * debian/rules
+    - don't use gnome.mk, specify all the targets to build python
+      bindings for each supported python version
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 00:14:29 -0600
+  [ Ted Gould ]
+  * Adding in Python bindings.
+  * debian/control, debian/python-appindicator.install: Building
+    a binary package for the python bindings.
+  * debian/control: Adding python building build deps
 
-indicator-application (0.0.4-0ubuntu1~ppa2) karmic; urgency=low
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 16 Dec 2009 14:36:05 -0500
 
-  * Upstream work
-    * Mono bindings
-  * debian/control: Adding in mono build depends.
+indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 14 Dec 2009 11:25:45 -0600
+  * debian/control
+    - make libappindicator0 recommend indicator-application
 
-indicator-application (0.0.4-0ubuntu1~ppa1) karmic; urgency=low
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 15 Dec 2009 10:40:07 -0500
+
+indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.4
-    * Adding files to the tarball
-    * Putting version number in docs
-    * Removing cruft in docs
-  * debian/patches/clean_up_docs.patch: Remove as merged upstream.
+  * debian/rules:
+    - removed the disable-scrollkeeper configure arg
+    - don't include .la and .a files
+  * debian/patches/clean_up_docs.patch
+    - removed, merged upstream
+  * debian/control:
+    - removed Build-Depend for scrollkeeper
+    - libappindicator-dev needs to depend on libdbusmenu-glib-dev
+    - bump standards version to 3.8.3
+    - libappindicator-doc doesn't need to depend on libappindicator0
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 11 Dec 2009 10:40:09 -0600
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
 
-indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
+indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.3
     * Adding in documentation
@@ -37,6 +49,8 @@ indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
   [Ken VanDine]
   * debian/control
     - set Vcs-Bzr to ~ubuntu-desktop
+    - set libappindicator-doc arch all
+    - make libappindicator-dev depend on libappindicator0
   * debian/libappindicator-doc.install
     - install the developer docs
   * debian/rules
@@ -44,6 +58,8 @@ indicator-application (0.0.3-0ubuntu1) karmic; urgency=low
     - added simple-patchsys.mk
   * debian/patches/clean_up_docs.patch
     - Remove template values and set a proper title
+  * debian/copyright
+    - Include the proper licenses (LGPL-2.1 and LGPL-3)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
