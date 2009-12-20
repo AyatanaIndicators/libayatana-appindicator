@@ -183,12 +183,12 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class,
-                                        PROP_ICON_PATH,
+	                                PROP_ICON_PATH,
 	                                g_param_spec_string (PROP_ICON_PATH_S,
                                                              "An additional path for custom icons.",
                                                              "An additional place to look for icon names that may be installed by the application.",
                                                              NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
 
         g_object_class_install_property(object_class,
                                         PROP_MENU,
@@ -598,6 +598,36 @@ app_indicator_new (const gchar          *id,
                                           NULL);
 
   return indicator;
+}
+
+/**
+        app_indicator_new_with_path:
+        @id: The unique id of the indicator to create.
+        @icon_name: The icon name for this indicator
+        @category: The category of indicator.
+        @icon_path: A custom path for finding icons.
+
+		Creates a new #AppIndicator setting the properties:
+		#AppIndicator::id with @id, #AppIndicator::category
+		with @category, #AppIndicator::icon-name with
+		@icon_name and #AppIndicator::icon-path with @icon_path.
+
+        Return value: A pointer to a new #AppIndicator object.
+ */
+AppIndicator *
+app_indicator_new_with_path (const gchar          *id,
+                             const gchar          *icon_name,
+                             AppIndicatorCategory  category,
+                             const gchar          *icon_path)
+{
+	AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
+	                                        "id", id,
+	                                        "category", category_from_enum (category),
+	                                        "icon-name", icon_name,
+	                                        "icon-path", icon_path,
+	                                        NULL);
+
+	return indicator;
 }
 
 /**
