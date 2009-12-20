@@ -80,6 +80,7 @@ struct _IndicatorApplicationPrivate {
 typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
+	gchar * icon_path;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -275,6 +276,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
+	app->icon_path = g_strdup(icon_path);
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
 	app->entry.label = NULL;
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
@@ -304,6 +306,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	priv->applications = g_list_remove(priv->applications, app);
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
 
+	if (app->icon_path != NULL) {
+		g_free(app->icon_path);
+	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
 	}
