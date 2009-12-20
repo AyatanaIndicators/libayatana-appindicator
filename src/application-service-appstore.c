@@ -40,6 +40,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_STATUS     "Status"
 #define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
 #define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconPath"
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 /* Private Stuff */
@@ -93,8 +94,8 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
 	                                           NULL, NULL,
-	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING,
-	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
+	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
@@ -185,6 +186,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	              0, /* Position */
 	              app->dbus_name,
 	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU)),
+	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH)),
 	              TRUE);
 
 	return;

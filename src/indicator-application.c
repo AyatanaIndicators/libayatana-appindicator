@@ -91,7 +91,7 @@ static void indicator_application_dispose    (GObject *object);
 static void indicator_application_finalize   (GObject *object);
 static GList * get_entries (IndicatorObject * io);
 static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 
@@ -111,10 +111,11 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 
 	io_class->get_entries = get_entries;
 
-	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
@@ -211,6 +212,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplicatio
 	                        G_TYPE_INT,
 	                        G_TYPE_STRING,
 	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
 	dbus_g_proxy_add_signal(priv->service_proxy,
 	                        "ApplicationRemoved",
@@ -267,7 +269,7 @@ get_entries (IndicatorObject * io)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
 {
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
