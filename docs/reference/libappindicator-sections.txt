@@ -18,6 +18,7 @@ AppIndicator
 AppIndicatorClass
 app_indicator_get_type
 app_indicator_new
+app_indicator_new_with_path
 app_indicator_set_status
 app_indicator_set_attention_icon
 app_indicator_set_menu
