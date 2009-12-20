@@ -441,8 +441,8 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
         break;
 
         case PROP_ICON_PATH:
-			if (icon_path != NULL) {
-				g_free(icon_path);
+			if (priv->icon_path != NULL) {
+				g_free(priv->icon_path);
 			}
 			priv->icon_path = g_value_dup_string(value);
 			break;
