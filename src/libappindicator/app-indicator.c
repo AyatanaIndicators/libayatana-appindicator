@@ -63,6 +63,7 @@ struct _AppIndicatorPrivate {
 	AppIndicatorStatus    status;
 	gchar                *icon_name;
 	gchar                *attention_icon_name;
+	gchar *               icon_path;
         DbusmenuServer       *menuservice;
         GtkWidget            *menu;
 
@@ -91,6 +92,7 @@ enum {
 	PROP_STATUS,
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
+	PROP_ICON_PATH,
 	PROP_MENU,
 	PROP_CONNECTED
 };
@@ -101,6 +103,7 @@ enum {
 #define PROP_STATUS_S                "status"
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
+#define PROP_ICON_PATH_S             "icon-path"
 #define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
 
@@ -178,6 +181,14 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               "If the indicator sets it's status to 'attention' then this icon is shown.",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property(object_class,
+                                        PROP_ICON_PATH,
+	                                g_param_spec_string (PROP_ICON_PATH_S,
+                                                             "An additional path for custom icons.",
+                                                             "An additional place to look for icon names that may be installed by the application.",
+                                                             NULL,
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
         g_object_class_install_property(object_class,
                                         PROP_MENU,
@@ -277,6 +288,7 @@ app_indicator_init (AppIndicator *self)
 	priv->status = APP_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
+	priv->icon_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
 
@@ -355,6 +367,11 @@ app_indicator_finalize (GObject *object)
 		priv->attention_icon_name = NULL;
 	}
 
+	if (priv->icon_path != NULL) {
+		g_free(priv->icon_path);
+		priv->icon_path = NULL;
+	}
+
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
 	return;
 }
@@ -423,6 +440,13 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
                                             g_value_get_string (value));
         break;
 
+        case PROP_ICON_PATH:
+			if (icon_path != NULL) {
+				g_free(icon_path);
+			}
+			priv->icon_path = g_value_dup_string(value);
+			break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -460,6 +484,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 
         case PROP_ATTENTION_ICON_NAME:
           g_value_set_string (value, priv->attention_icon_name);
+          break;
+
+        case PROP_ICON_PATH:
+          g_value_set_string (value, priv->icon_path);
           break;
 
         case PROP_MENU:
