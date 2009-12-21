@@ -1,8 +1,8 @@
-indicator-application (0.0.6-0ubuntu1~ppa2~icon1) UNRELEASED; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa2~icon1) karmic; urgency=low
 
   * Adding in icon path support.
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 20 Dec 2009 22:18:06 -0600
+ -- Ted Gould <ted@ubuntu.com>  Sun, 20 Dec 2009 22:20:35 -0600
 
 indicator-application (0.0.6-0ubuntu1~ppa1) karmic; urgency=low
 
