@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<node name="/StatusNotifierItem">
-	<interface name="org.kde.StatusNotifierItem">
+<node name="/">
+	<interface name="org.ayatana.indicator.application.NotificationItem">
 
 <!-- Properties -->
 		<property name="Id" type="s" access="read" />

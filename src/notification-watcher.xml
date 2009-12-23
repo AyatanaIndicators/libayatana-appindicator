@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<node name="/StatusNotifierWatcher">
-	<interface name="org.kde.StatusNotifierWatcher">
+<node name="/">
+	<interface name="org.ayatana.indicator.application.NotificationWatcher">
 
 <!-- Properties -->
 		<!-- None currently -->
 
 <!-- Methods -->
-		<method name="RegisterStatusNotifierItem">
+		<method name="RegisterService">
 		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<arg type="s" name="service" direction="in" />
 		</method>
-		<method name="RegisteredStatusNotifierItems">
+		<method name="RegisteredServices">
 			<arg type="as" name="services" direction="out" />
 		</method>
 		<method name="ProtocolVersion">

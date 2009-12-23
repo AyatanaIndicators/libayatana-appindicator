@@ -32,7 +32,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 
 #include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
 
@@ -294,7 +293,7 @@ app_indicator_init (AppIndicator *self)
 	}
 
 	dbus_g_connection_register_g_object(priv->connection,
-	                                    "/StatusNotifierItem",
+	                                    "/need/a/path",
 	                                    G_OBJECT(self));
 
         self->priv = priv;
@@ -514,8 +513,7 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
-	const char * name = dbus_bus_get_unique_name(dbus_g_connection_get_connection(priv->connection));
-	org_kde_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, name, register_service_cb, self);
+	org_ayatana_indicator_application_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }
