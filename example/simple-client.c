@@ -58,7 +58,7 @@ main (int argc, char ** argv)
                           G_CALLBACK (item_clicked_cb), "1");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-        item = gtk_menu_item_new_with_label ("2");
+        item = gtk_check_menu_item_new_with_label ("2");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "2");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);

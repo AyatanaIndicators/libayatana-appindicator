@@ -686,15 +686,29 @@ container_iterate (GtkWidget *widget,
 
   if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
     {
+      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+
       dbusmenu_menuitem_property_set (child,
                                       "type",
                                       DBUSMENU_CLIENT_TYPES_SEPARATOR);
     }
   else
     {
-      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+      if (GTK_IS_CHECK_MENU_ITEM (widget))
+        {
+          label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
 
-      if (GTK_IS_IMAGE_MENU_ITEM (widget))
+          dbusmenu_menuitem_property_set (child,
+                                          "type",
+                                          DBUSMENU_MENUITEM_TOGGLE_CHECK);
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+
+          label_set = TRUE;
+        }
+      else if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
           GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 
