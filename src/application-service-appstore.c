@@ -53,6 +53,10 @@ struct _ApplicationServiceAppstorePrivate {
 	GList * applications;
 };
 
+#define APP_STATUS_PASSIVE_STR    "passive"
+#define APP_STATUS_ACTIVE_STR     "active"
+#define APP_STATUS_ATTENTION_STR  "attention"
+
 typedef enum _ApplicationStatus ApplicationStatus;
 enum _ApplicationStatus {
 	APP_STATUS_PASSIVE,
@@ -69,6 +73,9 @@ struct _Application {
 	DBusGProxy * prop_proxy;
 	gboolean validated; /* Whether we've gotten all the parameters and they look good. */
 	ApplicationStatus status;
+	gchar * icon;
+	gchar * aicon;
+	gchar * menu;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -89,6 +96,8 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static ApplicationStatus string_to_status(const gchar * status_string);
+static void apply_status (Application * app, ApplicationStatus status);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -190,6 +199,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	Application * app = (Application *)data;
 
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME) == NULL) {
 		g_warning("Notification Item on object %s of %s doesn't have enough properties.", app->dbus_object, app->dbus_name);
 		g_free(app); // Need to do more than this, but it gives the idea of the flow we're going for.
@@ -198,22 +208,26 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	app->validated = TRUE;
 
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
-	priv->applications = g_list_prepend(priv->applications, app);
-	
-	/* TODO: We need to have the position determined better.  This
-	   would involve looking at the name and category and sorting
-	   it with the other entries. */
+	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
+	app->menu = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU));
+	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_AICON_NAME) != NULL) {
+		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
+	}
 
-	g_signal_emit(G_OBJECT(app->appstore),
-	              signals[APPLICATION_ADDED], 0, 
-	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME)),
-	              0, /* Position */
-	              app->dbus_name,
-	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU)),
-	              TRUE);
+	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
 
 	return;
+}
+
+/* Simple translation function -- could be optimized */
+static ApplicationStatus
+string_to_status(const gchar * status_string)
+{
+	if (!g_strcmp0(status_string, APP_STATUS_ACTIVE_STR))
+		return APP_STATUS_ACTIVE;
+	if (!g_strcmp0(status_string, APP_STATUS_ATTENTION_STR))
+		return APP_STATUS_ATTENTION;
+	return APP_STATUS_PASSIVE;
 }
 
 /* A simple global function for dealing with freeing the information
@@ -229,6 +243,15 @@ application_free (Application * app)
 	if (app->dbus_object != NULL) {
 		g_free(app->dbus_object);
 	}
+	if (app->icon != NULL) {
+		g_free(app->icon);
+	}
+	if (app->aicon != NULL) {
+		g_free(app->aicon);
+	}
+	if (app->menu != NULL) {
+		g_free(app->menu);
+	}
 
 	g_free(app);
 	return;
@@ -240,24 +263,84 @@ static void
 application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 {
 	Application * app = (Application *)userdata;
-	ApplicationServiceAppstore * appstore = app->appstore;
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
-	GList * applistitem = g_list_find(priv->applications, app);
-	if (applistitem == NULL) {
-		g_warning("Removing an application that isn't in the application list?");
+	/* Remove from the panel */
+	apply_status(app, APP_STATUS_PASSIVE);
+
+	/* Destroy the data */
+	application_free(app);
+	return;
+}
+
+/* Change the status of the application.  If we're going passive
+   it removes it from the panel.  If we're coming online, then
+   it add it to the panel.  Otherwise it changes the icon. */
+static void
+apply_status (Application * app, ApplicationStatus status)
+{
+	if (app->status == status) {
 		return;
 	}
 
-	gint position = g_list_position(priv->applications, applistitem);
+	ApplicationServiceAppstore * appstore = app->appstore;
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
-	g_signal_emit(G_OBJECT(appstore),
-	              signals[APPLICATION_REMOVED], 0, 
-	              position, TRUE);
+	/* This means we're going off line */
+	if (status == APP_STATUS_PASSIVE) {
+		GList * applistitem = g_list_find(priv->applications, app);
+		if (applistitem == NULL) {
+			g_warning("Removing an application that isn't in the application list?");
+			return;
+		}
 
-	priv->applications = g_list_remove(priv->applications, app);
+		gint position = g_list_position(priv->applications, applistitem);
 
-	application_free(app);
+		g_signal_emit(G_OBJECT(appstore),
+					  signals[APPLICATION_REMOVED], 0, 
+					  position, TRUE);
+
+		priv->applications = g_list_remove(priv->applications, app);
+	} else {
+		/* Figure out which icon we should be using */
+		gchar * newicon = app->icon;
+		if (status == APP_STATUS_ATTENTION && app->aicon != NULL) {
+			newicon = app->aicon;
+		}
+
+		/* Determine whether we're already shown or not */
+		if (app->status == APP_STATUS_PASSIVE) {
+			/* Put on panel */
+			priv->applications = g_list_prepend(priv->applications, app);
+	
+			/* TODO: We need to have the position determined better.  This
+			   would involve looking at the name and category and sorting
+			   it with the other entries. */
+
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ADDED], 0, 
+			              newicon,
+			              0, /* Position */
+			              app->dbus_name,
+			              app->menu,
+			              TRUE);
+		} else {
+			/* Icon update */
+			GList * applistitem = g_list_find(priv->applications, app);
+			if (applistitem == NULL) {
+				g_warning("Change the icon of an application that isn't in the application list?");
+				return;
+			}
+
+			gint position = g_list_position(priv->applications, applistitem);
+
+			g_signal_emit(G_OBJECT(appstore),
+			              signals[APPLICATION_ICON_CHANGED], 0, 
+			              position, newicon, TRUE);
+		}
+	}
+
+	app->status = status;
+
 	return;
 }
 
@@ -317,6 +400,9 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->dbus_object = g_strdup(dbus_object);
 	app->appstore = appstore;
 	app->status = APP_STATUS_PASSIVE;
+	app->icon = NULL;
+	app->aicon = NULL;
+	app->menu = NULL;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
