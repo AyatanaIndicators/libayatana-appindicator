@@ -95,7 +95,7 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
-	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
@@ -180,13 +180,21 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	   would involve looking at the name and category and sorting
 	   it with the other entries. */
 
+	const gchar * icon_path = NULL;
+	gpointer icon_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH);
+	if (icon_path_data != NULL) {
+		icon_path = g_value_get_string((GValue *)icon_path_data);
+	} else {
+		icon_path = "";
+	}
+
 	g_signal_emit(G_OBJECT(app->appstore),
 	              signals[APPLICATION_ADDED], 0, 
 	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME)),
 	              0, /* Position */
 	              app->dbus_name,
 	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU)),
-	              g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH)),
+	              icon_path,
 	              TRUE);
 
 	return;
