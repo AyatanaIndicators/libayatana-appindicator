@@ -28,4 +28,5 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NOTIFICATION_WATCHER_DBUS_IFACE   "org.freedesktop.StatusNotifierWatcher"
 
 #define NOTIFICATION_ITEM_DBUS_IFACE      "org.freedesktop.StatusNotifierItem"
+#define NOTIFICATION_ITEM_DEFAULT_OBJ     "/StatusNotifierItem"
 
