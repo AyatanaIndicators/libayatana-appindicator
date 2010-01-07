@@ -686,8 +686,6 @@ container_iterate (GtkWidget *widget,
 
   if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
     {
-      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
-
       dbusmenu_menuitem_property_set (child,
                                       "type",
                                       DBUSMENU_CLIENT_TYPES_SEPARATOR);
@@ -699,12 +697,16 @@ container_iterate (GtkWidget *widget,
           label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
 
           dbusmenu_menuitem_property_set (child,
-                                          "type",
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE,
                                           DBUSMENU_MENUITEM_TOGGLE_CHECK);
 
           dbusmenu_menuitem_property_set (child,
                                           DBUSMENU_MENUITEM_PROP_LABEL,
                                           label);
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
+                                          "checked");
 
           label_set = TRUE;
         }
