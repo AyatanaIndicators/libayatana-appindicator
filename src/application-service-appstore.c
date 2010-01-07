@@ -230,6 +230,22 @@ string_to_status(const gchar * status_string)
 	return APP_STATUS_PASSIVE;
 }
 
+/* A small helper function to get the position of an application
+   in the app list. */
+static gint 
+get_position (Application * app) {
+	ApplicationServiceAppstore * appstore = app->appstore;
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+
+	GList * applistitem = g_list_find(priv->applications, app);
+	if (applistitem == NULL) {
+		g_warning("Change the icon of an application that isn't in the application list?");
+		return -1;
+	}
+
+	return g_list_position(priv->applications, applistitem);
+}
+
 /* A simple global function for dealing with freeing the information
    in an Application structure */
 static void
@@ -287,13 +303,8 @@ apply_status (Application * app, ApplicationStatus status)
 
 	/* This means we're going off line */
 	if (status == APP_STATUS_PASSIVE) {
-		GList * applistitem = g_list_find(priv->applications, app);
-		if (applistitem == NULL) {
-			g_warning("Removing an application that isn't in the application list?");
-			return;
-		}
-
-		gint position = g_list_position(priv->applications, applistitem);
+		gint position = get_position(app);
+		if (position == -1) return;
 
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
@@ -325,13 +336,8 @@ apply_status (Application * app, ApplicationStatus status)
 			              TRUE);
 		} else {
 			/* Icon update */
-			GList * applistitem = g_list_find(priv->applications, app);
-			if (applistitem == NULL) {
-				g_warning("Change the icon of an application that isn't in the application list?");
-				return;
-			}
-
-			gint position = g_list_position(priv->applications, applistitem);
+			gint position = get_position(app);
+			if (position == -1) return;
 
 			g_signal_emit(G_OBJECT(appstore),
 			              signals[APPLICATION_ICON_CHANGED], 0, 
@@ -370,18 +376,10 @@ new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata
 		app->icon = g_strdup(newicon);
 
 		if (app->status == APP_STATUS_ACTIVE) {
-			ApplicationServiceAppstore * appstore = app->appstore;
-			ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+			gint position = get_position(app);
+			if (position == -1) return;
 
-			GList * applistitem = g_list_find(priv->applications, app);
-			if (applistitem == NULL) {
-				g_warning("Change the icon of an application that isn't in the application list?");
-				return;
-			}
-
-			gint position = g_list_position(priv->applications, applistitem);
-
-			g_signal_emit(G_OBJECT(appstore),
+			g_signal_emit(G_OBJECT(app->appstore),
 			              signals[APPLICATION_ICON_CHANGED], 0, 
 			              position, newicon, TRUE);
 		}
@@ -416,18 +414,10 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 		app->aicon = g_strdup(newicon);
 
 		if (app->status == APP_STATUS_ATTENTION) {
-			ApplicationServiceAppstore * appstore = app->appstore;
-			ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+			gint position = get_position(app);
+			if (position == -1) return;
 
-			GList * applistitem = g_list_find(priv->applications, app);
-			if (applistitem == NULL) {
-				g_warning("Change the icon of an application that isn't in the application list?");
-				return;
-			}
-
-			gint position = g_list_position(priv->applications, applistitem);
-
-			g_signal_emit(G_OBJECT(appstore),
+			g_signal_emit(G_OBJECT(app->appstore),
 			              signals[APPLICATION_ICON_CHANGED], 0, 
 			              position, newicon, TRUE);
 		}
