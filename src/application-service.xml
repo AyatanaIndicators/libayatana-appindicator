@@ -39,6 +39,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<signal name="ApplicationRemoved">
 			<arg type="i" name="position" direction="out" />
 		</signal>
+		<signal name="ApplicationIconChanged">
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="icon_name" direction="out" />
+		</signal>
 
 	</interface>
 </node>

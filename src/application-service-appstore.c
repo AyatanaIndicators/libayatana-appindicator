@@ -70,6 +70,7 @@ struct _Application {
 enum {
 	APPLICATION_ADDED,
 	APPLICATION_REMOVED,
+	APPLICATION_ICON_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -107,6 +108,13 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__INT,
 	                                           G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_NONE);
+	signals[APPLICATION_ICON_CHANGED] = g_signal_new ("application-icon-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_icon_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
 
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
