@@ -42,6 +42,10 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
+#define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
+
 /* Private Stuff */
 typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePrivate;
 struct _ApplicationServiceAppstorePrivate {
@@ -56,6 +60,7 @@ struct _Application {
 	ApplicationServiceAppstore * appstore; /* not ref'd */
 	DBusGProxy * dbus_proxy;
 	DBusGProxy * prop_proxy;
+	gboolean validated; /* Whether we've gotten all the parameters and they look good. */
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -155,6 +160,9 @@ application_service_appstore_finalize (GObject *object)
 	return;
 }
 
+/* Return from getting the properties from the item.  We're looking at those
+   and making sure we have everythign that we need.  If we do, then we'll
+   move on up to sending this onto the indicator. */
 static void
 get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * error, gpointer data)
 {
@@ -171,6 +179,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		g_free(app); // Need to do more than this, but it gives the idea of the flow we're going for.
 		return;
 	}
+
+	app->validated = TRUE;
 
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
 	priv->applications = g_list_prepend(priv->applications, app);
@@ -235,6 +245,10 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	return;
 }
 
+void new_icon (void) { }
+void new_aicon (void) { }
+void new_status (void) { }
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -251,8 +265,9 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
-	Application * app = g_new(Application, 1);
+	Application * app = g_new0(Application, 1);
 
+	app->validated = FALSE;
 	app->dbus_name = g_strdup(dbus_name);
 	app->dbus_object = g_strdup(dbus_object);
 	app->appstore = appstore;
@@ -289,6 +304,34 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 		g_free(app);
 		return;
 	}
+
+	/* Connect to signals */
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_ICON,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_AICON,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
+	                            G_CALLBACK(new_icon),
+	                            app,
+	                            NULL);
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_AICON,
+	                            G_CALLBACK(new_aicon),
+	                            app,
+	                            NULL);
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_STATUS,
+	                            G_CALLBACK(new_status),
+	                            app,
+	                            NULL);
 
 	/* Get all the propertiees */
 	org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
