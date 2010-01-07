@@ -1,8 +1,8 @@
-indicator-application (0.0.6-0ubuntu1~ppa2~icon2ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa2~icon2ubuntu1) karmic; urgency=low
 
   * Debug message
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 01:07:07 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 01:10:18 -0600
 
 indicator-application (0.0.6-0ubuntu1~ppa2~icon2) karmic; urgency=low
 
