@@ -660,6 +660,14 @@ activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
 }
 
 static void
+widget_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
+{
+  dbusmenu_menuitem_property_set (mi,
+                                  DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
+                                  gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+}
+
+static void
 menuitem_iterate (GtkWidget *widget,
                   gpointer   data)
 {
@@ -692,9 +700,33 @@ container_iterate (GtkWidget *widget,
     }
   else
     {
-      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+      if (GTK_IS_CHECK_MENU_ITEM (widget))
+        {
+          GtkCheckMenuItem *check;
 
-      if (GTK_IS_IMAGE_MENU_ITEM (widget))
+          check = GTK_CHECK_MENU_ITEM (widget);
+          label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE,
+                                          GTK_IS_RADIO_MENU_ITEM (widget) ? DBUSMENU_MENUITEM_TOGGLE_RADIO : DBUSMENU_MENUITEM_TOGGLE_CHECK);
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+
+          label_set = TRUE;
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
+                                          gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+
+          g_signal_connect (widget,
+                            "toggled",
+                            G_CALLBACK (widget_toggled),
+                            child);
+        }
+      else if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
           GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 
