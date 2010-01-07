@@ -245,9 +245,38 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	return;
 }
 
-void new_icon (void) { }
-void new_aicon (void) { }
-void new_status (void) { }
+/* Called when the Notification Item signals that it
+   has a new icon. */
+static void
+new_icon (DBusGProxy * proxy, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	return;
+}
+
+/* Called when the Notification Item signals that it
+   has a new attention icon. */
+static void
+new_aicon (DBusGProxy * proxy, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	return;
+}
+
+/* Called when the Notification Item signals that it
+   has a new status. */
+static void
+new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	return;
+}
 
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
