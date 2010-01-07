@@ -8,6 +8,7 @@
 		<property name="Status" type="s" access="read" />
 		<property name="IconName" type="s" access="read" />
 		<property name="AttentionIconName" type="s" access="read" />
+		<property name="IconPath" type="s" access="read" />
 		<property name="Menu" type="o" access="read" />
 
 <!-- Methods -->

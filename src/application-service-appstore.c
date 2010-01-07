@@ -40,6 +40,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_STATUS     "Status"
 #define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
 #define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconPath"
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 #define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
@@ -76,6 +77,7 @@ struct _Application {
 	gchar * icon;
 	gchar * aicon;
 	gchar * menu;
+	gchar * icon_path;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -116,8 +118,8 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
 	                                           NULL, NULL,
-	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING,
-	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
+	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
@@ -214,6 +216,13 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 	}
 
+	gpointer icon_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH);
+	if (icon_path_data != NULL) {
+		app->icon_path = g_value_dup_string((GValue *)icon_path_data);
+	} else {
+		app->icon_path = g_strdup("");
+	}
+
 	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
 
 	return;
@@ -267,6 +276,9 @@ application_free (Application * app)
 	}
 	if (app->menu != NULL) {
 		g_free(app->menu);
+	}
+	if (app->icon_path != NULL) {
+		g_free(app->icon_path);
 	}
 
 	g_free(app);
@@ -333,6 +345,7 @@ apply_status (Application * app, ApplicationStatus status)
 			              0, /* Position */
 			              app->dbus_name,
 			              app->menu,
+			              app->icon_path,
 			              TRUE);
 		} else {
 			/* Icon update */
@@ -498,6 +511,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->icon = NULL;
 	app->aicon = NULL;
 	app->menu = NULL;
+	app->icon_path = NULL;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
