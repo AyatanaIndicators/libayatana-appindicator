@@ -95,7 +95,7 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
-	                                           G_TYPE_NONE, 4, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
