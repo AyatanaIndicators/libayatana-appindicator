@@ -94,6 +94,7 @@ static GList * get_entries (IndicatorObject * io);
 static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
+static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 
 G_DEFINE_TYPE (IndicatorApplication, indicator_application, INDICATOR_OBJECT_TYPE);
@@ -118,6 +119,11 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	                                  G_TYPE_INT,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_INT,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
 
@@ -219,6 +225,11 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplicatio
 	                        "ApplicationRemoved",
 	                        G_TYPE_INT,
 	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(priv->service_proxy,
+	                        "ApplicationIconChanged",
+	                        G_TYPE_INT,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
 
 	/* Connect to them */
 	g_debug("Connect to them.");
@@ -230,6 +241,11 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplicatio
 	dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            "ApplicationRemoved",
 	                            G_CALLBACK(application_removed),
+	                            application,
+	                            NULL /* Disconnection Signal */);
+	dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            "ApplicationIconChanged",
+	                            G_CALLBACK(application_icon_changed),
 	                            application,
 	                            NULL /* Disconnection Signal */);
 
@@ -327,6 +343,23 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	}
 	g_free(app);
 
+	return;
+}
+
+/* The callback for the signal that the icon for an application
+   has changed. */
+static void
+application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
+
+	gtk_image_set_from_icon_name(app->entry.image, iconname, GTK_ICON_SIZE_MENU);
 	return;
 }
 

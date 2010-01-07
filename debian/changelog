@@ -1,3 +1,11 @@
+indicator-application (0.0.6-0ubuntu1~ppa2~icon3) UNRELEASED; urgency=low
+
+  * Upstream merge:
+    * Adding support for icons changing through the service and
+      in the indicator.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 17:08:10 -0600
+
 indicator-application (0.0.6-0ubuntu1~ppa2~icon2ubuntu1) karmic; urgency=low
 
   * Debug message
