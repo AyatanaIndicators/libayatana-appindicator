@@ -279,6 +279,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	app->icon_path = NULL;
 	if (icon_path != NULL && icon_path[0] != '\0') {
 		app->icon_path = g_strdup(icon_path);
+		g_debug("\tAppending search path: %s", app->icon_path);
 		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), app->icon_path);
 	}
 
