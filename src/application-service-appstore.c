@@ -344,6 +344,98 @@ apply_status (Application * app, ApplicationStatus status)
 	return;
 }
 
+/* Gets the data back on an updated icon signal.  Hopefully
+   a new fun icon. */
+static void
+new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata)
+{
+	/* Check for errors */
+	if (error != NULL) {
+		g_warning("Unable to get updated icon name: %s", error->message);
+		return;
+	}
+
+	/* Grab the icon and make sure we have one */
+	const gchar * newicon = g_value_get_string(&value);
+	if (newicon == NULL) {
+		g_warning("Bad new icon :(");
+		return;
+	}
+
+	Application * app = (Application *) userdata;
+
+	if (g_strcmp0(newicon, app->icon)) {
+		/* If the new icon is actually a new icon */
+		if (app->icon != NULL) g_free(app->icon);
+		app->icon = g_strdup(newicon);
+
+		if (app->status == APP_STATUS_ACTIVE) {
+			ApplicationServiceAppstore * appstore = app->appstore;
+			ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+
+			GList * applistitem = g_list_find(priv->applications, app);
+			if (applistitem == NULL) {
+				g_warning("Change the icon of an application that isn't in the application list?");
+				return;
+			}
+
+			gint position = g_list_position(priv->applications, applistitem);
+
+			g_signal_emit(G_OBJECT(appstore),
+			              signals[APPLICATION_ICON_CHANGED], 0, 
+			              position, newicon, TRUE);
+		}
+	}
+
+	return;
+}
+
+/* Gets the data back on an updated aicon signal.  Hopefully
+   a new fun icon. */
+static void
+new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata)
+{
+	/* Check for errors */
+	if (error != NULL) {
+		g_warning("Unable to get updated icon name: %s", error->message);
+		return;
+	}
+
+	/* Grab the icon and make sure we have one */
+	const gchar * newicon = g_value_get_string(&value);
+	if (newicon == NULL) {
+		g_warning("Bad new icon :(");
+		return;
+	}
+
+	Application * app = (Application *) userdata;
+
+	if (g_strcmp0(newicon, app->aicon)) {
+		/* If the new icon is actually a new icon */
+		if (app->aicon != NULL) g_free(app->aicon);
+		app->aicon = g_strdup(newicon);
+
+		if (app->status == APP_STATUS_ATTENTION) {
+			ApplicationServiceAppstore * appstore = app->appstore;
+			ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+
+			GList * applistitem = g_list_find(priv->applications, app);
+			if (applistitem == NULL) {
+				g_warning("Change the icon of an application that isn't in the application list?");
+				return;
+			}
+
+			gint position = g_list_position(priv->applications, applistitem);
+
+			g_signal_emit(G_OBJECT(appstore),
+			              signals[APPLICATION_ICON_CHANGED], 0, 
+			              position, newicon, TRUE);
+		}
+	}
+
+	return;
+}
+
 /* Called when the Notification Item signals that it
    has a new icon. */
 static void
@@ -352,6 +444,11 @@ new_icon (DBusGProxy * proxy, gpointer data)
 	Application * app = (Application *)data;
 	if (!app->validated) return;
 
+	org_freedesktop_DBus_Properties_get_async(app->prop_proxy,
+	                                          NOTIFICATION_ITEM_DBUS_IFACE,
+	                                          NOTIFICATION_ITEM_PROP_ICON_NAME,
+	                                          new_icon_cb,
+	                                          app);
 	return;
 }
 
@@ -363,6 +460,12 @@ new_aicon (DBusGProxy * proxy, gpointer data)
 	Application * app = (Application *)data;
 	if (!app->validated) return;
 
+	org_freedesktop_DBus_Properties_get_async(app->prop_proxy,
+	                                          NOTIFICATION_ITEM_DBUS_IFACE,
+	                                          NOTIFICATION_ITEM_PROP_AICON_NAME,
+	                                          new_aicon_cb,
+	                                          app);
+
 	return;
 }
 
@@ -373,6 +476,8 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 {
 	Application * app = (Application *)data;
 	if (!app->validated) return;
+
+	apply_status(app, string_to_status(status));
 
 	return;
 }
