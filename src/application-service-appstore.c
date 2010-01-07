@@ -53,6 +53,13 @@ struct _ApplicationServiceAppstorePrivate {
 	GList * applications;
 };
 
+typedef enum _ApplicationStatus ApplicationStatus;
+enum _ApplicationStatus {
+	APP_STATUS_PASSIVE,
+	APP_STATUS_ACTIVE,
+	APP_STATUS_ATTENTION
+};
+
 typedef struct _Application Application;
 struct _Application {
 	gchar * dbus_name;
@@ -61,6 +68,7 @@ struct _Application {
 	DBusGProxy * dbus_proxy;
 	DBusGProxy * prop_proxy;
 	gboolean validated; /* Whether we've gotten all the parameters and they look good. */
+	ApplicationStatus status;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -308,6 +316,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->dbus_name = g_strdup(dbus_name);
 	app->dbus_object = g_strdup(dbus_object);
 	app->appstore = appstore;
+	app->status = APP_STATUS_PASSIVE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
