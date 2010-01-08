@@ -169,13 +169,15 @@ _notification_watcher_server_register_status_notifier_item (ApplicationServiceWa
 {
 	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
 
-	const gchar * finalservice = NOTIFICATION_ITEM_DEFAULT_OBJ;
-
 	if (service[0] == '/') {
-		finalservice = service;
+		application_service_appstore_application_add(priv->appstore,
+		                                             dbus_g_method_get_sender(method),
+		                                             service);
+	} else {
+		application_service_appstore_application_add(priv->appstore,
+		                                             service,
+		                                             NOTIFICATION_ITEM_DEFAULT_OBJ);
 	}
-
-	application_service_appstore_application_add(priv->appstore, dbus_g_method_get_sender(method), finalservice);
 
 	dbus_g_method_return(method, G_TYPE_NONE);
 	return TRUE;
