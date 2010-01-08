@@ -136,7 +136,6 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
 
-
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
 
@@ -249,7 +248,6 @@ get_position (Application * app) {
 
 	GList * applistitem = g_list_find(priv->applications, app);
 	if (applistitem == NULL) {
-		g_warning("Change the icon of an application that isn't in the application list?");
 		return -1;
 	}
 
@@ -322,6 +320,7 @@ apply_status (Application * app, ApplicationStatus status)
 	if (app->status == status) {
 		return;
 	}
+	g_debug("Changing app status to: %d", status);
 
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
