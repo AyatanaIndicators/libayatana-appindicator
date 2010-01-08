@@ -80,6 +80,7 @@ struct _IndicatorApplicationPrivate {
 typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
+	gchar * icon_path;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -91,7 +92,7 @@ static void indicator_application_dispose    (GObject *object);
 static void indicator_application_finalize   (GObject *object);
 static GList * get_entries (IndicatorObject * io);
 static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 
@@ -111,10 +112,11 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 
 	io_class->get_entries = get_entries;
 
-	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
@@ -211,6 +213,7 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplicatio
 	                        G_TYPE_INT,
 	                        G_TYPE_STRING,
 	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
 	dbus_g_proxy_add_signal(priv->service_proxy,
 	                        "ApplicationRemoved",
@@ -267,11 +270,18 @@ get_entries (IndicatorObject * io)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
 {
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
+
+	app->icon_path = NULL;
+	if (icon_path != NULL && icon_path[0] != '\0') {
+		app->icon_path = g_strdup(icon_path);
+		g_debug("\tAppending search path: %s", app->icon_path);
+		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), app->icon_path);
+	}
 
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
 	app->entry.label = NULL;
@@ -302,6 +312,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	priv->applications = g_list_remove(priv->applications, app);
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
 
+	if (app->icon_path != NULL) {
+		g_free(app->icon_path);
+	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
 	}
