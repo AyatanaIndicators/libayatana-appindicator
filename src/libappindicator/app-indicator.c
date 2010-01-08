@@ -698,14 +698,14 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
 
-  if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0)
+  if (g_strcmp0 (self->priv->icon_name, icon_name) != 0)
     {
-      if (self->priv->attention_icon_name)
-        g_free (self->priv->attention_icon_name);
+      if (self->priv->icon_name)
+        g_free (self->priv->icon_name);
 
-      self->priv->attention_icon_name = g_strdup (icon_name);
+      self->priv->icon_name = g_strdup (icon_name);
 
-      g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
+      g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
     }
 }
 
