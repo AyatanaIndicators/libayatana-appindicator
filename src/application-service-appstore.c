@@ -78,6 +78,7 @@ struct _Application {
 	gchar * aicon;
 	gchar * menu;
 	gchar * icon_path;
+	gboolean currently_free;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -261,6 +262,18 @@ static void
 application_free (Application * app)
 {
 	if (app == NULL) return;
+	
+	/* Handle the case where this could be called by unref'ing one of
+	   the proxy objects. */
+	if (app->currently_free) return;
+	app->currently_free = TRUE;
+	
+	if (app->dbus_proxy) {
+		g_object_unref(app->dbus_proxy);
+	}
+	if (app->prop_proxy) {
+		g_object_unref(app->prop_proxy);
+	}
 
 	if (app->dbus_name != NULL) {
 		g_free(app->dbus_name);
@@ -512,6 +525,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->aicon = NULL;
 	app->menu = NULL;
 	app->icon_path = NULL;
+	app->currently_free = FALSE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
