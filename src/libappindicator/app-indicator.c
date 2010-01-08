@@ -92,7 +92,7 @@ enum {
 	PROP_STATUS,
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
-	PROP_ICON_PATH,
+	PROP_ICON_THEME_PATH,
 	PROP_MENU,
 	PROP_CONNECTED
 };
@@ -103,7 +103,7 @@ enum {
 #define PROP_STATUS_S                "status"
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
-#define PROP_ICON_PATH_S             "icon-path"
+#define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
 
@@ -183,8 +183,8 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class,
-	                                PROP_ICON_PATH,
-	                                g_param_spec_string (PROP_ICON_PATH_S,
+	                                PROP_ICON_THEME_PATH,
+	                                g_param_spec_string (PROP_ICON_THEME_PATH_S,
                                                              "An additional path for custom icons.",
                                                              "An additional place to look for icon names that may be installed by the application.",
                                                              NULL,
@@ -440,7 +440,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
                                             g_value_get_string (value));
         break;
 
-        case PROP_ICON_PATH:
+        case PROP_ICON_THEME_PATH:
 			if (priv->icon_path != NULL) {
 				g_free(priv->icon_path);
 			}
@@ -486,7 +486,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->attention_icon_name);
           break;
 
-        case PROP_ICON_PATH:
+        case PROP_ICON_THEME_PATH:
           g_value_set_string (value, priv->icon_path);
           break;
 
@@ -541,7 +541,7 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
-	org_ayatana_indicator_application_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }
@@ -592,9 +592,9 @@ app_indicator_new (const gchar          *id,
                    AppIndicatorCategory  category)
 {
   AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
-                                          "id", id,
-                                          "category", category_from_enum (category),
-                                          "icon-name", icon_name,
+                                          PROP_ID_S, id,
+                                          PROP_CATEGORY_S, category_from_enum (category),
+                                          PROP_ICON_NAME_S, icon_name,
                                           NULL);
 
   return indicator;
@@ -610,7 +610,7 @@ app_indicator_new (const gchar          *id,
 		Creates a new #AppIndicator setting the properties:
 		#AppIndicator::id with @id, #AppIndicator::category
 		with @category, #AppIndicator::icon-name with
-		@icon_name and #AppIndicator::icon-path with @icon_path.
+		@icon_name and #AppIndicator::icon-theme-path with @icon_path.
 
         Return value: A pointer to a new #AppIndicator object.
  */
@@ -621,10 +621,10 @@ app_indicator_new_with_path (const gchar          *id,
                              const gchar          *icon_path)
 {
 	AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
-	                                        "id", id,
-	                                        "category", category_from_enum (category),
-	                                        "icon-name", icon_name,
-	                                        "icon-path", icon_path,
+	                                        PROP_ID_S, id,
+	                                        PROP_CATEGORY_S, category_from_enum (category),
+	                                        PROP_ICON_NAME_S, icon_name,
+	                                        PROP_ICON_THEME_PATH_S, icon_path,
 	                                        NULL);
 
 	return indicator;
@@ -718,6 +718,14 @@ activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
 }
 
 static void
+widget_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
+{
+  dbusmenu_menuitem_property_set (mi,
+                                  DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
+                                  gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+}
+
+static void
 menuitem_iterate (GtkWidget *widget,
                   gpointer   data)
 {
@@ -750,9 +758,33 @@ container_iterate (GtkWidget *widget,
     }
   else
     {
-      label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+      if (GTK_IS_CHECK_MENU_ITEM (widget))
+        {
+          GtkCheckMenuItem *check;
 
-      if (GTK_IS_IMAGE_MENU_ITEM (widget))
+          check = GTK_CHECK_MENU_ITEM (widget);
+          label = gtk_menu_item_get_label (GTK_MENU_ITEM (widget));
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_TYPE,
+                                          GTK_IS_RADIO_MENU_ITEM (widget) ? DBUSMENU_MENUITEM_TOGGLE_RADIO : DBUSMENU_MENUITEM_TOGGLE_CHECK);
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_LABEL,
+                                          label);
+
+          label_set = TRUE;
+
+          dbusmenu_menuitem_property_set (child,
+                                          DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
+                                          gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+
+          g_signal_connect (widget,
+                            "toggled",
+                            G_CALLBACK (widget_toggled),
+                            child);
+        }
+      else if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
           GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
 

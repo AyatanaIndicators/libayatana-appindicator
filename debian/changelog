@@ -1,3 +1,9 @@
+indicator-application (0.0.6-0ubuntu1~ppa4~icon1) UNRELEASED; urgency=low
+
+  * Syncing with all the other branches.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:24:15 -0600
+
 indicator-application (0.0.6-0ubuntu1~ppa2~icon4) karmic; urgency=low
 
   * Upstream merge:
@@ -14,23 +20,28 @@ indicator-application (0.0.6-0ubuntu1~ppa2~icon3) karmic; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 17:10:29 -0600
 
-indicator-application (0.0.6-0ubuntu1~ppa2~icon2ubuntu1) karmic; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa4) karmic; urgency=low
 
-  * Debug message
+  * Upstream update
+    * Adding in icon path support.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 01:10:18 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:08:40 -0600
 
-indicator-application (0.0.6-0ubuntu1~ppa2~icon2) karmic; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa3) karmic; urgency=low
 
-  * Fixing the signals.
+  * Upstream update
+    * Switching DBus interface to org.freedesktop
+    * Adding check/radio support to menu parsing
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 00:59:12 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:02:09 -0600
 
-indicator-application (0.0.6-0ubuntu1~ppa2~icon1) karmic; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa2) karmic; urgency=low
 
-  * Adding in icon path support.
+  * Upstream update
+    * Adding ChangeLog to dist
+    * Adding check item support to menu parsing
 
- -- Ted Gould <ted@ubuntu.com>  Sun, 20 Dec 2009 22:20:35 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 13:58:33 -0600
 
 indicator-application (0.0.6-0ubuntu1~ppa1) karmic; urgency=low
 

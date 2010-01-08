@@ -29,8 +29,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-watcher.h"
 #include "dbus-shared.h"
 
-static gboolean _notification_watcher_server_register_service (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_registered_services (ApplicationServiceWatcher * appwatcher, GArray ** apps);
+static gboolean _notification_watcher_server_register_status_notifier_item (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
+static gboolean _notification_watcher_server_registered_status_notifier_items (ApplicationServiceWatcher * appwatcher, GArray ** apps);
 static gboolean _notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version);
 static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
 static gboolean _notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost);
@@ -165,18 +165,26 @@ application_service_watcher_new (ApplicationServiceAppstore * appstore)
 }
 
 static gboolean
-_notification_watcher_server_register_service (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method)
+_notification_watcher_server_register_status_notifier_item (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method)
 {
 	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
 
-	application_service_appstore_application_add(priv->appstore, dbus_g_method_get_sender(method), service);
+	if (service[0] == '/') {
+		application_service_appstore_application_add(priv->appstore,
+		                                             dbus_g_method_get_sender(method),
+		                                             service);
+	} else {
+		application_service_appstore_application_add(priv->appstore,
+		                                             service,
+		                                             NOTIFICATION_ITEM_DEFAULT_OBJ);
+	}
 
 	dbus_g_method_return(method, G_TYPE_NONE);
 	return TRUE;
 }
 
 static gboolean
-_notification_watcher_server_registered_services (ApplicationServiceWatcher * appwatcher, GArray ** apps)
+_notification_watcher_server_registered_status_notifier_items (ApplicationServiceWatcher * appwatcher, GArray ** apps)
 {
 
 	return FALSE;

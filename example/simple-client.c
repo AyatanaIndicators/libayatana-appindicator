@@ -53,12 +53,12 @@ main (int argc, char ** argv)
 	app_indicator_set_attention_icon(ci, "indicator-messages-new");
 
         menu = gtk_menu_new ();
-        GtkWidget *item = gtk_menu_item_new_with_label ("1");
+        GtkWidget *item = gtk_check_menu_item_new_with_label ("1");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "1");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-        item = gtk_menu_item_new_with_label ("2");
+        item = gtk_radio_menu_item_new_with_label (NULL, "2");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "2");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
