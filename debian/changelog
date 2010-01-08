@@ -16,6 +16,22 @@ indicator-application (0.0.6-0ubuntu1~ppa2~icon1) karmic; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Sun, 20 Dec 2009 22:20:35 -0600
 
+indicator-application (0.0.6-0ubuntu1~ppa3) karmic; urgency=low
+
+  * Upstream update
+    * Switching DBus interface to org.freedesktop
+    * Adding check/radio support to menu parsing
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:02:09 -0600
+
+indicator-application (0.0.6-0ubuntu1~ppa2) karmic; urgency=low
+
+  * Upstream update
+    * Adding ChangeLog to dist
+    * Adding check item support to menu parsing
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 13:58:33 -0600
+
 indicator-application (0.0.6-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.0.6
