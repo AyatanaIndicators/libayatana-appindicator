@@ -688,8 +688,6 @@ widget_notify_cb (GtkWidget  *widget,
 {
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
 
-  g_print ("pspec->name: %s\n", pspec->name);
-
   if (pspec->name == g_intern_static_string ("sensitive"))
     {
       dbusmenu_menuitem_property_set_bool (child,
