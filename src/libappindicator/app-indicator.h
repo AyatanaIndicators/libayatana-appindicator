@@ -202,6 +202,10 @@ GType                           app_indicator_get_type           (void) G_GNUC_C
 AppIndicator                   *app_indicator_new                (const gchar          *id,
                                                                   const gchar          *icon_name,
                                                                   AppIndicatorCategory  category);
+AppIndicator                   *app_indicator_new_with_path      (const gchar          *id,
+                                                                  const gchar          *icon_name,
+                                                                  AppIndicatorCategory  category,
+                                                                  const gchar          *icon_path);
 
 /* Set properties */
 void                            app_indicator_set_status         (AppIndicator       *self,

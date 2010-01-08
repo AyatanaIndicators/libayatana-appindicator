@@ -1,3 +1,10 @@
+indicator-application (0.0.6-0ubuntu1~ppa4) UNRELEASED; urgency=low
+
+  * Upstream update
+    * Adding in icon path support.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:04:56 -0600
+
 indicator-application (0.0.6-0ubuntu1~ppa3) karmic; urgency=low
 
   * Upstream update
