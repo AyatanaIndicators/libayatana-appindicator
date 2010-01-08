@@ -26,6 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib-bindings.h>
 #include "application-service-watcher.h"
 #include "dbus-shared.h"
 
@@ -34,6 +35,7 @@ static gboolean _notification_watcher_server_registered_status_notifier_items (A
 static gboolean _notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version);
 static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
 static gboolean _notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost);
+static void get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data);
 
 #include "notification-watcher-server.h"
 
@@ -41,6 +43,7 @@ static gboolean _notification_watcher_server_is_notification_host_registered (Ap
 typedef struct _ApplicationServiceWatcherPrivate ApplicationServiceWatcherPrivate;
 struct _ApplicationServiceWatcherPrivate {
 	ApplicationServiceAppstore * appstore;
+	DBusGProxy * dbus_proxy;
 };
 
 #define APPLICATION_SERVICE_WATCHER_GET_PRIVATE(o) \
@@ -129,6 +132,23 @@ application_service_watcher_init (ApplicationServiceWatcher *self)
 	                                    NOTIFICATION_WATCHER_DBUS_OBJ,
 	                                    G_OBJECT(self));
 
+	priv->dbus_proxy = dbus_g_proxy_new_for_name_owner(session_bus,
+	                                                   DBUS_SERVICE_DBUS,
+	                                                   DBUS_PATH_DBUS,
+	                                                   DBUS_INTERFACE_DBUS,
+	                                                   &error);
+	if (error != NULL) {
+		g_error("Ah, can't get proxy to dbus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	org_freedesktop_DBus_request_name_async(priv->dbus_proxy,
+	                                        NOTIFICATION_WATCHER_DBUS_ADDR,
+	                                        DBUS_NAME_FLAG_DO_NOT_QUEUE,
+	                                        get_name_cb,
+	                                        self);
+
 	return;
 }
 
@@ -211,3 +231,21 @@ _notification_watcher_server_is_notification_host_registered (ApplicationService
 	return TRUE;
 }
 
+/* Function to handle the return of the get name.  There isn't a whole
+   lot that can be done, but we're atleast going to tell people. */
+static void
+get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data)
+{
+	if (error != NULL) {
+		g_warning("Unable to get watcher name '%s' because: %s", NOTIFICATION_WATCHER_DBUS_ADDR, error->message);
+		return;
+	}
+
+	if (status != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER &&
+			status != DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER) {
+		g_warning("Unable to get watcher name '%s'", NOTIFICATION_WATCHER_DBUS_ADDR);
+		return;
+	}
+
+	return;
+}
