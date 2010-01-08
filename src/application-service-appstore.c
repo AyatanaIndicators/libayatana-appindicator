@@ -78,6 +78,7 @@ struct _Application {
 	gchar * aicon;
 	gchar * menu;
 	gchar * icon_path;
+	gboolean currently_free;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -116,25 +117,24 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	signals[APPLICATION_ADDED] = g_signal_new ("application-added",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_added),
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_added),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
 	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_removed),
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_removed),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__INT,
 	                                           G_TYPE_NONE, 1, G_TYPE_INT, G_TYPE_NONE);
 	signals[APPLICATION_ICON_CHANGED] = g_signal_new ("application-icon-changed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceAppstore, application_icon_changed),
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_changed),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
-
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
@@ -248,7 +248,6 @@ get_position (Application * app) {
 
 	GList * applistitem = g_list_find(priv->applications, app);
 	if (applistitem == NULL) {
-		g_warning("Change the icon of an application that isn't in the application list?");
 		return -1;
 	}
 
@@ -261,6 +260,18 @@ static void
 application_free (Application * app)
 {
 	if (app == NULL) return;
+	
+	/* Handle the case where this could be called by unref'ing one of
+	   the proxy objects. */
+	if (app->currently_free) return;
+	app->currently_free = TRUE;
+	
+	if (app->dbus_proxy) {
+		g_object_unref(app->dbus_proxy);
+	}
+	if (app->prop_proxy) {
+		g_object_unref(app->prop_proxy);
+	}
 
 	if (app->dbus_name != NULL) {
 		g_free(app->dbus_name);
@@ -309,6 +320,7 @@ apply_status (Application * app, ApplicationStatus status)
 	if (app->status == status) {
 		return;
 	}
+	g_debug("Changing app status to: %d", status);
 
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
@@ -512,6 +524,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->aicon = NULL;
 	app->menu = NULL;
 	app->icon_path = NULL;
+	app->currently_free = FALSE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
@@ -585,6 +598,8 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	return;
 }
 
+/* Removes an application.  Currently only works for the apps
+   that are shown.  /TODO Need to fix that. */
 void
 application_service_appstore_application_remove (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
@@ -592,6 +607,17 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	GList * listpntr;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
+
+		if (!g_strcmp0(app->dbus_name, dbus_name) && !g_strcmp0(app->dbus_object, dbus_object)) {
+			application_removed_cb(NULL, app);
+			break; /* NOTE: Must break as the list will become inconsistent */
+		}
+	}
 
 	return;
 }
