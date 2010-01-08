@@ -530,7 +530,7 @@ check_connect (AppIndicator *self)
 
 	GError * error = NULL;
 	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
-	                                                      INDICATOR_APPLICATION_DBUS_ADDR,
+	                                                      NOTIFICATION_WATCHER_DBUS_ADDR,
 	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
 	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
 	                                                      &error);
