@@ -1,8 +1,8 @@
-indicator-application (0.0.6-0ubuntu1~ppa4~icon1) UNRELEASED; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa4~icon1) karmic; urgency=low
 
   * Syncing with all the other branches.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:24:15 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:27:32 -0600
 
 indicator-application (0.0.6-0ubuntu1~ppa2~icon4) karmic; urgency=low
 
