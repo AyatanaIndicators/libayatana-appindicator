@@ -43,7 +43,7 @@ service_disconnected (IndicatorService * service, gpointer data)
 {
 	g_debug("Service disconnected");
 	if (mainloop != NULL) {
-		//g_main_loop_quit(mainloop);
+		g_main_loop_quit(mainloop);
 	}
 	return;
 }
