@@ -585,6 +585,8 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	return;
 }
 
+/* Removes an application.  Currently only works for the apps
+   that are shown.  /TODO Need to fix that. */
 void
 application_service_appstore_application_remove (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
@@ -592,6 +594,17 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	GList * listpntr;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
+
+		if (!g_strcmp0(app->dbus_name, dbus_name) && !g_strcmp0(app->dbus_object, dbus_object)) {
+			application_removed_cb(NULL, app);
+			break; /* NOTE: Must break as the list will become inconsistent */
+		}
+	}
 
 	return;
 }
