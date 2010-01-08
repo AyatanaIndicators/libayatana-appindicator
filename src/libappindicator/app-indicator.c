@@ -92,7 +92,7 @@ enum {
 	PROP_STATUS,
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
-	PROP_ICON_PATH,
+	PROP_ICON_THEME_PATH,
 	PROP_MENU,
 	PROP_CONNECTED
 };
@@ -103,7 +103,7 @@ enum {
 #define PROP_STATUS_S                "status"
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
-#define PROP_ICON_PATH_S             "icon-path"
+#define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
 
@@ -183,8 +183,8 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property(object_class,
-	                                PROP_ICON_PATH,
-	                                g_param_spec_string (PROP_ICON_PATH_S,
+	                                PROP_ICON_THEME_PATH,
+	                                g_param_spec_string (PROP_ICON_THEME_PATH_S,
                                                              "An additional path for custom icons.",
                                                              "An additional place to look for icon names that may be installed by the application.",
                                                              NULL,
@@ -440,7 +440,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
                                             g_value_get_string (value));
         break;
 
-        case PROP_ICON_PATH:
+        case PROP_ICON_THEME_PATH:
 			if (priv->icon_path != NULL) {
 				g_free(priv->icon_path);
 			}
@@ -486,7 +486,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->attention_icon_name);
           break;
 
-        case PROP_ICON_PATH:
+        case PROP_ICON_THEME_PATH:
           g_value_set_string (value, priv->icon_path);
           break;
 
@@ -610,7 +610,7 @@ app_indicator_new (const gchar          *id,
 		Creates a new #AppIndicator setting the properties:
 		#AppIndicator::id with @id, #AppIndicator::category
 		with @category, #AppIndicator::icon-name with
-		@icon_name and #AppIndicator::icon-path with @icon_path.
+		@icon_name and #AppIndicator::icon-theme-path with @icon_path.
 
         Return value: A pointer to a new #AppIndicator object.
  */
@@ -624,7 +624,7 @@ app_indicator_new_with_path (const gchar          *id,
 	                                        "id", id,
 	                                        "category", category_from_enum (category),
 	                                        "icon-name", icon_name,
-	                                        "icon-path", icon_path,
+	                                        "icon-theme-path", icon_path,
 	                                        NULL);
 
 	return indicator;
