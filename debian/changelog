@@ -1,8 +1,8 @@
-indicator-application (0.0.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.7-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream Release 0.0.7
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:03:26 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:05:39 -0600
 
 indicator-application (0.0.6-0ubuntu2~ppa6) karmic; urgency=low
 
