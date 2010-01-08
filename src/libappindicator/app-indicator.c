@@ -513,7 +513,7 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
-	org_ayatana_indicator_application_NotificationWatcher_register_service_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
 
 	return;
 }
