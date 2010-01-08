@@ -40,13 +40,14 @@ typedef struct _ApplicationServiceAppstoreClass ApplicationServiceAppstoreClass;
 
 struct _ApplicationServiceAppstoreClass {
 	GObjectClass parent_class;
+
+	void (*application_added) (ApplicationServiceAppstore * appstore, gchar *, gint, gchar *, gchar *, gpointer);
+	void (*application_removed) (ApplicationServiceAppstore * appstore, gint, gpointer);
+	void (*application_icon_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);
 };
 
 struct _ApplicationServiceAppstore {
 	GObject parent;
-
-	void (*application_added) (ApplicationServiceAppstore * appstore, gchar *, gint, gchar *, gchar *, gpointer);
-	void (*application_removed) (ApplicationServiceAppstore * appstore, gint, gpointer);
 };
 
 GType application_service_appstore_get_type               (void);

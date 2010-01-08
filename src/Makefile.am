@@ -101,7 +101,6 @@ libappindicator_la_LIBADD = \
 
 DBUS_SPECS = \
 	application-service.xml \
-	dbus-properties.xml \
 	notification-item.xml \
 	notification-watcher.xml
 
