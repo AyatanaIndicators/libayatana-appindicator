@@ -1,4 +1,4 @@
-indicator-application (0.0.6-0ubuntu1~ppa5) UNRELEASED; urgency=low
+indicator-application (0.0.6-0ubuntu1~ppa5) karmic; urgency=low
 
   * Upstream merge:
     * Adding support for icons changing through the service and
@@ -6,7 +6,7 @@ indicator-application (0.0.6-0ubuntu1~ppa5) UNRELEASED; urgency=low
     * Fixing the generated headers for DBus Properties calls
     * Fixing libappindicator set_icon to set the right icon.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 15:37:04 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 15:39:49 -0600
 
 indicator-application (0.0.6-0ubuntu1~ppa4) karmic; urgency=low
 
