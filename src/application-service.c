@@ -43,7 +43,7 @@ service_disconnected (IndicatorService * service, gpointer data)
 {
 	g_debug("Service disconnected");
 	if (mainloop != NULL) {
-		g_main_loop_quit(mainloop);
+		//g_main_loop_quit(mainloop);
 	}
 	return;
 }
@@ -57,7 +57,7 @@ main (int argc, char ** argv)
 
 	/* Bring us up as a basic indicator service */
 	service = indicator_service_new(INDICATOR_APPLICATION_DBUS_ADDR);
-	g_signal_connect(G_OBJECT(service), "disconnected", G_CALLBACK(service_disconnected), NULL);
+	g_signal_connect(G_OBJECT(service), INDICATOR_SERVICE_SIGNAL_SHUTDOWN, G_CALLBACK(service_disconnected), NULL);
 
 	/* Building our app store */
 	appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
