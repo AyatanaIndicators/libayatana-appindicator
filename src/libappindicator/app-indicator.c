@@ -592,9 +592,9 @@ app_indicator_new (const gchar          *id,
                    AppIndicatorCategory  category)
 {
   AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
-                                          "id", id,
-                                          "category", category_from_enum (category),
-                                          "icon-name", icon_name,
+                                          PROP_ID_S, id,
+                                          PROP_CATEGORY_S, category_from_enum (category),
+                                          PROP_ICON_NAME_S, icon_name,
                                           NULL);
 
   return indicator;
@@ -621,10 +621,10 @@ app_indicator_new_with_path (const gchar          *id,
                              const gchar          *icon_path)
 {
 	AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
-	                                        "id", id,
-	                                        "category", category_from_enum (category),
-	                                        "icon-name", icon_name,
-	                                        "icon-theme-path", icon_path,
+	                                        PROP_ID_S, id,
+	                                        PROP_CATEGORY_S, category_from_enum (category),
+	                                        PROP_ICON_NAME_S, icon_name,
+	                                        PROP_ICON_THEME_PATH_S, icon_path,
 	                                        NULL);
 
 	return indicator;
