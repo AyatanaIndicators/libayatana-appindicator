@@ -128,8 +128,8 @@ typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
 
 	These are the states that the indicator can be on in
 	the user's panel.  The indicator by default starts
-	in the state @APP_INDICATOR_STATUS_OFF and can be
-	shown by setting it to @APP_INDICATOR_STATUS_ON.
+	in the state @APP_INDICATOR_STATUS_PASSIVE and can be
+	shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
 */
 typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
 	APP_INDICATOR_STATUS_PASSIVE,
