@@ -40,7 +40,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_STATUS     "Status"
 #define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
 #define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
-#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconPath"
+#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconThemePath"
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 /* Private Stuff */
