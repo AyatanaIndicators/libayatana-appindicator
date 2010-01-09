@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<node name="/">
-	<interface name="org.ayatana.indicator.application.NotificationItem">
+<node name="/StatusNotifierItem">
+	<interface name="org.freedesktop.StatusNotifierItem">
 
 <!-- Properties -->
 		<property name="Id" type="s" access="read" />
@@ -8,6 +8,9 @@
 		<property name="Status" type="s" access="read" />
 		<property name="IconName" type="s" access="read" />
 		<property name="AttentionIconName" type="s" access="read" />
+		<!-- An additional path to add to the theme search path
+		     to find the icons specified above. -->
+		<property name="IconThemePath" type="s" access="read" />
 		<property name="Menu" type="o" access="read" />
 
 <!-- Methods -->

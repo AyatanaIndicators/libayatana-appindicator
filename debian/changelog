@@ -1,4 +1,21 @@
-indicator-application (0.0.6-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.0.7-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.7
+    * Making the Notification Watcher register for it's own DBus
+      name to keep the service one unique.
+    * Adding support for icons changing through the service and
+      in the indicator.
+    * Fixing the generated headers for DBus Properties calls
+    * Fixing libappindicator set_icon to set the right icon.
+    * Adding in icon path support.
+    * Switching DBus interface to org.freedesktop
+    * Adding check/radio support to menu parsing
+    * Adding ChangeLog to dist
+    * Adding check item support to menu parsing
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:05:39 -0600
+
+indicator-application (0.0.6-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.6
     * Include Python binding

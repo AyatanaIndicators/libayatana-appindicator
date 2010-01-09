@@ -16,4 +16,5 @@
 # 
 # You should have received a copy of the GNU General Public License along 
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
-VOID: STRING, INT, STRING, STRING
+VOID: STRING, INT, STRING, STRING, STRING
+VOID: INT, STRING

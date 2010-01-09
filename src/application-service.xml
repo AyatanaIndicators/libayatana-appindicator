@@ -35,9 +35,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<arg type="i" name="position" direction="out" />
 			<arg type="s" name="dbusaddress" direction="out" />
 			<arg type="o" name="dbusobject" direction="out" />
+			<arg type="s" name="iconpath" direction="out" />
 		</signal>
 		<signal name="ApplicationRemoved">
 			<arg type="i" name="position" direction="out" />
+		</signal>
+		<signal name="ApplicationIconChanged">
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="icon_name" direction="out" />
 		</signal>
 
 	</interface>

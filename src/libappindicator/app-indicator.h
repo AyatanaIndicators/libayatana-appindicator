@@ -128,8 +128,8 @@ typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
 
 	These are the states that the indicator can be on in
 	the user's panel.  The indicator by default starts
-	in the state @APP_INDICATOR_STATUS_OFF and can be
-	shown by setting it to @APP_INDICATOR_STATUS_ON.
+	in the state @APP_INDICATOR_STATUS_PASSIVE and can be
+	shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
 */
 typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
 	APP_INDICATOR_STATUS_PASSIVE,
@@ -202,6 +202,10 @@ GType                           app_indicator_get_type           (void) G_GNUC_C
 AppIndicator                   *app_indicator_new                (const gchar          *id,
                                                                   const gchar          *icon_name,
                                                                   AppIndicatorCategory  category);
+AppIndicator                   *app_indicator_new_with_path      (const gchar          *id,
+                                                                  const gchar          *icon_name,
+                                                                  AppIndicatorCategory  category,
+                                                                  const gchar          *icon_path);
 
 /* Set properties */
 void                            app_indicator_set_status         (AppIndicator       *self,
