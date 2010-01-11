@@ -302,6 +302,8 @@ app_indicator_init (AppIndicator *self)
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
 
+	priv->status_icon = NULL;
+
 	/* Put the object on DBus */
 	GError * error = NULL;
 	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -325,11 +327,19 @@ app_indicator_init (AppIndicator *self)
 static void
 app_indicator_dispose (GObject *object)
 {
-        AppIndicator *self = APP_INDICATOR (object);
+	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		app_indicator_set_status(self, APP_INDICATOR_STATUS_PASSIVE);
+	}
+
+	if (priv->status_icon != NULL) {
+		AppIndicatorClass * class = APP_INDICATOR_CLASS(object);
+		if (class->unfallback != NULL) {
+			class->unfallback(self, priv->status_icon);
+		}
+		priv->status_icon = NULL;
 	}
 
 	if (priv->menu != NULL) {
