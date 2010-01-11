@@ -111,6 +111,10 @@ enum {
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
+/* Default Paths */
+#define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
+#define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
+
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
 static void app_indicator_init       (AppIndicator *self);
@@ -305,7 +309,7 @@ app_indicator_init (AppIndicator *self)
 	}
 
 	dbus_g_connection_register_g_object(priv->connection,
-	                                    "/need/a/path",
+	                                    DEFAULT_ITEM_PATH,
 	                                    G_OBJECT(self));
 
         self->priv = priv;
@@ -541,7 +545,7 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
 
 	return;
 }
@@ -870,7 +874,7 @@ setup_dbusmenu (AppIndicator *self)
                         root);
 
   if (priv->menuservice == NULL) {
-    priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+    priv->menuservice = dbusmenu_server_new (DEFAULT_MENU_PATH);
   }
 
   dbusmenu_server_set_root (priv->menuservice, root);
