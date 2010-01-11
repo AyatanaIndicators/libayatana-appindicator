@@ -64,8 +64,9 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_name;
 	gchar                *attention_icon_name;
 	gchar *               icon_path;
-        DbusmenuServer       *menuservice;
-        GtkWidget            *menu;
+	DbusmenuServer       *menuservice;
+	GtkWidget            *menu;
+	GtkStatusIcon *       status_icon;
 
 	/* Fun stuff */
 	DBusGProxy           *watcher_proxy;
@@ -122,6 +123,8 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
+static GtkStatusIcon * fallback (AppIndicator * self);
+static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -140,6 +143,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	/* Property funcs */
 	object_class->set_property = app_indicator_set_property;
 	object_class->get_property = app_indicator_get_property;
+
+	/* Our own funcs */
+	klass->fallback = fallback;
+	klass->unfallback = unfallback;
 
 	/* Properties */
 	g_object_class_install_property (object_class,
@@ -566,6 +573,24 @@ category_from_enum (AppIndicatorCategory category)
 
   value = g_enum_get_value ((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), category);
   return value->value_nick;
+}
+
+/* Creates a StatusIcon that can be used when the application
+   indicator area isn't available. */
+static GtkStatusIcon *
+fallback (AppIndicator * self)
+{
+
+	return NULL;
+}
+
+/* Removes the status icon as the application indicator area
+   is now up and running again. */
+static void
+unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
+{
+
+	return;
 }
 
 
