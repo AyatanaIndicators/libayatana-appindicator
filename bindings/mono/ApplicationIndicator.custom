@@ -1,0 +1,26 @@
+[DllImport ("libappindicator.so.0")]
+static extern int app_indicator_get_status (IntPtr i);
+
+[DllImport ("libappindicator.so.0")]
+static extern int app_indicator_get_category (IntPtr i);
+
+[DllImport ("libappindicator.so.0")]
+static extern void app_indicator_set_status (IntPtr i, int s);
+
+        [GLib.Property ("status")]
+        public Status Status {
+               get {
+                   return (Status) app_indicator_get_status (Handle);
+               }
+
+               set {
+                   app_indicator_set_status (Handle, (int) value);
+               }
+        }
+
+        [GLib.Property ("category")]
+        public Category Category {
+               get {
+                   return (Category) app_indicator_get_category (Handle);
+               }
+        }
