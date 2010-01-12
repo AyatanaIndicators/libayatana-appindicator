@@ -1,3 +1,10 @@
+indicator-application (0.0.7-0ubuntu1~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Sensitivity to label changes
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 23:41:03 -0600
+
 indicator-application (0.0.7-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream Release 0.0.7

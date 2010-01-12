@@ -740,6 +740,27 @@ menuitem_iterate (GtkWidget *widget,
 }
 
 static void
+widget_notify_cb (GtkWidget  *widget,
+                  GParamSpec *pspec,
+                  gpointer    data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+
+  if (pspec->name == g_intern_static_string ("sensitive"))
+    {
+      dbusmenu_menuitem_property_set_bool (child,
+                                           DBUSMENU_MENUITEM_PROP_SENSITIVE,
+                                           GTK_WIDGET_IS_SENSITIVE (widget));
+    }
+  else if (pspec->name == g_intern_static_string ("label"))
+    {
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+    }
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
@@ -825,6 +846,9 @@ container_iterate (GtkWidget *widget,
                                 child);
         }
     }
+
+  g_signal_connect (widget, "notify",
+                    G_CALLBACK (widget_notify_cb), child);
 
   g_signal_connect (G_OBJECT (child),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
