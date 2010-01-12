@@ -54,8 +54,12 @@ main (int argv, char ** argc)
 {
 	g_type_init();
 
+	g_debug("Waiting to init.");
+
 	/* Wait 1/4 a second, which should trigger the fallback */
 	g_usleep(250000);
+
+	g_debug("Initing");
 
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -82,8 +86,12 @@ main (int argv, char ** argc)
 	/* After we've got the name, let it unfallback, and then we'll drop again */
 	g_timeout_add(250, kill_func, NULL);
 
+	g_debug("Entering Mainloop");
+
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
+
+	g_debug("Exiting");
 
 	return 0;
 }
