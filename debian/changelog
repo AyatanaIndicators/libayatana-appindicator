@@ -1,4 +1,4 @@
-indicator-application (0.0.8-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.8-0ubuntu1~ppa1) karmic; urgency=low
 
   * Upstream release 0.0.8
     * Mirror icon changes over dbus
@@ -6,7 +6,7 @@ indicator-application (0.0.8-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Fixes for the mono binding properties
     * Sensitivity to label changes
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 09:04:57 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 09:10:23 -0600
 
 indicator-application (0.0.7-0ubuntu1~ppa1) karmic; urgency=low
 
