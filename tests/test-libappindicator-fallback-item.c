@@ -51,10 +51,29 @@ test_libappindicator_fallback_item_init (TestLibappindicatorFallbackItem *self)
 GMainLoop * mainloop = NULL;
 gboolean passed = FALSE;
 
+enum {
+	STATE_INIT,
+	STATE_FALLBACK,
+	STATE_UNFALLBACK,
+	STATE_REFALLBACK
+};
+
+gint state = STATE_INIT;
+
 static GtkStatusIcon *
 fallback (AppIndicator * indicator)
 {
 	g_debug("Fallback");
+	if (state == STATE_INIT) {
+		state = STATE_FALLBACK;
+	} else if (state == STATE_UNFALLBACK) {
+		state = STATE_REFALLBACK;
+		passed = TRUE;
+		g_main_loop_quit(mainloop);
+	} else {
+		g_debug("Error, fallback in state: %d", state);
+		passed = FALSE;
+	}
 	return NULL;
 }
 
@@ -62,6 +81,12 @@ static void
 unfallback (AppIndicator * indicator, GtkStatusIcon * status_icon)
 {
 	g_debug("Unfallback");
+	if (state == STATE_FALLBACK) {
+		state = STATE_UNFALLBACK;
+	} else {
+		g_debug("Error, unfallback in state: %d", state);
+		passed = FALSE;
+	}
 	return;
 }
 
