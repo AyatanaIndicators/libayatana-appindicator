@@ -101,13 +101,16 @@ kill_func (gpointer data)
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
+	gtk_init(&argc, &argv);
 
 	TestLibappindicatorFallbackItem * item = g_object_new(TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE,
 		"id", "test-id",
 		"category", "other",
 		"icon-name", "bob",
 		NULL);
+	
+	GtkWidget * menu = gtk_menu_new();
+	app_indicator_set_menu(APP_INDICATOR(item), GTK_MENU(menu));
 
 	g_timeout_add_seconds(1, kill_func, NULL);
 
