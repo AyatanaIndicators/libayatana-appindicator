@@ -644,7 +644,7 @@ static gboolean
 fallback_timer_expire (gpointer data)
 {
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
-	AppIndicatorClass * class = APP_INDICATOR_CLASS(data);
+	AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
 
 	if (priv->status_icon == NULL) {
 		if (class->fallback != NULL) {
