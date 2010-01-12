@@ -127,6 +127,7 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
+static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 
@@ -557,8 +558,8 @@ check_connect (AppIndicator *self)
 	                                                      &error);
 	if (error != NULL) {
 		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
-		/* TODO: This is where we should start looking at fallbacks */
 		g_error_free(error);
+		start_fallback_timer(self, FALSE);
 		return;
 	}
 
@@ -576,6 +577,7 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
+		start_fallback_timer(APP_INDICATOR(data), TRUE);
 	}
 	return;
 }
@@ -587,6 +589,18 @@ category_from_enum (AppIndicatorCategory category)
 
   value = g_enum_get_value ((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), category);
   return value->value_nick;
+}
+
+/* A function that will start the fallback timer if it's not
+   already started.  It sets up the DBus watcher to see if
+   there is a change.  Also, provides an override mode for cases
+   where it's unlikely that a timer will help anything. */
+static void
+start_fallback_timer (AppIndicator * self, gboolean do_it_now)
+{
+
+
+
 }
 
 /* Creates a StatusIcon that can be used when the application
