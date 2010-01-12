@@ -23,10 +23,24 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #include "../src/dbus-shared.h"
 
 static GMainLoop * mainloop = NULL;
+
+static DBusHandlerResult
+dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
+{
+	if (dbus_message_is_method_call(message, NOTIFICATION_WATCHER_DBUS_ADDR, "RegisterStatusNotifierItem")) {
+		DBusMessage * reply = dbus_message_new_method_return(message);
+		dbus_connection_send(connection, reply, NULL);
+		dbus_message_unref(reply);
+		return DBUS_HANDLER_RESULT_HANDLED;
+	}
+
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
 
 gboolean
 kill_func (gpointer userdata)
@@ -62,6 +76,8 @@ main (int argv, char ** argc)
 		g_error("Unable to get name");
 		return 1;
 	}
+
+	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
 
 	/* After we've got the name, let it unfallback, and then we'll drop again */
 	g_timeout_add(250, kill_func, NULL);
