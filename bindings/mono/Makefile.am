@@ -17,13 +17,15 @@ assembly_DATA = $(TARGET)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
-EXTRA_DIST = \
-	$(RAW_API) \
-	$(METADATA) \
-	appindicator-sharp-0.1.pc.in \
-	appindicator-sharp.dll.config.in \
-	app-indicator.sources.xml \
-	$(ASSEMBLY_NAME).snk \
+customs = ApplicationIndicator.custom
+EXTRA_DIST =					\
+	$(RAW_API)				\
+	$(METADATA)				\
+	appindicator-sharp-0.1.pc.in		\
+	appindicator-sharp.dll.config.in	\
+	app-indicator.sources.xml		\
+	$(ASSEMBLY_NAME).snk			\
+	$(customs)				\
 	$(TEST_SOURCES)
 
 GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
@@ -63,9 +65,12 @@ $(API): $(MIDDLE_API) Makefile.am
 
 api_includes = $(GTK_SHARP_CFLAGS)
 
-generated-stamp: $(API)
+build_customs = $(addprefix $(srcdir)/, $(customs))
+
+generated-stamp: $(API) $(build_customs)
 	rm -f generated/* &&					\
 	$(GAPI_CODEGEN) --generate $(API) $(api_includes)	\
+	--customdir=$(srcdir)					\
 	--outdir=generated --assembly-name=$(ASSEMBLY_NAME)	\
 	&& touch generated-stamp
 
