@@ -744,6 +744,64 @@ menuitem_iterate (GtkWidget *widget,
 }
 
 static void
+update_icon_name (DbusmenuMenuitem *menuitem,
+                  GtkImage         *image)
+{
+  if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
+    return;
+
+  dbusmenu_menuitem_property_set (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  image->data.name.icon_name);
+}
+
+/* return value specifies whether the label is set or not */
+static gboolean
+update_stock_item (DbusmenuMenuitem *menuitem,
+                   GtkImage         *image)
+{
+  GtkStockItem stock;
+
+  if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
+    return FALSE;
+
+  gtk_stock_lookup (image->data.stock.stock_id, &stock);
+
+  dbusmenu_menuitem_property_set (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  image->data.stock.stock_id);
+
+  if (stock.label != NULL)
+    {
+      dbusmenu_menuitem_property_set (menuitem,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      stock.label);
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
+image_notify_cb (GtkWidget  *widget,
+                 GParamSpec *pspec,
+                 gpointer    data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+  GtkImage *image = GTK_IMAGE (widget);
+
+  if (pspec->name == g_intern_static_string ("stock"))
+    {
+      update_stock_item (child, image);
+    }
+  else if (pspec->name == g_intern_static_string ("icon-name"))
+    {
+      update_icon_name (child, image);
+    }
+}
+
+static void
 widget_notify_cb (GtkWidget  *widget,
                   GParamSpec *pspec,
                   gpointer    data)
@@ -811,25 +869,24 @@ container_iterate (GtkWidget *widget,
         }
       else if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
-          GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+          GtkWidget *image;
+          GtkImageType image_type;
 
-          if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
+          image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+          image_type = gtk_image_get_storage_type (GTK_IMAGE (image));
+
+          g_signal_connect (image,
+                            "notify",
+                            G_CALLBACK (image_notify_cb),
+                            child);
+
+          if (image_type == GTK_IMAGE_STOCK)
             {
-              GtkStockItem stock;
-
-              gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
-
-              dbusmenu_menuitem_property_set (child,
-                                              DBUSMENU_MENUITEM_PROP_ICON,
-                                              GTK_IMAGE (image)->data.stock.stock_id);
-
-              if (stock.label != NULL)
-                {
-                  dbusmenu_menuitem_property_set (child,
-                                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                                  stock.label);
-                  label_set = TRUE;
-                }
+              label_set = update_stock_item (child, GTK_IMAGE (image));
+            }
+          else if (image_type == GTK_IMAGE_ICON_NAME)
+            {
+              update_icon_name (child, GTK_IMAGE (image));
             }
         }
     }
