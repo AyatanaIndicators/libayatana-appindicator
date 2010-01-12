@@ -66,7 +66,9 @@ struct _AppIndicatorPrivate {
 	gchar *               icon_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+
 	GtkStatusIcon *       status_icon;
+	gint                  fallback_timer;
 
 	/* Fun stuff */
 	DBusGProxy           *watcher_proxy;
@@ -115,6 +117,9 @@ enum {
 /* Default Paths */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
 #define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
+
+/* More constants */
+#define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
 
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
@@ -308,6 +313,7 @@ app_indicator_init (AppIndicator *self)
 	priv->connection = NULL;
 
 	priv->status_icon = NULL;
+	priv->fallback_timer = 0;
 
 	/* Put the object on DBus */
 	GError * error = NULL;
@@ -345,6 +351,11 @@ app_indicator_dispose (GObject *object)
 			class->unfallback(self, priv->status_icon);
 		}
 		priv->status_icon = NULL;
+	}
+
+	if (priv->fallback_timer != 0) {
+		g_source_remove(priv->fallback_timer);
+		priv->fallback_timer = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -583,6 +594,9 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 		priv->watcher_proxy = NULL;
 		start_fallback_timer(APP_INDICATOR(data), TRUE);
 	}
+
+	/* TODO: Unfallback here */
+
 	return;
 }
 
@@ -604,7 +618,13 @@ category_from_enum (AppIndicatorCategory category)
 static void
 start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 {
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
+	if (priv->fallback_timer != 0) {
+		/* The timer is set, let's just be happy with the one
+		   we've already got running */
+		return;
+	}
 
 
 }
