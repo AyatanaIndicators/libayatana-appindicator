@@ -77,7 +77,7 @@ test_libappindicator_fallback_watcher_LDADD = \
 	$(top_builddir)/src/libappindicator.la
 
 test_libappindicator_fallback_item_SOURCES = \
-	test-libappindicator-fallback-watcher.c
+	test-libappindicator-fallback-item.c
 
 test_libappindicator_fallback_item_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
