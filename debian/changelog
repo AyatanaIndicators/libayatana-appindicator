@@ -1,9 +1,9 @@
-indicator-application (0.0.7-0ubuntu1~ppa4) UNRELEASED; urgency=low
+indicator-application (0.0.7-0ubuntu1~ppa4) karmic; urgency=low
 
   * Upstream update
     * Better default object names.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 23:48:03 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 11 Jan 2010 23:50:08 -0600
 
 indicator-application (0.0.7-0ubuntu1~ppa3) karmic; urgency=low
 
