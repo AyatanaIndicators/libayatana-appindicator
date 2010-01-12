@@ -93,6 +93,8 @@ test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libapp
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ./test-libappindicator-fallback-item --task-name Item >> $@
 	@chmod +x $@
 
+TESTS += test-libappindicator-fallback
+
 #########################################
 ##  Actual tests
 #########################################
