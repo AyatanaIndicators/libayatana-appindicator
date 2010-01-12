@@ -133,6 +133,7 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
 static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
+static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 
@@ -626,7 +627,37 @@ start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 		return;
 	}
 
+	/* TODO: Setup what we need to check things out */
 
+	if (do_it_now) {
+		fallback_timer_expire(self);
+	} else {
+		priv->fallback_timer = g_timeout_add(DEFAULT_FALLBACK_TIMER, fallback_timer_expire, self);
+	}
+
+	return;
+}
+
+/* A function that gets executed when we want to change the
+   state of the fallback. */
+static gboolean
+fallback_timer_expire (gpointer data)
+{
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+	AppIndicatorClass * class = APP_INDICATOR_CLASS(data);
+
+	if (priv->status_icon == NULL) {
+		if (class->fallback != NULL) {
+			priv->status_icon = class->fallback(APP_INDICATOR(data));
+		} 
+	} else {
+		if (class->unfallback != NULL) {
+			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			priv->status_icon = NULL;
+		} 
+	}
+
+	return FALSE;
 }
 
 /* Creates a StatusIcon that can be used when the application
