@@ -24,12 +24,16 @@ EXTRA_DIST = \
 	appindicator-sharp.dll.config.in \
 	app-indicator.sources.xml \
 	$(ASSEMBLY_NAME).snk \
-	$(TEST_SOURCES)
+	$(TEST_SOURCES) \
+	$(customs)
 
 GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
 
 references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
+
+customs = myfile.custom
+build_customs = $(addprefix $(srcdir)/, $(customs))
 
 $(RAW_API): app-indicator.sources.xml
 	$(GAPI_PARSER) app-indicator.sources.xml
@@ -63,9 +67,10 @@ $(API): $(MIDDLE_API) Makefile.am
 
 api_includes = $(GTK_SHARP_CFLAGS)
 
-generated-stamp: $(API)
+generated-stamp: $(API) $(build_customs)
 	rm -f generated/* &&					\
 	$(GAPI_CODEGEN) --generate $(API) $(api_includes)	\
+	--customdir=$(srcdir) \
 	--outdir=generated --assembly-name=$(ASSEMBLY_NAME)	\
 	&& touch generated-stamp
 
