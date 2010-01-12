@@ -111,6 +111,10 @@ enum {
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
+/* Default Paths */
+#define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
+#define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
+
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
 static void app_indicator_init       (AppIndicator *self);
@@ -305,7 +309,7 @@ app_indicator_init (AppIndicator *self)
 	}
 
 	dbus_g_connection_register_g_object(priv->connection,
-	                                    "/need/a/path",
+	                                    DEFAULT_ITEM_PATH,
 	                                    G_OBJECT(self));
 
         self->priv = priv;
@@ -541,7 +545,7 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
 
 	return;
 }
@@ -740,6 +744,85 @@ menuitem_iterate (GtkWidget *widget,
 }
 
 static void
+update_icon_name (DbusmenuMenuitem *menuitem,
+                  GtkImage         *image)
+{
+  if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
+    return;
+
+  dbusmenu_menuitem_property_set (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  image->data.name.icon_name);
+}
+
+/* return value specifies whether the label is set or not */
+static gboolean
+update_stock_item (DbusmenuMenuitem *menuitem,
+                   GtkImage         *image)
+{
+  GtkStockItem stock;
+
+  if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
+    return FALSE;
+
+  gtk_stock_lookup (image->data.stock.stock_id, &stock);
+
+  dbusmenu_menuitem_property_set (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  image->data.stock.stock_id);
+
+  if (stock.label != NULL)
+    {
+      dbusmenu_menuitem_property_set (menuitem,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      stock.label);
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
+image_notify_cb (GtkWidget  *widget,
+                 GParamSpec *pspec,
+                 gpointer    data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+  GtkImage *image = GTK_IMAGE (widget);
+
+  if (pspec->name == g_intern_static_string ("stock"))
+    {
+      update_stock_item (child, image);
+    }
+  else if (pspec->name == g_intern_static_string ("icon-name"))
+    {
+      update_icon_name (child, image);
+    }
+}
+
+static void
+widget_notify_cb (GtkWidget  *widget,
+                  GParamSpec *pspec,
+                  gpointer    data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+
+  if (pspec->name == g_intern_static_string ("sensitive"))
+    {
+      dbusmenu_menuitem_property_set_bool (child,
+                                           DBUSMENU_MENUITEM_PROP_SENSITIVE,
+                                           GTK_WIDGET_IS_SENSITIVE (widget));
+    }
+  else if (pspec->name == g_intern_static_string ("label"))
+    {
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+    }
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
@@ -786,25 +869,24 @@ container_iterate (GtkWidget *widget,
         }
       else if (GTK_IS_IMAGE_MENU_ITEM (widget))
         {
-          GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+          GtkWidget *image;
+          GtkImageType image_type;
 
-          if (gtk_image_get_storage_type (GTK_IMAGE (image)) == GTK_IMAGE_STOCK)
+          image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+          image_type = gtk_image_get_storage_type (GTK_IMAGE (image));
+
+          g_signal_connect (image,
+                            "notify",
+                            G_CALLBACK (image_notify_cb),
+                            child);
+
+          if (image_type == GTK_IMAGE_STOCK)
             {
-              GtkStockItem stock;
-
-              gtk_stock_lookup (GTK_IMAGE (image)->data.stock.stock_id, &stock);
-
-              dbusmenu_menuitem_property_set (child,
-                                              DBUSMENU_MENUITEM_PROP_ICON,
-                                              GTK_IMAGE (image)->data.stock.stock_id);
-
-              if (stock.label != NULL)
-                {
-                  dbusmenu_menuitem_property_set (child,
-                                                  DBUSMENU_MENUITEM_PROP_LABEL,
-                                                  stock.label);
-                  label_set = TRUE;
-                }
+              label_set = update_stock_item (child, GTK_IMAGE (image));
+            }
+          else if (image_type == GTK_IMAGE_ICON_NAME)
+            {
+              update_icon_name (child, GTK_IMAGE (image));
             }
         }
     }
@@ -826,6 +908,9 @@ container_iterate (GtkWidget *widget,
         }
     }
 
+  g_signal_connect (widget, "notify",
+                    G_CALLBACK (widget_notify_cb), child);
+
   g_signal_connect (G_OBJECT (child),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (activate_menuitem), widget);
@@ -846,7 +931,7 @@ setup_dbusmenu (AppIndicator *self)
                         root);
 
   if (priv->menuservice == NULL) {
-    priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
+    priv->menuservice = dbusmenu_server_new (DEFAULT_MENU_PATH);
   }
 
   dbusmenu_server_set_root (priv->menuservice, root);

@@ -200,7 +200,7 @@ main (gint argc, gchar * argv[])
 
 	DBusGProxy * props = dbus_g_proxy_new_for_name_owner(session_bus,
 	                                                     ":1.0",
-	                                                     "/need/a/path",
+	                                                     "/org/ayatana/NotificationItem",
 	                                                     DBUS_INTERFACE_PROPERTIES,
 	                                                     &error);
 	if (error != NULL) {
