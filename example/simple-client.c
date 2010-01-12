@@ -43,6 +43,13 @@ toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
   gtk_widget_set_sensitive (target, !GTK_WIDGET_IS_SENSITIVE (target));
 }
 
+static void
+image_clicked_cb (GtkWidget *widget, gpointer data)
+{
+  gtk_image_set_from_stock (GTK_IMAGE (GTK_IMAGE_MENU_ITEM (widget)->image),
+                            GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -81,6 +88,11 @@ main (int argc, char ** argv)
         g_signal_connect (toggle_item, "activate",
                           G_CALLBACK (toggle_sensitivity_cb), item);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
+
+        item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (image_clicked_cb), NULL);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
         app_indicator_set_menu (ci, GTK_MENU (menu));
 
