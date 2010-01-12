@@ -1,3 +1,10 @@
+indicator-application (0.0.7-0ubuntu1~ppa5) UNRELEASED; urgency=low
+
+  * Upstream update
+    * Distcheck fixes to tests and cleanfiles
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 00:08:57 -0600
+
 indicator-application (0.0.7-0ubuntu1~ppa4) karmic; urgency=low
 
   * Upstream update
