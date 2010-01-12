@@ -568,12 +568,16 @@ check_connect (AppIndicator *self)
 	return;
 }
 
+/* Responce from the DBus command to register a service
+   with a NotificationWatcher. */
 static void
 register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 {
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
 
 	if (error != NULL) {
+		/* They didn't respond, ewww.  Not sure what they could
+		   be doing */
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
@@ -582,6 +586,8 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 	return;
 }
 
+/* A helper function to get the nick out of a given
+   category enum value. */
 static const gchar *
 category_from_enum (AppIndicatorCategory category)
 {
