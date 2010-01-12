@@ -1,6 +1,6 @@
-indicator-application (0.0.7-0ubuntu2) lucid; urgency=low
+indicator-application (0.0.8-0ubuntu1) lucid; urgency=low
 
-  * debian/patches/mono_bindings_fix.patch
+  * Upstream Release 0.0.8
     - Mono bindings fixes (LP: #505923)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jan 2010 01:35:44 -0500
