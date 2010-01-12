@@ -5,27 +5,27 @@
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_status']" name="name">NewStatus</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="name">ConnectionChanged</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon']" name="name">NewIcon</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ID_S']" name="name">ID</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="name">Category</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="type">AppIndicatorCategory</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="name">Status</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="type">AppIndicatorStatus</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ICON_NAME_S']" name="name">IconName</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ATTENTION_ICON_NAME_S']" name="name">AttentionIconName</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="name">Menu</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="type">GtkMenu*</attr>
-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CONNECTED_S']" name="name">Connected</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='id']" name="name">ID</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="hidden"></attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="hidden"></attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="hidden"></attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="hidden"></attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='icon-name']" name="name">IconName</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='attention-icon-name']" name="name">AttentionIconName</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='menu']" name="name">Menu</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='menu']" name="type">GtkMenu*</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='connected']" name="name">Connected</attr>
         <attr path="/api/namespace/object[@cname='AppIndicator']/method[@name='SetMenu']" name="name">SetMenu</attr>
-        
+
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_id']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_status']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_icon']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_category']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_attention_icon']" />
-        
+
 	<remove-node path="/api/namespace/object/method[@cname='app_indicator_set_id']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_status']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon']" />
         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_category']" />
-        <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />        
+        <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />
 </metadata>
