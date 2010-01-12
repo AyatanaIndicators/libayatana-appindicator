@@ -763,8 +763,6 @@ update_stock_item (DbusmenuMenuitem *menuitem,
 
   gtk_stock_lookup (image->data.stock.stock_id, &stock);
 
-  g_print ("set stock id `%s'\n", image->data.stock.stock_id);
-
   dbusmenu_menuitem_property_set (menuitem,
                                   DBUSMENU_MENUITEM_PROP_ICON,
                                   image->data.stock.stock_id);
