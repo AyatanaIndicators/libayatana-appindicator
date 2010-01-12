@@ -49,6 +49,7 @@ test_libappindicator_fallback_item_init (TestLibappindicatorFallbackItem *self)
 }
 
 GMainLoop * mainloop = NULL;
+gboolean passed = FALSE;
 
 static GtkStatusIcon *
 fallback (AppIndicator * indicator)
@@ -64,6 +65,14 @@ unfallback (AppIndicator * indicator, GtkStatusIcon * status_icon)
 	return;
 }
 
+gboolean
+kill_func (gpointer data)
+{
+	g_debug("Kill Function");
+	g_main_loop_quit(mainloop);
+	return FALSE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -75,10 +84,16 @@ main (int argc, char ** argv)
 		"icon-name", "bob",
 		NULL);
 
+	g_timeout_add_seconds(1, kill_func, NULL);
+
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
 
 	g_object_unref(G_OBJECT(item));
 
-	return 0;
+	if (passed) {
+		return 0;
+	} else {
+		return 1;
+	}
 }
