@@ -1,0 +1,289 @@
+=== added file 'bindings/mono/ApplicationIndicator.custom'
+--- old/bindings/mono/ApplicationIndicator.custom	1970-01-01 00:00:00 +0000
++++ new/bindings/mono/ApplicationIndicator.custom	2010-01-12 04:59:17 +0000
+@@ -0,0 +1,26 @@
++[DllImport ("libappindicator.so.0")]
++static extern int app_indicator_get_status (IntPtr i);
++
++[DllImport ("libappindicator.so.0")]
++static extern int app_indicator_get_category (IntPtr i);
++
++[DllImport ("libappindicator.so.0")]
++static extern void app_indicator_set_status (IntPtr i, int s);
++
++        [GLib.Property ("status")]
++        public Status Status {
++               get {
++                   return (Status) app_indicator_get_status (Handle);
++               }
++
++               set {
++                   app_indicator_set_status (Handle, (int) value);
++               }
++        }
++
++        [GLib.Property ("category")]
++        public Category Category {
++               get {
++                   return (Category) app_indicator_get_category (Handle);
++               }
++        }
+\ No newline at end of file
+
+=== modified file 'bindings/mono/Makefile.am'
+--- old/bindings/mono/Makefile.am	2009-12-17 20:29:51 +0000
++++ new/bindings/mono/Makefile.am	2010-01-12 06:08:34 +0000
+@@ -6,6 +6,7 @@
+ TEST = AppIndicator.Test.dll
+ 
+ API = libappindicator-api.xml
++MIDDLE_API = libappindicator-api.middle
+ RAW_API = libappindicator-api.raw
+ METADATA = libappindicator-api.metadata
+ ASSEMBLY_NAME = appindicator-sharp
+@@ -13,16 +14,18 @@
+ TARGET = $(ASSEMBLY) $(ASSEMBLY).config
+ assemblydir = $(libdir)/appindicator-sharp-0.1
+ assembly_DATA = $(TARGET)
+-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(RAW_API) $(TEST)
++CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(MIDDLE_API) $(RAW_API) $(TEST)
+ DISTCLEANFILES = $(ASSEMBLY).config
+ TEST_SOURCES = TestIndicator.cs
+-EXTRA_DIST = \
+-	$(RAW_API) \
+-	$(METADATA) \
+-	appindicator-sharp-0.1.pc.in \
+-	appindicator-sharp.dll.config.in \
+-	app-indicator.sources.xml \
+-	$(ASSEMBLY_NAME).snk \
++customs = ApplicationIndicator.custom
++EXTRA_DIST =					\
++	$(RAW_API)				\
++	$(METADATA)				\
++	appindicator-sharp-0.1.pc.in		\
++	appindicator-sharp.dll.config.in	\
++	app-indicator.sources.xml		\
++	$(ASSEMBLY_NAME).snk			\
++	$(customs)				\
+ 	$(TEST_SOURCES)
+ 
+ GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
+@@ -33,19 +36,41 @@
+ $(RAW_API): app-indicator.sources.xml
+ 	$(GAPI_PARSER) app-indicator.sources.xml
+ 
+-$(API): $(METADATA) $(RAW_API)
+-	cp $(srcdir)/$(RAW_API) $(API)
+-	chmod u+w $(API)
++$(MIDDLE_API): $(METADATA) $(RAW_API)
++	cp $(srcdir)/$(RAW_API) $(MIDDLE_API)
++	chmod u+w $(MIDDLE_API)
+ 	@if test -n '$(METADATA)'; then							\
+-		echo "$(GAPI_FIXUP) --api=$(API) --metadata=$(srcdir)/$(METADATA)"; 	\
+-		$(GAPI_FIXUP) --api=$(API) --metadata=$(srcdir)/$(METADATA);		\
++		echo "$(GAPI_FIXUP) --api=$(MIDDLE_API) --metadata=$(srcdir)/$(METADATA)"; 	\
++		$(GAPI_FIXUP) --api=$(MIDDLE_API) --metadata=$(srcdir)/$(METADATA);		\
+ 	fi
+ 
++$(API): $(MIDDLE_API) Makefile.am
++	sed -e "s|PROP_ID_S|ID|" \
++		-e "s|PROP_ID_S|id|" \
++		-e "s|PROP_STATUS_S|Status|" \
++		-e "s|PROP_STATUS_S|status|" \
++		-e "s|PROP_CATEGORY_S|Category|" \
++		-e "s|PROP_CATEGORY_S|category|" \
++		-e "s|PROP_ICON_NAME_S|IconName|" \
++		-e "s|PROP_ICON_NAME_S|icon-name|" \
++		-e "s|PROP_ATTENTION_ICON_NAME_S|AttentionIconName|" \
++		-e "s|PROP_ATTENTION_ICON_NAME_S|attention-icon-name|" \
++		-e "s|PROP_ICON_THEME_PATH_S|IconThemePath|" \
++		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
++		-e "s|PROP_MENU_S|Menu|" \
++		-e "s|PROP_MENU_S|menu|" \
++		-e "s|PROP_CONNECTED_S|Connected|" \
++		-e "s|PROP_CONNECTED_S|connected|" \
++		$< > $@
++
+ api_includes = $(GTK_SHARP_CFLAGS)
+ 
+-generated-stamp: $(API)
++build_customs = $(addprefix $(srcdir)/, $(customs))
++
++generated-stamp: $(API) $(build_customs)
+ 	rm -f generated/* &&					\
+ 	$(GAPI_CODEGEN) --generate $(API) $(api_includes)	\
++	--customdir=$(srcdir)					\
+ 	--outdir=generated --assembly-name=$(ASSEMBLY_NAME)	\
+ 	&& touch generated-stamp
+ 
+
+=== modified file 'bindings/mono/libappindicator-api.metadata'
+--- old/bindings/mono/libappindicator-api.metadata	2009-12-16 18:51:49 +0000
++++ new/bindings/mono/libappindicator-api.metadata	2010-01-12 04:59:17 +0000
+@@ -5,27 +5,27 @@
+ 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_status']" name="name">NewStatus</attr>
+ 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="name">ConnectionChanged</attr>
+ 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon']" name="name">NewIcon</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ID_S']" name="name">ID</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="name">Category</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="type">AppIndicatorCategory</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="name">Status</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="type">AppIndicatorStatus</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ICON_NAME_S']" name="name">IconName</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ATTENTION_ICON_NAME_S']" name="name">AttentionIconName</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="name">Menu</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_MENU_S']" name="type">GtkMenu*</attr>
+-	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CONNECTED_S']" name="name">Connected</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='id']" name="name">ID</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="hidden"></attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CATEGORY_S']" name="hidden"></attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="hidden"></attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_STATUS_S']" name="hidden"></attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='icon-name']" name="name">IconName</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='attention-icon-name']" name="name">AttentionIconName</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='menu']" name="name">Menu</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='menu']" name="type">GtkMenu*</attr>
++	<attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='connected']" name="name">Connected</attr>
+         <attr path="/api/namespace/object[@cname='AppIndicator']/method[@name='SetMenu']" name="name">SetMenu</attr>
+-        
++
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_id']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_status']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_icon']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_category']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_attention_icon']" />
+-        
++
+ 	<remove-node path="/api/namespace/object/method[@cname='app_indicator_set_id']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_status']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon']" />
+         <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_category']" />
+-        <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />        
++        <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />
+ </metadata>
+
+=== modified file 'example/simple-client.c'
+--- old/example/simple-client.c	2010-01-07 19:01:01 +0000
++++ new/example/simple-client.c	2010-01-08 22:25:03 +0000
+@@ -34,6 +34,15 @@
+   g_print ("%s clicked!\n", text);
+ }
+ 
++static void
++toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
++{
++  GtkWidget *target = (GtkWidget *)data;
++
++  gtk_menu_item_set_label (GTK_MENU_ITEM (target), "modified!!");
++  gtk_widget_set_sensitive (target, !GTK_WIDGET_IS_SENSITIVE (target));
++}
++
+ int
+ main (int argc, char ** argv)
+ {
+@@ -68,6 +77,11 @@
+                           G_CALLBACK (item_clicked_cb), "3");
+         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+ 
++        GtkWidget *toggle_item = gtk_menu_item_new_with_label ("Toggle 3");
++        g_signal_connect (toggle_item, "activate",
++                          G_CALLBACK (toggle_sensitivity_cb), item);
++        gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
++
+         app_indicator_set_menu (ci, GTK_MENU (menu));
+ 
+ 	mainloop = g_main_loop_new(NULL, FALSE);
+
+=== modified file 'src/libappindicator/app-indicator.c'
+--- old/src/libappindicator/app-indicator.c	2010-01-08 20:59:13 +0000
++++ new/src/libappindicator/app-indicator.c	2010-01-11 22:05:31 +0000
+@@ -111,6 +111,10 @@
+ #define APP_INDICATOR_GET_PRIVATE(o) \
+                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
+ 
++/* Default Paths */
++#define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
++#define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
++
+ /* Boiler plate */
+ static void app_indicator_class_init (AppIndicatorClass *klass);
+ static void app_indicator_init       (AppIndicator *self);
+@@ -305,7 +309,7 @@
+ 	}
+ 
+ 	dbus_g_connection_register_g_object(priv->connection,
+-	                                    "/need/a/path",
++	                                    DEFAULT_ITEM_PATH,
+ 	                                    G_OBJECT(self));
+ 
+         self->priv = priv;
+@@ -541,7 +545,7 @@
+ 		return;
+ 	}
+ 
+-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, "/need/a/path", register_service_cb, self);
++	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
+ 
+ 	return;
+ }
+@@ -740,6 +744,27 @@
+ }
+ 
+ static void
++widget_notify_cb (GtkWidget  *widget,
++                  GParamSpec *pspec,
++                  gpointer    data)
++{
++  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
++
++  if (pspec->name == g_intern_static_string ("sensitive"))
++    {
++      dbusmenu_menuitem_property_set_bool (child,
++                                           DBUSMENU_MENUITEM_PROP_SENSITIVE,
++                                           GTK_WIDGET_IS_SENSITIVE (widget));
++    }
++  else if (pspec->name == g_intern_static_string ("label"))
++    {
++      dbusmenu_menuitem_property_set (child,
++                                      DBUSMENU_MENUITEM_PROP_LABEL,
++                                      gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
++    }
++}
++
++static void
+ container_iterate (GtkWidget *widget,
+                    gpointer   data)
+ {
+@@ -826,6 +851,9 @@
+         }
+     }
+ 
++  g_signal_connect (widget, "notify",
++                    G_CALLBACK (widget_notify_cb), child);
++
+   g_signal_connect (G_OBJECT (child),
+                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                     G_CALLBACK (activate_menuitem), widget);
+@@ -846,7 +874,7 @@
+                         root);
+ 
+   if (priv->menuservice == NULL) {
+-    priv->menuservice = dbusmenu_server_new ("/need/a/menu/path");
++    priv->menuservice = dbusmenu_server_new (DEFAULT_MENU_PATH);
+   }
+ 
+   dbusmenu_server_set_root (priv->menuservice, root);
+
+=== modified file 'tests/test-libappindicator-dbus-client.c'
+--- old/tests/test-libappindicator-dbus-client.c	2009-12-04 17:06:41 +0000
++++ new/tests/test-libappindicator-dbus-client.c	2010-01-12 06:06:47 +0000
+@@ -200,7 +200,7 @@
+ 
+ 	DBusGProxy * props = dbus_g_proxy_new_for_name_owner(session_bus,
+ 	                                                     ":1.0",
+-	                                                     "/need/a/path",
++	                                                     "/org/ayatana/NotificationItem",
+ 	                                                     DBUS_INTERFACE_PROPERTIES,
+ 	                                                     &error);
+ 	if (error != NULL) {
+
