@@ -136,6 +136,7 @@ static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer da
 static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
+static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 
@@ -765,7 +766,18 @@ fallback (AppIndicator * self)
 		break;
 	};
 
+	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
+
 	return NULL;
+}
+
+/* Handles the activate action by the status icon by showing
+   the menu in a popup. */
+static void
+status_icon_activate (GtkStatusIcon * icon, gpointer data)
+{
+	g_debug("Status Icon Activate");
+	return;
 }
 
 /* Removes the status icon as the application indicator area
