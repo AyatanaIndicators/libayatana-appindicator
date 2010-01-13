@@ -74,7 +74,7 @@ fallback (AppIndicator * indicator)
 		g_debug("Error, fallback in state: %d", state);
 		passed = FALSE;
 	}
-	return NULL;
+	return (GtkStatusIcon *)5;
 }
 
 static void
