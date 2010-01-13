@@ -73,6 +73,7 @@ struct _AppIndicatorPrivate {
 	/* Fun stuff */
 	DBusGProxy           *watcher_proxy;
 	DBusGConnection      *connection;
+	DBusGProxy *          dbus_proxy;
 };
 
 /* Signals Stuff */
@@ -312,6 +313,7 @@ app_indicator_init (AppIndicator *self)
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
+	priv->dbus_proxy = NULL;
 
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
@@ -362,6 +364,11 @@ app_indicator_dispose (GObject *object)
 	if (priv->menu != NULL) {
 		g_object_unref(G_OBJECT(priv->menu));
 		priv->menu = NULL;
+	}
+
+	if (priv->dbus_proxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbus_proxy));
+		priv->dbus_proxy = NULL;
 	}
 
 	if (priv->watcher_proxy != NULL) {
@@ -612,6 +619,40 @@ category_from_enum (AppIndicatorCategory category)
   return value->value_nick;
 }
 
+/* Watching the dbus owner change events to see if someone
+   we care about pops up! */
+static void
+dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, gpointer data)
+{
+	if (new == NULL || new[0] == '\0') {
+		/* We only care about folks coming on the bus.  Exit quickly otherwise. */
+		return;
+	}
+
+	if (g_strcmp0(name, NOTIFICATION_WATCHER_DBUS_ADDR)) {
+		/* We only care about this address, reject all others. */
+		return;
+	}
+
+	/* Woot, there's a new notification watcher in town. */
+
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+
+	if (priv->fallback_timer != 0) {
+		/* Stop a timer */
+		g_source_remove(priv->fallback_timer);
+
+		/* Stop listening to bus events */
+		g_object_unref(G_OBJECT(priv->dbus_proxy));
+		priv->dbus_proxy = NULL;
+	}
+
+	/* Let's start from the very beginning */
+	check_connect(APP_INDICATOR(data));
+
+	return;
+}
+
 /* A function that will start the fallback timer if it's not
    already started.  It sets up the DBus watcher to see if
    there is a change.  Also, provides an override mode for cases
@@ -627,7 +668,17 @@ start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 		return;
 	}
 
-	/* TODO: Setup what we need to check things out */
+	if (priv->dbus_proxy == NULL) {
+		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
+		                                             DBUS_SERVICE_DBUS,
+		                                             DBUS_PATH_DBUS,
+		                                             DBUS_INTERFACE_DBUS);
+		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+		                        G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                            G_CALLBACK(dbus_owner_change), self, NULL);
+	}
 
 	if (do_it_now) {
 		fallback_timer_expire(self);
