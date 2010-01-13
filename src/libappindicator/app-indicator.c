@@ -776,6 +776,17 @@ fallback (AppIndicator * self)
 static void
 status_icon_activate (GtkStatusIcon * icon, gpointer data)
 {
+	GtkMenu * menu = app_indicator_get_menu(APP_INDICATOR(data));
+	if (menu == NULL)
+		return;
+	
+	gtk_menu_popup(menu,
+	               NULL, /* Parent Menu */
+	               NULL, /* Parent item */
+	               gtk_status_icon_position_menu,
+	               icon,
+	               1, /* Button */
+	               gtk_get_current_event_time());
 
 	return;
 }
