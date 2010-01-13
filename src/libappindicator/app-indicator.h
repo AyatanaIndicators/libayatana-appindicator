@@ -228,6 +228,7 @@ AppIndicatorCategory            app_indicator_get_category       (AppIndicator *
 AppIndicatorStatus              app_indicator_get_status         (AppIndicator *self);
 const gchar *                   app_indicator_get_icon           (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
+GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
 
 G_END_DECLS
 

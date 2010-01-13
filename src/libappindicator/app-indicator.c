@@ -776,7 +776,7 @@ fallback (AppIndicator * self)
 static void
 status_icon_activate (GtkStatusIcon * icon, gpointer data)
 {
-	g_debug("Status Icon Activate");
+
 	return;
 }
 
@@ -1266,4 +1266,24 @@ app_indicator_get_attention_icon (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->attention_icon_name;
+}
+
+/**
+	app_indicator_get_menu:
+	@self: The #AppIndicator object to use
+
+	Gets the menu being used for this application indicator.
+
+	Return value: A menu object or #NULL if one hasn't been set.
+*/
+GtkMenu *
+app_indicator_get_menu (AppIndicator *self)
+{
+	AppIndicatorPrivate *priv;
+
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	priv = self->priv;
+
+	return GTK_MENU(priv->menu);
 }
