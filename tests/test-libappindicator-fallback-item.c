@@ -55,7 +55,8 @@ enum {
 	STATE_INIT,
 	STATE_FALLBACK,
 	STATE_UNFALLBACK,
-	STATE_REFALLBACK
+	STATE_REFALLBACK,
+	STATE_REUNFALLBACK
 };
 
 gint state = STATE_INIT;
@@ -68,8 +69,6 @@ fallback (AppIndicator * indicator)
 		state = STATE_FALLBACK;
 	} else if (state == STATE_UNFALLBACK) {
 		state = STATE_REFALLBACK;
-		passed = TRUE;
-		g_main_loop_quit(mainloop);
 	} else {
 		g_debug("Error, fallback in state: %d", state);
 		passed = FALSE;
@@ -83,6 +82,10 @@ unfallback (AppIndicator * indicator, GtkStatusIcon * status_icon)
 	g_debug("Unfallback");
 	if (state == STATE_FALLBACK) {
 		state = STATE_UNFALLBACK;
+	} else if (state == STATE_REFALLBACK) {
+		state = STATE_REUNFALLBACK;
+		passed = TRUE;
+		g_main_loop_quit(mainloop);
 	} else {
 		g_debug("Error, unfallback in state: %d", state);
 		passed = FALSE;
