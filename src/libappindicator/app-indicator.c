@@ -137,6 +137,7 @@ static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
+static void watcher_proxy_destroyed (GObject * object, gpointer data);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -559,7 +560,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 static void
 check_connect (AppIndicator *self)
 {
-        AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = self->priv;
 
 	/* We're alreadying connecting or trying to connect. */
 	if (priv->watcher_proxy != NULL) return;
@@ -583,8 +584,22 @@ check_connect (AppIndicator *self)
 		return;
 	}
 
+	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
 	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
 
+	return;
+}
+
+/* A function that gets called when the watcher dies.  Like
+   dies dies.  Not our friend anymore. */
+static void
+watcher_proxy_destroyed (GObject * object, gpointer data)
+{
+	AppIndicator * self = APP_INDICATOR(data);
+	g_return_if_fail(self != NULL);
+
+	self->priv->watcher_proxy = NULL;
+	start_fallback_timer(self, FALSE);
 	return;
 }
 
