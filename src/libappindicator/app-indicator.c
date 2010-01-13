@@ -730,6 +730,7 @@ fallback_timer_expire (gpointer data)
 		} 
 	}
 
+	priv->fallback_timer = 0;
 	return FALSE;
 }
 
