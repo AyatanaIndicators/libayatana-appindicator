@@ -1,9 +1,9 @@
-indicator-application (0.0.8-0ubuntu1~ppa2~fallback1) UNRELEASED; urgency=low
+indicator-application (0.0.8-0ubuntu1~ppa2~fallback1) karmic; urgency=low
 
   * Upstream update
     * Fallback support
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jan 2010 12:30:04 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jan 2010 13:31:06 -0600
 
 indicator-application (0.0.8-0ubuntu1~ppa1) karmic; urgency=low
 
