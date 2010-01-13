@@ -350,7 +350,7 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->status_icon != NULL) {
-		AppIndicatorClass * class = APP_INDICATOR_CLASS(object);
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(object);
 		if (class->unfallback != NULL) {
 			class->unfallback(self, priv->status_icon);
 		}
