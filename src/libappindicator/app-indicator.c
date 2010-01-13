@@ -682,6 +682,8 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 static void
 start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 {
+	g_return_if_fail(IS_APP_INDICATOR(self));
+
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	if (priv->fallback_timer != 0) {
