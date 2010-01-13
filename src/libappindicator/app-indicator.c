@@ -716,7 +716,9 @@ start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 static gboolean
 fallback_timer_expire (gpointer data)
 {
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+
+	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
 	AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
 
 	if (priv->status_icon == NULL) {
@@ -727,7 +729,9 @@ fallback_timer_expire (gpointer data)
 		if (class->unfallback != NULL) {
 			class->unfallback(APP_INDICATOR(data), priv->status_icon);
 			priv->status_icon = NULL;
-		} 
+		} else {
+			g_warning("Can't 'unfallback' and I have an allocated status_icon.  Might be a memory leak!");
+		}
 	}
 
 	priv->fallback_timer = 0;
