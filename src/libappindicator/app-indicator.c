@@ -374,6 +374,7 @@ app_indicator_dispose (GObject *object)
 
 	if (priv->watcher_proxy != NULL) {
 		dbus_g_connection_flush(priv->connection);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 	}
