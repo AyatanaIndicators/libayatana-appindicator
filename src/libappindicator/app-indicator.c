@@ -739,6 +739,24 @@ fallback_timer_expire (gpointer data)
 static GtkStatusIcon *
 fallback (AppIndicator * self)
 {
+	GtkStatusIcon * icon = gtk_status_icon_new();
+
+	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
+	
+	switch (app_indicator_get_status(self)) {
+	case APP_INDICATOR_STATUS_PASSIVE:
+		gtk_status_icon_set_visible(icon, FALSE);
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		break;
+	case APP_INDICATOR_STATUS_ACTIVE:
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		gtk_status_icon_set_visible(icon, TRUE);
+		break;
+	case APP_INDICATOR_STATUS_ATTENTION:
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_attention_icon(self));
+		gtk_status_icon_set_visible(icon, TRUE);
+		break;
+	};
 
 	return NULL;
 }
@@ -748,7 +766,7 @@ fallback (AppIndicator * self)
 static void
 unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
-
+	g_object_unref(G_OBJECT(status_icon));
 	return;
 }
 
