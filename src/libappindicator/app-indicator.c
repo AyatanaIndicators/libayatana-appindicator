@@ -576,7 +576,8 @@ check_connect (AppIndicator *self)
 	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
 	                                                      &error);
 	if (error != NULL) {
-		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
+		/* Unable to get proxy, but we're handling that now so
+		   it's not a warning anymore. */
 		g_error_free(error);
 		start_fallback_timer(self, FALSE);
 		return;
