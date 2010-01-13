@@ -608,7 +608,8 @@ watcher_proxy_destroyed (GObject * object, gpointer data)
 static void
 register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 {
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+	g_return_if_fail(IS_APP_INDICATOR(data));
+	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
 
 	if (error != NULL) {
 		/* They didn't respond, ewww.  Not sure what they could
@@ -683,8 +684,7 @@ static void
 start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 {
 	g_return_if_fail(IS_APP_INDICATOR(self));
-
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
+	AppIndicatorPrivate * priv = APP_INDICATOR(self)->priv;
 
 	if (priv->fallback_timer != 0) {
 		/* The timer is set, let's just be happy with the one
