@@ -89,3 +89,4 @@ docs/reference/tmpl/app-indicator.sgml.bak
 src/libappindicator/appindicator-0.1.pc
 tests/test-libappindicator-fallback-item
 tests/test-libappindicator-fallback-watcher
+tests/test-libappindicator-fallback
