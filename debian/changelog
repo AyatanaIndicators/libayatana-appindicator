@@ -1,3 +1,10 @@
+indicator-application (0.0.8-0ubuntu1~ppa2~fallback5) UNRELEASED; urgency=low
+
+  * Upstream update
+    * Looking at StatusIcon fallback
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jan 2010 16:10:41 -0600
+
 indicator-application (0.0.8-0ubuntu1~ppa2~fallback4) karmic; urgency=low
 
   * Upstream update
