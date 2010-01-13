@@ -1,9 +1,9 @@
-indicator-application (0.0.8-0ubuntu1~ppa2~fallback4) UNRELEASED; urgency=low
+indicator-application (0.0.8-0ubuntu1~ppa2~fallback4) karmic; urgency=low
 
   * Upstream update
     * Removing the 'destroy' signal handler
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jan 2010 14:54:00 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 13 Jan 2010 14:56:01 -0600
 
 indicator-application (0.0.8-0ubuntu1~ppa2~fallback3) karmic; urgency=low
 
