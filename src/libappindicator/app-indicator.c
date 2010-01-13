@@ -603,7 +603,13 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 		start_fallback_timer(APP_INDICATOR(data), TRUE);
 	}
 
-	/* TODO: Unfallback here */
+	if (priv->status_icon) {
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
+		if (class->unfallback != NULL) {
+			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			priv->status_icon = NULL;
+		} 
+	}
 
 	return;
 }
