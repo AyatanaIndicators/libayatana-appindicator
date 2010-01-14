@@ -75,6 +75,7 @@ struct _IndicatorApplicationPrivate {
 	DBusGConnection * bus;
 	DBusGProxy * service_proxy;
 	GList * applications;
+	GHashTable * theme_dirs;
 };
 
 typedef struct _ApplicationEntry ApplicationEntry;
@@ -96,6 +97,8 @@ static void application_added (DBusGProxy * proxy, const gchar * iconname, gint 
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
+static void theme_dir_unref(IndicatorApplication * ia, const gchar * dir);
+static void theme_dir_ref(IndicatorApplication * ia, const gchar * dir);
 
 G_DEFINE_TYPE (IndicatorApplication, indicator_application, INDICATOR_OBJECT_TYPE);
 
@@ -138,11 +141,14 @@ indicator_application_init (IndicatorApplication *self)
 	/* These are built in the connection phase */
 	priv->bus = NULL;
 	priv->service_proxy = NULL;
+	priv->theme_dirs = NULL;
 
 	priv->sm = indicator_service_manager_new(INDICATOR_APPLICATION_DBUS_ADDR);	
 	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connected), self);
 
 	priv->applications = NULL;
+
+	priv->theme_dirs = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 
 	return;
 }
@@ -171,6 +177,15 @@ indicator_application_dispose (GObject *object)
 	if (priv->service_proxy != NULL) {
 		g_object_unref(G_OBJECT(priv->service_proxy));
 		priv->service_proxy = NULL;
+	}
+
+	if (priv->theme_dirs != NULL) {
+		while (g_hash_table_size(priv->theme_dirs)) {
+			GList * keys = g_hash_table_get_keys(priv->theme_dirs);
+			theme_dir_unref(INDICATOR_APPLICATION(object), (gchar *)keys->data);
+		}
+		g_hash_table_destroy(priv->theme_dirs);
+		priv->theme_dirs = NULL;
 	}
 
 	G_OBJECT_CLASS (indicator_application_parent_class)->dispose (object);
@@ -297,6 +312,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 		app->icon_path = g_strdup(icon_path);
 		g_debug("\tAppending search path: %s", app->icon_path);
 		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), app->icon_path);
+		theme_dir_ref(application, icon_path);
 	}
 
 	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
@@ -371,3 +387,22 @@ get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error,
 
 	return;
 }
+
+/* Refs a theme directory, and it may add it to the search
+   path */
+static void
+theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
+{
+
+
+}
+
+/* Unrefs a theme directory.  This may involve removing it from
+   the search path. */
+static void
+theme_dir_ref(IndicatorApplication * ia, const gchar * dir)
+{
+
+
+}
+
