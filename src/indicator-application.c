@@ -310,8 +310,6 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	app->icon_path = NULL;
 	if (icon_path != NULL && icon_path[0] != '\0') {
 		app->icon_path = g_strdup(icon_path);
-		g_debug("\tAppending search path: %s", app->icon_path);
-		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), app->icon_path);
 		theme_dir_ref(application, icon_path);
 	}
 
@@ -393,8 +391,59 @@ get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error,
 static void
 theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
 {
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(ia);
 
+	/* Grab the count for this dir */
+	int count = GPOINTER_TO_INT(g_hash_table_lookup(priv->theme_dirs, dir));
 
+	/* Is this a simple deprecation, if so, we can just lower the
+	   number and move on. */
+	if (count > 1) {
+		count--;
+		g_hash_table_insert(priv->theme_dirs, g_strdup(dir), GINT_TO_POINTER(count));
+		return;
+	}
+
+	/* Try to remove it from the hash table, this makes sure
+	   that it existed */
+	if (!g_hash_table_remove(priv->theme_dirs, dir)) {
+		g_warning("Unref'd a directory that wasn't in the theme dir hash table.");
+		return;
+	}
+
+	GtkIconTheme * icon_theme = gtk_icon_theme_get_default();
+	gchar ** paths;
+	gint path_count;
+
+	gtk_icon_theme_get_search_path(icon_theme, &paths, &path_count);
+
+	gint i;
+	gboolean found = FALSE;
+	for (i = 0; i < path_count; i++) {
+		if (found) {
+			/* If we've already found the right entry */
+			paths[i - 1] = paths[i];
+		} else {
+			/* We're still looking, is this the one? */
+			if (!g_strcmp0(paths[i], dir)) {
+				found = TRUE;
+				/* We're freeing this here as it won't be captured by the
+				   g_strfreev() below as it's out of the array. */
+				g_free(paths[i]);
+			}
+		}
+	}
+	
+	/* If we found one we need to reset the path to
+	   accomidate the changes */
+	if (found) {
+		paths[path_count - 1] = NULL; /* Clear the last one */
+		gtk_icon_theme_set_search_path(icon_theme, (const gchar **)paths, path_count - 1);
+	}
+
+	g_strfreev(paths);
+
+	return;
 }
 
 /* Unrefs a theme directory.  This may involve removing it from
@@ -402,7 +451,23 @@ theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
 static void
 theme_dir_ref(IndicatorApplication * ia, const gchar * dir)
 {
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(ia);
+	g_debug("\tAppending search path: %s", dir);
 
+	int count = 0;
+	if ((count = GPOINTER_TO_INT(g_hash_table_lookup(priv->theme_dirs, dir))) == 0) {
+		/* It exists so what we need to do is increase the ref
+		   count of this dir. */
+		count++;
+	} else {
+		/* It doesn't exist, so we need to add it to the table
+		   and to the search path. */
+		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), dir);
+		count = 1;
+	}
 
+	g_hash_table_insert(priv->theme_dirs, g_strdup(dir), GINT_TO_POINTER(count));
+
+	return;
 }
 
