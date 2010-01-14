@@ -3,6 +3,8 @@ check_PROGRAMS = \
 	test-libappindicator \
 	test-libappindicator-dbus-client \
 	test-libappindicator-dbus-server \
+	test-libappindicator-fallback-watcher \
+	test-libappindicator-fallback-item \
 	test-simple-app
 
 TESTS =
@@ -57,6 +59,41 @@ test_libappindicator_dbus_server_CFLAGS = \
 test_libappindicator_dbus_server_LDADD = \
 	$(INDICATOR_LIBS) \
 	$(top_builddir)/src/libappindicator.la
+
+#########################################
+##  test-libappindicator-fallback
+#########################################
+
+test_libappindicator_fallback_watcher_SOURCES = \
+	test-libappindicator-fallback-watcher.c
+
+test_libappindicator_fallback_watcher_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_libappindicator_fallback_watcher_LDADD = \
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libappindicator.la
+
+test_libappindicator_fallback_item_SOURCES = \
+	test-libappindicator-fallback-item.c
+
+test_libappindicator_fallback_item_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_libappindicator_fallback_item_LDADD = \
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libappindicator.la
+
+test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
+	@echo "#!/bin/sh" > $@
+	@echo $(DBUS_RUNNER) --task ./test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ./test-libappindicator-fallback-item --task-name Item >> $@
+	@chmod +x $@
+
+TESTS += test-libappindicator-fallback
 
 #########################################
 ##  Actual tests

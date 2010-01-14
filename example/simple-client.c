@@ -73,26 +73,31 @@ main (int argc, char ** argv)
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "1");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
 
         item = gtk_radio_menu_item_new_with_label (NULL, "2");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "2");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
 
         item = gtk_menu_item_new_with_label ("3");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "3");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
 
         GtkWidget *toggle_item = gtk_menu_item_new_with_label ("Toggle 3");
         g_signal_connect (toggle_item, "activate",
                           G_CALLBACK (toggle_sensitivity_cb), item);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
+		gtk_widget_show(toggle_item);
 
         item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
         g_signal_connect (item, "activate",
                           G_CALLBACK (image_clicked_cb), NULL);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
 
         app_indicator_set_menu (ci, GTK_MENU (menu));
 
