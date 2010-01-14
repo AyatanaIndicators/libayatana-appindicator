@@ -133,7 +133,7 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
-static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
+static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
@@ -685,7 +685,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
    there is a change.  Also, provides an override mode for cases
    where it's unlikely that a timer will help anything. */
 static void
-start_fallback_timer (AppIndicator * self, gboolean do_it_now)
+start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 {
 	g_return_if_fail(IS_APP_INDICATOR(self));
 	AppIndicatorPrivate * priv = APP_INDICATOR(self)->priv;
@@ -708,7 +708,7 @@ start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 		                            G_CALLBACK(dbus_owner_change), self, NULL);
 	}
 
-	if (do_it_now) {
+	if (disable_timeout) {
 		fallback_timer_expire(self);
 	} else {
 		priv->fallback_timer = g_timeout_add(DEFAULT_FALLBACK_TIMER, fallback_timer_expire, self);
