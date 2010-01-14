@@ -136,6 +136,7 @@ static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer da
 static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
+static void status_icon_changes (GObject * icon, GParamSpec * pspec, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
@@ -751,6 +752,28 @@ fallback (AppIndicator * self)
 
 	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
 	
+	g_signal_connect(G_OBJECT(self), "notify::" PROP_STATUS_S,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), "notify::" PROP_ICON_NAME_S,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), "notify::" PROP_ATTENTION_ICON_NAME_S,
+		G_CALLBACK(status_icon_changes), icon);
+
+	status_icon_changes(G_OBJECT(icon), NULL, self);
+
+	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
+
+	return NULL;
+}
+
+/* This tracks changes to either the status or the icons
+   that are associated with the app indicator */
+static void
+status_icon_changes (GObject * oicon, GParamSpec * pspec, gpointer data)
+{
+	AppIndicator * self = APP_INDICATOR(data);
+	GtkStatusIcon * icon = GTK_STATUS_ICON(oicon);
+
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
 		gtk_status_icon_set_visible(icon, FALSE);
@@ -766,9 +789,7 @@ fallback (AppIndicator * self)
 		break;
 	};
 
-	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
-
-	return NULL;
+	return;
 }
 
 /* Handles the activate action by the status icon by showing
@@ -796,6 +817,7 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
 static void
 unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
 	g_object_unref(G_OBJECT(status_icon));
 	return;
 }
