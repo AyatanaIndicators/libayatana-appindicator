@@ -28,5 +28,6 @@ app_indicator_get_category
 app_indicator_get_status
 app_indicator_get_icon
 app_indicator_get_attention_icon
+app_indicator_get_menu
 </SECTION>
 

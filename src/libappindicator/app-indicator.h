@@ -148,10 +148,12 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_attention_icon: Slot for #AppIndicator::new-attention-icon.
 	@new_status: Slot for #AppIndicator::new-status.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
+	@fallback: Function that gets called to make a #GtkStatusIcon when
+		there is no Application Indicator area available.
+	@unfallback: The function that gets called if an Application
+		Indicator area appears after the fallback has been created.
 	@app_indicator_reserved_1: Reserved for future use.
 	@app_indicator_reserved_2: Reserved for future use.
-	@app_indicator_reserved_3: Reserved for future use.
-	@app_indicator_reserved_4: Reserved for future use.
 
 	The signals and external functions that make up the #AppIndicator
 	class object.
@@ -174,11 +176,14 @@ struct _AppIndicatorClass {
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
 
+	/* Overridable Functions */
+	GtkStatusIcon * (*fallback)     (AppIndicator * indicator);
+	void (*unfallback)              (AppIndicator * indicator,
+	                                 GtkStatusIcon * status_icon);
+
 	/* Reserved */
 	void (*app_indicator_reserved_1)(void);
 	void (*app_indicator_reserved_2)(void);
-	void (*app_indicator_reserved_3)(void);
-	void (*app_indicator_reserved_4)(void);
 };
 
 /**
@@ -223,6 +228,7 @@ AppIndicatorCategory            app_indicator_get_category       (AppIndicator *
 AppIndicatorStatus              app_indicator_get_status         (AppIndicator *self);
 const gchar *                   app_indicator_get_icon           (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
+GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
 
 G_END_DECLS
 
