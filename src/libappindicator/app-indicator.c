@@ -133,9 +133,11 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
-static void start_fallback_timer (AppIndicator * self, gboolean do_it_now);
+static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
+static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
+static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
@@ -683,7 +685,7 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
    there is a change.  Also, provides an override mode for cases
    where it's unlikely that a timer will help anything. */
 static void
-start_fallback_timer (AppIndicator * self, gboolean do_it_now)
+start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 {
 	g_return_if_fail(IS_APP_INDICATOR(self));
 	AppIndicatorPrivate * priv = APP_INDICATOR(self)->priv;
@@ -706,7 +708,7 @@ start_fallback_timer (AppIndicator * self, gboolean do_it_now)
 		                            G_CALLBACK(dbus_owner_change), self, NULL);
 	}
 
-	if (do_it_now) {
+	if (disable_timeout) {
 		fallback_timer_expire(self);
 	} else {
 		priv->fallback_timer = g_timeout_add(DEFAULT_FALLBACK_TIMER, fallback_timer_expire, self);
@@ -734,7 +736,7 @@ fallback_timer_expire (gpointer data)
 			class->unfallback(APP_INDICATOR(data), priv->status_icon);
 			priv->status_icon = NULL;
 		} else {
-			g_warning("Can't 'unfallback' and I have an allocated status_icon.  Might be a memory leak!");
+			g_warning("No 'unfallback' function but the 'fallback' function returned a non-NULL result.");
 		}
 	}
 
@@ -751,6 +753,35 @@ fallback (AppIndicator * self)
 
 	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
 	
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ICON,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
+		G_CALLBACK(status_icon_changes), icon);
+
+	status_icon_changes(self, icon);
+
+	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
+
+	return icon;
+}
+
+/* A wrapper as the status update prototype is a little
+   bit different, but we want to handle it the same. */
+static void
+status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data)
+{
+	return status_icon_changes(self, data);
+}
+
+/* This tracks changes to either the status or the icons
+   that are associated with the app indicator */
+static void
+status_icon_changes (AppIndicator * self, gpointer data)
+{
+	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
+
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
 		gtk_status_icon_set_visible(icon, FALSE);
@@ -766,9 +797,7 @@ fallback (AppIndicator * self)
 		break;
 	};
 
-	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
-
-	return NULL;
+	return;
 }
 
 /* Handles the activate action by the status icon by showing
@@ -776,7 +805,18 @@ fallback (AppIndicator * self)
 static void
 status_icon_activate (GtkStatusIcon * icon, gpointer data)
 {
-	g_debug("Status Icon Activate");
+	GtkMenu * menu = app_indicator_get_menu(APP_INDICATOR(data));
+	if (menu == NULL)
+		return;
+	
+	gtk_menu_popup(menu,
+	               NULL, /* Parent Menu */
+	               NULL, /* Parent item */
+	               gtk_status_icon_position_menu,
+	               icon,
+	               1, /* Button */
+	               gtk_get_current_event_time());
+
 	return;
 }
 
@@ -785,6 +825,8 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
 static void
 unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
 	g_object_unref(G_OBJECT(status_icon));
 	return;
 }
@@ -1266,4 +1308,24 @@ app_indicator_get_attention_icon (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->attention_icon_name;
+}
+
+/**
+	app_indicator_get_menu:
+	@self: The #AppIndicator object to use
+
+	Gets the menu being used for this application indicator.
+
+	Return value: A menu object or #NULL if one hasn't been set.
+*/
+GtkMenu *
+app_indicator_get_menu (AppIndicator *self)
+{
+	AppIndicatorPrivate *priv;
+
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	priv = self->priv;
+
+	return GTK_MENU(priv->menu);
 }
