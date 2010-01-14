@@ -1,61 +1,32 @@
-indicator-application (0.0.8-0ubuntu1~ppa1) karmic; urgency=low
+indicator-application (0.0.8-0ubuntu1) lucid; urgency=low
 
-  * Upstream release 0.0.8
-    * Mirror icon changes over dbus
-    * Better default object names.
-    * Fixes for the mono binding properties
-    * Sensitivity to label changes
+  * Upstream Release 0.0.8
+    - Mono bindings fixes (LP: #505923)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 12 Jan 2010 09:10:23 -0600
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jan 2010 01:35:44 -0500
 
-indicator-application (0.0.7-0ubuntu1~ppa1) karmic; urgency=low
+indicator-application (0.0.7-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.7
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:05:39 -0600
-
-indicator-application (0.0.6-0ubuntu2~ppa6) karmic; urgency=low
-
-  * Upstream merge:
     * Making the Notification Watcher register for it's own DBus
       name to keep the service one unique.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 15:44:47 -0600
-
-indicator-application (0.0.6-0ubuntu2~ppa5) karmic; urgency=low
-
-  * Upstream merge:
     * Adding support for icons changing through the service and
       in the indicator.
     * Fixing the generated headers for DBus Properties calls
     * Fixing libappindicator set_icon to set the right icon.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 15:39:49 -0600
-
-indicator-application (0.0.6-0ubuntu2~ppa4) karmic; urgency=low
-
-  * Upstream update
     * Adding in icon path support.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:08:40 -0600
-
-indicator-application (0.0.6-0ubuntu2~ppa3) karmic; urgency=low
-
-  * Upstream update
     * Switching DBus interface to org.freedesktop
     * Adding check/radio support to menu parsing
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 11:02:09 -0600
-
-indicator-application (0.0.6-0ubuntu2~ppa2) karmic; urgency=low
-
-  * Upstream update
     * Adding ChangeLog to dist
     * Adding check item support to menu parsing
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jan 2010 13:58:33 -0600
+  [Ken VanDine]
+  * debian/control
+    - bump build depends version of libdbusmenu to 0.2.0
 
-indicator-application (0.0.6-0ubuntu1) UNRELEASED; urgency=low
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:05:39 -0600
+
+indicator-application (0.0.6-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.6
     * Include Python binding
