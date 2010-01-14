@@ -764,7 +764,7 @@ fallback (AppIndicator * self)
 
 	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
 
-	return NULL;
+	return icon;
 }
 
 /* A wrapper as the status update prototype is a little
