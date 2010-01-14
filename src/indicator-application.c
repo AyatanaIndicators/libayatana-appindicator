@@ -425,7 +425,6 @@ theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
 	gint i;
 	gboolean found = FALSE;
 	for (i = 0; i < path_count; i++) {
-		g_debug("Looking at path dir: '%s'", paths[i]);
 		if (found) {
 			/* If we've already found the right entry */
 			paths[i - 1] = paths[i];
