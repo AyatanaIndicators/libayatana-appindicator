@@ -303,6 +303,10 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	app->entry.label = NULL;
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
+	/* Keep copies of these for ourself, just in case. */
+	g_object_ref(app->entry.image);
+	g_object_ref(app->entry.menu);
+
 	gtk_widget_show(GTK_WIDGET(app->entry.image));
 
 	priv->applications = g_list_insert(priv->applications, app, position);
