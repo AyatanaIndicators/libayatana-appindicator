@@ -347,6 +347,7 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
 
 	if (app->icon_path != NULL) {
+		theme_dir_unref(application, app->icon_path);
 		g_free(app->icon_path);
 	}
 	if (app->entry.image != NULL) {
@@ -457,10 +458,9 @@ static void
 theme_dir_ref(IndicatorApplication * ia, const gchar * dir)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(ia);
-	g_debug("\tAppending search path: %s", dir);
 
 	int count = 0;
-	if ((count = GPOINTER_TO_INT(g_hash_table_lookup(priv->theme_dirs, dir))) == 0) {
+	if ((count = GPOINTER_TO_INT(g_hash_table_lookup(priv->theme_dirs, dir))) != 0) {
 		/* It exists so what we need to do is increase the ref
 		   count of this dir. */
 		count++;
@@ -468,6 +468,7 @@ theme_dir_ref(IndicatorApplication * ia, const gchar * dir)
 		/* It doesn't exist, so we need to add it to the table
 		   and to the search path. */
 		gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(), dir);
+		g_debug("\tAppending search path: %s", dir);
 		count = 1;
 	}
 
