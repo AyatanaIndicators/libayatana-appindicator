@@ -64,12 +64,16 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_name;
 	gchar                *attention_icon_name;
 	gchar *               icon_path;
-        DbusmenuServer       *menuservice;
-        GtkWidget            *menu;
+	DbusmenuServer       *menuservice;
+	GtkWidget            *menu;
+
+	GtkStatusIcon *       status_icon;
+	gint                  fallback_timer;
 
 	/* Fun stuff */
 	DBusGProxy           *watcher_proxy;
 	DBusGConnection      *connection;
+	DBusGProxy *          dbus_proxy;
 };
 
 /* Signals Stuff */
@@ -115,6 +119,9 @@ enum {
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
 #define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
 
+/* More constants */
+#define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
+
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
 static void app_indicator_init       (AppIndicator *self);
@@ -126,6 +133,14 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
+static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
+static gboolean fallback_timer_expire (gpointer data);
+static GtkStatusIcon * fallback (AppIndicator * self);
+static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
+static void status_icon_changes (AppIndicator * self, gpointer data);
+static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
+static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
+static void watcher_proxy_destroyed (GObject * object, gpointer data);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -144,6 +159,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	/* Property funcs */
 	object_class->set_property = app_indicator_set_property;
 	object_class->get_property = app_indicator_get_property;
+
+	/* Our own funcs */
+	klass->fallback = fallback;
+	klass->unfallback = unfallback;
 
 	/* Properties */
 	g_object_class_install_property (object_class,
@@ -298,6 +317,10 @@ app_indicator_init (AppIndicator *self)
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
+	priv->dbus_proxy = NULL;
+
+	priv->status_icon = NULL;
+	priv->fallback_timer = 0;
 
 	/* Put the object on DBus */
 	GError * error = NULL;
@@ -322,11 +345,24 @@ app_indicator_init (AppIndicator *self)
 static void
 app_indicator_dispose (GObject *object)
 {
-        AppIndicator *self = APP_INDICATOR (object);
+	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		app_indicator_set_status(self, APP_INDICATOR_STATUS_PASSIVE);
+	}
+
+	if (priv->status_icon != NULL) {
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(object);
+		if (class->unfallback != NULL) {
+			class->unfallback(self, priv->status_icon);
+		}
+		priv->status_icon = NULL;
+	}
+
+	if (priv->fallback_timer != 0) {
+		g_source_remove(priv->fallback_timer);
+		priv->fallback_timer = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -334,8 +370,14 @@ app_indicator_dispose (GObject *object)
 		priv->menu = NULL;
 	}
 
+	if (priv->dbus_proxy != NULL) {
+		g_object_unref(G_OBJECT(priv->dbus_proxy));
+		priv->dbus_proxy = NULL;
+	}
+
 	if (priv->watcher_proxy != NULL) {
 		dbus_g_connection_flush(priv->connection);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 	}
@@ -522,7 +564,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 static void
 check_connect (AppIndicator *self)
 {
-        AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = self->priv;
 
 	/* We're alreadying connecting or trying to connect. */
 	if (priv->watcher_proxy != NULL) return;
@@ -539,30 +581,62 @@ check_connect (AppIndicator *self)
 	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
 	                                                      &error);
 	if (error != NULL) {
-		g_warning("Unable to create Ayatana Watcher proxy!  %s", error->message);
-		/* TODO: This is where we should start looking at fallbacks */
+		/* Unable to get proxy, but we're handling that now so
+		   it's not a warning anymore. */
 		g_error_free(error);
+		start_fallback_timer(self, FALSE);
 		return;
 	}
 
+	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
 	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
 
 	return;
 }
 
+/* A function that gets called when the watcher dies.  Like
+   dies dies.  Not our friend anymore. */
 static void
-register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
+watcher_proxy_destroyed (GObject * object, gpointer data)
 {
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+	AppIndicator * self = APP_INDICATOR(data);
+	g_return_if_fail(self != NULL);
 
-	if (error != NULL) {
-		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
-		g_object_unref(G_OBJECT(priv->watcher_proxy));
-		priv->watcher_proxy = NULL;
-	}
+	self->priv->watcher_proxy = NULL;
+	start_fallback_timer(self, FALSE);
 	return;
 }
 
+/* Responce from the DBus command to register a service
+   with a NotificationWatcher. */
+static void
+register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
+{
+	g_return_if_fail(IS_APP_INDICATOR(data));
+	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+
+	if (error != NULL) {
+		/* They didn't respond, ewww.  Not sure what they could
+		   be doing */
+		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
+		g_object_unref(G_OBJECT(priv->watcher_proxy));
+		priv->watcher_proxy = NULL;
+		start_fallback_timer(APP_INDICATOR(data), TRUE);
+	}
+
+	if (priv->status_icon) {
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
+		if (class->unfallback != NULL) {
+			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			priv->status_icon = NULL;
+		} 
+	}
+
+	return;
+}
+
+/* A helper function to get the nick out of a given
+   category enum value. */
 static const gchar *
 category_from_enum (AppIndicatorCategory category)
 {
@@ -570,6 +644,191 @@ category_from_enum (AppIndicatorCategory category)
 
   value = g_enum_get_value ((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), category);
   return value->value_nick;
+}
+
+/* Watching the dbus owner change events to see if someone
+   we care about pops up! */
+static void
+dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, gpointer data)
+{
+	if (new == NULL || new[0] == '\0') {
+		/* We only care about folks coming on the bus.  Exit quickly otherwise. */
+		return;
+	}
+
+	if (g_strcmp0(name, NOTIFICATION_WATCHER_DBUS_ADDR)) {
+		/* We only care about this address, reject all others. */
+		return;
+	}
+
+	/* Woot, there's a new notification watcher in town. */
+
+	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
+
+	if (priv->fallback_timer != 0) {
+		/* Stop a timer */
+		g_source_remove(priv->fallback_timer);
+
+		/* Stop listening to bus events */
+		g_object_unref(G_OBJECT(priv->dbus_proxy));
+		priv->dbus_proxy = NULL;
+	}
+
+	/* Let's start from the very beginning */
+	check_connect(APP_INDICATOR(data));
+
+	return;
+}
+
+/* A function that will start the fallback timer if it's not
+   already started.  It sets up the DBus watcher to see if
+   there is a change.  Also, provides an override mode for cases
+   where it's unlikely that a timer will help anything. */
+static void
+start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
+{
+	g_return_if_fail(IS_APP_INDICATOR(self));
+	AppIndicatorPrivate * priv = APP_INDICATOR(self)->priv;
+
+	if (priv->fallback_timer != 0) {
+		/* The timer is set, let's just be happy with the one
+		   we've already got running */
+		return;
+	}
+
+	if (priv->dbus_proxy == NULL) {
+		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
+		                                             DBUS_SERVICE_DBUS,
+		                                             DBUS_PATH_DBUS,
+		                                             DBUS_INTERFACE_DBUS);
+		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+		                        G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                            G_CALLBACK(dbus_owner_change), self, NULL);
+	}
+
+	if (disable_timeout) {
+		fallback_timer_expire(self);
+	} else {
+		priv->fallback_timer = g_timeout_add(DEFAULT_FALLBACK_TIMER, fallback_timer_expire, self);
+	}
+
+	return;
+}
+
+/* A function that gets executed when we want to change the
+   state of the fallback. */
+static gboolean
+fallback_timer_expire (gpointer data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+
+	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+	AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
+
+	if (priv->status_icon == NULL) {
+		if (class->fallback != NULL) {
+			priv->status_icon = class->fallback(APP_INDICATOR(data));
+		} 
+	} else {
+		if (class->unfallback != NULL) {
+			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			priv->status_icon = NULL;
+		} else {
+			g_warning("No 'unfallback' function but the 'fallback' function returned a non-NULL result.");
+		}
+	}
+
+	priv->fallback_timer = 0;
+	return FALSE;
+}
+
+/* Creates a StatusIcon that can be used when the application
+   indicator area isn't available. */
+static GtkStatusIcon *
+fallback (AppIndicator * self)
+{
+	GtkStatusIcon * icon = gtk_status_icon_new();
+
+	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
+	
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ICON,
+		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
+		G_CALLBACK(status_icon_changes), icon);
+
+	status_icon_changes(self, icon);
+
+	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
+
+	return icon;
+}
+
+/* A wrapper as the status update prototype is a little
+   bit different, but we want to handle it the same. */
+static void
+status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data)
+{
+	return status_icon_changes(self, data);
+}
+
+/* This tracks changes to either the status or the icons
+   that are associated with the app indicator */
+static void
+status_icon_changes (AppIndicator * self, gpointer data)
+{
+	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
+
+	switch (app_indicator_get_status(self)) {
+	case APP_INDICATOR_STATUS_PASSIVE:
+		gtk_status_icon_set_visible(icon, FALSE);
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		break;
+	case APP_INDICATOR_STATUS_ACTIVE:
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		gtk_status_icon_set_visible(icon, TRUE);
+		break;
+	case APP_INDICATOR_STATUS_ATTENTION:
+		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_attention_icon(self));
+		gtk_status_icon_set_visible(icon, TRUE);
+		break;
+	};
+
+	return;
+}
+
+/* Handles the activate action by the status icon by showing
+   the menu in a popup. */
+static void
+status_icon_activate (GtkStatusIcon * icon, gpointer data)
+{
+	GtkMenu * menu = app_indicator_get_menu(APP_INDICATOR(data));
+	if (menu == NULL)
+		return;
+	
+	gtk_menu_popup(menu,
+	               NULL, /* Parent Menu */
+	               NULL, /* Parent item */
+	               gtk_status_icon_position_menu,
+	               icon,
+	               1, /* Button */
+	               gtk_get_current_event_time());
+
+	return;
+}
+
+/* Removes the status icon as the application indicator area
+   is now up and running again. */
+static void
+unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
+{
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
+	g_object_unref(G_OBJECT(status_icon));
+	return;
 }
 
 
@@ -1049,4 +1308,24 @@ app_indicator_get_attention_icon (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->attention_icon_name;
+}
+
+/**
+	app_indicator_get_menu:
+	@self: The #AppIndicator object to use
+
+	Gets the menu being used for this application indicator.
+
+	Return value: A menu object or #NULL if one hasn't been set.
+*/
+GtkMenu *
+app_indicator_get_menu (AppIndicator *self)
+{
+	AppIndicatorPrivate *priv;
+
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	priv = self->priv;
+
+	return GTK_MENU(priv->menu);
 }

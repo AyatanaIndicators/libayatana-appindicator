@@ -1,3 +1,11 @@
+indicator-application (0.0.9-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.9
+    * Add fallback support for situations where the NotificationWatcher
+      isn't available.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 14 Jan 2010 10:39:43 -0600
+
 indicator-application (0.0.8-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.8
