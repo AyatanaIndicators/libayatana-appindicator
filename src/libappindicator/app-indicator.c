@@ -736,7 +736,7 @@ fallback_timer_expire (gpointer data)
 			class->unfallback(APP_INDICATOR(data), priv->status_icon);
 			priv->status_icon = NULL;
 		} else {
-			g_warning("Can't 'unfallback' and I have an allocated status_icon.  Might be a memory leak!");
+			g_warning("No 'unfallback' function but the 'fallback' function returned a non-NULL result.");
 		}
 	}
 
