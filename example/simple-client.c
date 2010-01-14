@@ -91,7 +91,7 @@ main (int argc, char ** argv)
         g_signal_connect (toggle_item, "activate",
                           G_CALLBACK (toggle_sensitivity_cb), item);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
-		gtk_widget_show(item);
+		gtk_widget_show(toggle_item);
 
         item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
         g_signal_connect (item, "activate",
