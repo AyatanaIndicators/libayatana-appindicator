@@ -1,10 +1,10 @@
-indicator-application (0.0.9-0ubuntu1~ppa2~applist2) UNRELEASED; urgency=low
+indicator-application (0.0.9-0ubuntu1~ppa2~applist2) karmic; urgency=low
 
   * Upstream update
     * Simplify and correct the structure handling.
     * Pass the correct object path over the bus.  We want the menu.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 15 Jan 2010 10:06:28 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 15 Jan 2010 10:08:58 -0600
 
 indicator-application (0.0.9-0ubuntu1~ppa2~applist1) karmic; urgency=low
 
