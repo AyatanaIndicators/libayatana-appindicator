@@ -96,6 +96,7 @@ static void application_added (DBusGProxy * proxy, const gchar * iconname, gint 
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
+static void get_applications_helper (gpointer data, gpointer user_data);
 
 G_DEFINE_TYPE (IndicatorApplication, indicator_application, INDICATOR_OBJECT_TYPE);
 
@@ -368,6 +369,42 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 static void
 get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		g_warning("Unable to get application list: %s", error->message);
+		return;
+	}
+	g_ptr_array_foreach(OUT_applications, get_applications_helper, proxy);
 
 	return;
+}
+
+/* A little helper that takes apart the DBus structure and calls
+   application_added on every entry in the list. */
+static void
+get_applications_helper (gpointer data, gpointer user_data)
+{
+	GType structype = dbus_g_type_get_struct("GValueArray",
+	                                         G_TYPE_STRING,
+	                                         G_TYPE_INT,
+	                                         G_TYPE_STRING,
+	                                         DBUS_TYPE_G_OBJECT_PATH,
+	                                         G_TYPE_STRING,
+	                                         G_TYPE_INVALID);
+	g_return_if_fail(G_VALUE_HOLDS(data, structype));
+
+	gchar * icon_name;
+	gint position;
+	gchar * dbus_address;
+	gchar * dbus_object;
+	gchar * icon_path;
+
+	dbus_g_type_struct_get(data,
+	                       0, &icon_name,
+	                       1, &position,
+	                       2, &dbus_address,
+	                       3, &dbus_object,
+	                       4, &icon_path,
+	                       G_MAXUINT);
+
+	return application_added(user_data, icon_name, position, dbus_address, dbus_object, icon_path, NULL);
 }
