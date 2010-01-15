@@ -333,8 +333,6 @@ apply_status (Application * app, ApplicationStatus status)
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
-
-		priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
@@ -510,6 +508,16 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+
+        GList *l = NULL;
+        for (l = priv->applications; l != NULL; l = g_list_next (l)) {
+                Application *tmp_app = (Application *)l->data;
+
+                if (g_strcmp0 (tmp_app->dbus_name, dbus_name) == 0 &&
+                    g_strcmp0 (tmp_app->dbus_object, dbus_object) == 0) {
+                        return;
+                }
+        }
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */

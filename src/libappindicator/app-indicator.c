@@ -370,6 +370,10 @@ app_indicator_dispose (GObject *object)
 		priv->menu = NULL;
 	}
 
+        if (priv->menuservice != NULL) {
+                g_object_unref (priv->menuservice);
+        }
+
 	if (priv->dbus_proxy != NULL) {
 		g_object_unref(G_OBJECT(priv->dbus_proxy));
 		priv->dbus_proxy = NULL;
