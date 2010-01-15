@@ -31,7 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
-static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps);
+static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
 
 #include "application-service-server.h"
 
@@ -624,7 +624,7 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 
 /* DBus Interface */
 static gboolean
-_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps)
+_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error)
 {
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
@@ -633,7 +633,7 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	gint position = 0;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
-		GValueArray * values = g_value_array_new(0);
+		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
 
