@@ -670,6 +670,6 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 		g_ptr_array_add(*apps, values);
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
