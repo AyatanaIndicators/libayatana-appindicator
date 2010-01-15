@@ -31,7 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
-static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps);
+static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
 
 #include "application-service-server.h"
 
@@ -624,9 +624,52 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 
 /* DBus Interface */
 static gboolean
-_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps)
+_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error)
 {
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
-	return FALSE;
+	*apps = g_ptr_array_new();
+	GList * listpntr;
+	gint position = 0;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		GValueArray * values = g_value_array_new(5);
+
+		GValue value = {0};
+
+		/* Icon name */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->icon);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Position */
+		g_value_init(&value, G_TYPE_INT);
+		g_value_set_int(&value, position++);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* DBus Address */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->dbus_name);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* DBus Object */
+		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
+		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->dbus_object);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Icon path */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		g_ptr_array_add(*apps, values);
+	}
+
+	return TRUE;
 }
 
