@@ -373,7 +373,7 @@ get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error,
 		g_warning("Unable to get application list: %s", error->message);
 		return;
 	}
-	g_ptr_array_foreach(OUT_applications, get_applications_helper, proxy);
+	g_ptr_array_foreach(OUT_applications, get_applications_helper, userdata);
 
 	return;
 }
@@ -383,6 +383,7 @@ get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error,
 static void
 get_applications_helper (gpointer data, gpointer user_data)
 {
+#if 0
 	GType structype = dbus_g_type_get_struct("GValueArray",
 	                                         G_TYPE_STRING,
 	                                         G_TYPE_INT,
@@ -390,21 +391,16 @@ get_applications_helper (gpointer data, gpointer user_data)
 	                                         DBUS_TYPE_G_OBJECT_PATH,
 	                                         G_TYPE_STRING,
 	                                         G_TYPE_INVALID);
-	g_return_if_fail(G_VALUE_HOLDS(data, structype));
+#endif
+	GValueArray * array = (GValueArray *)data;
 
-	gchar * icon_name;
-	gint position;
-	gchar * dbus_address;
-	gchar * dbus_object;
-	gchar * icon_path;
+	g_debug("Size: %d", array->n_values);
 
-	dbus_g_type_struct_get(data,
-	                       0, &icon_name,
-	                       1, &position,
-	                       2, &dbus_address,
-	                       3, &dbus_object,
-	                       4, &icon_path,
-	                       G_MAXUINT);
+	const gchar * icon_name = g_value_get_string(g_value_array_get_nth(array, 0));
+	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
+	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
+	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
+	const gchar * icon_path = g_value_get_string(g_value_array_get_nth(array, 4));
 
-	return application_added(user_data, icon_name, position, dbus_address, dbus_object, icon_path, NULL);
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, user_data);
 }

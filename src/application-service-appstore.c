@@ -657,7 +657,7 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* DBus Object */
 		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
-		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->dbus_object);
+		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->menu);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
