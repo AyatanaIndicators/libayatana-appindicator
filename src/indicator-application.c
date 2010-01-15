@@ -383,18 +383,9 @@ get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error,
 static void
 get_applications_helper (gpointer data, gpointer user_data)
 {
-#if 0
-	GType structype = dbus_g_type_get_struct("GValueArray",
-	                                         G_TYPE_STRING,
-	                                         G_TYPE_INT,
-	                                         G_TYPE_STRING,
-	                                         DBUS_TYPE_G_OBJECT_PATH,
-	                                         G_TYPE_STRING,
-	                                         G_TYPE_INVALID);
-#endif
 	GValueArray * array = (GValueArray *)data;
 
-	g_debug("Size: %d", array->n_values);
+	g_return_if_fail(array->n_values == 5);
 
 	const gchar * icon_name = g_value_get_string(g_value_array_get_nth(array, 0));
 	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
