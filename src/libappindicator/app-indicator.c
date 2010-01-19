@@ -754,7 +754,7 @@ fallback (AppIndicator * self)
 	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
 	
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
-		G_CALLBACK(status_icon_changes), icon);
+		G_CALLBACK(status_icon_status_wrapper), icon);
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ICON,
 		G_CALLBACK(status_icon_changes), icon);
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
