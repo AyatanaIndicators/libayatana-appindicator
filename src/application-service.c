@@ -25,6 +25,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "notification-item-client.h"
 #include "application-service-appstore.h"
 #include "application-service-watcher.h"
+#include "application-service-lru-file.h"
 #include "dbus-shared.h"
 
 /* The base main loop */
@@ -35,6 +36,8 @@ static ApplicationServiceAppstore * appstore = NULL;
 static ApplicationServiceWatcher * watcher = NULL;
 /* The service management interface */
 static IndicatorService * service = NULL;
+/* The LRU file interface */
+static AppLruFile * lrufile = NULL;
 
 /* Recieves the disonnection signal from the service
    object and closes the mainloop. */
@@ -58,6 +61,9 @@ main (int argc, char ** argv)
 	/* Bring us up as a basic indicator service */
 	service = indicator_service_new(INDICATOR_APPLICATION_DBUS_ADDR);
 	g_signal_connect(G_OBJECT(service), INDICATOR_SERVICE_SIGNAL_SHUTDOWN, G_CALLBACK(service_disconnected), NULL);
+
+	/* Start up the LRU file reading */
+	lrufile = app_lru_file_new();
 
 	/* Building our app store */
 	appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
