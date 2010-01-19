@@ -1,3 +1,10 @@
+indicator-application (0.0.9-0ubuntu2) lucid; urgency=low
+
+  * Backport an upstream change to a fallback situation crasher 
+    (lp: #507975)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 20:52:41 +0100
+
 indicator-application (0.0.9-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.9
