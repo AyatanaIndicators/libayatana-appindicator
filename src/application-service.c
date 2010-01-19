@@ -66,7 +66,7 @@ main (int argc, char ** argv)
 	lrufile = app_lru_file_new();
 
 	/* Building our app store */
-	appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
+	appstore = application_service_appstore_new(lrufile);
 
 	/* Adding a watcher for the Apps coming up */
 	watcher = application_service_watcher_new(appstore);
@@ -79,6 +79,7 @@ main (int argc, char ** argv)
 	g_object_unref(G_OBJECT(watcher));
 	g_object_unref(G_OBJECT(appstore));
 	g_object_unref(G_OBJECT(service));
+	g_object_unref(G_OBJECT(lrufile));
 
 	return 0;
 }

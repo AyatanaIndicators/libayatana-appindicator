@@ -52,6 +52,7 @@ typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePriv
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
+	AppLruFile * lrufile;
 };
 
 #define APP_STATUS_PASSIVE_STR    "passive"
@@ -148,6 +149,7 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
 
 	priv->applications = NULL;
+	priv->lrufile = NULL;
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -643,6 +645,17 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	}
 
 	return;
+}
+
+/* Creates a basic appstore object and attaches the
+   LRU file object to it. */
+ApplicationServiceAppstore *
+application_service_appstore_new (AppLruFile * lrufile)
+{
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	priv->lrufile = lrufile;
+	return appstore;
 }
 
 /* DBus Interface */
