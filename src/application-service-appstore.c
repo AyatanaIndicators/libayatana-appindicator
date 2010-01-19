@@ -311,6 +311,28 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	return;
 }
 
+static gboolean
+can_add_application (GList *applications, Application *app)
+{
+  if (applications)
+    {
+      GList *l = NULL;
+
+      for (l = applications; l != NULL; l = g_list_next (l))
+        {
+          Application *tmp_app = (Application *)l->data;
+
+          if (g_strcmp0 (tmp_app->dbus_name, app->dbus_name) == 0 &&
+              g_strcmp0 (tmp_app->dbus_object, app->dbus_object) == 0)
+            {
+              return FALSE;
+            }
+        }
+    }
+
+  return TRUE;
+}
+
 /* Change the status of the application.  If we're going passive
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
@@ -333,6 +355,7 @@ apply_status (Application * app, ApplicationStatus status)
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
+                priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
@@ -342,21 +365,23 @@ apply_status (Application * app, ApplicationStatus status)
 
 		/* Determine whether we're already shown or not */
 		if (app->status == APP_STATUS_PASSIVE) {
-			/* Put on panel */
-			priv->applications = g_list_prepend(priv->applications, app);
-	
-			/* TODO: We need to have the position determined better.  This
-			   would involve looking at the name and category and sorting
-			   it with the other entries. */
+                        if (can_add_application (priv->applications, app)) {
+                                /* Put on panel */
+                                priv->applications = g_list_prepend (priv->applications, app);
 
-			g_signal_emit(G_OBJECT(app->appstore),
-			              signals[APPLICATION_ADDED], 0, 
-			              newicon,
-			              0, /* Position */
-			              app->dbus_name,
-			              app->menu,
-			              app->icon_path,
-			              TRUE);
+                                /* TODO: We need to have the position determined better.  This
+                                   would involve looking at the name and category and sorting
+                                   it with the other entries. */
+
+                                g_signal_emit(G_OBJECT(app->appstore),
+                                              signals[APPLICATION_ADDED], 0,
+                                              newicon,
+                                              0, /* Position */
+                                              app->dbus_name,
+                                              app->menu,
+                                              app->icon_path,
+                                              TRUE);
+                        }
 		} else {
 			/* Icon update */
 			gint position = get_position(app);
@@ -508,16 +533,6 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
-
-        GList *l = NULL;
-        for (l = priv->applications; l != NULL; l = g_list_next (l)) {
-                Application *tmp_app = (Application *)l->data;
-
-                if (g_strcmp0 (tmp_app->dbus_name, dbus_name) == 0 &&
-                    g_strcmp0 (tmp_app->dbus_object, dbus_object) == 0) {
-                        return;
-                }
-        }
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
