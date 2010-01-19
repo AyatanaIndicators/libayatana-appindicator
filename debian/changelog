@@ -1,3 +1,10 @@
+indicator-application (0.0.9-0ubuntu3) lucid; urgency=low
+
+  * debian/control:
+    - updated the build-depends for the gtk binding changes.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 22:57:02 +0100
+
 indicator-application (0.0.9-0ubuntu2) lucid; urgency=low
 
   * Backport an upstream change to a fallback situation crasher 
