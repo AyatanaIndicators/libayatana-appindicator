@@ -28,6 +28,10 @@ struct _AppLruFile {
 
 GType app_lru_file_get_type (void);
 
+AppLruFile * app_lru_file_new (void);
+void app_lru_file_touch (AppLruFile * lrufile, const gchar * id, const gchar * category);
+gint app_lru_file_sort  (AppLruFile * lrufile, const gchar * id_a, const gchar * id_b);
+
 G_END_DECLS
 
 #endif
