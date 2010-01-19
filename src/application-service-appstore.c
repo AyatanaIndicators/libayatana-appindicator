@@ -652,6 +652,7 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 ApplicationServiceAppstore *
 application_service_appstore_new (AppLruFile * lrufile)
 {
+	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 	priv->lrufile = lrufile;
