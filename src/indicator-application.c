@@ -96,6 +96,7 @@ static void application_added (DBusGProxy * proxy, const gchar * iconname, gint 
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
+static void get_applications_helper (gpointer data, gpointer user_data);
 
 G_DEFINE_TYPE (IndicatorApplication, indicator_application, INDICATOR_OBJECT_TYPE);
 
@@ -372,6 +373,29 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 static void
 get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		g_warning("Unable to get application list: %s", error->message);
+		return;
+	}
+	g_ptr_array_foreach(OUT_applications, get_applications_helper, userdata);
 
 	return;
+}
+
+/* A little helper that takes apart the DBus structure and calls
+   application_added on every entry in the list. */
+static void
+get_applications_helper (gpointer data, gpointer user_data)
+{
+	GValueArray * array = (GValueArray *)data;
+
+	g_return_if_fail(array->n_values == 5);
+
+	const gchar * icon_name = g_value_get_string(g_value_array_get_nth(array, 0));
+	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
+	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
+	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
+	const gchar * icon_path = g_value_get_string(g_value_array_get_nth(array, 4));
+
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, user_data);
 }
