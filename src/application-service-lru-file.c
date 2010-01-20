@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <gio/gio.h>
+#include <json-glib/json-glib.h>
 #include "application-service-lru-file.h"
 
 typedef struct _AppLruFilePrivate AppLruFilePrivate;
@@ -30,6 +31,7 @@ static void app_lru_file_dispose    (GObject *object);
 static void app_lru_file_finalize   (GObject *object);
 static void app_data_free           (gpointer data);
 static gboolean load_from_file      (gpointer data);
+static void load_file_object_cb (JsonObject * obj, const gchar * key, JsonNode * value, gpointer data);
 static void clean_off_hash_cb (gpointer key, gpointer value, gpointer data);
 static void clean_off_write_end_cb (GObject * obj, GAsyncResult * res, gpointer data);
 
@@ -128,8 +130,84 @@ app_data_free (gpointer data)
 static gboolean
 load_from_file (gpointer data)
 {
+	AppLruFile * lrufile = (AppLruFile *)data;
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
 
+	if (!g_file_test(priv->filename, G_FILE_TEST_EXISTS)) {
+		return FALSE;
+	}
+
+	JsonParser * parser = json_parser_new();
+
+	if (!json_parser_load_from_file(parser, priv->filename, NULL)) {
+		g_warning("Unable to parse JSON file '%s'", priv->filename);
+		g_object_unref(parser);
+		return FALSE;
+	}
+
+	JsonNode * root = json_parser_get_root(parser);
+	JsonObject * rootobj = json_node_get_object(root);
+	if (rootobj == NULL) {
+		g_warning("Malformed LRU file.  The root node is not an object.");
+		g_object_unref(parser);
+		return FALSE;
+	}
+
+	json_object_foreach_member(rootobj, load_file_object_cb, priv);
+
+	g_object_unref(parser);
 	return FALSE;
+}
+
+/* Looks at the various things that we need on a node, makes
+   sure that we have them, and then copies them into the
+   application hash table of love. */
+static void
+load_file_object_cb (JsonObject * rootobj, const gchar * key, JsonNode * value, gpointer data)
+{
+	AppLruFilePrivate * priv = (AppLruFilePrivate *)data;
+
+	/* We're not looking at this today. */
+	if (!g_strcmp0(key, "version")) {
+		return;
+	}
+
+	JsonObject * obj = json_node_get_object(value);
+	if (obj == NULL) {
+		g_warning("Data for node '%s' is not an object.", key);
+		return;
+	}
+
+	const gchar * obj_category = json_object_get_string_member(obj, "category");
+	const gchar * obj_first    = json_object_get_string_member(obj, "first-time");
+	const gchar * obj_last     = json_object_get_string_member(obj, "last-time");
+
+	if (obj_category == NULL || obj_first == NULL || obj_last == NULL) {
+		g_warning("Node '%s' is missing data.  Got: ('%s', '%s', '%s')", key, obj_category, obj_first, obj_last);
+		return;
+	}
+
+	gpointer datapntr = g_hash_table_lookup(priv->apps, key);
+	if (datapntr == NULL) {
+		/* Build a new node */
+		AppData * appdata = g_new0(AppData, 1);
+		appdata->category = g_strdup(obj_category);
+		g_time_val_from_iso8601(obj_first, &appdata->first_touched);
+		g_time_val_from_iso8601(obj_last, &appdata->last_touched);
+
+		g_hash_table_insert(priv->apps, g_strdup(key), appdata);
+	} else {
+		/* Merge nodes */
+		AppData * appdata = (AppData *)datapntr;
+		GTimeVal temptime;
+		g_time_val_from_iso8601(obj_first, &temptime);
+
+		if (temptime.tv_sec < appdata->first_touched.tv_sec) {
+			g_time_val_from_iso8601(obj_first, &appdata->first_touched);
+		}
+	}
+
+	return;
 }
 
 /* Write out our cache to a file so that we can unmark the dirty
@@ -197,7 +275,7 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 	gchar * firsttime = g_time_val_to_iso8601(&appdata->first_touched);
 	gchar * lasttime = g_time_val_to_iso8601(&appdata->last_touched);
 
-	g_string_append_printf(string, ",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\"}", id, firsttime, lasttime);
+	g_string_append_printf(string, ",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\", \"category\": \"%s\"}", id, firsttime, lasttime, appdata->category);
 
 	g_free(lasttime);
 	g_free(firsttime);
