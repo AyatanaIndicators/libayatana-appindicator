@@ -60,6 +60,7 @@ static void app_lru_file_init       (AppLruFile *self);
 static void app_lru_file_dispose    (GObject *object);
 static void app_lru_file_finalize   (GObject *object);
 static void app_data_free           (gpointer data);
+static void get_dirty (AppLruFile * lrufile);
 static gboolean load_from_file      (gpointer data);
 static void load_file_object_cb (JsonObject * obj, const gchar * key, JsonNode * value, gpointer data);
 static void clean_off_hash_cb (gpointer key, gpointer value, gpointer data);
@@ -183,7 +184,7 @@ load_from_file (gpointer data)
 		return FALSE;
 	}
 
-	json_object_foreach_member(rootobj, load_file_object_cb, priv);
+	json_object_foreach_member(rootobj, load_file_object_cb, lrufile);
 
 	g_object_unref(parser);
 	return FALSE;
@@ -195,7 +196,8 @@ load_from_file (gpointer data)
 static void
 load_file_object_cb (JsonObject * rootobj, const gchar * key, JsonNode * value, gpointer data)
 {
-	AppLruFilePrivate * priv = (AppLruFilePrivate *)data;
+	AppLruFile * lrufile = (AppLruFile *)data;
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
 
 	/* We're not looking at this today. */
 	if (!g_strcmp0(key, ENTRY_VERSION)) {
@@ -214,9 +216,35 @@ load_file_object_cb (JsonObject * rootobj, const gchar * key, JsonNode * value, 
 
 	if (obj_category == NULL || obj_first == NULL || obj_last == NULL) {
 		g_warning("Node '%s' is missing data.  Got: ('%s', '%s', '%s')", key, obj_category, obj_first, obj_last);
+		get_dirty(lrufile);
 		return;
 	}
 
+	/* Check to see how old this entry is.  If it hasn't been
+	   used in the last year, we remove the cruft. */
+	GTimeVal currenttime;
+	g_get_current_time(&currenttime);
+	GDate * currentdate = g_date_new();
+	g_date_set_time_val(currentdate, &currenttime);
+
+	GTimeVal lasttouch;
+	g_time_val_from_iso8601(obj_last, &lasttouch);
+	GDate * lastdate = g_date_new();
+	g_date_set_time_val(lastdate, &lasttouch);
+
+	gint spread = g_date_days_between(lastdate, currentdate);
+
+	g_date_free(currentdate);
+	g_date_free(lastdate);
+
+	if (spread > 365) {
+		g_debug("Removing node '%s' as it's %d days old.", key, spread);
+		get_dirty(lrufile);
+		return;
+	}
+
+	/* See if we already have one of these.  It's a little bit
+	   unlikely, but since we're async, we need to check */
 	gpointer datapntr = g_hash_table_lookup(priv->apps, key);
 	if (datapntr == NULL) {
 		/* Build a new node */
