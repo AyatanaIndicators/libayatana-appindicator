@@ -1,10 +1,10 @@
-indicator-application (0.0.9-0ubuntu1~ppa3) UNRELEASED; urgency=low
+indicator-application (0.0.9-0ubuntu1~ppa3) karmic; urgency=low
 
   * Upstream update
     * Ref counting theme directories as they get added and removed
     * Use the right callback function for fallback (LP: #507975)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 20 Jan 2010 14:54:22 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 20 Jan 2010 14:59:48 -0600
 
 indicator-application (0.0.9-0ubuntu1~ppa2) karmic; urgency=low
 
