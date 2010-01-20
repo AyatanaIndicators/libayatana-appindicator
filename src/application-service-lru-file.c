@@ -12,6 +12,9 @@
 #define ENTRY_LAST_TIME  "last-time"
 #define ENTRY_VERSION    "version"
 
+#define CONFIG_DIR       ("indicators" G_DIR_SEPARATOR_S "application")
+#define CONFIG_FILE      "lru-file.json"
+
 typedef struct _AppLruFilePrivate AppLruFilePrivate;
 struct _AppLruFilePrivate {
 	GHashTable * apps;
@@ -70,7 +73,7 @@ app_lru_file_init (AppLruFile *self)
 
 	/* Now let's build some stuff */
 	priv->apps = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, app_data_free);
-	priv->filename = g_build_filename(g_get_user_config_dir(), "indicators", "application", "lru-file.json", NULL);
+	priv->filename = g_build_filename(g_get_user_config_dir(), CONFIG_DIR, CONFIG_FILE, NULL);
 
 	/* No reason to delay other stuff for this, we'll
 	   merge any values that get touched. */
@@ -227,7 +230,7 @@ clean_off (gpointer data)
 	GError * error = NULL;
 	
 	/* Check to see if our directory exists.  Build it if not. */
-	gchar * dirname = g_build_filename(g_get_user_config_dir(), "indicators", "application", NULL);
+	gchar * dirname = g_build_filename(g_get_user_config_dir(), CONFIG_DIR, NULL);
 	if (!g_file_test(dirname, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
 		GFile * dirfile = g_file_new_for_path(dirname);
 		g_file_make_directory_with_parents(dirfile, NULL, NULL);
