@@ -7,6 +7,11 @@
 #include <json-glib/json-glib.h>
 #include "application-service-lru-file.h"
 
+#define ENTRY_CATEGORY   "category"
+#define ENTRY_FIRST_TIME "first-time"
+#define ENTRY_LAST_TIME  "last-time"
+#define ENTRY_VERSION    "version"
+
 typedef struct _AppLruFilePrivate AppLruFilePrivate;
 struct _AppLruFilePrivate {
 	GHashTable * apps;
@@ -168,7 +173,7 @@ load_file_object_cb (JsonObject * rootobj, const gchar * key, JsonNode * value, 
 	AppLruFilePrivate * priv = (AppLruFilePrivate *)data;
 
 	/* We're not looking at this today. */
-	if (!g_strcmp0(key, "version")) {
+	if (!g_strcmp0(key, ENTRY_VERSION)) {
 		return;
 	}
 
@@ -178,9 +183,9 @@ load_file_object_cb (JsonObject * rootobj, const gchar * key, JsonNode * value, 
 		return;
 	}
 
-	const gchar * obj_category = json_object_get_string_member(obj, "category");
-	const gchar * obj_first    = json_object_get_string_member(obj, "first-time");
-	const gchar * obj_last     = json_object_get_string_member(obj, "last-time");
+	const gchar * obj_category = json_object_get_string_member(obj, ENTRY_CATEGORY);
+	const gchar * obj_first    = json_object_get_string_member(obj, ENTRY_FIRST_TIME);
+	const gchar * obj_last     = json_object_get_string_member(obj, ENTRY_LAST_TIME);
 
 	if (obj_category == NULL || obj_first == NULL || obj_last == NULL) {
 		g_warning("Node '%s' is missing data.  Got: ('%s', '%s', '%s')", key, obj_category, obj_first, obj_last);
@@ -243,7 +248,7 @@ clean_off (gpointer data)
 	}
 
 	/* This is how the file will start */
-	GString * filestring = g_string_new("{\n  \"version\": 1");
+	GString * filestring = g_string_new("{\n  \"" ENTRY_VERSION "\": 1");
 
 	/* Put the middle in. */
 	g_hash_table_foreach (priv->apps, clean_off_hash_cb, filestring);
@@ -275,7 +280,7 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 	gchar * firsttime = g_time_val_to_iso8601(&appdata->first_touched);
 	gchar * lasttime = g_time_val_to_iso8601(&appdata->last_touched);
 
-	g_string_append_printf(string, ",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\", \"category\": \"%s\"}", id, firsttime, lasttime, appdata->category);
+	g_string_append_printf(string, ",\n  \"%s\": { \"" ENTRY_FIRST_TIME "\": \"%s\", \"" ENTRY_LAST_TIME "\": \"%s\", \"" ENTRY_CATEGORY "\": \"%s\"}", id, firsttime, lasttime, appdata->category);
 
 	g_free(lasttime);
 	g_free(firsttime);
