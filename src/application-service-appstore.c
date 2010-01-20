@@ -350,6 +350,18 @@ can_add_application (GList *applications, Application *app)
   return TRUE;
 }
 
+/* This function takes two Application structure
+   pointers and uses the lrufile to compare them. */
+static gint
+app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
+{
+	Application * appa = (Application *)a;
+	Application * appb = (Application *)b;
+	AppLruFile * lrufile = (AppLruFile *)userdata;
+
+	return app_lru_file_sort(lrufile, appa->id, appb->id);
+}
+
 /* Change the status of the application.  If we're going passive
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
@@ -384,16 +396,12 @@ apply_status (Application * app, ApplicationStatus status)
 		if (app->status == APP_STATUS_PASSIVE) {
                         if (can_add_application (priv->applications, app)) {
                                 /* Put on panel */
-                                priv->applications = g_list_prepend (priv->applications, app);
-
-                                /* TODO: We need to have the position determined better.  This
-                                   would involve looking at the name and category and sorting
-                                   it with the other entries. */
+                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 
                                 g_signal_emit(G_OBJECT(app->appstore),
                                               signals[APPLICATION_ADDED], 0,
                                               newicon,
-                                              0, /* Position */
+                                              g_list_index(priv->applications, app), /* Position */
                                               app->dbus_name,
                                               app->menu,
                                               app->icon_path,
