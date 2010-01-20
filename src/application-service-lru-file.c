@@ -31,7 +31,6 @@ static void app_lru_file_finalize   (GObject *object);
 static void app_data_free           (gpointer data);
 static gboolean load_from_file      (gpointer data);
 static void clean_off_hash_cb (gpointer key, gpointer value, gpointer data);
-static void clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data);
 static void clean_off_write_end_cb (GObject * obj, GAsyncResult * res, gpointer data);
 
 G_DEFINE_TYPE (AppLruFile, app_lru_file, G_TYPE_OBJECT);
@@ -165,33 +164,22 @@ clean_off (gpointer data)
 		return FALSE;
 	}
 
-	/* This is how the file will start and end. */
-	gchar * start = g_strdup("{\n  \"version\": 1");
-	gchar * end   = g_strdup("\n}\n");
-
-	/* Put the front on. */
-	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
-	                            start,
-	                            strlen(start),
-	                            G_PRIORITY_DEFAULT_IDLE,
-	                            NULL,
-	                            clean_off_write_cb,
-	                            start);
-	g_debug("Start Write   : %s", start);
+	/* This is how the file will start */
+	GString * filestring = g_string_new("{\n  \"version\": 1");
 
 	/* Put the middle in. */
-	g_hash_table_foreach (priv->apps, clean_off_hash_cb, ostream);
-
+	g_hash_table_foreach (priv->apps, clean_off_hash_cb, filestring);
 
 	/* And then tack on the end. */
+	g_string_append(filestring, "\n}\n");
+	gchar * filedata = g_string_free(filestring, FALSE);
 	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
-	                            end,
-	                            strlen(end),
+	                            filedata,
+	                            strlen(filedata),
 	                            G_PRIORITY_DEFAULT_IDLE,
 	                            NULL,
 	                            clean_off_write_end_cb,
-	                            end);
-	g_debug("Start Write   : %s", end);
+	                            filedata);
 
 	return FALSE; /* drop the timer */
 }
@@ -204,35 +192,16 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 	/* Mega-cast */
 	gchar * id = (gchar *)key;
 	AppData * appdata = (AppData *)value;
-	GOutputStream * ostream = (GOutputStream *)data;
+	GString * string = (GString *)data;
 
 	gchar * firsttime = g_time_val_to_iso8601(&appdata->first_touched);
 	gchar * lasttime = g_time_val_to_iso8601(&appdata->last_touched);
 
-	gchar * output = g_strdup_printf(",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\"}", id, firsttime, lasttime);
+	g_string_append_printf(string, ",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\"}", id, firsttime, lasttime);
 
 	g_free(lasttime);
 	g_free(firsttime);
 
-	g_output_stream_write_async(ostream,
-	                            output,
-	                            strlen(output),
-	                            G_PRIORITY_DEFAULT_IDLE,
-	                            NULL,
-	                            clean_off_write_cb,
-	                            output);
-	g_debug("Start Write   : %s", output);
-
-	return;
-}
-
-/* After the data has been written to the file we make
-   sure to free the string we created */
-static void
-clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data)
-{
-	g_debug("Complete Write: %s", (gchar *)data);
-	g_free(data);
 	return;
 }
 
@@ -241,7 +210,7 @@ clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data)
 static void
 clean_off_write_end_cb (GObject * obj, GAsyncResult * res, gpointer data)
 {
-	clean_off_write_cb(obj, res, data);
+	g_free(data);
 
 	GError * error = NULL;
 	g_output_stream_close(G_OUTPUT_STREAM(obj), NULL, &error);
