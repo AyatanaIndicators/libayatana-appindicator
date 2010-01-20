@@ -68,6 +68,8 @@ enum _ApplicationStatus {
 
 typedef struct _Application Application;
 struct _Application {
+	gchar * id;
+	gchar * category;
 	gchar * dbus_name;
 	gchar * dbus_object;
 	ApplicationServiceAppstore * appstore; /* not ref'd */
@@ -203,6 +205,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	Application * app = (Application *)data;
 
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME) == NULL) {
 		g_warning("Notification Item on object %s of %s doesn't have enough properties.", app->dbus_object, app->dbus_name);
@@ -211,6 +215,11 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	}
 
 	app->validated = TRUE;
+
+	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
+	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 	app->menu = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU));
@@ -275,6 +284,12 @@ application_free (Application * app)
 		g_object_unref(app->prop_proxy);
 	}
 
+	if (app->id != NULL) {
+		g_free(app->id);
+	}
+	if (app->category != NULL) {
+		g_free(app->category);
+	}
 	if (app->dbus_name != NULL) {
 		g_free(app->dbus_name);
 	}
