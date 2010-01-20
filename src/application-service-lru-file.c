@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+#include <string.h>
+#include <gio/gio.h>
 #include "application-service-lru-file.h"
 
 typedef struct _AppLruFilePrivate AppLruFilePrivate;
@@ -28,6 +30,9 @@ static void app_lru_file_dispose    (GObject *object);
 static void app_lru_file_finalize   (GObject *object);
 static void app_data_free           (gpointer data);
 static gboolean load_from_file      (gpointer data);
+static void clean_off_hash_cb (gpointer key, gpointer value, gpointer data);
+static void clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data);
+static void clean_off_write_end_cb (GObject * obj, GAsyncResult * res, gpointer data);
 
 G_DEFINE_TYPE (AppLruFile, app_lru_file, G_TYPE_OBJECT);
 
@@ -128,6 +133,129 @@ load_from_file (gpointer data)
 	return FALSE;
 }
 
+/* Write out our cache to a file so that we can unmark the dirty
+   bit and be happy. */
+static gboolean
+clean_off (gpointer data)
+{
+	AppLruFile * lrufile = (AppLruFile *)data;
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
+	priv->timer = 0;
+
+	GError * error = NULL;
+	GFile * file = g_file_new_for_path(priv->filename);
+	GFileOutputStream * ostream = g_file_replace(file,
+	                                             NULL, /* etag */
+	                                             TRUE, /* backup */
+	                                             G_FILE_CREATE_NONE, /* flags */
+	                                             NULL, /* cancelable */
+	                                             &error);
+	if (error != NULL) {
+		g_warning("Unable to open a file to store LRU file: %s", error->message);
+		return FALSE;
+	}
+
+	/* This is how the file will start and end. */
+	gchar * start = g_strdup("{\n  \"version\": 1");
+	gchar * end   = g_strdup("\n}\n");
+
+	/* Put the front on. */
+	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
+	                            start,
+	                            strlen(start),
+	                            G_PRIORITY_LOW,
+	                            NULL,
+	                            clean_off_write_cb,
+	                            start);
+
+	/* Put the middle in. */
+	g_hash_table_foreach (priv->apps, clean_off_hash_cb, ostream);
+
+
+	/* And then tack on the end. */
+	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
+	                            end,
+	                            strlen(end),
+	                            G_PRIORITY_LOW,
+	                            NULL,
+	                            clean_off_write_end_cb,
+	                            end);
+
+	return FALSE; /* drop the timer */
+}
+
+/* Looks at every value in the applications hash table and
+   turns it into a string for writing out. */
+static void
+clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
+{
+	/* Mega-cast */
+	gchar * id = (gchar *)key;
+	AppData * appdata = (AppData *)value;
+	GOutputStream * ostream = (GOutputStream *)ostream;
+
+	gchar * firsttime = g_time_val_to_iso8601(&appdata->first_touched);
+	gchar * lasttime = g_time_val_to_iso8601(&appdata->last_touched);
+
+	gchar * output = g_strdup_printf(",\n  \"%s\": { \"first-time\": \"%s\", \"last-time\": \"%s\"}", id, firsttime, lasttime);
+
+	g_free(lasttime);
+	g_free(firsttime);
+
+	g_output_stream_write_async(ostream,
+	                            output,
+	                            strlen(output),
+	                            G_PRIORITY_LOW,
+	                            NULL,
+	                            clean_off_write_cb,
+	                            output);
+
+	return;
+}
+
+/* After the data has been written to the file we make
+   sure to free the string we created */
+static void
+clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data)
+{
+	g_free(data);
+	return;
+}
+
+/* Very much like clean_off_write_cb except that it is the
+   last actor on this Output Stream so it closes it. */
+static void
+clean_off_write_end_cb (GObject * obj, GAsyncResult * res, gpointer data)
+{
+	clean_off_write_cb(obj, res, data);
+
+	GError * error = NULL;
+	g_output_stream_close(G_OUTPUT_STREAM(obj), NULL, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to close LRU File: %s", error->message);
+		g_error_free(error);
+	}
+
+	return;
+}
+
+/* Sets the dirty bit if not already set and makes sure that
+   we have a timer to fix that at some point. */
+static void
+get_dirty (AppLruFile * lrufile)
+{
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
+
+	priv->dirty = TRUE;
+
+	if (priv->timer == 0) {
+		priv->timer = g_timeout_add_seconds(60, clean_off, lrufile);
+	}
+
+	return;
+}
+
 /* API */
 
 /* Simple helper to create a new object */
@@ -169,7 +297,7 @@ app_lru_file_touch (AppLruFile * lrufile, const gchar * id, const gchar * catego
 
 	/* Touch it and mark the DB as dirty */
 	g_get_current_time(&(appdata->last_touched));
-	/* TODO: Make dirty */
+	get_dirty(lrufile);
 	return;
 }
 
