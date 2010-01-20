@@ -14,7 +14,6 @@ struct _AppLruFilePrivate {
 
 typedef struct _AppData AppData;
 struct _AppData {
-	gchar * id;
 	gchar * category;
 	GTimeVal last_touched;
 	GTimeVal first_touched;
@@ -110,6 +109,13 @@ app_lru_file_finalize (GObject *object)
 static void
 app_data_free (gpointer data)
 {
+	AppData * appdata = (AppData *)data;
+
+	if (appdata->category != NULL) {
+		g_free(appdata->category);
+	}
+
+	g_free(appdata);
 
 	return;
 }
@@ -142,6 +148,26 @@ app_lru_file_touch (AppLruFile * lrufile, const gchar * id, const gchar * catego
 	g_return_if_fail(id != NULL && id[0] != '\0');
 	g_return_if_fail(category != NULL && category[0] != '\0');
 
+	AppData * appdata = NULL;
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
+	gpointer data = g_hash_table_lookup(priv->apps, id);
+
+	if (data == NULL) {
+		/* Oh, we don't have one, let's build it and put it
+		   into the hash table ourselves */
+		appdata = g_new0(AppData, 1);
+
+		appdata->category = g_strdup(category);
+		g_get_current_time(&(appdata->first_touched));
+		/* NOTE: last touched set below */
+
+		g_hash_table_insert(priv->apps, g_strdup(id), appdata);
+	} else {
+		/* Boring, we've got this one already */
+		appdata = (AppData *)data;
+	}
+
+	g_get_current_time(&(appdata->last_touched));
 	return;
 }
 
