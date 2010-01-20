@@ -167,7 +167,9 @@ app_lru_file_touch (AppLruFile * lrufile, const gchar * id, const gchar * catego
 		appdata = (AppData *)data;
 	}
 
+	/* Touch it and mark the DB as dirty */
 	g_get_current_time(&(appdata->last_touched));
+	/* TODO: Make dirty */
 	return;
 }
 
@@ -177,6 +179,48 @@ app_lru_file_sort (AppLruFile * lrufile, const gchar * id_a, const gchar * id_b)
 {
 	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), -1);
 
+	/* Let's first look to see if the IDs are the same, this
+	   really shouldn't happen, but it'll be confusing if we
+	   don't get it out of the way to start. */
+	if (g_strcmp0(id_a, id_b) == 0) {
+		return 0;
+	}
 
-	return 0;
+	AppLruFilePrivate * priv = APP_LRU_FILE_GET_PRIVATE(lrufile);
+
+	/* Now make sure we have app data for both of these.  If
+	   not we'll assume that the one without is newer? */
+	gpointer data_a = g_hash_table_lookup(priv->apps, id_a);
+	if (data_a == NULL) {
+		return -1;
+	}
+
+	gpointer data_b = g_hash_table_lookup(priv->apps, id_b);
+	if (data_b == NULL) {
+		return 1;
+	}
+
+	/* Ugly casting */
+	AppData * appdata_a = (AppData *)data_a;
+	AppData * appdata_b = (AppData *)data_b;
+
+	/* Look at categories, we'll put the categories in alpha
+	   order if they're not the same. */
+	gint catcompare = g_strcmp0(appdata_a->category, appdata_b->category);
+	if (catcompare != 0) {
+		return catcompare;
+	}
+
+	/* Now we're looking at the first time that these two were
+	   seen in this account.  Only using seconds.  I mean, seriously. */
+	if (appdata_a->first_touched.tv_sec < appdata_b->first_touched.tv_sec) {
+		return -1;
+	}
+	if (appdata_b->first_touched.tv_sec < appdata_a->first_touched.tv_sec) {
+		return 1;
+	}
+
+	/* Eh, this seems roughly impossible.  But if we have to choose,
+	   I like A better. */
+	return 1;
 }
