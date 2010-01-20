@@ -143,6 +143,16 @@ clean_off (gpointer data)
 	priv->timer = 0;
 
 	GError * error = NULL;
+	
+	/* Check to see if our directory exists.  Build it if not. */
+	gchar * dirname = g_build_filename(g_get_user_config_dir(), "indicators", "application", NULL);
+	if (!g_file_test(dirname, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		GFile * dirfile = g_file_new_for_path(dirname);
+		g_file_make_directory_with_parents(dirfile, NULL, NULL);
+		g_object_unref(dirfile);
+	}
+	g_free(dirname);
+
 	GFile * file = g_file_new_for_path(priv->filename);
 	GFileOutputStream * ostream = g_file_replace(file,
 	                                             NULL, /* etag */
@@ -163,10 +173,11 @@ clean_off (gpointer data)
 	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
 	                            start,
 	                            strlen(start),
-	                            G_PRIORITY_LOW,
+	                            G_PRIORITY_DEFAULT_IDLE,
 	                            NULL,
 	                            clean_off_write_cb,
 	                            start);
+	g_debug("Start Write   : %s", start);
 
 	/* Put the middle in. */
 	g_hash_table_foreach (priv->apps, clean_off_hash_cb, ostream);
@@ -176,10 +187,11 @@ clean_off (gpointer data)
 	g_output_stream_write_async(G_OUTPUT_STREAM(ostream),
 	                            end,
 	                            strlen(end),
-	                            G_PRIORITY_LOW,
+	                            G_PRIORITY_DEFAULT_IDLE,
 	                            NULL,
 	                            clean_off_write_end_cb,
 	                            end);
+	g_debug("Start Write   : %s", end);
 
 	return FALSE; /* drop the timer */
 }
@@ -192,7 +204,7 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 	/* Mega-cast */
 	gchar * id = (gchar *)key;
 	AppData * appdata = (AppData *)value;
-	GOutputStream * ostream = (GOutputStream *)ostream;
+	GOutputStream * ostream = (GOutputStream *)data;
 
 	gchar * firsttime = g_time_val_to_iso8601(&appdata->first_touched);
 	gchar * lasttime = g_time_val_to_iso8601(&appdata->last_touched);
@@ -205,10 +217,11 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 	g_output_stream_write_async(ostream,
 	                            output,
 	                            strlen(output),
-	                            G_PRIORITY_LOW,
+	                            G_PRIORITY_DEFAULT_IDLE,
 	                            NULL,
 	                            clean_off_write_cb,
 	                            output);
+	g_debug("Start Write   : %s", output);
 
 	return;
 }
@@ -218,6 +231,7 @@ clean_off_hash_cb (gpointer key, gpointer value, gpointer data)
 static void
 clean_off_write_cb (GObject * obj, GAsyncResult * res, gpointer data)
 {
+	g_debug("Complete Write: %s", (gchar *)data);
 	g_free(data);
 	return;
 }
