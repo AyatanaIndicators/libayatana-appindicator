@@ -92,6 +92,7 @@ static void indicator_application_init       (IndicatorApplication *self);
 static void indicator_application_dispose    (GObject *object);
 static void indicator_application_finalize   (GObject *object);
 static GList * get_entries (IndicatorObject * io);
+static guint get_location (IndicatorObject * io, IndicatorObjectEntry * entry);
 static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
@@ -116,6 +117,7 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	IndicatorObjectClass * io_class = INDICATOR_OBJECT_CLASS(klass);
 
 	io_class->get_entries = get_entries;
+	io_class->get_location = get_location;
 
 	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
@@ -296,6 +298,15 @@ get_entries (IndicatorObject * io)
 	}
 
 	return retval;
+}
+
+/* Finds the location of a specific entry */
+static guint 
+get_location (IndicatorObject * io, IndicatorObjectEntry * entry)
+{
+	g_return_val_if_fail(IS_INDICATOR_APPLICATION(io), 0);
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(io);
+	return g_list_index(priv->applications, entry);
 }
 
 /* Here we respond to new applications by building up the

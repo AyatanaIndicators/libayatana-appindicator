@@ -52,6 +52,7 @@ typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePriv
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
+	AppLruFile * lrufile;
 };
 
 #define APP_STATUS_PASSIVE_STR    "passive"
@@ -67,6 +68,8 @@ enum _ApplicationStatus {
 
 typedef struct _Application Application;
 struct _Application {
+	gchar * id;
+	gchar * category;
 	gchar * dbus_name;
 	gchar * dbus_object;
 	ApplicationServiceAppstore * appstore; /* not ref'd */
@@ -148,6 +151,7 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
 
 	priv->applications = NULL;
+	priv->lrufile = NULL;
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -201,6 +205,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	Application * app = (Application *)data;
 
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME) == NULL) {
 		g_warning("Notification Item on object %s of %s doesn't have enough properties.", app->dbus_object, app->dbus_name);
@@ -209,6 +215,11 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	}
 
 	app->validated = TRUE;
+
+	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
+	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 	app->menu = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU));
@@ -273,6 +284,12 @@ application_free (Application * app)
 		g_object_unref(app->prop_proxy);
 	}
 
+	if (app->id != NULL) {
+		g_free(app->id);
+	}
+	if (app->category != NULL) {
+		g_free(app->category);
+	}
 	if (app->dbus_name != NULL) {
 		g_free(app->dbus_name);
 	}
@@ -333,6 +350,18 @@ can_add_application (GList *applications, Application *app)
   return TRUE;
 }
 
+/* This function takes two Application structure
+   pointers and uses the lrufile to compare them. */
+static gint
+app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
+{
+	Application * appa = (Application *)a;
+	Application * appb = (Application *)b;
+	AppLruFile * lrufile = (AppLruFile *)userdata;
+
+	return app_lru_file_sort(lrufile, appa->id, appb->id);
+}
+
 /* Change the status of the application.  If we're going passive
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
@@ -367,16 +396,12 @@ apply_status (Application * app, ApplicationStatus status)
 		if (app->status == APP_STATUS_PASSIVE) {
                         if (can_add_application (priv->applications, app)) {
                                 /* Put on panel */
-                                priv->applications = g_list_prepend (priv->applications, app);
-
-                                /* TODO: We need to have the position determined better.  This
-                                   would involve looking at the name and category and sorting
-                                   it with the other entries. */
+                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 
                                 g_signal_emit(G_OBJECT(app->appstore),
                                               signals[APPLICATION_ADDED], 0,
                                               newicon,
-                                              0, /* Position */
+                                              g_list_index(priv->applications, app), /* Position */
                                               app->dbus_name,
                                               app->menu,
                                               app->icon_path,
@@ -643,6 +668,18 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	}
 
 	return;
+}
+
+/* Creates a basic appstore object and attaches the
+   LRU file object to it. */
+ApplicationServiceAppstore *
+application_service_appstore_new (AppLruFile * lrufile)
+{
+	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	priv->lrufile = lrufile;
+	return appstore;
 }
 
 /* DBus Interface */
