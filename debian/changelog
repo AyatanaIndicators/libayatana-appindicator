@@ -1,3 +1,10 @@
+indicator-application (0.0.10-0ubuntu2) lucid; urgency=low
+
+  * debian/control
+    - bumped build depends version for libindicator-dev to 0.3.1 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 21 Jan 2010 16:38:18 -0500
+
 indicator-application (0.0.10-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.10
