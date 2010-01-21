@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-application, 0.0.9, ted@canonical.com)
+AC_INIT(indicator-application, 0.0.10, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-application, 0.0.9)
+AM_INIT_AUTOMAKE(indicator-application, 0.0.10)
 
 AM_MAINTAINER_MODE
 
@@ -38,11 +38,13 @@ AC_CONFIG_MACRO_DIR(m4)
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-INDICATOR_REQUIRED_VERSION=0.3.0
+INDICATOR_REQUIRED_VERSION=0.3.1
 DBUSMENUGTK_REQUIRED_VERSION=0.1.1
+JSON_GLIB_REQUIRED_VERSION=0.7.6
 
 PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
                              indicator >= $INDICATOR_REQUIRED_VERSION
+                             json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
                              dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
 
 AC_SUBST(INDICATOR_CFLAGS)
@@ -51,6 +53,7 @@ AC_SUBST(INDICATOR_LIBS)
 ###########################
 # Check for Mono support
 ###########################
+
 MONO_REQUIRED_VERSION=1.0
 PKG_CHECK_MODULES(MONO_DEPENDENCY, mono >= $MONO_REQUIRED_VERSION, has_mono=true, has_mono=false)
 

@@ -31,7 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-shared.h"
 
 /* DBus Prototypes */
-static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps);
+static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
 
 #include "application-service-server.h"
 
@@ -52,6 +52,7 @@ typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePriv
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
+	AppLruFile * lrufile;
 };
 
 #define APP_STATUS_PASSIVE_STR    "passive"
@@ -67,6 +68,8 @@ enum _ApplicationStatus {
 
 typedef struct _Application Application;
 struct _Application {
+	gchar * id;
+	gchar * category;
 	gchar * dbus_name;
 	gchar * dbus_object;
 	ApplicationServiceAppstore * appstore; /* not ref'd */
@@ -148,6 +151,7 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
 
 	priv->applications = NULL;
+	priv->lrufile = NULL;
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -201,6 +205,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	Application * app = (Application *)data;
 
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID) == NULL ||
+			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS) == NULL ||
 			g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME) == NULL) {
 		g_warning("Notification Item on object %s of %s doesn't have enough properties.", app->dbus_object, app->dbus_name);
@@ -209,6 +215,11 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	}
 
 	app->validated = TRUE;
+
+	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
+	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 	app->menu = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU));
@@ -273,6 +284,12 @@ application_free (Application * app)
 		g_object_unref(app->prop_proxy);
 	}
 
+	if (app->id != NULL) {
+		g_free(app->id);
+	}
+	if (app->category != NULL) {
+		g_free(app->category);
+	}
 	if (app->dbus_name != NULL) {
 		g_free(app->dbus_name);
 	}
@@ -311,6 +328,40 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	return;
 }
 
+static gboolean
+can_add_application (GList *applications, Application *app)
+{
+  if (applications)
+    {
+      GList *l = NULL;
+
+      for (l = applications; l != NULL; l = g_list_next (l))
+        {
+          Application *tmp_app = (Application *)l->data;
+
+          if (g_strcmp0 (tmp_app->dbus_name, app->dbus_name) == 0 &&
+              g_strcmp0 (tmp_app->dbus_object, app->dbus_object) == 0)
+            {
+              return FALSE;
+            }
+        }
+    }
+
+  return TRUE;
+}
+
+/* This function takes two Application structure
+   pointers and uses the lrufile to compare them. */
+static gint
+app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
+{
+	Application * appa = (Application *)a;
+	Application * appb = (Application *)b;
+	AppLruFile * lrufile = (AppLruFile *)userdata;
+
+	return app_lru_file_sort(lrufile, appa->id, appb->id);
+}
+
 /* Change the status of the application.  If we're going passive
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
@@ -333,8 +384,7 @@ apply_status (Application * app, ApplicationStatus status)
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
-
-		priv->applications = g_list_remove(priv->applications, app);
+                priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
@@ -344,21 +394,19 @@ apply_status (Application * app, ApplicationStatus status)
 
 		/* Determine whether we're already shown or not */
 		if (app->status == APP_STATUS_PASSIVE) {
-			/* Put on panel */
-			priv->applications = g_list_prepend(priv->applications, app);
-	
-			/* TODO: We need to have the position determined better.  This
-			   would involve looking at the name and category and sorting
-			   it with the other entries. */
+                        if (can_add_application (priv->applications, app)) {
+                                /* Put on panel */
+                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 
-			g_signal_emit(G_OBJECT(app->appstore),
-			              signals[APPLICATION_ADDED], 0, 
-			              newicon,
-			              0, /* Position */
-			              app->dbus_name,
-			              app->menu,
-			              app->icon_path,
-			              TRUE);
+                                g_signal_emit(G_OBJECT(app->appstore),
+                                              signals[APPLICATION_ADDED], 0,
+                                              newicon,
+                                              g_list_index(priv->applications, app), /* Position */
+                                              app->dbus_name,
+                                              app->menu,
+                                              app->icon_path,
+                                              TRUE);
+                        }
 		} else {
 			/* Icon update */
 			gint position = get_position(app);
@@ -622,11 +670,66 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	return;
 }
 
+/* Creates a basic appstore object and attaches the
+   LRU file object to it. */
+ApplicationServiceAppstore *
+application_service_appstore_new (AppLruFile * lrufile)
+{
+	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	priv->lrufile = lrufile;
+	return appstore;
+}
+
 /* DBus Interface */
 static gboolean
-_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GArray ** apps)
+_application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error)
 {
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
-	return FALSE;
+	*apps = g_ptr_array_new();
+	GList * listpntr;
+	gint position = 0;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		GValueArray * values = g_value_array_new(5);
+
+		GValue value = {0};
+
+		/* Icon name */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->icon);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Position */
+		g_value_init(&value, G_TYPE_INT);
+		g_value_set_int(&value, position++);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* DBus Address */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->dbus_name);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* DBus Object */
+		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
+		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->menu);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Icon path */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		g_ptr_array_add(*apps, values);
+	}
+
+	return TRUE;
 }
 
