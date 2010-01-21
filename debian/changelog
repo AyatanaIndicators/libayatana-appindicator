@@ -21,7 +21,21 @@ indicator-application (0.0.9-0ubuntu1~ppa2) karmic; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 20 Jan 2010 14:47:47 -0600
 
-indicator-application (0.0.9-0ubuntu1~ppa1) karmic; urgency=low
+indicator-application (0.0.9-0ubuntu3) lucid; urgency=low
+
+  * debian/control:
+    - updated the build-depends for the gtk binding changes.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 22:57:02 +0100
+
+indicator-application (0.0.9-0ubuntu2) lucid; urgency=low
+
+  * Backport an upstream change to a fallback situation crasher 
+    (lp: #507975)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 20:52:41 +0100
+
+indicator-application (0.0.9-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.9
     * Add fallback support for situations where the NotificationWatcher
