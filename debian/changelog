@@ -1,9 +1,9 @@
-indicator-application (0.0.9-0ubuntu1~ppa4~order1) UNRELEASED; urgency=low
+indicator-application (0.0.9-0ubuntu1~ppa4~order1) karmic; urgency=low
 
   * Upstream merge
     * Adding in a file to position the indicators
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 21 Jan 2010 08:50:57 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 21 Jan 2010 08:53:32 -0600
 
 indicator-application (0.0.9-0ubuntu1~ppa3) karmic; urgency=low
 
