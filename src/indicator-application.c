@@ -331,7 +331,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (!gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
+	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
 		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, GTK_ICON_SIZE_MENU));
 	} else {
 		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
@@ -406,7 +406,7 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (!gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
+	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
 		gtk_image_set_from_icon_name(app->entry.image, longname, GTK_ICON_SIZE_MENU);
 	} else {
 		gtk_image_set_from_icon_name(app->entry.image, iconname, GTK_ICON_SIZE_MENU);
