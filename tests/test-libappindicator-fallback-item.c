@@ -108,7 +108,7 @@ main (int argc, char ** argv)
 
 	TestLibappindicatorFallbackItem * item = g_object_new(TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE,
 		"id", "test-id",
-		"category", "other",
+		"category", "Other",
 		"icon-name", "bob",
 		NULL);
 	
