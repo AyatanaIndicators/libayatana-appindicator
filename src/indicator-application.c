@@ -41,7 +41,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-client.h"
 #include "application-service-marshal.h"
 
-#define PANEL_ICON_SUFFIX  "symbolic"
+#define PANEL_ICON_SUFFIX  "panel"
 
 #define INDICATOR_APPLICATION_TYPE            (indicator_application_get_type ())
 #define INDICATOR_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_APPLICATION_TYPE, IndicatorApplication))
