@@ -41,6 +41,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-client.h"
 #include "application-service-marshal.h"
 
+#define PANEL_ICON_SUFFIX  "panel"
+
 #define INDICATOR_APPLICATION_TYPE            (indicator_application_get_type ())
 #define INDICATOR_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), INDICATOR_APPLICATION_TYPE, IndicatorApplication))
 #define INDICATOR_APPLICATION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), INDICATOR_APPLICATION_TYPE, IndicatorApplicationClass))
@@ -325,7 +327,17 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 		theme_dir_ref(application, icon_path);
 	}
 
-	app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
+	/* We make a long name using the suffix, and if that
+	   icon is available we want to use it.  Otherwise we'll
+	   just use the name we were given. */
+	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
+		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, GTK_ICON_SIZE_MENU));
+	} else {
+		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
+	}
+	g_free(longname);
+
 	app->entry.label = NULL;
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
@@ -390,7 +402,17 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 		return;
 	}
 
-	gtk_image_set_from_icon_name(app->entry.image, iconname, GTK_ICON_SIZE_MENU);
+	/* We make a long name using the suffix, and if that
+	   icon is available we want to use it.  Otherwise we'll
+	   just use the name we were given. */
+	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
+		gtk_image_set_from_icon_name(app->entry.image, longname, GTK_ICON_SIZE_MENU);
+	} else {
+		gtk_image_set_from_icon_name(app->entry.image, iconname, GTK_ICON_SIZE_MENU);
+	}
+	g_free(longname);
+
 	return;
 }
 
