@@ -977,7 +977,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 static void
-activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
+activate_menuitem (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
 {
   GtkWidget *widget = (GtkWidget *)user_data;
 
