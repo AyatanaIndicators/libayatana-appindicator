@@ -89,7 +89,8 @@ test_libappindicator_fallback_item_LDADD = \
 	$(top_builddir)/src/libappindicator.la
 
 test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
-	@echo "#!/bin/sh" > $@
+	@echo "#!/bin/bash" > $@
+	@echo . $(src_dir)/run_xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ./test-libappindicator-fallback-item --task-name Item >> $@
 	@chmod +x $@
 
