@@ -977,7 +977,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 static void
-activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
+activate_menuitem (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
 {
   GtkWidget *widget = (GtkWidget *)user_data;
 
@@ -987,9 +987,9 @@ activate_menuitem (DbusmenuMenuitem *mi, gpointer user_data)
 static void
 widget_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 {
-  dbusmenu_menuitem_property_set (mi,
-                                  DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
-                                  gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+  dbusmenu_menuitem_property_set_int (mi,
+                                      DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                      gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
 }
 
 static void
@@ -1014,7 +1014,7 @@ update_icon_name (DbusmenuMenuitem *menuitem,
     return;
 
   dbusmenu_menuitem_property_set (menuitem,
-                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                   image->data.name.icon_name);
 }
 
@@ -1031,7 +1031,7 @@ update_stock_item (DbusmenuMenuitem *menuitem,
   gtk_stock_lookup (image->data.stock.stock_id, &stock);
 
   dbusmenu_menuitem_property_set (menuitem,
-                                  DBUSMENU_MENUITEM_PROP_ICON,
+                                  DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                   image->data.stock.stock_id);
 
   if (stock.label != NULL)
@@ -1074,7 +1074,7 @@ widget_notify_cb (GtkWidget  *widget,
   if (pspec->name == g_intern_static_string ("sensitive"))
     {
       dbusmenu_menuitem_property_set_bool (child,
-                                           DBUSMENU_MENUITEM_PROP_SENSITIVE,
+                                           DBUSMENU_MENUITEM_PROP_ENABLED,
                                            GTK_WIDGET_IS_SENSITIVE (widget));
     }
   else if (pspec->name == g_intern_static_string ("label"))
@@ -1121,9 +1121,9 @@ container_iterate (GtkWidget *widget,
 
           label_set = TRUE;
 
-          dbusmenu_menuitem_property_set (child,
-                                          DBUSMENU_MENUITEM_PROP_TOGGLE_CHECKED,
-                                          gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+          dbusmenu_menuitem_property_set_int (child,
+                                              DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                              gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
 
           g_signal_connect (widget,
                             "toggled",

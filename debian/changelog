@@ -1,3 +1,17 @@
+indicator-application (0.0.11-0ubuntu1) lucid; urgency=low
+
+  * debian/control:
+    - updated libunit-cil build-depends
+
+  [ Ted Gould ]
+  * Upstream release 0.0.11
+    * Interoperability Fixes
+    * Adding in XVFB support for tests
+    * Adding support for icons with the '-panel' suffix
+  * debian/control: Increasing dbusmenu* deps to 0.2.2
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 17:35:19 -0800
+
 indicator-application (0.0.10-0ubuntu2) lucid; urgency=low
 
   * debian/control

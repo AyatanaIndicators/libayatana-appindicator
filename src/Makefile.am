@@ -63,8 +63,20 @@ pkgconfig_DATA = libappindicator/appindicator-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = libappindicator/app-indicator-enum-types.h
-glib_enum_c = libappindicator/app-indicator-enum-types.c
+glib_enum_c = libappindicator/app-indicator-enum-types.gen.c
 glib_enum_headers = $(libappindicator_headers)
+
+libappindicator/app-indicator-enum-types.c: libappindicator/app-indicator-enum-types.gen.c
+	sed -e "s|\"passive\"|\"Passive\"|" \
+	    -e "s|\"active\"|\"Active\"|" \
+	    -e "s|\"attention\"|\"NeedsAttention\"|" \
+	    -e "s|\"application-status\"|\"ApplicationStatus\"|" \
+	    -e "s|\"communications\"|\"Communications\"|" \
+	    -e "s|\"system-services\"|\"SystemServices\"|" \
+	    -e "s|\"hardware\"|\"Hardware\"|" \
+	    -e "s|\"other\"|\"Other\"|" \
+	       $< > $@
+DISTCLEANFILES += libappindicator/app-indicator-enum-types.c
 
 lib_LTLIBRARIES = \
 	libappindicator.la
@@ -80,7 +92,7 @@ libappindicatorinclude_HEADERS = \
 
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
-	$(glib_enum_c) \
+	libappindicator/app-indicator-enum-types.c \
 	notification-watcher-client.h \
 	notification-item-server.h \
 	libappindicator/app-indicator.c
