@@ -55,9 +55,9 @@ struct _ApplicationServiceAppstorePrivate {
 	AppLruFile * lrufile;
 };
 
-#define APP_STATUS_PASSIVE_STR    "passive"
-#define APP_STATUS_ACTIVE_STR     "active"
-#define APP_STATUS_ATTENTION_STR  "attention"
+#define APP_STATUS_PASSIVE_STR    "Passive"
+#define APP_STATUS_ACTIVE_STR     "Active"
+#define APP_STATUS_ATTENTION_STR  "NeedsAttention"
 
 typedef enum _ApplicationStatus ApplicationStatus;
 enum _ApplicationStatus {
