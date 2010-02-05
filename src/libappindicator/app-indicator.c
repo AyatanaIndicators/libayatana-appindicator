@@ -988,8 +988,8 @@ static void
 widget_toggled (GtkWidget *widget, DbusmenuMenuitem *mi)
 {
   dbusmenu_menuitem_property_set_int (mi,
-                                  DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
-                                  gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+                                      DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                      gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget)) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
 }
 
 static void
@@ -1122,8 +1122,8 @@ container_iterate (GtkWidget *widget,
           label_set = TRUE;
 
           dbusmenu_menuitem_property_set_int (child,
-                                          DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
-                                          gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
+                                              DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                              gtk_check_menu_item_get_active (check) ? DBUSMENU_MENUITEM_TOGGLE_STATE_CHECKED : DBUSMENU_MENUITEM_TOGGLE_STATE_UNCHECKED);
 
           g_signal_connect (widget,
                             "toggled",
