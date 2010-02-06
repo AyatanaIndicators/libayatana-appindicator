@@ -61,7 +61,7 @@ main (gint argc, gchar * argv[])
 	AppIndicator * ci = app_indicator_new ("my-id", "my-icon-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 	app_indicator_set_attention_icon (ci, "my-attention-icon");
 
-	g_idle_add(toggle, ci);
+	g_timeout_add(50, toggle, ci);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
