@@ -78,12 +78,14 @@ struct _IndicatorApplicationPrivate {
 	DBusGProxy * service_proxy;
 	GList * applications;
 	GHashTable * theme_dirs;
+	guint disconnect_kill;
 };
 
 typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
 	gchar * icon_path;
+	gboolean old_service;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -98,6 +100,8 @@ static guint get_location (IndicatorObject * io, IndicatorObjectEntry * entry);
 void connection_changed (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
 static void connected (IndicatorApplication * application);
 static void disconnected (IndicatorApplication * application);
+static void disconnected_helper (gpointer data, gpointer user_data);
+static gboolean disconnected_kill (gpointer user_data);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
@@ -149,6 +153,7 @@ indicator_application_init (IndicatorApplication *self)
 	priv->bus = NULL;
 	priv->service_proxy = NULL;
 	priv->theme_dirs = NULL;
+	priv->disconnect_kill = 0;
 
 	priv->sm = indicator_service_manager_new(INDICATOR_APPLICATION_DBUS_ADDR);	
 	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connection_changed), self);
@@ -164,6 +169,10 @@ static void
 indicator_application_dispose (GObject *object)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(object);
+
+	if (priv->disconnect_kill != 0) {
+		g_source_remove(priv->disconnect_kill);
+	}
 
 	while (priv->applications != NULL) {
 		application_removed(priv->service_proxy,
@@ -246,8 +255,7 @@ connected (IndicatorApplication * application)
 		priv->service_proxy = dbus_g_proxy_new_for_name(priv->bus,
 		                                                INDICATOR_APPLICATION_DBUS_ADDR,
 		                                                INDICATOR_APPLICATION_DBUS_OBJ,
-		                                                INDICATOR_APPLICATION_DBUS_IFACE,
-		                                                &error);
+		                                                INDICATOR_APPLICATION_DBUS_IFACE);
 
 		/* Set up proxy signals */
 		g_debug("Setup proxy signals");
@@ -297,12 +305,39 @@ connected (IndicatorApplication * application)
 	return;
 }
 
+/* Marks every current application as belonging to the old
+   service so that we can delete it if it doesn't come back.
+   Also, sets up a timeout on comming back. */
 static void
 disconnected (IndicatorApplication * application)
 {
-
-
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	g_list_foreach(priv->applications, disconnected_helper, NULL);
+	/* I'll like this to be a little shorter, but it's a bit
+	   inpractical to make it so.  This means that the user will
+	   probably notice a visible glitch.  Though, if applications
+	   are disappearing there isn't much we can do. */
+	priv->disconnect_kill = g_timeout_add(250, disconnected_kill, application);
 	return;
+}
+
+/* Marks an entry as being from the old service */
+static void
+disconnected_helper (gpointer data, gpointer user_data)
+{
+	
+	return;
+}
+
+/* Makes sure the old applications that don't come back
+   get dropped. */
+static gboolean
+disconnected_kill (gpointer user_data)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(user_data);
+	priv->disconnect_kill = 0;
+
+	return FALSE;
 }
 
 /* Goes through the list of applications that we're maintaining and
@@ -348,6 +383,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
+	app->old_service = FALSE;
 	app->icon_path = NULL;
 	if (icon_path != NULL && icon_path[0] != '\0') {
 		app->icon_path = g_strdup(icon_path);
