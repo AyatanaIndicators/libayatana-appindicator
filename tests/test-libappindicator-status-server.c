@@ -25,15 +25,30 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib-lowlevel.h>
 #include <glib.h>
 #include <libappindicator/app-indicator.h>
-#include "test-defines.h"
 
 static GMainLoop * mainloop = NULL;
+static gboolean active = FALSE;
+static guint toggle_count = 0;
 
 gboolean
-kill_func (gpointer userdata)
+toggle (gpointer userdata)
 {
-	g_main_loop_quit(mainloop);
-	return FALSE;
+	if (active) {
+		app_indicator_set_status (APP_INDICATOR(userdata), APP_INDICATOR_STATUS_ATTENTION);
+		active = FALSE;
+	} else {
+		app_indicator_set_status (APP_INDICATOR(userdata), APP_INDICATOR_STATUS_ACTIVE);
+		active = TRUE;
+	}
+
+	toggle_count++;
+
+	if (toggle_count == 1000) {
+		g_main_loop_quit(mainloop);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 gint
@@ -43,11 +58,10 @@ main (gint argc, gchar * argv[])
 
 	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
-	AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
-        app_indicator_set_status (ci, TEST_STATE);
-        app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
+	AppIndicator * ci = app_indicator_new ("my-id", "my-icon-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+	app_indicator_set_attention_icon (ci, "my-attention-icon");
 
-	g_timeout_add_seconds(2, kill_func, NULL);
+	g_idle_add(toggle, ci);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
