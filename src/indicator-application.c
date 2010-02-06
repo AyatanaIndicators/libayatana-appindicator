@@ -224,6 +224,7 @@ indicator_application_finalize (GObject *object)
 void
 connection_changed (IndicatorServiceManager * sm, gboolean connect, IndicatorApplication * application)
 {
+	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	if (connect) {
 		connected(application);
 	} else {
@@ -315,7 +316,7 @@ static void
 disconnected (IndicatorApplication * application)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
-	g_list_foreach(priv->applications, disconnected_helper, NULL);
+	g_list_foreach(priv->applications, disconnected_helper, application);
 	/* I'll like this to be a little shorter, but it's a bit
 	   inpractical to make it so.  This means that the user will
 	   probably notice a visible glitch.  Though, if applications
@@ -338,9 +339,10 @@ disconnected_helper (gpointer data, gpointer user_data)
 static gboolean
 disconnected_kill (gpointer user_data)
 {
+	g_return_val_if_fail(IS_INDICATOR_APPLICATION(user_data), FALSE);
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(user_data);
 	priv->disconnect_kill = 0;
-	g_list_foreach(priv->applications, disconnected_kill_helper, NULL);
+	g_list_foreach(priv->applications, disconnected_kill_helper, user_data);
 	return FALSE;
 }
 
@@ -349,6 +351,7 @@ disconnected_kill (gpointer user_data)
 static void
 disconnected_kill_helper (gpointer data, gpointer user_data)
 {
+	g_return_if_fail(IS_INDICATOR_APPLICATION(user_data));
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(user_data);
 	ApplicationEntry * entry = (ApplicationEntry *)data;
 	if (entry->old_service) {
@@ -412,6 +415,7 @@ application_added_search (gconstpointer a, gconstpointer b)
 static void
 application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
 {
+	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 
@@ -472,6 +476,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 static void
 application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * application)
 {
+	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
 
