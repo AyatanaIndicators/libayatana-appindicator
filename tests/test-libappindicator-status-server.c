@@ -43,7 +43,7 @@ toggle (gpointer userdata)
 
 	toggle_count++;
 
-	if (toggle_count == 1000) {
+	if (toggle_count == 100) {
 		g_main_loop_quit(mainloop);
 		return FALSE;
 	}

@@ -70,7 +70,7 @@ dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_dat
 
 	toggle_count++;
 
-	if (toggle_count == 1000) {
+	if (toggle_count == 100) {
 		g_main_loop_quit(mainloop);
 	}
 
