@@ -23,165 +23,71 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 #include <dbus/dbus-glib.h>
-#include <libappindicator/app-indicator.h>
-#include "test-defines.h"
+#include <dbus/dbus-glib-lowlevel.h>
+#include "../src/dbus-shared.h"
 
 static GMainLoop * mainloop = NULL;
 static gboolean passed = TRUE;
-static int propcount = 0;
+static gboolean watchdog_hit = TRUE;
+static gboolean active = FALSE;
+static guint toggle_count = 0;
 
-static void
-check_propcount (void)
+#define PASSIVE_STR  "Passive"
+#define ACTIVE_STR   "Active"
+#define ATTN_STR     "NeedsAttention"
+
+static DBusHandlerResult
+dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
 {
-	if (propcount >= 5) {
+	if (!dbus_message_is_signal(message, NOTIFICATION_ITEM_DBUS_IFACE, "NewStatus")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+
+	gchar * string;
+
+	DBusError derror;
+	dbus_error_init(&derror);
+	if (!dbus_message_get_args(message, &derror,
+				DBUS_TYPE_STRING, &string,
+				DBUS_TYPE_INVALID)) {
+		g_warning("Couldn't get parameters");
+		dbus_error_free(&derror);
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+
+	watchdog_hit = TRUE;
+
+	if (g_strcmp0(string, ACTIVE_STR) == 0) {
+		if (active) {
+			g_warning("Got active when already active");
+			passed = FALSE;
+			return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+		}
+		active = TRUE;
+	} else {
+		active = FALSE;
+	}
+
+	toggle_count++;
+
+	if (toggle_count == 1000) {
 		g_main_loop_quit(mainloop);
 	}
-	return;
-}
 
-
-static void
-prop_id_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
-{
-	propcount++;
-
-	GError * error = NULL;
-	GValue value = {0};
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-		g_warning("Getting ID failed: %s", error->message);
-		g_error_free(error);
-		passed = FALSE;
-		check_propcount();
-		return;
-	}
-
-	if (g_strcmp0(TEST_ID, g_value_get_string(&value))) {
-		g_debug("Property ID Returned: FAILED");
-		passed = FALSE;
-	} else {
-		g_debug("Property ID Returned: PASSED");
-	}
-
-	check_propcount();
-	return;
-}
-
-static void
-prop_category_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
-{
-	propcount++;
-
-	GError * error = NULL;
-	GValue value = {0};
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-		g_warning("Getting category failed: %s", error->message);
-		g_error_free(error);
-		passed = FALSE;
-		check_propcount();
-		return;
-	}
-
-	if (g_strcmp0(TEST_CATEGORY_S, g_value_get_string(&value))) {
-		g_debug("Property category Returned: FAILED");
-		passed = FALSE;
-	} else {
-		g_debug("Property category Returned: PASSED");
-	}
-
-	check_propcount();
-	return;
-}
-
-static void
-prop_status_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
-{
-	propcount++;
-
-	GError * error = NULL;
-	GValue value = {0};
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-		g_warning("Getting status failed: %s", error->message);
-		g_error_free(error);
-		passed = FALSE;
-		check_propcount();
-		return;
-	}
-
-	if (g_strcmp0(TEST_STATE_S, g_value_get_string(&value))) {
-		g_debug("Property status Returned: FAILED");
-		passed = FALSE;
-	} else {
-		g_debug("Property status Returned: PASSED");
-	}
-
-	check_propcount();
-	return;
-}
-
-static void
-prop_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
-{
-	propcount++;
-
-	GError * error = NULL;
-	GValue value = {0};
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-		g_warning("Getting icon name failed: %s", error->message);
-		g_error_free(error);
-		passed = FALSE;
-		check_propcount();
-		return;
-	}
-
-	if (g_strcmp0(TEST_ICON_NAME, g_value_get_string(&value))) {
-		g_debug("Property icon name Returned: FAILED");
-		passed = FALSE;
-	} else {
-		g_debug("Property icon name Returned: PASSED");
-	}
-
-	check_propcount();
-	return;
-}
-
-static void
-prop_attention_icon_name_cb (DBusGProxy * proxy, DBusGProxyCall * call, void * data)
-{
-	propcount++;
-
-	GError * error = NULL;
-	GValue value = {0};
-
-	if (!dbus_g_proxy_end_call(proxy, call, &error, G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-		g_warning("Getting attention icon name failed: %s", error->message);
-		g_error_free(error);
-		passed = FALSE;
-		check_propcount();
-		return;
-	}
-
-	if (g_strcmp0(TEST_ATTENTION_ICON_NAME, g_value_get_string(&value))) {
-		g_debug("Property attention icon name Returned: FAILED");
-		passed = FALSE;
-	} else {
-		g_debug("Property attention icon name Returned: PASSED");
-	}
-
-	check_propcount();
-	return;
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 gboolean
 kill_func (gpointer userdata)
 {
-	g_main_loop_quit(mainloop);
-	g_warning("Forced to Kill");
-	passed = FALSE;
-	return FALSE;
+	if (watchdog_hit == FALSE) {
+		g_main_loop_quit(mainloop);
+		g_warning("Forced to Kill");
+		passed = FALSE;
+		return FALSE;
+	}
+	watchdog_hit = FALSE;
+	return TRUE;
 }
 
 gint
@@ -198,53 +104,11 @@ main (gint argc, gchar * argv[])
 		return 1;
 	}
 
-	DBusGProxy * props = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                                     ":1.0",
-	                                                     "/org/ayatana/NotificationItem",
-	                                                     DBUS_INTERFACE_PROPERTIES,
-	                                                     &error);
-	if (error != NULL) {
-		g_error("Unable to get property proxy: %s", error->message);
-		return 1;
-	}
+	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
+	dbus_bus_add_match(dbus_g_connection_get_connection(session_bus), "type='signal',interface='" NOTIFICATION_ITEM_DBUS_IFACE "',member='NewStatus'", NULL);
 
-	dbus_g_proxy_begin_call (props,
-	                         "Get",
-	                         prop_id_cb,
-	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
-	                         G_TYPE_STRING, "Id",
-	                         G_TYPE_INVALID);
-	dbus_g_proxy_begin_call (props,
-	                         "Get",
-	                         prop_category_cb,
-	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
-	                         G_TYPE_STRING, "Category",
-	                         G_TYPE_INVALID);
-	dbus_g_proxy_begin_call (props,
-	                         "Get",
-	                         prop_status_cb,
-	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
-	                         G_TYPE_STRING, "Status",
-	                         G_TYPE_INVALID);
-	dbus_g_proxy_begin_call (props,
-	                         "Get",
-	                         prop_icon_name_cb,
-	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
-	                         G_TYPE_STRING, "IconName",
-	                         G_TYPE_INVALID);
-	dbus_g_proxy_begin_call (props,
-	                         "Get",
-	                         prop_attention_icon_name_cb,
-	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
-	                         G_TYPE_STRING, "AttentionIconName",
-	                         G_TYPE_INVALID);
-
-	g_timeout_add_seconds(2, kill_func, NULL);
+	watchdog_hit = TRUE;
+	g_timeout_add(100, kill_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
