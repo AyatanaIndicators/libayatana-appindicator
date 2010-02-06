@@ -25,6 +25,24 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "libdbusmenu-glib/menuitem.h"
 
 GMainLoop * mainloop = NULL;
+static gboolean active = TRUE;
+
+static void
+activate_clicked_cb (GtkWidget *widget, gpointer data)
+{
+	AppIndicator * ci = APP_INDICATOR(data);
+
+	if (active) {
+		app_indicator_set_status (ci, APP_INDICATOR_STATUS_ATTENTION);
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "I'm okay now");
+		active = FALSE;
+	} else {
+		app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Get Attention");
+		active = TRUE;
+	}
+
+}
 
 static void
 item_clicked_cb (GtkWidget *widget, gpointer data)
@@ -96,6 +114,12 @@ main (int argc, char ** argv)
         item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
         g_signal_connect (item, "activate",
                           G_CALLBACK (image_clicked_cb), NULL);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+
+        item = gtk_menu_item_new_with_label ("Get Attention");
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (activate_clicked_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 
