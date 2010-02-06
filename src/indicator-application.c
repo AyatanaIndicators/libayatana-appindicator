@@ -95,7 +95,9 @@ static void indicator_application_dispose    (GObject *object);
 static void indicator_application_finalize   (GObject *object);
 static GList * get_entries (IndicatorObject * io);
 static guint get_location (IndicatorObject * io, IndicatorObjectEntry * entry);
-static void connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
+void connection_changed (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application);
+static void connected (IndicatorApplication * application);
+static void disconnected (IndicatorApplication * application);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
@@ -149,7 +151,7 @@ indicator_application_init (IndicatorApplication *self)
 	priv->theme_dirs = NULL;
 
 	priv->sm = indicator_service_manager_new(INDICATOR_APPLICATION_DBUS_ADDR);	
-	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connected), self);
+	g_signal_connect(G_OBJECT(priv->sm), INDICATOR_SERVICE_MANAGER_SIGNAL_CONNECTION_CHANGE, G_CALLBACK(connection_changed), self);
 
 	priv->applications = NULL;
 
@@ -205,8 +207,23 @@ indicator_application_finalize (GObject *object)
 	return;
 }
 
+/* Responds to connection change event from the service manager and
+   splits it into two. */
 void
-connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplication * application)
+connection_changed (IndicatorServiceManager * sm, gboolean connect, IndicatorApplication * application)
+{
+	if (connect) {
+		connected(application);
+	} else {
+		disconnected(application);
+	}
+	return;
+}
+
+/* Brings up the connection to a service that has just come onto the
+   bus, or is atleast new to us. */
+void
+connected (IndicatorApplication * application)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	g_debug("Connected to Application Indicator Service.");
@@ -274,6 +291,14 @@ connected (IndicatorServiceManager * sm, gboolean connected, IndicatorApplicatio
 	org_ayatana_indicator_application_service_get_applications_async(priv->service_proxy,
 	                                                                 get_applications,
 	                                                                 application);
+
+	return;
+}
+
+static void
+disconnected (IndicatorApplication * application)
+{
+
 
 	return;
 }
