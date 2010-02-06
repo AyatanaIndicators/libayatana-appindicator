@@ -254,7 +254,7 @@ connected (IndicatorApplication * application)
 		}
 	}
 
-	if (priv->service_proxy) {
+	if (priv->service_proxy == NULL) {
 	/* Build the service proxy */
 		priv->service_proxy = dbus_g_proxy_new_for_name(priv->bus,
 		                                                INDICATOR_APPLICATION_DBUS_ADDR,
