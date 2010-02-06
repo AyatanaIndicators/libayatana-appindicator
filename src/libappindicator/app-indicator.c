@@ -544,9 +544,9 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 			if (priv->menuservice != NULL) {
 				GValue strval = {0};
 				g_value_init(&strval, G_TYPE_STRING);
-				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strvalue);
-				g_value_set_boxed(value, g_value_get_string(&strvalue));
-				g_value_unset(&strvalue);
+				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+				g_value_set_boxed(value, g_value_get_string(&strval));
+				g_value_unset(&strval);
 			}
 			break;
 

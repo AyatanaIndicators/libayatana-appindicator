@@ -222,7 +222,10 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
-	app->menu = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU));
+
+	GValue * menuval = (GValue *)g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU);
+	app->menu = g_strdup((gchar *)g_value_get_boxed(menuval));
+
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_AICON_NAME) != NULL) {
 		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 	}
