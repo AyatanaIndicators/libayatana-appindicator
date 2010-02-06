@@ -102,6 +102,7 @@ static void connected (IndicatorApplication * application);
 static void disconnected (IndicatorApplication * application);
 static void disconnected_helper (gpointer data, gpointer user_data);
 static gboolean disconnected_kill (gpointer user_data);
+static void disconnected_kill_helper (gpointer data, gpointer user_data);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
@@ -325,7 +326,8 @@ disconnected (IndicatorApplication * application)
 static void
 disconnected_helper (gpointer data, gpointer user_data)
 {
-	
+	ApplicationEntry * entry = (ApplicationEntry *)data;
+	entry->old_service = TRUE;
 	return;
 }
 
@@ -336,8 +338,21 @@ disconnected_kill (gpointer user_data)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(user_data);
 	priv->disconnect_kill = 0;
-
+	g_list_foreach(priv->applications, disconnected_kill_helper, NULL);
 	return FALSE;
+}
+
+/* Looks for entries that are still associated with the 
+   old service and removes them. */
+static void
+disconnected_kill_helper (gpointer data, gpointer user_data)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(user_data);
+	ApplicationEntry * entry = (ApplicationEntry *)data;
+	if (entry->old_service) {
+		application_removed(NULL, g_list_index(priv->applications, data), INDICATOR_APPLICATION(user_data));
+	}
+	return;
 }
 
 /* Goes through the list of applications that we're maintaining and
