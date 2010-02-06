@@ -1,3 +1,10 @@
+indicator-application (0.0.11-0ubuntu1~ppa2~aicon1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fixing grabbing of attention icon
+
+ -- Ted Gould <ted@ubuntu.com>  Sat, 06 Feb 2010 10:07:40 -0800
+
 indicator-application (0.0.11-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.0.11
