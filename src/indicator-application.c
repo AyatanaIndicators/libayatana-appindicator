@@ -86,6 +86,8 @@ struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
 	gchar * icon_path;
 	gboolean old_service;
+	gchar * dbusobject;
+	gchar * dbusaddress;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -388,6 +390,22 @@ get_location (IndicatorObject * io, IndicatorObjectEntry * entry)
 	return g_list_index(priv->applications, entry);
 }
 
+/* Searching for ApplicationEntries where the dbusobject and
+   address are the same. */
+static gint
+application_added_search (gconstpointer a, gconstpointer b)
+{
+	ApplicationEntry * appa = (ApplicationEntry *)a;
+	ApplicationEntry * appb = (ApplicationEntry *)b;
+
+	if (g_strcmp0(appa->dbusaddress, appb->dbusaddress) == 0 &&
+			g_strcmp0(appa->dbusobject, appb->dbusobject) == 0) {
+		return 0;
+	}
+
+	return -1;
+}
+
 /* Here we respond to new applications by building up the
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
@@ -396,6 +414,20 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 {
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+
+	/* First search to see if we already have this entry */
+	ApplicationEntry searchapp;
+	searchapp.dbusaddress = (gchar *)dbusaddress;  /* Casting off const, but it's okay, we're not changing it */
+	searchapp.dbusobject = (gchar *)dbusobject;    /* Casting off const, but it's okay, we're not changing it */
+
+	GList * searchpointer = g_list_find_custom(priv->applications, &searchapp, application_added_search);
+	if (searchpointer != NULL) {
+		g_debug("\t...Already have that one.");
+		ApplicationEntry * app = (ApplicationEntry *)searchpointer->data;
+		app->old_service = FALSE;
+		return;
+	}
+
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
 	app->old_service = FALSE;
@@ -404,6 +436,9 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 		app->icon_path = g_strdup(icon_path);
 		theme_dir_ref(application, icon_path);
 	}
+
+	app->dbusaddress = g_strdup(dbusaddress);
+	app->dbusobject = g_strdup(dbusobject);
 
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
@@ -451,6 +486,12 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	if (app->icon_path != NULL) {
 		theme_dir_unref(application, app->icon_path);
 		g_free(app->icon_path);
+	}
+	if (app->dbusaddress != NULL) {
+		g_free(app->dbusaddress);
+	}
+	if (app->dbusobject != NULL) {
+		g_free(app->dbusobject);
 	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
