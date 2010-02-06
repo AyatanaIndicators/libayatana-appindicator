@@ -241,50 +241,52 @@ connected (IndicatorApplication * application)
 		}
 	}
 
+	if (priv->service_proxy) {
 	/* Build the service proxy */
-	priv->service_proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
-	                                                      INDICATOR_APPLICATION_DBUS_ADDR,
-	                                                      INDICATOR_APPLICATION_DBUS_OBJ,
-	                                                      INDICATOR_APPLICATION_DBUS_IFACE,
-	                                                      &error);
+		priv->service_proxy = dbus_g_proxy_new_for_name(priv->bus,
+		                                                INDICATOR_APPLICATION_DBUS_ADDR,
+		                                                INDICATOR_APPLICATION_DBUS_OBJ,
+		                                                INDICATOR_APPLICATION_DBUS_IFACE,
+		                                                &error);
 
-	/* Set up proxy signals */
-	g_debug("Setup proxy signals");
-	dbus_g_proxy_add_signal(priv->service_proxy,
-	                        "ApplicationAdded",
-	                        G_TYPE_STRING,
-	                        G_TYPE_INT,
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_STRING,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->service_proxy,
-	                        "ApplicationRemoved",
-	                        G_TYPE_INT,
-	                        G_TYPE_INVALID);
-	dbus_g_proxy_add_signal(priv->service_proxy,
-	                        "ApplicationIconChanged",
-	                        G_TYPE_INT,
-	                        G_TYPE_STRING,
-	                        G_TYPE_INVALID);
+		/* Set up proxy signals */
+		g_debug("Setup proxy signals");
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationAdded",
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationRemoved",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationIconChanged",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
 
-	/* Connect to them */
-	g_debug("Connect to them.");
-	dbus_g_proxy_connect_signal(priv->service_proxy,
-	                            "ApplicationAdded",
-	                            G_CALLBACK(application_added),
-	                            application,
-	                            NULL /* Disconnection Signal */);
-	dbus_g_proxy_connect_signal(priv->service_proxy,
-	                            "ApplicationRemoved",
-	                            G_CALLBACK(application_removed),
-	                            application,
-	                            NULL /* Disconnection Signal */);
-	dbus_g_proxy_connect_signal(priv->service_proxy,
-	                            "ApplicationIconChanged",
-	                            G_CALLBACK(application_icon_changed),
-	                            application,
-	                            NULL /* Disconnection Signal */);
+		/* Connect to them */
+		g_debug("Connect to them.");
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationAdded",
+	                            	G_CALLBACK(application_added),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationRemoved",
+	                            	G_CALLBACK(application_removed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationIconChanged",
+	                            	G_CALLBACK(application_icon_changed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+	}
 
 	/* Query it for existing applications */
 	g_debug("Request current apps");
