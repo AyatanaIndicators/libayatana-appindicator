@@ -169,7 +169,7 @@ test-libappindicator-status: test-libappindicator-status-client test-libappindic
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-status-client --task-name Client --task ./test-libappindicator-status-server --task-name Server --ignore-return >> test-libappindicator-status
 	@chmod +x test-libappindicator-status
 
-TESTS += test-libappindicator-dbus
+TESTS += test-libappindicator-status
 
 #########################################
 ##  test-simple-app
