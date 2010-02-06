@@ -330,6 +330,7 @@ app_indicator_init (AppIndicator *self)
 		g_error_free(error);
 		return;
 	}
+	dbus_g_connection_ref(priv->connection);
 
 	dbus_g_connection_register_g_object(priv->connection,
 	                                    DEFAULT_ITEM_PATH,
@@ -384,6 +385,11 @@ app_indicator_dispose (GObject *object)
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
+	}
+
+	if (priv->connection != NULL) {
+		dbus_g_connection_unref(priv->connection);
+		priv->connection = NULL;
 	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->dispose (object);
