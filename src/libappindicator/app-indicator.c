@@ -330,6 +330,7 @@ app_indicator_init (AppIndicator *self)
 		g_error_free(error);
 		return;
 	}
+	dbus_g_connection_ref(priv->connection);
 
 	dbus_g_connection_register_g_object(priv->connection,
 	                                    DEFAULT_ITEM_PATH,
@@ -384,6 +385,11 @@ app_indicator_dispose (GObject *object)
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
+	}
+
+	if (priv->connection != NULL) {
+		dbus_g_connection_unref(priv->connection);
+		priv->connection = NULL;
 	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->dispose (object);
@@ -684,6 +690,33 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 	return;
 }
 
+/* This is an idle function to create the proxy.  This is mostly
+   because start_fallback_timer can get called in the distruction
+   of a proxy and thus the proxy manager gets confused when creating
+   a new proxy as part of destroying an old one.  This function being
+   on idle means that we'll just do it outside of the same stack where
+   the previous proxy is being destroyed. */
+static gboolean
+setup_name_owner_proxy (gpointer data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+
+	if (priv->dbus_proxy == NULL) {
+		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
+		                                             DBUS_SERVICE_DBUS,
+		                                             DBUS_PATH_DBUS,
+		                                             DBUS_INTERFACE_DBUS);
+		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+		                        G_TYPE_INVALID);
+		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
+		                            G_CALLBACK(dbus_owner_change), data, NULL);
+	}
+
+	return FALSE;
+}
+
 /* A function that will start the fallback timer if it's not
    already started.  It sets up the DBus watcher to see if
    there is a change.  Also, provides an override mode for cases
@@ -701,15 +734,8 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 	}
 
 	if (priv->dbus_proxy == NULL) {
-		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
-		                                             DBUS_SERVICE_DBUS,
-		                                             DBUS_PATH_DBUS,
-		                                             DBUS_INTERFACE_DBUS);
-		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-		                        G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                            G_CALLBACK(dbus_owner_change), self, NULL);
+		/* NOTE: Read the comment on setup_name_owner_proxy */
+		g_idle_add(setup_name_owner_proxy, self);
 	}
 
 	if (disable_timeout) {

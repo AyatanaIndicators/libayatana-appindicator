@@ -1,3 +1,13 @@
+indicator-application (0.0.11-0ubuntu1~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Handling the service restarting better by removing the icons
+      after a small delay to ensure they don't return.
+    * Fixing a crash where a proxy was created while the previous
+      one was being destroyed.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 09:32:07 -0600
+
 indicator-application (0.0.11-0ubuntu1~ppa2) lucid; urgency=low
 
   * Upstream Merge
