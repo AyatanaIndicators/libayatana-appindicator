@@ -1,4 +1,4 @@
-indicator-application (0.0.12-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.12-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.0.12
     * Handling the service restarting better by removing the icons
@@ -9,7 +9,7 @@ indicator-application (0.0.12-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Adding status changing to the example application
     * Adding a test for status changing getting sent over DBus.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 09:56:35 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 10:01:42 -0600
 
 indicator-application (0.0.11-0ubuntu1) lucid; urgency=low
 
