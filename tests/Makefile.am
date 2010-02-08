@@ -3,6 +3,8 @@ check_PROGRAMS = \
 	test-libappindicator \
 	test-libappindicator-dbus-client \
 	test-libappindicator-dbus-server \
+	test-libappindicator-status-client \
+	test-libappindicator-status-server \
 	test-libappindicator-fallback-watcher \
 	test-libappindicator-fallback-item \
 	test-simple-app
@@ -59,6 +61,40 @@ test_libappindicator_dbus_server_CFLAGS = \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_server_LDADD = \
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libappindicator.la
+
+#########################################
+##  test-libappindicator-status-client
+#########################################
+
+test_libappindicator_status_client_SOURCES = \
+	test-defines.h \
+	test-libappindicator-status-client.c
+
+test_libappindicator_status_client_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_libappindicator_status_client_LDADD = \
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libappindicator.la
+
+#########################################
+##  test-libappindicator-status-server
+#########################################
+
+test_libappindicator_status_server_SOURCES = \
+	test-defines.h \
+	test-libappindicator-status-server.c
+
+test_libappindicator_status_server_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_libappindicator_status_server_LDADD = \
 	$(INDICATOR_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
@@ -127,6 +163,13 @@ test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator
 	@chmod +x test-libappindicator-dbus
 
 TESTS += test-libappindicator-dbus
+
+test-libappindicator-status: test-libappindicator-status-client test-libappindicator-status-server Makefile.am
+	@echo "#!/bin/sh" > test-libappindicator-status
+	@echo $(DBUS_RUNNER) --task ./test-libappindicator-status-client --task-name Client --task ./test-libappindicator-status-server --task-name Server --ignore-return >> test-libappindicator-status
+	@chmod +x test-libappindicator-status
+
+TESTS += test-libappindicator-status
 
 #########################################
 ##  test-simple-app

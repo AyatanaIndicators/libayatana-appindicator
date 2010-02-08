@@ -90,3 +90,6 @@ src/libappindicator/appindicator-0.1.pc
 tests/test-libappindicator-fallback-item
 tests/test-libappindicator-fallback-watcher
 tests/test-libappindicator-fallback
+tests/test-libappindicator-status
+tests/test-libappindicator-status-client
+tests/test-libappindicator-status-server
