@@ -332,11 +332,7 @@ app_indicator_init (AppIndicator *self)
 	}
 	dbus_g_connection_ref(priv->connection);
 
-	dbus_g_connection_register_g_object(priv->connection,
-	                                    DEFAULT_ITEM_PATH,
-	                                    G_OBJECT(self));
-
-        self->priv = priv;
+	self->priv = priv;
 
 	return;
 }
@@ -583,6 +579,12 @@ check_connect (AppIndicator *self)
 	if (priv->menu == NULL) return;
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
+
+	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->id);
+	dbus_g_connection_register_g_object(priv->connection,
+	                                    path,
+	                                    G_OBJECT(self));
+	g_free(path);
 
 	GError * error = NULL;
 	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
