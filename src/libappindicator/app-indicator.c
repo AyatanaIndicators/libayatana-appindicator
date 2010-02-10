@@ -215,10 +215,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
 
         g_object_class_install_property(object_class,
                                         PROP_MENU,
-                                        g_param_spec_string (PROP_MENU_S,
+                                        g_param_spec_boxed (PROP_MENU_S,
                                                              "The object path of the menu on DBus.",
                                                              "A method for getting the menu path as a string for DBus.",
-                                                             NULL,
+                                                             DBUS_TYPE_G_OBJECT_PATH,
                                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (object_class,
@@ -547,14 +547,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
         case PROP_MENU:
-          if (G_VALUE_HOLDS_STRING(value)) {
-            if (priv->menuservice != NULL) {
-              g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, value);
-            }
-          } else {
-            WARN_BAD_TYPE(PROP_MENU_S, value);
-          }
-          break;
+			if (priv->menuservice != NULL) {
+				GValue strval = {0};
+				g_value_init(&strval, G_TYPE_STRING);
+				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+				g_value_set_boxed(value, g_value_get_string(&strval));
+				g_value_unset(&strval);
+			}
+			break;
 
         case PROP_CONNECTED:
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
