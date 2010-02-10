@@ -224,7 +224,13 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 
 	GValue * menuval = (GValue *)g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_MENU);
-	app->menu = g_strdup((gchar *)g_value_get_boxed(menuval));
+	if (G_VALUE_TYPE(menuval) == G_TYPE_STRING) {
+		/* This is here to support an older version where we
+		   were using strings instea of object paths. */
+		app->menu = g_value_dup_string(menuval);
+	} else {
+		app->menu = g_strdup((gchar *)g_value_get_boxed(menuval));
+	}
 
 	if (g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_AICON_NAME) != NULL) {
 		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
