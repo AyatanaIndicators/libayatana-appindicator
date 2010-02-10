@@ -59,6 +59,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 struct _AppIndicatorPrivate {
 	/* Properties */
 	gchar                *id;
+	gchar                *clean_id;
 	AppIndicatorCategory  category;
 	AppIndicatorStatus    status;
 	gchar                *icon_name;
@@ -306,6 +307,7 @@ app_indicator_init (AppIndicator *self)
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	priv->id = NULL;
+	priv->clean_id = NULL;
 	priv->category = APP_INDICATOR_CATEGORY_OTHER;
 	priv->status = APP_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
@@ -406,6 +408,11 @@ app_indicator_finalize (GObject *object)
 	if (priv->id != NULL) {
 		g_free(priv->id);
 		priv->id = NULL;
+	}
+
+	if (priv->clean_id != NULL) {
+		g_free(priv->clean_id);
+		priv->clean_id = NULL;
 	}
 
 	if (priv->icon_name != NULL) {
@@ -578,11 +585,18 @@ check_connect (AppIndicator *self)
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
 
-	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->id);
+	priv->clean_id = g_strdup(priv->id);
+	gchar * cleaner;
+	for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
+		if (!g_ascii_isalnum(*cleaner)) {
+			*cleaner = '_';
+		}
+	}
+
+	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 	dbus_g_connection_register_g_object(priv->connection,
 	                                    path,
 	                                    G_OBJECT(self));
-	g_free(path);
 
 	GError * error = NULL;
 	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
@@ -595,11 +609,13 @@ check_connect (AppIndicator *self)
 		   it's not a warning anymore. */
 		g_error_free(error);
 		start_fallback_timer(self, FALSE);
+		g_free(path);
 		return;
 	}
 
 	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
+	g_free(path);
 
 	return;
 }
@@ -1220,7 +1236,7 @@ setup_dbusmenu (AppIndicator *self)
                         root);
 
   if (priv->menuservice == NULL) {
-    gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->id);
+    gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
     priv->menuservice = dbusmenu_server_new (path);
 	g_free(path);
   }
