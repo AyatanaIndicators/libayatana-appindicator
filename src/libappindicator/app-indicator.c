@@ -115,9 +115,8 @@ enum {
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
-/* Default Paths */
+/* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
-#define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
 
 /* More constants */
 #define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
@@ -1221,7 +1220,9 @@ setup_dbusmenu (AppIndicator *self)
                         root);
 
   if (priv->menuservice == NULL) {
-    priv->menuservice = dbusmenu_server_new (DEFAULT_MENU_PATH);
+    gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->id);
+    priv->menuservice = dbusmenu_server_new (path);
+	g_free(path);
   }
 
   dbusmenu_server_set_root (priv->menuservice, root);
