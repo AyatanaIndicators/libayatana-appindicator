@@ -454,6 +454,14 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 
 			priv->id = g_strdup (g_value_get_string (value));
 
+			priv->clean_id = g_strdup(priv->id);
+			gchar * cleaner;
+			for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
+				if (!g_ascii_isalnum(*cleaner)) {
+					*cleaner = '_';
+				}
+			}
+
 			check_connect (self);
 			break;
 
@@ -584,14 +592,6 @@ check_connect (AppIndicator *self)
 	if (priv->menu == NULL) return;
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
-
-	priv->clean_id = g_strdup(priv->id);
-	gchar * cleaner;
-	for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
-		if (!g_ascii_isalnum(*cleaner)) {
-			*cleaner = '_';
-		}
-	}
 
 	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 	dbus_g_connection_register_g_object(priv->connection,
@@ -1262,6 +1262,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (GTK_IS_MENU (menu));
+  g_return_if_fail (self->priv->clean_id != NULL);
 
   priv = self->priv;
 
