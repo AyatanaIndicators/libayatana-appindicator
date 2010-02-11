@@ -59,6 +59,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 struct _AppIndicatorPrivate {
 	/* Properties */
 	gchar                *id;
+	gchar                *clean_id;
 	AppIndicatorCategory  category;
 	AppIndicatorStatus    status;
 	gchar                *icon_name;
@@ -115,9 +116,8 @@ enum {
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
-/* Default Paths */
+/* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
-#define DEFAULT_MENU_PATH   "/org/ayatana/NotificationItem/Menu"
 
 /* More constants */
 #define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
@@ -215,10 +215,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
 
         g_object_class_install_property(object_class,
                                         PROP_MENU,
-                                        g_param_spec_string (PROP_MENU_S,
+                                        g_param_spec_boxed (PROP_MENU_S,
                                                              "The object path of the menu on DBus.",
                                                              "A method for getting the menu path as a string for DBus.",
-                                                             NULL,
+                                                             DBUS_TYPE_G_OBJECT_PATH,
                                                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (object_class,
@@ -307,6 +307,7 @@ app_indicator_init (AppIndicator *self)
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
 
 	priv->id = NULL;
+	priv->clean_id = NULL;
 	priv->category = APP_INDICATOR_CATEGORY_OTHER;
 	priv->status = APP_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
@@ -332,11 +333,7 @@ app_indicator_init (AppIndicator *self)
 	}
 	dbus_g_connection_ref(priv->connection);
 
-	dbus_g_connection_register_g_object(priv->connection,
-	                                    DEFAULT_ITEM_PATH,
-	                                    G_OBJECT(self));
-
-        self->priv = priv;
+	self->priv = priv;
 
 	return;
 }
@@ -413,6 +410,11 @@ app_indicator_finalize (GObject *object)
 		priv->id = NULL;
 	}
 
+	if (priv->clean_id != NULL) {
+		g_free(priv->clean_id);
+		priv->clean_id = NULL;
+	}
+
 	if (priv->icon_name != NULL) {
 		g_free(priv->icon_name);
 		priv->icon_name = NULL;
@@ -445,16 +447,23 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 
         switch (prop_id) {
         case PROP_ID:
-          if (priv->id != NULL) {
-            g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
-            g_free (priv->id);
-            priv->id = NULL;
-          }
+			if (priv->id != NULL) {
+				g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
+				break;
+			}
 
-          priv->id = g_strdup (g_value_get_string (value));
+			priv->id = g_strdup (g_value_get_string (value));
 
-          check_connect (self);
-          break;
+			priv->clean_id = g_strdup(priv->id);
+			gchar * cleaner;
+			for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
+				if (!g_ascii_isalnum(*cleaner)) {
+					*cleaner = '_';
+				}
+			}
+
+			check_connect (self);
+			break;
 
         case PROP_CATEGORY:
           enum_val = g_enum_get_value_by_nick ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY),
@@ -547,14 +556,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
         case PROP_MENU:
-          if (G_VALUE_HOLDS_STRING(value)) {
-            if (priv->menuservice != NULL) {
-              g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, value);
-            }
-          } else {
-            WARN_BAD_TYPE(PROP_MENU_S, value);
-          }
-          break;
+			if (priv->menuservice != NULL) {
+				GValue strval = {0};
+				g_value_init(&strval, G_TYPE_STRING);
+				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+				g_value_set_boxed(value, g_value_get_string(&strval));
+				g_value_unset(&strval);
+			}
+			break;
 
         case PROP_CONNECTED:
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
@@ -584,6 +593,11 @@ check_connect (AppIndicator *self)
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
 
+	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
+	dbus_g_connection_register_g_object(priv->connection,
+	                                    path,
+	                                    G_OBJECT(self));
+
 	GError * error = NULL;
 	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
 	                                                      NOTIFICATION_WATCHER_DBUS_ADDR,
@@ -595,11 +609,13 @@ check_connect (AppIndicator *self)
 		   it's not a warning anymore. */
 		g_error_free(error);
 		start_fallback_timer(self, FALSE);
+		g_free(path);
 		return;
 	}
 
 	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, DEFAULT_ITEM_PATH, register_service_cb, self);
+	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
+	g_free(path);
 
 	return;
 }
@@ -1220,7 +1236,9 @@ setup_dbusmenu (AppIndicator *self)
                         root);
 
   if (priv->menuservice == NULL) {
-    priv->menuservice = dbusmenu_server_new (DEFAULT_MENU_PATH);
+    gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
+    priv->menuservice = dbusmenu_server_new (path);
+	g_free(path);
   }
 
   dbusmenu_server_set_root (priv->menuservice, root);
@@ -1244,6 +1262,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (GTK_IS_MENU (menu));
+  g_return_if_fail (self->priv->clean_id != NULL);
 
   priv = self->priv;
 

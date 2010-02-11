@@ -158,14 +158,16 @@ DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libappindicator-tests-gtester
 DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
 
 test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator-dbus-server Makefile.am
-	@echo "#!/bin/sh" > test-libappindicator-dbus
+	@echo "#!/bin/bash" > test-libappindicator-dbus
+	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-dbus-client --task-name Client --task ./test-libappindicator-dbus-server --task-name Server --ignore-return >> test-libappindicator-dbus
 	@chmod +x test-libappindicator-dbus
 
 TESTS += test-libappindicator-dbus
 
 test-libappindicator-status: test-libappindicator-status-client test-libappindicator-status-server Makefile.am
-	@echo "#!/bin/sh" > test-libappindicator-status
+	@echo "#!/bin/bash" > test-libappindicator-status
+	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-status-client --task-name Client --task ./test-libappindicator-status-server --task-name Server --ignore-return >> test-libappindicator-status
 	@chmod +x test-libappindicator-status
 
