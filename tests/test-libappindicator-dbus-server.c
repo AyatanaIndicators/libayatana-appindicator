@@ -23,7 +23,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
 #include "test-defines.h"
 
@@ -39,13 +39,19 @@ kill_func (gpointer userdata)
 gint
 main (gint argc, gchar * argv[])
 {
-	g_type_init();
+	gtk_init(&argc, &argv);
 
 	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
 	AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
-        app_indicator_set_status (ci, TEST_STATE);
-        app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
+	app_indicator_set_status (ci, TEST_STATE);
+	app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
+
+	GtkMenu * menu = GTK_MENU(gtk_menu_new());
+	GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Label"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(item));
+
+	app_indicator_set_menu(ci, menu);
 
 	g_timeout_add_seconds(2, kill_func, NULL);
 

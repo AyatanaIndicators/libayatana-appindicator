@@ -55,7 +55,7 @@ toggle (gpointer userdata)
 gint
 main (gint argc, gchar * argv[])
 {
-	g_type_init();
+	gtk_init(&argc, &argv);
 
 	g_usleep(100000);
 
@@ -63,6 +63,12 @@ main (gint argc, gchar * argv[])
 
 	AppIndicator * ci = app_indicator_new ("my-id", "my-icon-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 	app_indicator_set_attention_icon (ci, "my-attention-icon");
+
+	GtkMenu * menu = GTK_MENU(gtk_menu_new());
+	GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Label"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(item));
+
+	app_indicator_set_menu(ci, menu);
 
 	g_timeout_add(50, toggle, ci);
 
