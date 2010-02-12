@@ -69,10 +69,17 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
+item_clicked_2_cb (GtkWidget *widget, GtkWidget *old)
+{
+  gtk_widget_set_sensitive (old, FALSE);
+}
+
+static void
 append_submenu (GtkWidget *item)
 {
   GtkWidget *menu;
   GtkWidget *mi;
+  GtkWidget *prev_mi;
 
   menu = gtk_menu_new ();
 
@@ -81,10 +88,11 @@ append_submenu (GtkWidget *item)
   g_signal_connect (mi, "activate",
                     G_CALLBACK (item_clicked_cb), "Sub 1");
 
+  prev_mi = mi;
   mi = gtk_menu_item_new_with_label ("Sub 2");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
   g_signal_connect (mi, "activate",
-                    G_CALLBACK (item_clicked_cb), "Sub 2");
+                    G_CALLBACK (item_clicked_2_cb), prev_mi);
 
   mi = gtk_menu_item_new_with_label ("Sub 3");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);

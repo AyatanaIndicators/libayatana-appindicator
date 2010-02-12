@@ -1301,6 +1301,10 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
   priv->menu = GTK_WIDGET (menu);
   g_object_ref (priv->menu);
 
+  setup_dbusmenu (self);
+
+  check_connect (self);
+
   g_signal_connect (menu,
                     "add",
                     G_CALLBACK (client_menu_changed),
@@ -1309,10 +1313,6 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
                     "remove",
                     G_CALLBACK (client_menu_changed),
                     self);
-
-  setup_dbusmenu (self);
-
-  check_connect (self);
 }
 
 /**
