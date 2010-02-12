@@ -447,23 +447,23 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 
         switch (prop_id) {
         case PROP_ID:
-			if (priv->id != NULL) {
-				g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
-				break;
-			}
+          if (priv->id != NULL) {
+            g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
+            break;
+          }
 
-			priv->id = g_strdup (g_value_get_string (value));
+          priv->id = g_strdup (g_value_get_string (value));
 
-			priv->clean_id = g_strdup(priv->id);
-			gchar * cleaner;
-			for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
-				if (!g_ascii_isalnum(*cleaner)) {
-					*cleaner = '_';
-				}
-			}
+          priv->clean_id = g_strdup(priv->id);
+          gchar * cleaner;
+          for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
+            if (!g_ascii_isalnum(*cleaner)) {
+              *cleaner = '_';
+            }
+          }
 
-			check_connect (self);
-			break;
+          check_connect (self);
+          break;
 
         case PROP_CATEGORY:
           enum_val = g_enum_get_value_by_nick ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY),
