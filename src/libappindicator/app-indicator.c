@@ -506,11 +506,11 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
         break;
 
         case PROP_ICON_THEME_PATH:
-			if (priv->icon_path != NULL) {
-				g_free(priv->icon_path);
-			}
-			priv->icon_path = g_value_dup_string(value);
-			break;
+          if (priv->icon_path != NULL) {
+            g_free(priv->icon_path);
+          }
+          priv->icon_path = g_value_dup_string(value);
+          break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -556,14 +556,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
         case PROP_MENU:
-			if (priv->menuservice != NULL) {
-				GValue strval = {0};
-				g_value_init(&strval, G_TYPE_STRING);
-				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
-				g_value_set_boxed(value, g_value_get_string(&strval));
-				g_value_unset(&strval);
-			}
-			break;
+          if (priv->menuservice != NULL) {
+            GValue strval = { 0 };
+            g_value_init(&strval, G_TYPE_STRING);
+            g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+            g_value_set_boxed(value, g_value_get_string(&strval));
+            g_value_unset(&strval);
+          }
+          break;
 
         case PROP_CONNECTED:
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
@@ -1127,9 +1127,9 @@ widget_notify_cb (GtkWidget  *widget,
     }
   else if (pspec->name == g_intern_static_string ("visible"))
     {
-      dbusmenu_menuitem_property_set (child,
-                                      DBUSMENU_MENUITEM_PROP_VISIBLE,
-                                      gtk_widget_get_visible (widget));
+      dbusmenu_menuitem_property_set_bool (child,
+                                           DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                           gtk_widget_get_visible (widget));
     }
 }
 
