@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu2) lucid; urgency=low
+
+  * Backported lp:~bratsche/indicator-application/submenus to make the submenus
+    working in the application indicators (lp: #519625)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 12 Feb 2010 17:12:58 +0100
+
 indicator-application (0.0.13-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.13
