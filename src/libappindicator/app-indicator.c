@@ -1125,6 +1125,12 @@ widget_notify_cb (GtkWidget  *widget,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
     }
+  else if (pspec->name == g_intern_static_string ("visible"))
+    {
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                      gtk_widget_get_visible (widget));
+    }
 }
 
 static void
@@ -1259,14 +1265,22 @@ setup_dbusmenu (AppIndicator *self)
   return;
 }
 
+static void
+client_menu_changed (GtkWidget    *widget,
+                     GtkWidget    *child,
+                     AppIndicator *indicator)
+{
+  setup_dbusmenu (indicator);
+}
+
 /**
         app_indicator_set_menu:
         @self: The #AppIndicator
         @menu: A #GtkMenu to set
 
-		Sets the menu that should be shown when the Application Indicator
-		is clicked on in the panel.  An application indicator will not
-		be rendered unless it has a menu.
+        Sets the menu that should be shown when the Application Indicator
+        is clicked on in the panel.  An application indicator will not
+        be rendered unless it has a menu.
 **/
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
@@ -1286,6 +1300,15 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
   priv->menu = GTK_WIDGET (menu);
   g_object_ref (priv->menu);
+
+  g_signal_connect (menu,
+                    "add",
+                    G_CALLBACK (client_menu_changed),
+                    self);
+  g_signal_connect (menu,
+                    "remove",
+                    G_CALLBACK (client_menu_changed),
+                    self);
 
   setup_dbusmenu (self);
 
