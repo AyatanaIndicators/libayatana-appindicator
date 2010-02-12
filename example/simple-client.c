@@ -57,7 +57,6 @@ toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
 {
   GtkWidget *target = (GtkWidget *)data;
 
-  gtk_menu_item_set_label (GTK_MENU_ITEM (target), "modified!!");
   gtk_widget_set_sensitive (target, !GTK_WIDGET_IS_SENSITIVE (target));
 }
 
@@ -66,12 +65,6 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
 {
   gtk_image_set_from_stock (GTK_IMAGE (GTK_IMAGE_MENU_ITEM (widget)->image),
                             GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
-}
-
-static void
-item_clicked_2_cb (GtkWidget *widget, GtkWidget *old)
-{
-  gtk_widget_set_sensitive (old, FALSE);
 }
 
 static void
@@ -92,7 +85,7 @@ append_submenu (GtkWidget *item)
   mi = gtk_menu_item_new_with_label ("Sub 2");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
   g_signal_connect (mi, "activate",
-                    G_CALLBACK (item_clicked_2_cb), prev_mi);
+                    G_CALLBACK (toggle_sensitivity_cb), prev_mi);
 
   mi = gtk_menu_item_new_with_label ("Sub 3");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
