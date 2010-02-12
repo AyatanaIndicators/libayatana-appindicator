@@ -1076,7 +1076,10 @@ update_stock_item (DbusmenuMenuitem *menuitem,
                                   DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                   image->data.stock.stock_id);
 
-  if (stock.label != NULL)
+  const gchar * label = dbusmenu_menuitem_property_get (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL)
+  
+  if (stock.label != NULL && label != NULL)
     {
       dbusmenu_menuitem_property_set (menuitem,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
