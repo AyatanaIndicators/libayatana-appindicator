@@ -68,6 +68,34 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
                             GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 }
 
+static void
+append_submenu (GtkWidget *item)
+{
+  GtkWidget *menu;
+  GtkWidget *mi;
+
+  menu = gtk_menu_new ();
+
+  mi = gtk_menu_item_new_with_label ("Sub 1");
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+  g_signal_connect (mi, "activate",
+                    G_CALLBACK (item_clicked_cb), "Sub 1");
+
+  mi = gtk_menu_item_new_with_label ("Sub 2");
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+  g_signal_connect (mi, "activate",
+                    G_CALLBACK (item_clicked_cb), "Sub 2");
+
+  mi = gtk_menu_item_new_with_label ("Sub 3");
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
+  g_signal_connect (mi, "activate",
+                    G_CALLBACK (item_clicked_cb), "Sub 3");
+
+  gtk_widget_show_all (menu);
+
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -91,19 +119,18 @@ main (int argc, char ** argv)
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "1");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show (item);
 
         item = gtk_radio_menu_item_new_with_label (NULL, "2");
         g_signal_connect (item, "activate",
                           G_CALLBACK (item_clicked_cb), "2");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show (item);
 
         item = gtk_menu_item_new_with_label ("3");
-        g_signal_connect (item, "activate",
-                          G_CALLBACK (item_clicked_cb), "3");
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        append_submenu (item);
+        gtk_widget_show (item);
 
         GtkWidget *toggle_item = gtk_menu_item_new_with_label ("Toggle 3");
         g_signal_connect (toggle_item, "activate",
