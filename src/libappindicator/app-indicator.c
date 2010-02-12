@@ -1133,6 +1133,7 @@ container_iterate (GtkWidget *widget,
 {
   DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
   DbusmenuMenuitem *child;
+  GtkWidget *submenu = NULL;
   const gchar *label = NULL;
   gboolean label_set = FALSE;
 
@@ -1213,6 +1214,17 @@ container_iterate (GtkWidget *widget,
         }
     }
 
+  if (GTK_IS_MENU_ITEM (widget))
+    {
+      submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
+      if (submenu != NULL)
+        {
+          gtk_container_forall (GTK_CONTAINER (submenu),
+                                container_iterate,
+                                child);
+        }
+    }
+
   g_signal_connect (widget, "notify",
                     G_CALLBACK (widget_notify_cb), child);
 
@@ -1235,11 +1247,12 @@ setup_dbusmenu (AppIndicator *self)
                         container_iterate,
                         root);
 
-  if (priv->menuservice == NULL) {
-    gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
-    priv->menuservice = dbusmenu_server_new (path);
-	g_free(path);
-  }
+  if (priv->menuservice == NULL)
+    {
+      gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
+      priv->menuservice = dbusmenu_server_new (path);
+      g_free(path);
+    }
 
   dbusmenu_server_set_root (priv->menuservice, root);
 
