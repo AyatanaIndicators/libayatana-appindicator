@@ -447,23 +447,23 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 
         switch (prop_id) {
         case PROP_ID:
-			if (priv->id != NULL) {
-				g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
-				break;
-			}
+          if (priv->id != NULL) {
+            g_warning ("Resetting ID value when I already had a value of: %s", priv->id);
+            break;
+          }
 
-			priv->id = g_strdup (g_value_get_string (value));
+          priv->id = g_strdup (g_value_get_string (value));
 
-			priv->clean_id = g_strdup(priv->id);
-			gchar * cleaner;
-			for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
-				if (!g_ascii_isalnum(*cleaner)) {
-					*cleaner = '_';
-				}
-			}
+          priv->clean_id = g_strdup(priv->id);
+          gchar * cleaner;
+          for (cleaner = priv->clean_id; *cleaner != '\0'; cleaner++) {
+            if (!g_ascii_isalnum(*cleaner)) {
+              *cleaner = '_';
+            }
+          }
 
-			check_connect (self);
-			break;
+          check_connect (self);
+          break;
 
         case PROP_CATEGORY:
           enum_val = g_enum_get_value_by_nick ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY),
@@ -506,11 +506,11 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
         break;
 
         case PROP_ICON_THEME_PATH:
-			if (priv->icon_path != NULL) {
-				g_free(priv->icon_path);
-			}
-			priv->icon_path = g_value_dup_string(value);
-			break;
+          if (priv->icon_path != NULL) {
+            g_free(priv->icon_path);
+          }
+          priv->icon_path = g_value_dup_string(value);
+          break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -556,14 +556,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
         case PROP_MENU:
-			if (priv->menuservice != NULL) {
-				GValue strval = {0};
-				g_value_init(&strval, G_TYPE_STRING);
-				g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
-				g_value_set_boxed(value, g_value_get_string(&strval));
-				g_value_unset(&strval);
-			}
-			break;
+          if (priv->menuservice != NULL) {
+            GValue strval = { 0 };
+            g_value_init(&strval, G_TYPE_STRING);
+            g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+            g_value_set_boxed(value, g_value_get_string(&strval));
+            g_value_unset(&strval);
+          }
+          break;
 
         case PROP_CONNECTED:
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
@@ -1076,7 +1076,10 @@ update_stock_item (DbusmenuMenuitem *menuitem,
                                   DBUSMENU_MENUITEM_PROP_ICON_NAME,
                                   image->data.stock.stock_id);
 
-  if (stock.label != NULL)
+  const gchar * label = dbusmenu_menuitem_property_get (menuitem,
+                                  DBUSMENU_MENUITEM_PROP_LABEL);
+  
+  if (stock.label != NULL && label != NULL)
     {
       dbusmenu_menuitem_property_set (menuitem,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
@@ -1124,6 +1127,12 @@ widget_notify_cb (GtkWidget  *widget,
       dbusmenu_menuitem_property_set (child,
                                       DBUSMENU_MENUITEM_PROP_LABEL,
                                       gtk_menu_item_get_label (GTK_MENU_ITEM (widget)));
+    }
+  else if (pspec->name == g_intern_static_string ("visible"))
+    {
+      dbusmenu_menuitem_property_set_bool (child,
+                                           DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                           gtk_widget_get_visible (widget));
     }
 }
 
@@ -1259,14 +1268,22 @@ setup_dbusmenu (AppIndicator *self)
   return;
 }
 
+static void
+client_menu_changed (GtkWidget    *widget,
+                     GtkWidget    *child,
+                     AppIndicator *indicator)
+{
+  setup_dbusmenu (indicator);
+}
+
 /**
         app_indicator_set_menu:
         @self: The #AppIndicator
         @menu: A #GtkMenu to set
 
-		Sets the menu that should be shown when the Application Indicator
-		is clicked on in the panel.  An application indicator will not
-		be rendered unless it has a menu.
+        Sets the menu that should be shown when the Application Indicator
+        is clicked on in the panel.  An application indicator will not
+        be rendered unless it has a menu.
 **/
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
@@ -1290,6 +1307,15 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
   setup_dbusmenu (self);
 
   check_connect (self);
+
+  g_signal_connect (menu,
+                    "add",
+                    G_CALLBACK (client_menu_changed),
+                    self);
+  g_signal_connect (menu,
+                    "remove",
+                    G_CALLBACK (client_menu_changed),
+                    self);
 }
 
 /**

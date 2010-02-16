@@ -1,3 +1,11 @@
+indicator-application (0.0.13-0ubuntu3) lucid; urgency=low
+
+  * Backport trunk change to fix stock items labels (lp: #520048)
+  * Backport trunk change to fix menus update issues (lp: #521181)
+  * debian/control: updated standards-version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 16 Feb 2010 16:22:31 +0100
+
 indicator-application (0.0.13-0ubuntu2) lucid; urgency=low
 
   * Backported lp:~bratsche/indicator-application/submenus to make the submenus

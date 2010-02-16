@@ -57,7 +57,6 @@ toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
 {
   GtkWidget *target = (GtkWidget *)data;
 
-  gtk_menu_item_set_label (GTK_MENU_ITEM (target), "modified!!");
   gtk_widget_set_sensitive (target, !GTK_WIDGET_IS_SENSITIVE (target));
 }
 
@@ -73,6 +72,7 @@ append_submenu (GtkWidget *item)
 {
   GtkWidget *menu;
   GtkWidget *mi;
+  GtkWidget *prev_mi;
 
   menu = gtk_menu_new ();
 
@@ -81,10 +81,11 @@ append_submenu (GtkWidget *item)
   g_signal_connect (mi, "activate",
                     G_CALLBACK (item_clicked_cb), "Sub 1");
 
+  prev_mi = mi;
   mi = gtk_menu_item_new_with_label ("Sub 2");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);
   g_signal_connect (mi, "activate",
-                    G_CALLBACK (item_clicked_cb), "Sub 2");
+                    G_CALLBACK (toggle_sensitivity_cb), prev_mi);
 
   mi = gtk_menu_item_new_with_label ("Sub 3");
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), mi);

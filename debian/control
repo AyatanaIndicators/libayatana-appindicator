@@ -25,7 +25,7 @@ Build-Depends: debhelper (>= 5.0),
                libmono-dev,
                libnunit-cil-dev,
                libgtk2.0-cil-dev
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: https://launchpad.net/indicator-application
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-application/ubuntu
 
