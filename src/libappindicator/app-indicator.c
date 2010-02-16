@@ -1252,9 +1252,12 @@ setup_dbusmenu (AppIndicator *self)
   priv = self->priv;
   root = dbusmenu_menuitem_new ();
 
-  gtk_container_forall (GTK_CONTAINER (priv->menu),
-                        container_iterate,
-                        root);
+  if (priv->menu)
+    {
+      gtk_container_forall (GTK_CONTAINER (priv->menu),
+                            container_iterate,
+                            root);
+    }
 
   if (priv->menuservice == NULL)
     {

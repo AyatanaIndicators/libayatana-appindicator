@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu3~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fixing a crash by checking for NULL
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 16 Feb 2010 10:29:07 -0600
+
 indicator-application (0.0.13-0ubuntu3~ppa1) lucid; urgency=low
 
   * Upstream Merge
