@@ -1,3 +1,11 @@
+indicator-application (0.0.13-0ubuntu3~ppa1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Submenu support
+    * Updating menus
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 16 Feb 2010 09:52:08 -0600
+
 indicator-application (0.0.13-0ubuntu2) lucid; urgency=low
 
   * Backported lp:~bratsche/indicator-application/submenus to make the submenus
