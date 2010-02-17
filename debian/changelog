@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu4) lucid; urgency=low
+
+  * Backport Cody Russell's change to fix rhythmbox crashing on closing
+    (lp: #522942)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 17 Feb 2010 23:13:10 +0100
+
 indicator-application (0.0.13-0ubuntu3) lucid; urgency=low
 
   * Backport trunk change to fix stock items labels (lp: #520048)

@@ -141,6 +141,7 @@ static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
+static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -364,7 +365,10 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->menu != NULL) {
-		g_object_unref(G_OBJECT(priv->menu));
+                g_signal_handlers_disconnect_by_func (G_OBJECT (priv->menu),
+                                                      client_menu_changed,
+                                                      self);
+                g_object_unref(G_OBJECT(priv->menu));
 		priv->menu = NULL;
 	}
 
