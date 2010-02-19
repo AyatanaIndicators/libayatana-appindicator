@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu5) UNRELEASED; urgency=low
+
+  * debian/patches/unregister.patch
+    - Fix to remove the registration of dbus objects (LP: #497870) 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 11:16:13 -0500
+
 indicator-application (0.0.13-0ubuntu4) lucid; urgency=low
 
   * Backport Cody Russell's change to fix rhythmbox crashing on closing
