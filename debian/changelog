@@ -1,6 +1,8 @@
 indicator-application (0.0.13-0ubuntu6) lucid; urgency=low
 
-  * Cherry picked fix to check for a null string as the attention icon 
+  * Cherrypick fix to check for a null string as the attention icon 
+  * Cherrypick fix to remove the registration of dbus objects (LP: #497870)
+    - lets us drop debian/patches/unregister.patch
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 12:21:39 -0500
 
