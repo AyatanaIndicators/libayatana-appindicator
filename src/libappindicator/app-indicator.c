@@ -599,8 +599,6 @@ check_connect (AppIndicator *self)
 
 	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 
-	g_warning ("%s. %s", __FUNCTION__, path);
-
 	dbus_g_connection_register_g_object(priv->connection,
 	                                    path,
 	                                    G_OBJECT(self));
