@@ -1,3 +1,9 @@
+indicator-application (0.0.13-0ubuntu6) lucid; urgency=low
+
+  * Cherry picked fix to check for a null string as the attention icon 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 12:21:39 -0500
+
 indicator-application (0.0.13-0ubuntu5) lucid; urgency=low
 
   * debian/patches/unregister.patch

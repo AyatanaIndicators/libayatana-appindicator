@@ -397,7 +397,7 @@ apply_status (Application * app, ApplicationStatus status)
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
-		if (status == APP_STATUS_ATTENTION && app->aicon != NULL) {
+		if (status == APP_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
 			newicon = app->aicon;
 		}
 
