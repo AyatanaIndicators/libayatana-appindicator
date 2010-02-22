@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu7) lucid; urgency=low
+
+  * Backported upstream change to fix menu item sensitivity update,
+    thanks to Jan Arne Petersen (lp: #522151)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 22 Feb 2010 17:49:23 +0100
+
 indicator-application (0.0.13-0ubuntu6) lucid; urgency=low
 
   * Cherrypick fix to check for a null string as the attention icon 
