@@ -1,9 +1,9 @@
-indicator-application (0.0.13-0ubuntu3~ppa3~menu1) UNRELEASED; urgency=low
+indicator-application (0.0.13-0ubuntu3~ppa3~menu1) lucid; urgency=low
 
   * Upstream merge
     * Menu updates connections
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 22 Feb 2010 15:24:49 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 22 Feb 2010 15:26:49 -0600
 
 indicator-application (0.0.13-0ubuntu3~ppa2) lucid; urgency=low
 
