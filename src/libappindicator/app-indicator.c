@@ -1240,7 +1240,7 @@ container_iterate (GtkWidget *widget,
       submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
       if (submenu != NULL)
         {
-          gtk_container_forall (GTK_CONTAINER (submenu),
+          gtk_container_foreach (GTK_CONTAINER (submenu),
                                 container_iterate,
                                 child);
           g_signal_connect_object (submenu,
@@ -1285,7 +1285,7 @@ submenu_changed (GtkWidget *widget,
       dbusmenu_menuitem_child_delete (root, c);
     }
 
-  gtk_container_forall (GTK_CONTAINER (widget),
+  gtk_container_foreach (GTK_CONTAINER (widget),
                         container_iterate,
                         root);
 }
@@ -1301,7 +1301,7 @@ setup_dbusmenu (AppIndicator *self)
 
   if (priv->menu)
     {
-      gtk_container_forall (GTK_CONTAINER (priv->menu),
+      gtk_container_foreach (GTK_CONTAINER (priv->menu),
                             container_iterate,
                             root);
     }

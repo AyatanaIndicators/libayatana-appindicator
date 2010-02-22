@@ -1,3 +1,10 @@
+indicator-application (0.0.13-0ubuntu3~ppa3~menu2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Using foreach instead of forall
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 22 Feb 2010 15:57:23 -0600
+
 indicator-application (0.0.13-0ubuntu3~ppa3~menu1) lucid; urgency=low
 
   * Upstream merge
