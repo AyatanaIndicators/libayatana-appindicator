@@ -1,5 +1,7 @@
 #include <glib.h>
 #include <glib-object.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 #include <libappindicator/app-indicator.h>
 
 #define TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE            (test_libappindicator_fallback_item_get_type ())
@@ -105,6 +107,27 @@ int
 main (int argc, char ** argv)
 {
 	gtk_init(&argc, &argv);
+
+	GError * error = NULL;
+	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_error("Unable to get session bus: %s", error->message);
+		return 1;
+	}
+
+    DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+
+	guint nameret = 0;
+
+	if (!org_freedesktop_DBus_request_name(bus_proxy, "org.test", 0, &nameret, NULL)) {
+		g_error("Unable to call to request name");
+		return 1;
+	}   
+
+	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		g_error("Unable to get name");
+		return 1;
+	}
 
 	TestLibappindicatorFallbackItem * item = g_object_new(TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE,
 		"id", "test-id",
