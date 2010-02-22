@@ -1158,6 +1158,10 @@ container_iterate (GtkWidget *widget,
   const gchar *label = NULL;
   gboolean label_set = FALSE;
 
+  if (GTK_IS_TEAROFF_MENU_ITEM(widget)) {
+  	return;
+  }
+
   child = dbusmenu_menuitem_new ();
 
   if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
