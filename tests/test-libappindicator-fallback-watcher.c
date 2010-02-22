@@ -67,8 +67,15 @@ main (int argv, char ** argc)
     DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 
 	gboolean has_owner = FALSE;
-	while (!has_owner) {
+	gint owner_count = 0;
+	while (!has_owner && owner_count < 10000) {
 		org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
+		owner_count++;
+	}
+
+	if (owner_count == 10000) {
+		g_error("Unable to get name owner after 10000 tries");
+		return 1;
 	}
 
 	g_usleep(250000);
