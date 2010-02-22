@@ -56,10 +56,6 @@ main (int argv, char ** argc)
 
 	g_debug("Waiting to init.");
 
-	/* Wait 1/4 a second, which should trigger the fallback */
-	g_usleep(250000);
-
-	g_debug("Initing");
 
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -69,6 +65,16 @@ main (int argv, char ** argc)
 	}
 
     DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+
+	gboolean has_owner = FALSE;
+	while (!has_owner) {
+		org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
+	}
+
+	g_usleep(250000);
+
+	g_debug("Initing");
+
 	guint nameret = 0;
 
 	if (!org_freedesktop_DBus_request_name(bus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, 0, &nameret, &error)) {
