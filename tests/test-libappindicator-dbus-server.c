@@ -44,6 +44,7 @@ main (gint argc, gchar * argv[])
 	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
 	AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
+
 	app_indicator_set_status (ci, TEST_STATE);
 	app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
 
