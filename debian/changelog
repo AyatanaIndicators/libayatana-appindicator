@@ -1,9 +1,9 @@
-indicator-application (0.0.13-0ubuntu3~ppa3~menu3) UNRELEASED; urgency=low
+indicator-application (0.0.13-0ubuntu3~ppa3~menu3) lucid; urgency=low
 
   * Upstream Merge
     * Blocking tearoffs
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 22 Feb 2010 16:46:48 -0600
+ -- Ted Gould <ted@ubuntu.com>  Mon, 22 Feb 2010 16:48:59 -0600
 
 indicator-application (0.0.13-0ubuntu3~ppa3~menu2) lucid; urgency=low
 
