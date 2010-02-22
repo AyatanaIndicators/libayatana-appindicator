@@ -142,6 +142,7 @@ static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
+static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -1242,6 +1243,16 @@ container_iterate (GtkWidget *widget,
           gtk_container_forall (GTK_CONTAINER (submenu),
                                 container_iterate,
                                 child);
+          g_signal_connect_object (submenu,
+                                   "add",
+                                   G_CALLBACK (submenu_changed),
+                                   child,
+                                   0);
+          g_signal_connect_object (submenu,
+                                   "remove",
+                                   G_CALLBACK (submenu_changed),
+                                   child,
+                                   0);
         }
     }
 
@@ -1256,6 +1267,27 @@ container_iterate (GtkWidget *widget,
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
+}
+
+static void
+submenu_changed (GtkWidget *widget,
+                 GtkWidget *child,
+                 gpointer   data)
+{
+  DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
+  GList *children, *l;
+  children = dbusmenu_menuitem_get_children (root);
+
+  for (l = children; l;)
+    {
+      DbusmenuMenuitem *c = (DbusmenuMenuitem *)l->data;
+      l = l->next;
+      dbusmenu_menuitem_child_delete (root, c);
+    }
+
+  gtk_container_forall (GTK_CONTAINER (widget),
+                        container_iterate,
+                        root);
 }
 
 static void
