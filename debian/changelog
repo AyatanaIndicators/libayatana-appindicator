@@ -1,4 +1,4 @@
-indicator-application (0.0.13-0ubuntu8~ppa1) lucid; urgency=low
+indicator-application (0.0.13-0ubuntu8) lucid; urgency=low
 
   * Upstream Merge
     * Checking for dbus-glib version 0.82
@@ -42,31 +42,6 @@ indicator-application (0.0.13-0ubuntu3) lucid; urgency=low
   * debian/control: updated standards-version
 
  -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 16 Feb 2010 16:22:31 +0100
-
-indicator-application (0.0.13-0ubuntu3~ppa4) lucid; urgency=low
-
-  * Upstream merge
-    * Fixing automatic updating of menus
-    * Improve testing to be more reliable
-    * Handle null string attention icons
-    * Handling the visibility of menus better
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 23 Feb 2010 09:49:56 -0600
-
-indicator-application (0.0.13-0ubuntu3~ppa2) lucid; urgency=low
-
-  * Upstream Merge
-    * Fixing a crash by checking for NULL
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 16 Feb 2010 10:31:30 -0600
-
-indicator-application (0.0.13-0ubuntu3~ppa1) lucid; urgency=low
-
-  * Upstream Merge
-    * Submenu support
-    * Updating menus
-
- -- Ted Gould <ted@ubuntu.com>  Tue, 16 Feb 2010 09:59:44 -0600
 
 indicator-application (0.0.13-0ubuntu2) lucid; urgency=low
 
@@ -315,4 +290,3 @@ indicator-application (0.0.1-0ubuntu1) karmic; urgency=low
   * Development packaging edition.
 
  -- Robert Collins <robert@canonical.com>  Thu, 29 Oct 2009 15:44:14 +1100
-
