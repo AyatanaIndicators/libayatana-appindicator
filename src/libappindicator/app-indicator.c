@@ -1263,6 +1263,9 @@ container_iterate (GtkWidget *widget,
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_ENABLED,
                                        GTK_WIDGET_IS_SENSITIVE (widget));
+  dbusmenu_menuitem_property_set_bool (child,
+                                       DBUSMENU_MENUITEM_PROP_VISIBLE,
+                                       gtk_widget_get_visible (widget));
 
   g_signal_connect (widget, "notify",
                     G_CALLBACK (widget_notify_cb), child);
