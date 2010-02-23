@@ -1,3 +1,40 @@
+indicator-application (0.0.13-0ubuntu7) lucid; urgency=low
+
+  * Backported upstream change to fix menu item sensitivity update,
+    thanks to Jan Arne Petersen (lp: #522151)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 22 Feb 2010 17:49:23 +0100
+
+indicator-application (0.0.13-0ubuntu6) lucid; urgency=low
+
+  * Cherrypick fix to check for a null string as the attention icon 
+  * Cherrypick fix to remove the registration of dbus objects (LP: #497870)
+    - lets us drop debian/patches/unregister.patch
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 18:52:40 +0100
+
+indicator-application (0.0.13-0ubuntu5) lucid; urgency=low
+
+  * debian/patches/unregister.patch
+    - Fix to remove the registration of dbus objects (LP: #497870) 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 17:55:11 +0100
+
+indicator-application (0.0.13-0ubuntu4) lucid; urgency=low
+
+  * Backport Cody Russell's change to fix rhythmbox crashing on closing
+    (lp: #522942)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 17 Feb 2010 23:13:10 +0100
+
+indicator-application (0.0.13-0ubuntu3) lucid; urgency=low
+
+  * Backport trunk change to fix stock items labels (lp: #520048)
+  * Backport trunk change to fix menus update issues (lp: #521181)
+  * debian/control: updated standards-version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 16 Feb 2010 16:22:31 +0100
+
 indicator-application (0.0.13-0ubuntu3~ppa4) lucid; urgency=low
 
   * Upstream merge
@@ -270,3 +307,4 @@ indicator-application (0.0.1-0ubuntu1) karmic; urgency=low
   * Development packaging edition.
 
  -- Robert Collins <robert@canonical.com>  Thu, 29 Oct 2009 15:44:14 +1100
+
