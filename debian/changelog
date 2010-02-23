@@ -1,10 +1,10 @@
-indicator-application (0.0.13-0ubuntu8~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.13-0ubuntu8~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Checking for dbus-glib version 0.82
   * debian/control: Checking for dbus-glib >= 0.82
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 23 Feb 2010 10:27:09 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 23 Feb 2010 10:30:27 -0600
 
 indicator-application (0.0.13-0ubuntu7) lucid; urgency=low
 
