@@ -141,6 +141,8 @@ static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
+static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
+static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -364,7 +366,10 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->menu != NULL) {
-		g_object_unref(G_OBJECT(priv->menu));
+                g_signal_handlers_disconnect_by_func (G_OBJECT (priv->menu),
+                                                      client_menu_changed,
+                                                      self);
+                g_object_unref(G_OBJECT(priv->menu));
 		priv->menu = NULL;
 	}
 
@@ -594,6 +599,7 @@ check_connect (AppIndicator *self)
 	if (priv->id == NULL) return;
 
 	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
+
 	dbus_g_connection_register_g_object(priv->connection,
 	                                    path,
 	                                    G_OBJECT(self));
@@ -608,6 +614,8 @@ check_connect (AppIndicator *self)
 		/* Unable to get proxy, but we're handling that now so
 		   it's not a warning anymore. */
 		g_error_free(error);
+		dbus_g_connection_unregister_g_object(priv->connection,
+						      G_OBJECT(self));
 		start_fallback_timer(self, FALSE);
 		g_free(path);
 		return;
@@ -628,6 +636,8 @@ watcher_proxy_destroyed (GObject * object, gpointer data)
 	AppIndicator * self = APP_INDICATOR(data);
 	g_return_if_fail(self != NULL);
 
+	dbus_g_connection_unregister_g_object(self->priv->connection,
+					      G_OBJECT(self));
 	self->priv->watcher_proxy = NULL;
 	start_fallback_timer(self, FALSE);
 	return;
@@ -645,6 +655,8 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 		/* They didn't respond, ewww.  Not sure what they could
 		   be doing */
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
+		dbus_g_connection_unregister_g_object(priv->connection,
+						      G_OBJECT(data));
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 		start_fallback_timer(APP_INDICATOR(data), TRUE);
@@ -1146,6 +1158,10 @@ container_iterate (GtkWidget *widget,
   const gchar *label = NULL;
   gboolean label_set = FALSE;
 
+  if (GTK_IS_TEAROFF_MENU_ITEM(widget)) {
+  	return;
+  }
+
   child = dbusmenu_menuitem_new ();
 
   if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
@@ -1228,11 +1244,25 @@ container_iterate (GtkWidget *widget,
       submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
       if (submenu != NULL)
         {
-          gtk_container_forall (GTK_CONTAINER (submenu),
+          gtk_container_foreach (GTK_CONTAINER (submenu),
                                 container_iterate,
                                 child);
+          g_signal_connect_object (submenu,
+                                   "add",
+                                   G_CALLBACK (submenu_changed),
+                                   child,
+                                   0);
+          g_signal_connect_object (submenu,
+                                   "remove",
+                                   G_CALLBACK (submenu_changed),
+                                   child,
+                                   0);
         }
     }
+
+  dbusmenu_menuitem_property_set_bool (child,
+                                       DBUSMENU_MENUITEM_PROP_ENABLED,
+                                       GTK_WIDGET_IS_SENSITIVE (widget));
 
   g_signal_connect (widget, "notify",
                     G_CALLBACK (widget_notify_cb), child);
@@ -1241,6 +1271,27 @@ container_iterate (GtkWidget *widget,
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
+}
+
+static void
+submenu_changed (GtkWidget *widget,
+                 GtkWidget *child,
+                 gpointer   data)
+{
+  DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
+  GList *children, *l;
+  children = dbusmenu_menuitem_get_children (root);
+
+  for (l = children; l;)
+    {
+      DbusmenuMenuitem *c = (DbusmenuMenuitem *)l->data;
+      l = l->next;
+      dbusmenu_menuitem_child_delete (root, c);
+    }
+
+  gtk_container_foreach (GTK_CONTAINER (widget),
+                        container_iterate,
+                        root);
 }
 
 static void
@@ -1254,7 +1305,7 @@ setup_dbusmenu (AppIndicator *self)
 
   if (priv->menu)
     {
-      gtk_container_forall (GTK_CONTAINER (priv->menu),
+      gtk_container_foreach (GTK_CONTAINER (priv->menu),
                             container_iterate,
                             root);
     }

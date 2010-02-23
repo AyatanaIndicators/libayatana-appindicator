@@ -1,3 +1,13 @@
+indicator-application (0.0.13-0ubuntu3~ppa3) UNRELEASED; urgency=low
+
+  * Upstream merge
+    * Fixing automatic updating of menus
+    * Handling the visibility of menus better
+    * Improve testing to be more reliable
+    * Handle null string attention icons
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 23 Feb 2010 09:45:14 -0600
+
 indicator-application (0.0.13-0ubuntu3~ppa2) lucid; urgency=low
 
   * Upstream Merge

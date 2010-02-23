@@ -23,6 +23,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include "../src/dbus-shared.h"
 
@@ -35,6 +36,20 @@ static guint toggle_count = 0;
 #define PASSIVE_STR  "Passive"
 #define ACTIVE_STR   "Active"
 #define ATTN_STR     "NeedsAttention"
+
+static DBusHandlerResult
+dbus_reg_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
+{
+	if (dbus_message_is_method_call(message, NOTIFICATION_WATCHER_DBUS_ADDR, "RegisterStatusNotifierItem")) {
+		DBusMessage * reply = dbus_message_new_method_return(message);
+		dbus_connection_send(connection, reply, NULL);
+		dbus_message_unref(reply);
+		return DBUS_HANDLER_RESULT_HANDLED;
+	}
+
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
 
 static DBusHandlerResult
 dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
@@ -102,6 +117,21 @@ main (gint argc, gchar * argv[])
 		g_error("Unable to get session bus: %s", error->message);
 		return 1;
 	}
+
+    DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	guint nameret = 0;
+
+	if (!org_freedesktop_DBus_request_name(bus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, 0, &nameret, &error)) {
+		g_error("Unable to call to request name");
+		return 1;
+	}   
+
+	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		g_error("Unable to get name");
+		return 1;
+	}
+
+	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_reg_filter, NULL, NULL);
 
 	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
 	dbus_bus_add_match(dbus_g_connection_get_connection(session_bus), "type='signal',interface='" NOTIFICATION_ITEM_DBUS_IFACE "',member='NewStatus'", NULL);
