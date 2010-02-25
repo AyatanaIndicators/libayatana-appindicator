@@ -1,3 +1,24 @@
+indicator-application (0.0.14-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * Upstream release 0.0.14
+    ∘ Fix mono bindings to include proper metadata (LP: #526620)
+    ∘ Send connection changed signal when the proxy is created
+      and destroyed (LP: #527082)
+    ∘ Hide the fallback status icon before unrefing it. (LP: #526041)
+    ∘ Increase dbus-glib version check to 0.82
+    ∘ Handle menu layout changes and visibility changes better.
+    ∘ Improve testing stability
+    ∘ Read menu sensitivity on startup.
+    ∘ Handle null strings when evaluating whether we have an
+      attention icon.
+    ∘ Remove dbus objects when we fallback
+    ∘ Disconnect client_menu_changed signal handlers on cleanup.
+    ∘ Handle cases where the menu gets unset on updates.
+    ∘ Fix custom labels on stock items.
+    ∘ Adds support for submenus
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 15:16:38 -0600
+
 indicator-application (0.0.13-0ubuntu8) lucid; urgency=low
 
   * Upstream Merge
