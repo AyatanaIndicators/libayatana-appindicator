@@ -387,6 +387,9 @@ app_indicator_dispose (GObject *object)
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
+
+	    /* Emit the AppIndicator::connection-changed signal*/
+        g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
 	}
 
 	if (priv->connection != NULL) {
@@ -625,6 +628,9 @@ check_connect (AppIndicator *self)
 	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
 	g_free(path);
 
+	/* Emit the AppIndicator::connection-changed signal*/
+    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, TRUE);
+
 	return;
 }
 
@@ -639,6 +645,10 @@ watcher_proxy_destroyed (GObject * object, gpointer data)
 	dbus_g_connection_unregister_g_object(self->priv->connection,
 					      G_OBJECT(self));
 	self->priv->watcher_proxy = NULL;
+
+    /* Emit the AppIndicator::connection-changed signal*/
+    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
+	
 	start_fallback_timer(self, FALSE);
 	return;
 }
@@ -885,6 +895,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
+	gtk_widget_hide(GTK_WIDGET(status_icon));
 	g_object_unref(G_OBJECT(status_icon));
 	return;
 }
