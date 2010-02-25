@@ -885,6 +885,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
+	gtk_widget_hide(GTK_WIDGET(status_icon));
 	g_object_unref(G_OBJECT(status_icon));
 	return;
 }
