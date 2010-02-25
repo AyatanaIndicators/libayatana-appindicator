@@ -1,4 +1,4 @@
-indicator-application (0.0.14-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.14-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream release 0.0.14
     ∘ Fix mono bindings to include proper metadata (LP: #526620)
@@ -17,7 +17,7 @@ indicator-application (0.0.14-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Fix custom labels on stock items.
     ∘ Adds support for submenus
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 15:16:38 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 15:22:28 -0600
 
 indicator-application (0.0.13-0ubuntu8) lucid; urgency=low
 
