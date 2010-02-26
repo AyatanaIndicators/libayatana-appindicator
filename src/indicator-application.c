@@ -66,7 +66,6 @@ GType indicator_application_get_type (void);
 INDICATOR_SET_VERSION
 INDICATOR_SET_TYPE(INDICATOR_APPLICATION_TYPE)
 
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -89,6 +88,9 @@ struct _ApplicationEntry {
 	gchar * dbusobject;
 	gchar * dbusaddress;
 };
+
+#define DESIGN_TEAM_SIZE  design_team_size
+static GtkIconSize design_team_size;
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), INDICATOR_APPLICATION_TYPE, IndicatorApplicationPrivate))
@@ -143,6 +145,8 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	                                  G_TYPE_INT,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
+
+	design_team_size = gtk_icon_size_register("design-team-size", 22, 22);
 
 	return;
 }
@@ -449,9 +453,9 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, GTK_ICON_SIZE_MENU));
+		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, DESIGN_TEAM_SIZE));
 	} else {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, GTK_ICON_SIZE_MENU));
+		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, DESIGN_TEAM_SIZE));
 	}
 	g_free(longname);
 
@@ -532,10 +536,10 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
 		g_debug("Setting icon on %d to %s", position, longname);
-		gtk_image_set_from_icon_name(app->entry.image, longname, GTK_ICON_SIZE_MENU);
+		gtk_image_set_from_icon_name(app->entry.image, longname, DESIGN_TEAM_SIZE);
 	} else {
 		g_debug("Setting icon on %d to %s", position, iconname);
-		gtk_image_set_from_icon_name(app->entry.image, iconname, GTK_ICON_SIZE_MENU);
+		gtk_image_set_from_icon_name(app->entry.image, iconname, DESIGN_TEAM_SIZE);
 	}
 	g_free(longname);
 
