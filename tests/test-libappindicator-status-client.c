@@ -137,7 +137,7 @@ main (gint argc, gchar * argv[])
 	dbus_bus_add_match(dbus_g_connection_get_connection(session_bus), "type='signal',interface='" NOTIFICATION_ITEM_DBUS_IFACE "',member='NewStatus'", NULL);
 
 	watchdog_hit = TRUE;
-	g_timeout_add(250, kill_func, NULL);
+	g_timeout_add(1000, kill_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);
