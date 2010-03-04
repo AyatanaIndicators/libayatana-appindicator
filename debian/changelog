@@ -1,3 +1,12 @@
+indicator-application (0.0.15-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.15
+    * Icon size fix to 22 px
+    * Status icon correctly removed in fallback
+    * Fixed test suite to run better on slow machines.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 11:42:40 -0600
+
 indicator-application (0.0.14-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.14
