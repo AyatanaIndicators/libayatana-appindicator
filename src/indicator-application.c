@@ -35,6 +35,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
+#include <libindicator/indicator-image-helper.h>
 
 /* Local Stuff */
 #include "dbus-shared.h"
@@ -452,11 +453,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, DESIGN_TEAM_SIZE));
-	} else {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, DESIGN_TEAM_SIZE));
-	}
+	app->entry.image = indicator_image_helper(longname);
 	g_free(longname);
 
 	app->entry.label = NULL;
