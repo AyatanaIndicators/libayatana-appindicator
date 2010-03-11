@@ -4,4 +4,5 @@ XID=`for id in 101 102 103 104 105 106 107 197 199 211 223 227 293 307 308 309 3
 { Xvfb -ac -noreset -screen 0 800x600x16 :$XID -screen 0 800x600x16 -nolisten tcp -auth /dev/null >/dev/null 2>&1 & trap "kill -15 $! " 0 HUP INT QUIT TRAP USR1 PIPE TERM ; } || { echo "Gtk+Tests:ERROR: Failed to start Xvfb environment for X11 target tests."; exit 1; }
 DISPLAY=:$XID
 export DISPLAY
+sleep 2
 fi

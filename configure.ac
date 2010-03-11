@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-application, 0.0.15, ted@canonical.com)
+AC_INIT(indicator-application, 0.0.16, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-application, 0.0.15)
+AM_INIT_AUTOMAKE(indicator-application, 0.0.16)
 
 AM_MAINTAINER_MODE
 
@@ -38,7 +38,7 @@ AC_CONFIG_MACRO_DIR(m4)
 ###########################
 
 GTK_REQUIRED_VERSION=2.12
-INDICATOR_REQUIRED_VERSION=0.3.1
+INDICATOR_REQUIRED_VERSION=0.3.5
 DBUSMENUGTK_REQUIRED_VERSION=0.2.2
 JSON_GLIB_REQUIRED_VERSION=0.7.6
 DBUS_GLIB_REQUIRED_VERSION=0.82
