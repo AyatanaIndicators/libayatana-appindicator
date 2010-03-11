@@ -526,10 +526,8 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	GtkImage * tempimage = indicator_image_helper(longname);
+	indicator_image_helper_update(app->entry.image, longname);
 	g_free(longname);
-	gtk_image_set_from_pixbuf(app->entry.image, gtk_image_get_pixbuf(tempimage));
-	g_object_ref_sink(tempimage);
 
 	return;
 }
