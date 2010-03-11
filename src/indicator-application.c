@@ -531,14 +531,10 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
-		g_debug("Setting icon on %d to %s", position, longname);
-		gtk_image_set_from_icon_name(app->entry.image, longname, DESIGN_TEAM_SIZE);
-	} else {
-		g_debug("Setting icon on %d to %s", position, iconname);
-		gtk_image_set_from_icon_name(app->entry.image, iconname, DESIGN_TEAM_SIZE);
-	}
+	GtkImage * tempimage = indicator_image_helper(longname);
 	g_free(longname);
+	gtk_image_set_from_pixbuf(app->entry.image, gtk_image_get_pixbuf(tempimage));
+	g_object_ref_sink(tempimage);
 
 	return;
 }
