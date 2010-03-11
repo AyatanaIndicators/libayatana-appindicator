@@ -1160,6 +1160,21 @@ widget_notify_cb (GtkWidget  *widget,
 }
 
 static void
+action_notify_cb (GtkAction  *action,
+                  GParamSpec *pspec,
+                  gpointer    data)
+{
+  DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
+
+  if (pspec->name == g_intern_static_string ("label"))
+    {
+      dbusmenu_menuitem_property_set (child,
+                                      DBUSMENU_MENUITEM_PROP_LABEL,
+                                      gtk_action_get_label (action));
+    }
+}
+
+static void
 container_iterate (GtkWidget *widget,
                    gpointer   data)
 {
@@ -1280,6 +1295,24 @@ container_iterate (GtkWidget *widget,
 
   g_signal_connect (widget, "notify",
                     G_CALLBACK (widget_notify_cb), child);
+
+  if (GTK_IS_ACTIVATABLE (widget))
+    {
+      GtkActivatable *activatable = GTK_ACTIVATABLE (widget);
+
+      if (gtk_activatable_get_use_action_appearance (activatable))
+        {
+          GtkAction *action = gtk_activatable_get_related_action (activatable);
+
+          if (action)
+            {
+              g_signal_connect_object (action, "notify",
+                                       G_CALLBACK (action_notify_cb),
+                                       child,
+                                       G_CONNECT_AFTER);
+            }
+        }
+    }
 
   g_signal_connect (G_OBJECT (child),
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,

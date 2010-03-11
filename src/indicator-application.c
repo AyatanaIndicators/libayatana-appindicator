@@ -35,6 +35,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libindicator/indicator.h>
 #include <libindicator/indicator-object.h>
 #include <libindicator/indicator-service-manager.h>
+#include <libindicator/indicator-image-helper.h>
 
 /* Local Stuff */
 #include "dbus-shared.h"
@@ -89,9 +90,6 @@ struct _ApplicationEntry {
 	gchar * dbusaddress;
 };
 
-#define DESIGN_TEAM_SIZE  design_team_size
-static GtkIconSize design_team_size;
-
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), INDICATOR_APPLICATION_TYPE, IndicatorApplicationPrivate))
 
@@ -145,8 +143,6 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	                                  G_TYPE_INT,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
-
-	design_team_size = gtk_icon_size_register("design-team-size", 22, 22);
 
 	return;
 }
@@ -452,11 +448,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(longname, DESIGN_TEAM_SIZE));
-	} else {
-		app->entry.image = GTK_IMAGE(gtk_image_new_from_icon_name(iconname, DESIGN_TEAM_SIZE));
-	}
+	app->entry.image = indicator_image_helper(longname);
 	g_free(longname);
 
 	app->entry.label = NULL;
@@ -534,13 +526,7 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	if (gtk_icon_theme_has_icon(gtk_icon_theme_get_default(), longname)) {
-		g_debug("Setting icon on %d to %s", position, longname);
-		gtk_image_set_from_icon_name(app->entry.image, longname, DESIGN_TEAM_SIZE);
-	} else {
-		g_debug("Setting icon on %d to %s", position, iconname);
-		gtk_image_set_from_icon_name(app->entry.image, iconname, DESIGN_TEAM_SIZE);
-	}
+	indicator_image_helper_update(app->entry.image, longname);
 	g_free(longname);
 
 	return;

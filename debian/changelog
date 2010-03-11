@@ -1,3 +1,14 @@
+indicator-application (0.0.16-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.16
+    * Use libindicator icon loading helper
+    * Workaround for label changes on GtkActions
+    * Testing fix for using xvfb
+  * debian/control: Increasing the libindicator-dev dependency to
+    0.3.5 to match upstream.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Mar 2010 16:22:06 -0600
+
 indicator-application (0.0.15-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.15
