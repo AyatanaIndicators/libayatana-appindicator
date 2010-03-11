@@ -90,9 +90,6 @@ struct _ApplicationEntry {
 	gchar * dbusaddress;
 };
 
-#define DESIGN_TEAM_SIZE  design_team_size
-static GtkIconSize design_team_size;
-
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
 (G_TYPE_INSTANCE_GET_PRIVATE ((o), INDICATOR_APPLICATION_TYPE, IndicatorApplicationPrivate))
 
@@ -146,8 +143,6 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	                                  G_TYPE_INT,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
-
-	design_team_size = gtk_icon_size_register("design-team-size", 22, 22);
 
 	return;
 }
