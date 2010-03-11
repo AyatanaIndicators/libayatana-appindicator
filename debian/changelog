@@ -1,4 +1,4 @@
-indicator-application (0.0.15-0ubuntu1~ppa1) lucid; urgency=low
+indicator-application (0.0.15-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.15
     * Icon size fix to 22 px
