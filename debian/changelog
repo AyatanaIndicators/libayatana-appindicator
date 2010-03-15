@@ -1,3 +1,9 @@
+indicator-application (0.0.16-0ubuntu2) lucid; urgency=low
+
+  * Backported upstream change to respect gtk "always-show-image" (lp: #528527)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 15 Mar 2010 16:39:09 +0100
+
 indicator-application (0.0.16-0ubuntu1) lucid; urgency=low
 
   * Upstream release 0.0.16
