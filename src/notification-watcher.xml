@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <node name="/StatusNotifierWatcher">
-	<interface name="org.freedesktop.StatusNotifierWatcher">
+	<interface name="org.kde.StatusNotifierWatcher">
 
 <!-- Properties -->
 		<!-- None currently -->
