@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <node name="/StatusNotifierItem">
-	<interface name="org.freedesktop.StatusNotifierItem">
+	<interface name="org.kde.StatusNotifierItem">
 
 <!-- Properties -->
 		<property name="Id" type="s" access="read" />
