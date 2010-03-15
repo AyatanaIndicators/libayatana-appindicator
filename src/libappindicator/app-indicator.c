@@ -1071,6 +1071,32 @@ menuitem_iterate (GtkWidget *widget,
     }
 }
 
+static gboolean
+should_show_image (GtkImage *image)
+{
+  GtkWidget *item;
+
+  item = gtk_widget_get_ancestor (GTK_WIDGET (image),
+                                  GTK_TYPE_IMAGE_MENU_ITEM);
+
+  if (item)
+    {
+      GtkSettings *settings;
+      gboolean gtk_menu_images;
+
+      settings = gtk_widget_get_settings (item);
+
+      g_object_get (settings, "gtk-menu-images", &gtk_menu_images, NULL);
+
+      if (gtk_menu_images)
+        return TRUE;
+
+      return gtk_image_menu_item_get_always_show_image (GTK_IMAGE_MENU_ITEM (item));
+    }
+
+  return FALSE;
+}
+
 static void
 update_icon_name (DbusmenuMenuitem *menuitem,
                   GtkImage         *image)
@@ -1078,9 +1104,13 @@ update_icon_name (DbusmenuMenuitem *menuitem,
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
     return;
 
-  dbusmenu_menuitem_property_set (menuitem,
-                                  DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                  image->data.name.icon_name);
+  if (should_show_image (image))
+    dbusmenu_menuitem_property_set (menuitem,
+                                    DBUSMENU_MENUITEM_PROP_ICON_NAME,
+                                    image->data.name.icon_name);
+  else
+    dbusmenu_menuitem_property_remove (menuitem,
+                                       DBUSMENU_MENUITEM_PROP_ICON_NAME);
 }
 
 /* return value specifies whether the label is set or not */
@@ -1095,9 +1125,13 @@ update_stock_item (DbusmenuMenuitem *menuitem,
 
   gtk_stock_lookup (image->data.stock.stock_id, &stock);
 
-  dbusmenu_menuitem_property_set (menuitem,
-                                  DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                  image->data.stock.stock_id);
+  if (should_show_image (image))
+    dbusmenu_menuitem_property_set (menuitem,
+                                    DBUSMENU_MENUITEM_PROP_ICON_NAME,
+                                    image->data.stock.stock_id);
+  else
+    dbusmenu_menuitem_property_remove (menuitem,
+                                       DBUSMENU_MENUITEM_PROP_ICON_NAME);
 
   const gchar * label = dbusmenu_menuitem_property_get (menuitem,
                                   DBUSMENU_MENUITEM_PROP_LABEL);
