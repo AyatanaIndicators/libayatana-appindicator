@@ -14,11 +14,11 @@
   (c-name "AppIndicatorCategory")
   (gtype-id "APP_INDICATOR_TYPE_INDICATOR_CATEGORY")
   (values
-    '("application-status" "APP_INDICATOR_CATEGORY_APPLICATION_STATUS")
-    '("communications" "APP_INDICATOR_CATEGORY_COMMUNICATIONS")
-    '("system-services" "APP_INDICATOR_CATEGORY_SYSTEM_SERVICES")
-    '("hardware" "APP_INDICATOR_CATEGORY_HARDWARE")
-    '("other" "APP_INDICATOR_CATEGORY_OTHER")
+    '("ApplicationStatus" "APP_INDICATOR_CATEGORY_APPLICATION_STATUS")
+    '("Communications" "APP_INDICATOR_CATEGORY_COMMUNICATIONS")
+    '("SystemServices" "APP_INDICATOR_CATEGORY_SYSTEM_SERVICES")
+    '("Hardware" "APP_INDICATOR_CATEGORY_HARDWARE")
+    '("Other" "APP_INDICATOR_CATEGORY_OTHER")
   )
 )
 
@@ -27,9 +27,9 @@
   (c-name "AppIndicatorStatus")
   (gtype-id "APP_INDICATOR_TYPE_INDICATOR_STATUS")
   (values
-    '("passive" "APP_INDICATOR_STATUS_PASSIVE")
-    '("active" "APP_INDICATOR_STATUS_ACTIVE")
-    '("attention" "APP_INDICATOR_STATUS_ATTENTION")
+    '("Passive" "APP_INDICATOR_STATUS_PASSIVE")
+    '("Active" "APP_INDICATOR_STATUS_ACTIVE")
+    '("NeedsAttention" "APP_INDICATOR_STATUS_ATTENTION")
   )
 )
 
