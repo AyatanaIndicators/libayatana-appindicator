@@ -1,4 +1,4 @@
-indicator-application (0.0.17-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.0.17-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.17
     * Support GTK's show menu items property (LP: #528527)
