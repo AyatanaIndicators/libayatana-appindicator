@@ -1,3 +1,13 @@
+indicator-application (0.0.17-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream Release 0.0.17
+    * Support GTK's show menu items property (LP: #528527)
+    * Fix status and category nicks in Python bindings (LP: #539858)
+    * Switch domains to org.kde instead of org.freedesktop as spec
+      was never officially approved by that body.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 13:11:00 -0500
+
 indicator-application (0.0.16-0ubuntu2) lucid; urgency=low
 
   * Backported upstream change to respect gtk "always-show-image" (lp: #528527)
