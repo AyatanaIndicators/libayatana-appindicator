@@ -625,7 +625,7 @@ check_connect (AppIndicator *self)
 	}
 
 	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
-	org_freedesktop_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
+	org_kde_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
 	g_free(path);
 
 	/* Emit the AppIndicator::connection-changed signal*/
