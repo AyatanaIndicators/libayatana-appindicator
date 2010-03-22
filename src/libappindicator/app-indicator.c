@@ -861,26 +861,33 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
-	GIcon *themed_icon =
-	    g_themed_icon_new_with_default_fallbacks (self->priv->icon_name);
+	GIcon *themed_icon = NULL;
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
 		gtk_status_icon_set_visible(icon, FALSE);
-		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_attention_icon (self));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
 
-	g_object_ref_sink (themed_icon);
-	g_object_unref (themed_icon);
+	if (themed_icon) {
+		g_object_ref_sink (themed_icon);
+		g_object_unref (themed_icon);
+	}
 
 	return;
 }
