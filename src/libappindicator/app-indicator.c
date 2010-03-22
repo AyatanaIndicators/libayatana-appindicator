@@ -144,6 +144,8 @@ static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 
+static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
+
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
 
@@ -334,6 +336,9 @@ app_indicator_init (AppIndicator *self)
 		return;
 	}
 	dbus_g_connection_ref(priv->connection);
+
+	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+		"changed", G_CALLBACK(theme_changed_cb), self);
 
 	self->priv = priv;
 
@@ -834,8 +839,6 @@ fallback (AppIndicator * self)
 		G_CALLBACK(status_icon_changes), icon);
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
 		G_CALLBACK(status_icon_changes), icon);
-	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
-		"changed", G_CALLBACK(theme_changed_cb), self);
 
 	status_icon_changes(self, icon);
 
