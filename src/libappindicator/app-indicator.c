@@ -35,8 +35,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
 
-#include <libindicator/indicator-image-helper.h>
-
 #include "libappindicator/app-indicator.h"
 #include "libappindicator/app-indicator-enum-types.h"
 
@@ -860,25 +858,26 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
-	GtkImage *image = indicator_image_helper (self->priv->icon_name);
+	GIcon *themed_icon =
+	    g_themed_icon_new_with_default_fallbacks (self->priv->icon_name);
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
 		gtk_status_icon_set_visible(icon, FALSE);
-		gtk_status_icon_set_from_pixbuf(icon, gtk_image_get_pixbuf (image));
+		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-		gtk_status_icon_set_from_pixbuf(icon, gtk_image_get_pixbuf (image));
+		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-		gtk_status_icon_set_from_pixbuf(icon, gtk_image_get_pixbuf (image));
+		gtk_status_icon_set_from_gicon(icon, G_ICON (themed_icon));
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
 
-	g_object_ref_sink (image);
-	g_object_unref (image);
+	g_object_ref_sink (themed_icon);
+	g_object_unref (themed_icon);
 
 	return;
 }
