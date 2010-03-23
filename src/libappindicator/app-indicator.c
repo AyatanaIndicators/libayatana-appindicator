@@ -1200,6 +1200,13 @@ action_notify_cb (GtkAction  *action,
 {
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
 
+  if (pspec->name == g_intern_static_string ("active"))
+    {
+      dbusmenu_menuitem_property_set_bool (child,
+                                      DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                      gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+    }
+    
   if (pspec->name == g_intern_static_string ("label"))
     {
       dbusmenu_menuitem_property_set (child,
