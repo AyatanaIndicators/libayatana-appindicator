@@ -144,6 +144,8 @@ static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 
+static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
+
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
 
@@ -334,6 +336,9 @@ app_indicator_init (AppIndicator *self)
 		return;
 	}
 	dbus_g_connection_ref(priv->connection);
+
+	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
+		"changed", G_CALLBACK(theme_changed_cb), self);
 
 	self->priv = priv;
 
@@ -812,6 +817,13 @@ fallback_timer_expire (gpointer data)
 	return FALSE;
 }
 
+/* emit a NEW_ICON signal in response for the theme change */
+static void
+theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
+{
+	g_signal_emit (user_data, signals[NEW_ICON], 0, TRUE);
+}
+
 /* Creates a StatusIcon that can be used when the application
    indicator area isn't available. */
 static GtkStatusIcon *
@@ -849,21 +861,31 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
+	GIcon *themed_icon = NULL;
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
 		gtk_status_icon_set_visible(icon, FALSE);
-		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-		gtk_status_icon_set_from_icon_name(icon, app_indicator_get_attention_icon(self));
+		themed_icon =
+		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_attention_icon (self));
+		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
+
+	if (themed_icon)
+		g_object_unref (themed_icon);
 
 	return;
 }
@@ -1200,6 +1222,13 @@ action_notify_cb (GtkAction  *action,
 {
   DbusmenuMenuitem *child = (DbusmenuMenuitem *)data;
 
+  if (pspec->name == g_intern_static_string ("active"))
+    {
+      dbusmenu_menuitem_property_set_bool (child,
+                                      DBUSMENU_MENUITEM_PROP_TOGGLE_STATE,
+                                      gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)));
+    }
+    
   if (pspec->name == g_intern_static_string ("label"))
     {
       dbusmenu_menuitem_property_set (child,
