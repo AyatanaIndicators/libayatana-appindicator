@@ -43,6 +43,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "dbus-shared.h"
 
+#define PANEL_ICON_SUFFIX  "panel"
+
 /**
 	AppIndicatorPrivate:
 	@id: The ID of the indicator.  Maps to AppIndicator::id.
@@ -900,6 +902,23 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 	return;
 }
 
+/* A helper function that appends PANEL_ICON_SUFFIX to the given icon name
+   if it's missing. */
+static char *
+append_panel_icon_suffix (const gchar *icon_name)
+{
+	gchar * long_name = NULL;
+
+	if (!g_str_has_suffix (icon_name, PANEL_ICON_SUFFIX)) {
+		long_name =
+		    g_strdup_printf("%s-%s", icon_name, PANEL_ICON_SUFFIX);
+        } else {
+           	long_name = g_strdup (icon_name);
+        }
+
+	return long_name;	
+}
+
 
 /* ************************* */
 /*    Public Functions       */
@@ -1001,6 +1020,8 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
+  char *long_name;
+
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
 
@@ -1009,7 +1030,8 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->attention_icon_name)
         g_free (self->priv->attention_icon_name);
 
-      self->priv->attention_icon_name = g_strdup (icon_name);
+      long_name = append_panel_icon_suffix (icon_name);
+      self->priv->attention_icon_name = long_name;
 
       g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
     }
@@ -1027,6 +1049,8 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
+  char *long_name;
+
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
 
@@ -1035,7 +1059,8 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->icon_name)
         g_free (self->priv->icon_name);
 
-      self->priv->icon_name = g_strdup (icon_name);
+      long_name = append_panel_icon_suffix (icon_name);
+      self->priv->icon_name = long_name;
 
       g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
     }
