@@ -142,7 +142,7 @@ static void status_icon_status_wrapper (AppIndicator * self, const gchar * statu
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
-static char * append_panel_icon_suffix (const char * icon_name);
+static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
@@ -907,7 +907,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 
 /* A helper function that appends PANEL_ICON_SUFFIX to the given icon name
    if it's missing. */
-static char *
+static gchar *
 append_panel_icon_suffix (const gchar *icon_name)
 {
 	gchar * long_name = NULL;
@@ -1023,7 +1023,7 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
-  char *long_name;
+  gchar *long_name;
 
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
@@ -1052,7 +1052,7 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
-  char *long_name;
+  gchar *long_name;
 
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
