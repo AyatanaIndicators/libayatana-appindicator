@@ -142,6 +142,7 @@ static void status_icon_status_wrapper (AppIndicator * self, const gchar * statu
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
+static char * append_panel_icon_suffix (const char * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
@@ -452,6 +453,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 {
         AppIndicator *self = APP_INDICATOR (object);
         AppIndicatorPrivate *priv = self->priv;
+        gchar *long_name;
         const gchar *instr;
         GEnumValue *enum_val;
 
@@ -502,7 +504,8 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
               if (priv->icon_name)
                 g_free (priv->icon_name);
 
-              priv->icon_name = g_strdup (instr);
+              long_name = append_panel_icon_suffix (instr);
+              priv->icon_name = long_name;
 
               g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
             }
