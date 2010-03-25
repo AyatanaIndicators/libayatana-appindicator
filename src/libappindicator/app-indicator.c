@@ -884,10 +884,8 @@ status_icon_changes (AppIndicator * self, gpointer data)
 		break;
 	};
 
-	if (themed_icon) {
-		g_object_ref_sink (themed_icon);
+	if (themed_icon)
 		g_object_unref (themed_icon);
-	}
 
 	return;
 }
