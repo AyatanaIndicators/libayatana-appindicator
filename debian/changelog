@@ -1,4 +1,4 @@
-indicator-application (0.0.18-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.0.18-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.18
     * Change when there are updates to Check and Radio buttons via
