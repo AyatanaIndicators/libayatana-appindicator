@@ -176,7 +176,7 @@ test_libappindicator_props_suite (void)
 gint
 main (gint argc, gchar * argv[])
 {
-	g_type_init();
+	gtk_init(&argc, &argv);
 	g_test_init(&argc, &argv, NULL);
 
 	/* Test suites */

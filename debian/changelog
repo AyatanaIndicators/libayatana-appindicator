@@ -1,3 +1,13 @@
+indicator-application (0.0.18-0ubuntu1) UNRELEASED; urgency=low
+
+  * Upstream Release 0.0.18
+    * Change when there are updates to Check and Radio buttons via
+      their actions.  (LP: #542221)
+    * Fixing icon updating with themes and naming fallbacks with
+      the status icon fallback.  (LP: #532858)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 12:14:23 -0500
+
 indicator-application (0.0.17-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.17
