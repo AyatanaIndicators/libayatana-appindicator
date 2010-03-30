@@ -43,6 +43,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "dbus-shared.h"
 
+#define PANEL_ICON_SUFFIX  "panel"
+
 /**
 	AppIndicatorPrivate:
 	@id: The ID of the indicator.  Maps to AppIndicator::id.
@@ -140,6 +142,7 @@ static void status_icon_status_wrapper (AppIndicator * self, const gchar * statu
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
+static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
@@ -455,6 +458,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 {
         AppIndicator *self = APP_INDICATOR (object);
         AppIndicatorPrivate *priv = self->priv;
+        gchar *long_name;
         const gchar *instr;
         GEnumValue *enum_val;
 
@@ -505,7 +509,8 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
               if (priv->icon_name)
                 g_free (priv->icon_name);
 
-              priv->icon_name = g_strdup (instr);
+              long_name = append_panel_icon_suffix (instr);
+              priv->icon_name = long_name;
 
               g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
             }
@@ -922,6 +927,23 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 	return;
 }
 
+/* A helper function that appends PANEL_ICON_SUFFIX to the given icon name
+   if it's missing. */
+static gchar *
+append_panel_icon_suffix (const gchar *icon_name)
+{
+	gchar * long_name = NULL;
+
+	if (!g_str_has_suffix (icon_name, PANEL_ICON_SUFFIX)) {
+		long_name =
+		    g_strdup_printf("%s-%s", icon_name, PANEL_ICON_SUFFIX);
+        } else {
+           	long_name = g_strdup (icon_name);
+        }
+
+	return long_name;	
+}
+
 
 /* ************************* */
 /*    Public Functions       */
@@ -1023,6 +1045,8 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
+  gchar *long_name;
+
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
 
@@ -1031,7 +1055,8 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->attention_icon_name)
         g_free (self->priv->attention_icon_name);
 
-      self->priv->attention_icon_name = g_strdup (icon_name);
+      long_name = append_panel_icon_suffix (icon_name);
+      self->priv->attention_icon_name = long_name;
 
       g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
     }
@@ -1049,6 +1074,8 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
+  gchar *long_name;
+
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (icon_name != NULL);
 
@@ -1057,7 +1084,8 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->icon_name)
         g_free (self->priv->icon_name);
 
-      self->priv->icon_name = g_strdup (icon_name);
+      long_name = append_panel_icon_suffix (icon_name);
+      self->priv->icon_name = long_name;
 
       g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
     }

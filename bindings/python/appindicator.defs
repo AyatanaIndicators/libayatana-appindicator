@@ -41,14 +41,15 @@
   (return-type "GType")
 )
 
-(define-function app_indicator_new
-  (c-name "app_indicator_new")
+(define-function app_indicator_new_with_path
+  (c-name "app_indicator_new_with_path")
   (is-constructor-of "AppIndicator")
   (return-type "AppIndicator*")
   (parameters
     '("const-gchar*" "id")
     '("const-gchar*" "icon_name")
     '("AppIndicatorCategory" "category")
+    '("const-gchar*" "icon_path" (null-ok) (default "NULL"))
   )
 )
 
