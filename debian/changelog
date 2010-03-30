@@ -1,4 +1,4 @@
-indicator-application (0.0.18-0ubuntu2~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.18-0ubuntu2~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Setup the icons to use the -panel variants even when falling
@@ -6,7 +6,7 @@ indicator-application (0.0.18-0ubuntu2~ppa1) UNRELEASED; urgency=low
     * Change python bindings to use _with_path so that they can set
       the icon path.  (LP: #527061)
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 30 Mar 2010 14:19:47 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 30 Mar 2010 14:23:48 -0500
 
 indicator-application (0.0.18-0ubuntu1) lucid; urgency=low
 
