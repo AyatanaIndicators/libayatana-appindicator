@@ -47,6 +47,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 /**
 	AppIndicatorPrivate:
+
+	All of the private data in an instance of a
+	application indicator.
+*/
+/*  Private Fields
 	@id: The ID of the indicator.  Maps to AppIndicator::id.
 	@category: Which category the indicator is.  Maps to AppIndicator::category.
 	@status: The status of the indicator.  Maps to AppIndicator::status.
@@ -54,11 +59,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 	@attention_icon_name: The name of the attention icon to use.  Maps to AppIndicator::attention-icon-name.
 	@menu: The menu for this indicator.  Maps to AppIndicator::menu
 	@watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be #NULL.
-
-	All of the private data in an instance of a
-	application indicator.
 */
 struct _AppIndicatorPrivate {
+	/*< Private >*/
 	/* Properties */
 	gchar                *id;
 	gchar                *clean_id;
