@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="libappindicator Reference Manual" link="index.html" author="" name="libappindicator" version="2" language="c">
+  <chapters>
+    <sub name="Base Classes for Applications" link="ch01.html">
+      <sub name="AppIndicator" link="libappindicator-app-indicator.html"/>
+    </sub>
+    <sub name="Object Hierarchy" link="object-tree.html"/>
+    <sub name="API Index" link="api-index-full.html"/>
+  </chapters>
+  <functions>
+    <keyword type="macro" name="APP_INDICATOR_TYPE" link="libappindicator-app-indicator.html#APP-INDICATOR-TYPE:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR()" link="libappindicator-app-indicator.html#APP-INDICATOR:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_CLASS()" link="libappindicator-app-indicator.html#APP-INDICATOR-CLASS:CAPS"/>
+    <keyword type="macro" name="IS_APP_INDICATOR()" link="libappindicator-app-indicator.html#IS-APP-INDICATOR:CAPS"/>
+    <keyword type="macro" name="IS_APP_INDICATOR_CLASS()" link="libappindicator-app-indicator.html#IS-APP-INDICATOR-CLASS:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_GET_CLASS()" link="libappindicator-app-indicator.html#APP-INDICATOR-GET-CLASS:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_SIGNAL_NEW_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_SIGNAL_NEW_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS"/>
+    <keyword type="macro" name="APP_INDICATOR_SIGNAL_CONNECTION_CHANGED" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS"/>
+    <keyword type="enum" name="enum AppIndicatorCategory" link="libappindicator-app-indicator.html#AppIndicatorCategory"/>
+    <keyword type="enum" name="enum AppIndicatorStatus" link="libappindicator-app-indicator.html#AppIndicatorStatus"/>
+    <keyword type="struct" name="AppIndicatorPrivate" link="libappindicator-app-indicator.html#AppIndicatorPrivate"/>
+    <keyword type="struct" name="AppIndicator" link="libappindicator-app-indicator.html#AppIndicator-struct"/>
+    <keyword type="struct" name="AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
+    <keyword type="function" name="app_indicator_get_type ()" link="libappindicator-app-indicator.html#app-indicator-get-type"/>
+    <keyword type="function" name="app_indicator_new ()" link="libappindicator-app-indicator.html#app-indicator-new"/>
+    <keyword type="function" name="app_indicator_new_with_path ()" link="libappindicator-app-indicator.html#app-indicator-new-with-path"/>
+    <keyword type="function" name="app_indicator_set_status ()" link="libappindicator-app-indicator.html#app-indicator-set-status"/>
+    <keyword type="function" name="app_indicator_set_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-attention-icon"/>
+    <keyword type="function" name="app_indicator_set_menu ()" link="libappindicator-app-indicator.html#app-indicator-set-menu"/>
+    <keyword type="function" name="app_indicator_set_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-icon"/>
+    <keyword type="function" name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
+    <keyword type="function" name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
+    <keyword type="function" name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
+    <keyword type="function" name="app_indicator_get_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-icon"/>
+    <keyword type="function" name="app_indicator_get_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-attention-icon"/>
+    <keyword type="function" name="app_indicator_get_menu ()" link="libappindicator-app-indicator.html#app-indicator-get-menu"/>
+    <keyword type="property" name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
+    <keyword type="property" name="The &quot;category&quot; property" link="libappindicator-app-indicator.html#AppIndicator--category"/>
+    <keyword type="property" name="The &quot;connected&quot; property" link="libappindicator-app-indicator.html#AppIndicator--connected"/>
+    <keyword type="property" name="The &quot;icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-name"/>
+    <keyword type="property" name="The &quot;icon-theme-path&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-theme-path"/>
+    <keyword type="property" name="The &quot;id&quot; property" link="libappindicator-app-indicator.html#AppIndicator--id"/>
+    <keyword type="property" name="The &quot;menu&quot; property" link="libappindicator-app-indicator.html#AppIndicator--menu"/>
+    <keyword type="property" name="The &quot;status&quot; property" link="libappindicator-app-indicator.html#AppIndicator--status"/>
+    <keyword type="signal" name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
+    <keyword type="signal" name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
+    <keyword type="signal" name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>
+    <keyword type="signal" name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
+    <keyword type="constant" name="APP_INDICATOR_CATEGORY_APPLICATION_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_CATEGORY_COMMUNICATIONS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-COMMUNICATIONS:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_CATEGORY_SYSTEM_SERVICES" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-SYSTEM-SERVICES:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_CATEGORY_HARDWARE" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-HARDWARE:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_CATEGORY_OTHER" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-OTHER:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_STATUS_PASSIVE" link="libappindicator-app-indicator.html#APP-INDICATOR-STATUS-PASSIVE:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_STATUS_ACTIVE" link="libappindicator-app-indicator.html#APP-INDICATOR-STATUS-ACTIVE:CAPS"/>
+    <keyword type="constant" name="APP_INDICATOR_STATUS_ATTENTION" link="libappindicator-app-indicator.html#APP-INDICATOR-STATUS-ATTENTION:CAPS"/>
+  </functions>
+</book>

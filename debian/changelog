@@ -1,3 +1,16 @@
+indicator-application (0.0.19-0ubuntu1) lucid; urgency=low
+
+  * New upstream release.
+    * Setup the icons to use the -panel variants even when falling
+      back to status icons.  (LP: #547072)
+    * Change python bindings to use _with_path so that they can set
+      the icon path.  (LP: #527061)
+    * Don't set the fallback timer if we're already in a fallback
+      mode to avoid unfalling back excessively. (LP: #529052)
+    * Fix distcheck of documentation
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Apr 2010 15:56:02 -0500
+
 indicator-application (0.0.18-0ubuntu1) lucid; urgency=low
 
   * Upstream Release 0.0.18

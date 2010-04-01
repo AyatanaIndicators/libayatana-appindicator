@@ -1,0 +1,336 @@
+<!-- ##### SECTION Title ##### -->
+AppIndicator
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### MACRO APP_INDICATOR_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO APP_INDICATOR ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO APP_INDICATOR_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO IS_APP_INDICATOR ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO IS_APP_INDICATOR_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO APP_INDICATOR_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_ICON ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_STATUS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_CONNECTION_CHANGED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM AppIndicatorCategory ##### -->
+<para>
+
+</para>
+
+@APP_INDICATOR_CATEGORY_APPLICATION_STATUS: 
+@APP_INDICATOR_CATEGORY_COMMUNICATIONS: 
+@APP_INDICATOR_CATEGORY_SYSTEM_SERVICES: 
+@APP_INDICATOR_CATEGORY_HARDWARE: 
+@APP_INDICATOR_CATEGORY_OTHER: 
+
+<!-- ##### ENUM AppIndicatorStatus ##### -->
+<para>
+
+</para>
+
+@APP_INDICATOR_STATUS_PASSIVE: 
+@APP_INDICATOR_STATUS_ACTIVE: 
+@APP_INDICATOR_STATUS_ATTENTION: 
+
+<!-- ##### STRUCT AppIndicatorPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT AppIndicator ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL AppIndicator::connection-changed ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL AppIndicator::new-attention-icon ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+
+<!-- ##### SIGNAL AppIndicator::new-icon ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+
+<!-- ##### SIGNAL AppIndicator::new-status ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG AppIndicator:attention-icon-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:category ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:connected ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:icon-name ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:icon-theme-path ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:id ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:menu ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:status ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT AppIndicatorClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@new_icon: 
+@new_attention_icon: 
+@new_status: 
+@connection_changed: 
+@fallback: 
+@unfallback: 
+@app_indicator_reserved_1: 
+@app_indicator_reserved_2: 
+
+<!-- ##### FUNCTION app_indicator_get_type ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_new ##### -->
+<para>
+
+</para>
+
+@id: 
+@icon_name: 
+@category: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_new_with_path ##### -->
+<para>
+
+</para>
+
+@id: 
+@icon_name: 
+@category: 
+@icon_path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_set_status ##### -->
+<para>
+
+</para>
+
+@self: 
+@status: 
+
+
+<!-- ##### FUNCTION app_indicator_set_attention_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@icon_name: 
+
+
+<!-- ##### FUNCTION app_indicator_set_menu ##### -->
+<para>
+
+</para>
+
+@self: 
+@menu: 
+
+
+<!-- ##### FUNCTION app_indicator_set_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@icon_name: 
+
+
+<!-- ##### FUNCTION app_indicator_get_id ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_category ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_status ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_attention_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_menu ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
