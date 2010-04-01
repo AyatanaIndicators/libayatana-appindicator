@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="libappindicator Reference Manual" link="index.html" author="" name="libappindicator">
+  <chapters>
+    <sub name="Base Classes for Applications" link="ch01.html">
+      <sub name="AppIndicator" link="libappindicator-app-indicator.html"/>
+    </sub>
+    <sub name="Object Hierarchy" link="object-tree.html"/>
+    <sub name="API Index" link="api-index-full.html"/>
+  </chapters>
+  <functions>
+    <function name="APP_INDICATOR_TYPE" link="libappindicator-app-indicator.html#APP-INDICATOR-TYPE:CAPS"/>
+    <function name="APP_INDICATOR()" link="libappindicator-app-indicator.html#APP-INDICATOR:CAPS"/>
+    <function name="APP_INDICATOR_CLASS()" link="libappindicator-app-indicator.html#APP-INDICATOR-CLASS:CAPS"/>
+    <function name="IS_APP_INDICATOR()" link="libappindicator-app-indicator.html#IS-APP-INDICATOR:CAPS"/>
+    <function name="IS_APP_INDICATOR_CLASS()" link="libappindicator-app-indicator.html#IS-APP-INDICATOR-CLASS:CAPS"/>
+    <function name="APP_INDICATOR_GET_CLASS()" link="libappindicator-app-indicator.html#APP-INDICATOR-GET-CLASS:CAPS"/>
+    <function name="APP_INDICATOR_SIGNAL_NEW_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON:CAPS"/>
+    <function name="APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS"/>
+    <function name="APP_INDICATOR_SIGNAL_NEW_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS"/>
+    <function name="APP_INDICATOR_SIGNAL_CONNECTION_CHANGED" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS"/>
+    <function name="enum AppIndicatorCategory" link="libappindicator-app-indicator.html#AppIndicatorCategory"/>
+    <function name="enum AppIndicatorStatus" link="libappindicator-app-indicator.html#AppIndicatorStatus"/>
+    <function name="AppIndicatorPrivate" link="libappindicator-app-indicator.html#AppIndicatorPrivate"/>
+    <function name="AppIndicator" link="libappindicator-app-indicator.html#AppIndicator-struct"/>
+    <function name="AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
+    <function name="app_indicator_get_type ()" link="libappindicator-app-indicator.html#app-indicator-get-type"/>
+    <function name="app_indicator_new ()" link="libappindicator-app-indicator.html#app-indicator-new"/>
+    <function name="app_indicator_new_with_path ()" link="libappindicator-app-indicator.html#app-indicator-new-with-path"/>
+    <function name="app_indicator_set_status ()" link="libappindicator-app-indicator.html#app-indicator-set-status"/>
+    <function name="app_indicator_set_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-attention-icon"/>
+    <function name="app_indicator_set_menu ()" link="libappindicator-app-indicator.html#app-indicator-set-menu"/>
+    <function name="app_indicator_set_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-icon"/>
+    <function name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
+    <function name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
+    <function name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
+    <function name="app_indicator_get_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-icon"/>
+    <function name="app_indicator_get_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-attention-icon"/>
+    <function name="app_indicator_get_menu ()" link="libappindicator-app-indicator.html#app-indicator-get-menu"/>
+    <function name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
+    <function name="The &quot;category&quot; property" link="libappindicator-app-indicator.html#AppIndicator--category"/>
+    <function name="The &quot;connected&quot; property" link="libappindicator-app-indicator.html#AppIndicator--connected"/>
+    <function name="The &quot;icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-name"/>
+    <function name="The &quot;icon-theme-path&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-theme-path"/>
+    <function name="The &quot;id&quot; property" link="libappindicator-app-indicator.html#AppIndicator--id"/>
+    <function name="The &quot;menu&quot; property" link="libappindicator-app-indicator.html#AppIndicator--menu"/>
+    <function name="The &quot;status&quot; property" link="libappindicator-app-indicator.html#AppIndicator--status"/>
+    <function name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
+    <function name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
+    <function name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>
+    <function name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
+  </functions>
+</book>
