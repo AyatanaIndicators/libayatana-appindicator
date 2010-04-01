@@ -447,7 +447,12 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
-	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	gchar * longname = NULL;
+	if (!g_str_has_suffix(iconname, PANEL_ICON_SUFFIX)) {
+		longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	} else {
+		longname = g_strdup(iconname);
+	}
 	app->entry.image = indicator_image_helper(longname);
 	g_free(longname);
 

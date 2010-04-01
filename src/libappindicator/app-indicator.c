@@ -43,8 +43,15 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "dbus-shared.h"
 
+#define PANEL_ICON_SUFFIX  "panel"
+
 /**
 	AppIndicatorPrivate:
+
+	All of the private data in an instance of a
+	application indicator.
+*/
+/*  Private Fields
 	@id: The ID of the indicator.  Maps to AppIndicator::id.
 	@category: Which category the indicator is.  Maps to AppIndicator::category.
 	@status: The status of the indicator.  Maps to AppIndicator::status.
@@ -52,11 +59,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 	@attention_icon_name: The name of the attention icon to use.  Maps to AppIndicator::attention-icon-name.
 	@menu: The menu for this indicator.  Maps to AppIndicator::menu
 	@watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be #NULL.
-
-	All of the private data in an instance of a
-	application indicator.
 */
 struct _AppIndicatorPrivate {
+	/*< Private >*/
 	/* Properties */
 	gchar                *id;
 	gchar                *clean_id;
@@ -140,6 +145,7 @@ static void status_icon_status_wrapper (AppIndicator * self, const gchar * statu
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
+static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
@@ -455,7 +461,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 {
         AppIndicator *self = APP_INDICATOR (object);
         AppIndicatorPrivate *priv = self->priv;
-        const gchar *instr;
         GEnumValue *enum_val;
 
         switch (prop_id) {
@@ -498,25 +503,15 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           break;
 
         case PROP_ICON_NAME:
-          instr = g_value_get_string (value);
-
-          if (g_strcmp0 (priv->icon_name, instr) != 0)
-            {
-              if (priv->icon_name)
-                g_free (priv->icon_name);
-
-              priv->icon_name = g_strdup (instr);
-
-              g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
-            }
-
+          app_indicator_set_icon (APP_INDICATOR (object),
+                                  g_value_get_string (value));
           check_connect (self);
           break;
 
         case PROP_ATTENTION_ICON_NAME:
           app_indicator_set_attention_icon (APP_INDICATOR (object),
                                             g_value_get_string (value));
-        break;
+          break;
 
         case PROP_ICON_THEME_PATH:
           if (priv->icon_path != NULL) {
@@ -776,6 +771,11 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 		return;
 	}
 
+	if (priv->status_icon != NULL) {
+		/* We're already fallen back.  Let's not do it again. */
+		return;
+	}
+
 	if (priv->dbus_proxy == NULL) {
 		/* NOTE: Read the comment on setup_name_owner_proxy */
 		g_idle_add(setup_name_owner_proxy, self);
@@ -862,30 +862,36 @@ status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
 	GIcon *themed_icon = NULL;
+	gchar *longname = NULL;
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
-		themed_icon =
-		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
+		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
+		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
 		gtk_status_icon_set_visible(icon, FALSE);
 		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-		themed_icon =
-		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_icon (self));
+		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
+		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
 		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-		themed_icon =
-		    g_themed_icon_new_with_default_fallbacks (app_indicator_get_attention_icon (self));
+		longname = append_panel_icon_suffix(app_indicator_get_attention_icon(self));
+		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
 		gtk_status_icon_set_from_gicon(icon, themed_icon);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
 
-	if (themed_icon)
+	if (themed_icon) {
 		g_object_unref (themed_icon);
+	}
+
+	if (longname) {
+		g_free(longname);
+	}
 
 	return;
 }
@@ -920,6 +926,23 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 	gtk_status_icon_set_visible(status_icon, FALSE);
 	g_object_unref(G_OBJECT(status_icon));
 	return;
+}
+
+/* A helper function that appends PANEL_ICON_SUFFIX to the given icon name
+   if it's missing. */
+static gchar *
+append_panel_icon_suffix (const gchar *icon_name)
+{
+	gchar * long_name = NULL;
+
+	if (!g_str_has_suffix (icon_name, PANEL_ICON_SUFFIX)) {
+		long_name =
+		    g_strdup_printf("%s-%s", icon_name, PANEL_ICON_SUFFIX);
+        } else {
+           	long_name = g_strdup (icon_name);
+        }
+
+	return long_name;	
 }
 
 
@@ -1031,10 +1054,12 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->attention_icon_name)
         g_free (self->priv->attention_icon_name);
 
-      self->priv->attention_icon_name = g_strdup (icon_name);
+      self->priv->attention_icon_name = g_strdup(icon_name);
 
       g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
     }
+
+  return;
 }
 
 /**
@@ -1057,10 +1082,12 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
       if (self->priv->icon_name)
         g_free (self->priv->icon_name);
 
-      self->priv->icon_name = g_strdup (icon_name);
+      self->priv->icon_name = g_strdup(icon_name);
 
       g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
     }
+
+  return;
 }
 
 static void
