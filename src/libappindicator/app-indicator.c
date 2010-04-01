@@ -781,6 +781,11 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 		return;
 	}
 
+	if (priv->status_icon != NULL) {
+		/* We're already fallen back.  Let's not do it again. */
+		return;
+	}
+
 	if (priv->dbus_proxy == NULL) {
 		/* NOTE: Read the comment on setup_name_owner_proxy */
 		g_idle_add(setup_name_owner_proxy, self);
