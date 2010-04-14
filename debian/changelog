@@ -1,4 +1,4 @@
-indicator-application (0.0.19-0ubuntu1~ppa1) lucid; urgency=low
+indicator-application (0.0.19-0ubuntu1) lucid; urgency=low
 
   * New upstream release.
     * Setup the icons to use the -panel variants even when falling
