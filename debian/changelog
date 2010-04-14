@@ -1,3 +1,19 @@
+indicator-application (0.0.19-0ubuntu2) lucid; urgency=low
+
+  * debian/control:
+    + Set libappindicator0-cil and libappindicator-cil-dev to Arch: all
+    + Make libappindicator0-cil depend on libappindicator0 >= ${source:Version}
+      instead
+  * debian/rules:
+    + Fix ordering of dh_*cli* (LP: #560095)
+  * debian/libappindicator0-cil.install,
+    debian/libappindicator0-cil.installcligac:
+    + Fix CLI policy breakage:
+      - Wrong installation paths for GAC'd CLI libraries
+      - Direct installation of GAC'd libraries
+
+ -- Chow Loong Jin <hyperair@ubuntu.com>  Wed, 14 Apr 2010 18:44:22 +0800
+
 indicator-application (0.0.19-0ubuntu1) lucid; urgency=low
 
   * New upstream release.
