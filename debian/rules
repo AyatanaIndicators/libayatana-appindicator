@@ -57,12 +57,13 @@ binary-post-install/indicator-application::
 	find debian/indicator-application/usr/lib -name \*.la -exec rm {} \;
 	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
 
-binary/libappindicator0-cil:: binary-arch
-binary-arch: 
-	dh_clifixperms -i
-	dh_installdeb -i
+binary-fixup/libappindicator0-cil::
+	dh_clifixperms
+
+binary-predeb/libappindicator0-cil::
 	dh_makeclilibs -m $(API_VERSION)
-	dh_clideps -i -d
+	dh_installcligac
+	dh_clideps
 
 
 common-binary-predeb-arch:: list-missing

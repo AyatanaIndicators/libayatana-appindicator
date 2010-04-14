@@ -89,12 +89,11 @@ Description:  Application Indicators
 
 Package: libappindicator0-cil
 Section: cli-mono
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends},
-         libappindicator0 (= ${binary:Version})
-Provides: ${cli:Provides}
+         libappindicator0 (>= ${source:Version})
 Description: CLI bindings for libappindicator
  This package provides the appindicator-sharp assembly that allows CLI (.NET)
  programs to take menus from applications and place them in the panel.
@@ -103,7 +102,7 @@ Description: CLI bindings for libappindicator
 
 Package: libappindicator-cil-dev
 Section: libdevel
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends},
