@@ -3,6 +3,7 @@
 DEB_PYTHON_SYSTEM=pycentral
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 export MONO_SHARED_DIR=$(CURDIR)
+export CSC=/usr/bin/mono-csc
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools-vars.mk
@@ -11,6 +12,8 @@ include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
 API_VERSION = 0.1
+
+DEB_DH_MAKESHLIBS_ARGS_libappindicator0 := -V 'libappindicator0 (>= 0.0.19)'
 
 configure-stamp-%:
 	mkdir build-$*
@@ -35,6 +38,15 @@ install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
 binary-install/python-appindicator::
 	dh_pycentral
 
+binary-install/libappindicator0.0-cil::
+	dh_clistrip
+	dh_clifixperms
+	dh_makeclilibs -V
+	dh_installcligac
+
+binary-predeb/libappindicator0.0-cil:: binary-fixup/libappindicator0
+	dh_clideps -plibappindicator0.0-cil
+
 configure-stamp:
 	$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
 	touch $@
@@ -56,15 +68,6 @@ install/indicator-application:: install-stamp
 binary-post-install/indicator-application::
 	find debian/indicator-application/usr/lib -name \*.la -exec rm {} \;
 	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
-
-binary-fixup/libappindicator0-cil::
-	dh_clifixperms
-
-binary-predeb/libappindicator0-cil::
-	dh_makeclilibs -m $(API_VERSION)
-	dh_installcligac
-	dh_clideps
-
 
 common-binary-predeb-arch:: list-missing
 
