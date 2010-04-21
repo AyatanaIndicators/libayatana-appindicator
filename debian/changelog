@@ -1,3 +1,28 @@
+indicator-application (0.0.19-0ubuntu4) lucid; urgency=low
+
+  * bindings/mono/appindicator-sharp-0.1.pc.in:
+    + Fix pcfile to point to library install location (LP: #564506)
+  * debian/control,
+    debian/libappindicator0-cil.install,
+    debian/libappindicator0-cil.installcligac,
+    debian/libappindicator-cil-dev.install,
+    debian/libappindicator0.0-cil.install,
+    debian/libappindicator0.0-cil.installcligac,
+    debian/libappindicator0.1-cil-dev.install:
+    + Rename packages to comply with Debian CLI policy
+  * debian/libappindicator0.0-cil.install,
+    debian/libappindicator0.0-cil.installcligac:
+    + Fix library install location to comply with Debian CLI policy
+  * debian/control,
+    debian/rules:
+    + Pass CSC variable to use mono-csc default compiler from mono-devel
+      2.4.3, rather than the default 2.0-only compiler
+  * debian/rules:
+    + Fix processing of rules to track dependency information on Mono
+      binding, by running rules in correct order
+
+ -- Jo Shields <directhex@apebox.org>  Fri, 16 Apr 2010 10:42:48 +0100
+
 indicator-application (0.0.19-0ubuntu3) lucid; urgency=low
 
   * Merging patch to add assembly information to Mono binding (LP: #547195)

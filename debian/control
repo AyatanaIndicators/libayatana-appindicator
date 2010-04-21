@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 5.0),
                libdbusmenu-gtk-dev (>= 0.2.2),
                libdbusmenu-glib-dev (>= 0.2.2),
                cli-common-dev (>= 0.5.7),
-               mono-devel (>= 2.0.1),
+               mono-devel (>= 2.4.3),
                gtk-sharp2-gapi,
                libmono-dev,
                libnunit-cil-dev,
@@ -87,26 +87,29 @@ Description:  Application Indicators
  .
  This package contains developer documentation.
 
-Package: libappindicator0-cil
+Package: libappindicator0.0-cil
 Section: cli-mono
 Architecture: all
+Replaces: libappindicator0-cil (<= 0.0.19-0ubuntu4~)
+Conflicts: libappindicator0-cil (<= 0.0.19-0ubuntu4~)
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         ${cli:Depends},
-         libappindicator0 (>= ${source:Version})
+         ${cli:Depends}
 Description: CLI bindings for libappindicator
  This package provides the appindicator-sharp assembly that allows CLI (.NET)
  programs to take menus from applications and place them in the panel.
  .
  This package contains assemblies to be used by applications.
 
-Package: libappindicator-cil-dev
+Package: libappindicator0.1-cil-dev
 Section: libdevel
 Architecture: all
+Replaces: libappindicator-cil-dev (<= 0.0.19-0ubuntu4~)
+Conflicts: libappindicator-cil-dev (<= 0.0.19-0ubuntu4~)
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends},
-         libappindicator0-cil (= ${binary:Version})
+         libappindicator0.0-cil (= ${binary:Version})
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
