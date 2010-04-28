@@ -53,6 +53,18 @@ AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
 
 ###########################
+# GObject Introspection
+###########################
+
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
+
+###########################
+# Vala API Generation
+###########################
+
+AC_PATH_PROG([VALA_API_GEN], [vapigen])
+
+###########################
 # Check for Mono support
 ###########################
 
