@@ -105,3 +105,4 @@ src/AppIndicator-0.1.gir
 src/AppIndicator-0.1.typelib
 docs/reference/libappindicator-decl.txt.bak
 docs/reference/libappindicator-decl-list.txt.bak
+src/AppIndicator-0.1.vapi
