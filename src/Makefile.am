@@ -176,3 +176,22 @@ CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 endif
 
+#########################
+# VAPI Files
+#########################
+
+if HAVE_INTROSPECTION
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = AppIndicator-0.1.vapi
+
+AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
+	$(VALA_API_GEN) --library=AppIndicator-0.1 \
+		--pkg gtk+-2.0 \
+		--vapidir=$(top_builddir)/src \
+		$<
+
+CLEANFILES += $(vapi_DATA)
+
+endif
+
