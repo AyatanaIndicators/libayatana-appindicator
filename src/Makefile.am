@@ -1,7 +1,7 @@
 CLEANFILES =
 DISTCLEANFILES =
 BUILT_SOURCES =
-EXTRA_DIST = libappindicator/appindicator-0.1.pc.in
+EXTRA_DIST = appindicator-0.1.pc.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -61,14 +61,14 @@ glib_marshal_prefix = _application_service_marshal
 # Library
 ##################################
 
-pkgconfig_DATA = libappindicator/appindicator-0.1.pc
+pkgconfig_DATA = appindicator-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
-glib_enum_h = libappindicator/app-indicator-enum-types.h
-glib_enum_c = libappindicator/app-indicator-enum-types.gen.c
+glib_enum_h = app-indicator-enum-types.h
+glib_enum_c = app-indicator-enum-types.gen.c
 glib_enum_headers = $(libappindicator_headers)
 
-libappindicator/app-indicator-enum-types.c: libappindicator/app-indicator-enum-types.gen.c
+app-indicator-enum-types.c: app-indicator-enum-types.gen.c
 	sed -e "s|\"passive\"|\"Passive\"|" \
 	    -e "s|\"active\"|\"Active\"|" \
 	    -e "s|\"attention\"|\"NeedsAttention\"|" \
@@ -78,7 +78,7 @@ libappindicator/app-indicator-enum-types.c: libappindicator/app-indicator-enum-t
 	    -e "s|\"hardware\"|\"Hardware\"|" \
 	    -e "s|\"other\"|\"Other\"|" \
 	       $< > $@
-DISTCLEANFILES += libappindicator/app-indicator-enum-types.c
+DISTCLEANFILES += app-indicator-enum-types.c
 
 lib_LTLIBRARIES = \
 	libappindicator.la
@@ -86,7 +86,7 @@ lib_LTLIBRARIES = \
 libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
 libappindicator_headers = \
-	$(srcdir)/libappindicator/app-indicator.h
+	$(srcdir)/app-indicator.h
 
 libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
@@ -94,10 +94,10 @@ libappindicatorinclude_HEADERS = \
 
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
-	libappindicator/app-indicator-enum-types.c \
+	app-indicator-enum-types.c \
 	notification-watcher-client.h \
 	notification-item-server.h \
-	libappindicator/app-indicator.c
+	app-indicator.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \

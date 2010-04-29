@@ -190,7 +190,7 @@ AC_MSG_RESULT($PYGTK_CODEGEN)
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/libappindicator/appindicator-0.1.pc
+src/appindicator-0.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config

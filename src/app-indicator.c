@@ -35,8 +35,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
 
-#include "libappindicator/app-indicator.h"
-#include "libappindicator/app-indicator-enum-types.h"
+#include "app-indicator.h"
+#include "app-indicator-enum-types.h"
 
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
