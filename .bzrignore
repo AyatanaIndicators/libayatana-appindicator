@@ -10,8 +10,8 @@ src/notification-watcher-client.h
 src/notification-watcher-server.h
 src/libappindicator.la
 src/libappindicator_la-application-indicator.lo
-src/libappindicatorindicator/application-indicator-enum-types.h
-src/libappindicatorindicator/application-indicator-enum-types.c
+src/application-indicator-enum-types.h
+src/application-indicator-enum-types.c
 src/stamp-enum-types
 src/libappindicator_la-application-indicator-enum-types.lo
 tests/.deps
@@ -41,8 +41,8 @@ src/libappindicator_la-app-indicator.lo
 src/libapplication.la
 src/libapplication_la-application-service-marshal.lo
 src/libapplication_la-indicator-application.lo
-src/libappindicator/app-indicator-enum-types.c
-src/libappindicator/app-indicator-enum-types.h
+src/app-indicator-enum-types.c
+src/app-indicator-enum-types.h
 gtk-doc.make
 py-compile
 bindings/mono/appindicator-sharp-0.1.pc
@@ -85,7 +85,7 @@ docs/reference/version.xml
 docs/reference/xml
 docs/reference/tmpl/app-indicator.sgml
 docs/reference/tmpl/app-indicator.sgml.bak
-src/libappindicator/appindicator-0.1.pc
+src/appindicator-0.1.pc
 tests/test-libappindicator-fallback-item
 tests/test-libappindicator-fallback-watcher
 tests/test-libappindicator-fallback
@@ -95,9 +95,13 @@ tests/test-libappindicator-status-server
 bindings/mono/AppIndicator.Test.dll
 bindings/mono/libappindicator-api.middle
 bindings/mono/examples/IndicatorExample.exe
-src/libappindicator/app-indicator-enum-types.gen.c
+src/app-indicator-enum-types.gen.c
 indicator-application-[0-9].[0-9].[0-9].tar.gz
 indicator-application-[0-9].[0-9].[0-9].tar.gz.asc
 indicator-application-[0-9].[0-9].[0-9][0-9].tar.gz
 indicator-application-[0-9].[0-9].[0-9][0-9].tar.gz.asc
 m4/gtk-doc.m4
+src/AppIndicator-0.1.gir
+src/AppIndicator-0.1.typelib
+docs/reference/libappindicator-decl.txt.bak
+docs/reference/libappindicator-decl-list.txt.bak
