@@ -291,8 +291,7 @@ These are the states that the indicator can be on in
 <para>
 All of the private data in an instance of a
 	application indicator.
-</para><variablelist role="struct">
-</variablelist></refsect2>
+</para></refsect2>
 <refsect2 id="AppIndicator-struct" role="struct">
 <title>AppIndicator</title>
 <indexterm zone="AppIndicator-struct"><primary>AppIndicator</primary></indexterm>
@@ -302,8 +301,7 @@ A application indicator represents the values that are needed to show a
 	unique status in the panel for an application.  In general, applications
 	should try to fit in the other indicators that are available on the
 	panel before using this.  But, sometimes it is necissary.
-</para><variablelist role="struct">
-</variablelist></refsect2>
+</para></refsect2>
 <refsect2 id="AppIndicatorClass" role="struct">
 <title>AppIndicatorClass</title>
 <indexterm zone="AppIndicatorClass"><primary>AppIndicatorClass</primary></indexterm>
