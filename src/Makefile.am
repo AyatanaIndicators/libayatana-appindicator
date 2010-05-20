@@ -86,7 +86,7 @@ lib_LTLIBRARIES = \
 libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
 libappindicator_headers = \
-	$(srcdir)/app-indicator.h
+	app-indicator.h
 
 libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
@@ -149,7 +149,9 @@ EXTRA_DIST += $(DBUS_SPECS)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=libappindicator/, $(introspection_sources))
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
