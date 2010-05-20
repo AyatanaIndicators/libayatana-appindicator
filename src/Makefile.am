@@ -32,21 +32,24 @@ libapplication_la_LDFLAGS = -module -avoid-version
 
 libexec_PROGRAMS = indicator-application-service
 
+BUILT_SOURCES += \
+	application-service-server.h \
+	application-service-marshal.h \
+	application-service-marshal.c \
+	dbus-properties-client.h \
+	notification-item-client.h \
+	notification-watcher-server.h
+
 indicator_application_service_SOURCES = \
 	application-service.c \
 	application-service-appstore.h \
 	application-service-appstore.c \
 	application-service-lru-file.h \
 	application-service-lru-file.c \
-	application-service-marshal.h \
 	application-service-marshal.c \
-	application-service-server.h \
 	application-service-watcher.h \
 	application-service-watcher.c \
-	dbus-properties-client.h \
-	dbus-shared.h \
-	notification-item-client.h \
-	notification-watcher-server.h
+	dbus-shared.h
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
@@ -92,11 +95,13 @@ libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
 	$(glib_enum_h)
 
+BUILT_SOURCES += \
+	notification-watcher-client.h \
+	notification-item-server.h
+
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
-	notification-watcher-client.h \
-	notification-item-server.h \
 	app-indicator.c
 
 libappindicator_la_LDFLAGS = \
@@ -117,6 +122,7 @@ libappindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	dbus-properties.xml \
 	application-service.xml \
 	notification-item.xml \
 	notification-watcher.xml
