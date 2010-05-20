@@ -1,4 +1,4 @@
-indicator-application (0.0.19-0ubuntu5) UNRELEASED; urgency=low
+indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
 
   * debian/patches/child-leakage.patch
     - Fixes a memory leak (LP: #569273)
