@@ -1,0 +1,17 @@
+=== modified file 'src/libappindicator/app-indicator.c'
+--- src/libappindicator/app-indicator.c	2010-04-01 20:23:36 +0000
++++ src/libappindicator/app-indicator.c	2010-05-19 18:23:24 +0000
+@@ -1408,6 +1408,12 @@
+                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
+                     G_CALLBACK (activate_menuitem), widget);
+   dbusmenu_menuitem_child_append (root, child);
++
++  /* Get rid of initial ref now that the root is
++     holding the object */
++  g_object_unref(child);
++
++  return;
+ }
+ 
+ static void
+
