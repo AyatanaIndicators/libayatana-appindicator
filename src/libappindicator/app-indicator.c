@@ -1408,6 +1408,12 @@ container_iterate (GtkWidget *widget,
                     DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED,
                     G_CALLBACK (activate_menuitem), widget);
   dbusmenu_menuitem_child_append (root, child);
+
+  /* Get rid of initial ref now that the root is
+     holding the object */
+  g_object_unref(child);
+
+  return;
 }
 
 static void
