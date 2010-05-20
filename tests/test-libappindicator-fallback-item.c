@@ -2,7 +2,7 @@
 #include <glib-object.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
-#include <libappindicator/app-indicator.h>
+#include <app-indicator.h>
 
 #define TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE            (test_libappindicator_fallback_item_get_type ())
 #define TEST_LIBAPPINDICATOR_FALLBACK_ITEM(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), TEST_LIBAPPINDICATOR_FALLBACK_ITEM_TYPE, TestLibappindicatorFallbackItem))

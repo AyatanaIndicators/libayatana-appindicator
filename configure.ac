@@ -53,6 +53,18 @@ AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
 
 ###########################
+# GObject Introspection
+###########################
+
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
+
+###########################
+# Vala API Generation
+###########################
+
+AC_PATH_PROG([VALA_API_GEN], [vapigen])
+
+###########################
 # Check for Mono support
 ###########################
 
@@ -178,7 +190,7 @@ AC_MSG_RESULT($PYGTK_CODEGEN)
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/libappindicator/appindicator-0.1.pc
+src/appindicator-0.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config
