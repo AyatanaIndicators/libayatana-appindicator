@@ -66,7 +66,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = app-indicator-enum-types.h
 glib_enum_c = app-indicator-enum-types.gen.c
-glib_enum_headers = $(libappindicator_headers)
+glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 
 app-indicator-enum-types.c: app-indicator-enum-types.gen.c
 	sed -e "s|\"passive\"|\"Passive\"|" \
@@ -156,15 +156,17 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libappindicatorinclude_HEADERS)
+introspection_sources = \
+	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
+	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
 
-AppIndicator-0.1.gir: libappindicator.la
+AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     Gtk-2.0
-AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir)
+AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator.la
-AppIndicator_0_1_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
 INTROSPECTION_GIRS += AppIndicator-0.1.gir
 
