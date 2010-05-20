@@ -1,3 +1,10 @@
+indicator-application (0.2.0~dev-0ubuntu1~ppa2) lucid; urgency=low
+
+  * Upstream Merge
+    * Unref the child that was created
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 14:11:57 -0500
+
 indicator-application (0.2.0~dev-0ubuntu1~ppa1) lucid; urgency=low
 
   * Upstream Merge
