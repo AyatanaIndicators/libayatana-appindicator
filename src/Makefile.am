@@ -1,6 +1,6 @@
-CLEANFILES = 
-DISTCLEANFILES = 
-BUILT_SOURCES = 
+CLEANFILES =
+DISTCLEANFILES =
+BUILT_SOURCES =
 EXTRA_DIST = libappindicator/appindicator-0.1.pc.in
 
 include $(top_srcdir)/Makefile.am.enum
@@ -21,7 +21,8 @@ libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wl,-Bsymbolic-functions \
 	-Wl,-z,defs \
 	-Wl,--as-needed \
-	-Werror
+	-Werror \
+	-DG_LOG_DOMAIN=\"Indicator-Application\"
 libapplication_la_LIBADD = $(INDICATOR_LIBS)
 libapplication_la_LDFLAGS = -module -avoid-version
 
@@ -48,7 +49,8 @@ indicator_application_service_SOURCES = \
 	notification-watcher-server.h
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
-	-Wall -Werror
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"indicator-application-service\"
 indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS)
 
@@ -104,7 +106,8 @@ libappindicator_la_LDFLAGS = \
 
 libappindicator_la_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
-	-Wall -Werror
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"libappindicator\"
 
 libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
