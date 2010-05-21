@@ -1,4 +1,4 @@
-indicator-application (0.0.20-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.20-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Unref the child when created in libappindicator (LP: #569273)
@@ -6,7 +6,7 @@ indicator-application (0.0.20-0ubuntu1~ppa1) UNRELEASED; urgency=low
       binding (LP: #547195)
   * Remove child-leakage.patch as merged upstream
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:35:25 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:56:44 -0500
 
 indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
 
