@@ -1,4 +1,11 @@
-indicator-application (0.0.19-0ubuntu4) UNRELEASED; urgency=low
+indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
+
+  * debian/patches/child-leakage.patch
+    - Fixes a memory leak (LP: #569273)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 20 May 2010 07:35:33 -0400
+
+indicator-application (0.0.19-0ubuntu4) lucid; urgency=low
 
   * bindings/mono/appindicator-sharp-0.1.pc.in:
     + Fix pcfile to point to library install location (LP: #564506)
