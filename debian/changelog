@@ -12,7 +12,31 @@ indicator-application (0.2.0~dev-0ubuntu1~ppa1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 19 May 2010 14:04:29 -0500
 
-indicator-application (0.0.19-0ubuntu4) UNRELEASED; urgency=low
+indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Adding AssemblyInfo.cs for building
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:59:48 -0500
+
+indicator-application (0.0.20-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Unref the child when created in libappindicator (LP: #569273)
+    * Merging patch to add assembly information to Mono
+      binding (LP: #547195)
+  * Remove child-leakage.patch as merged upstream
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:56:44 -0500
+
+indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
+
+  * debian/patches/child-leakage.patch
+    - Fixes a memory leak (LP: #569273)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 20 May 2010 07:35:33 -0400
+
+indicator-application (0.0.19-0ubuntu4) lucid; urgency=low
 
   * bindings/mono/appindicator-sharp-0.1.pc.in:
     + Fix pcfile to point to library install location (LP: #564506)
@@ -371,6 +395,14 @@ indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.0.2
+    * Updates API to use GTK instead of dbusmenu to make it
+      easier for upstream developers to use.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
+
 indicator-application (0.0.2-0~ppa3) karmic; urgency=low
 
   * debian/watch:
@@ -379,14 +411,6 @@ indicator-application (0.0.2-0~ppa3) karmic; urgency=low
     - Updated Vcs-Bzr, project urls and description
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
-
-indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Upstream release 0.0.2
-    * Updates API to use GTK instead of dbusmenu to make it
-      easier for upstream developers to use.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
 
