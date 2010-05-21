@@ -55,7 +55,21 @@ CFILE_GLOB=$(top_srcdir)/src/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=app-indicator-enum-types.h application-service-appstore.h application-service-client.h application-service-marshal.h application-service-server.h application-service-watcher.h dbus-properties-client.h dbus-properties-server.h dbus-shared.h notification-item-client.h notification-item-server.h notification-watcher-client.h notification-watcher-server.h
+IGNORE_HFILES= \
+	app-indicator-enum-types.h \
+	application-service-appstore.h \
+	application-service-client.h \
+	application-service-lru-file.h \
+	application-service-marshal.h \
+	application-service-server.h \
+	application-service-watcher.h \
+	dbus-properties-client.h \
+	dbus-properties-server.h \
+	dbus-shared.h \
+	notification-item-client.h \
+	notification-item-server.h \
+	notification-watcher-client.h \
+	notification-watcher-server.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
