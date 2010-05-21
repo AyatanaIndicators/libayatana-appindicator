@@ -19,6 +19,7 @@ DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
 customs = ApplicationIndicator.custom
 EXTRA_DIST =					\
+	AssemblyInfo.cs \
 	$(RAW_API)				\
 	$(METADATA)				\
 	appindicator-sharp-0.1.pc.in		\
@@ -74,9 +75,9 @@ generated-stamp: $(API) $(build_customs)
 	--outdir=generated --assembly-name=$(ASSEMBLY_NAME)	\
 	&& touch generated-stamp
 
-$(ASSEMBLY): generated-stamp
+$(ASSEMBLY): generated-stamp $(srcdir)/AssemblyInfo.cs
 	@rm -f $(ASSEMBLY).mdb
-	$(CSC) $(CSFLAGS) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES) AssemblyInfo.cs
+	$(CSC) $(CSFLAGS) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES) $(srcdir)/AssemblyInfo.cs
 
 install-data-local:
 	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib";  \
