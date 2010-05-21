@@ -2,6 +2,14 @@
 
 2010-05-20  Ted Gould  <ted@gould.cx>
 
+	Build fix to include the AssemblyInfo.cs file
+
+2010-05-20  Ted Gould  <ted@gould.cx>
+
+	0.0.20
+
+2010-05-20  Ted Gould  <ted@gould.cx>
+
 	Fixing the ref leakage of a child object.
 
 2010-05-19  Ted Gould  <ted@gould.cx>
