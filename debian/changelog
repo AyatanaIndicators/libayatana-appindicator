@@ -1,9 +1,9 @@
-indicator-application (0.0.21-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Adding AssemblyInfo.cs for building
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:58:05 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:59:48 -0500
 
 indicator-application (0.0.20-0ubuntu1~ppa1) lucid; urgency=low
 
