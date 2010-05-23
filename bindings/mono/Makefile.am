@@ -12,7 +12,7 @@ METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
 ASSEMBLY = appindicator-sharp.dll
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config
-assemblydir = $(libdir)/appindicator-sharp-0.1
+assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(MIDDLE_API) $(RAW_API) $(TEST)
 DISTCLEANFILES = $(ASSEMBLY).config
@@ -45,21 +45,13 @@ $(MIDDLE_API): $(METADATA) $(RAW_API)
 	fi
 
 $(API): $(MIDDLE_API) Makefile.am
-	sed -e "s|PROP_ID_S|ID|" \
-		-e "s|PROP_ID_S|id|" \
-		-e "s|PROP_STATUS_S|Status|" \
+	sed -e "s|PROP_ID_S|id|" \
 		-e "s|PROP_STATUS_S|status|" \
-		-e "s|PROP_CATEGORY_S|Category|" \
 		-e "s|PROP_CATEGORY_S|category|" \
-		-e "s|PROP_ICON_NAME_S|IconName|" \
 		-e "s|PROP_ICON_NAME_S|icon-name|" \
-		-e "s|PROP_ATTENTION_ICON_NAME_S|AttentionIconName|" \
 		-e "s|PROP_ATTENTION_ICON_NAME_S|attention-icon-name|" \
-		-e "s|PROP_ICON_THEME_PATH_S|IconThemePath|" \
 		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
-		-e "s|PROP_MENU_S|Menu|" \
 		-e "s|PROP_MENU_S|menu|" \
-		-e "s|PROP_CONNECTED_S|Connected|" \
 		-e "s|PROP_CONNECTED_S|connected|" \
 		$< > $@
 

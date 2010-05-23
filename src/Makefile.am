@@ -52,7 +52,8 @@ indicator_application_service_CFLAGS = \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"indicator-application-service\"
 indicator_application_service_LDADD = \
-	$(INDICATOR_LIBS)
+	$(INDICATOR_LIBS) \
+	libappindicator.la
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -65,19 +66,9 @@ pkgconfig_DATA = appindicator-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = app-indicator-enum-types.h
-glib_enum_c = app-indicator-enum-types.gen.c
+glib_enum_c = app-indicator-enum-types.c
 glib_enum_headers = $(libappindicator_headers)
 
-app-indicator-enum-types.c: app-indicator-enum-types.gen.c
-	sed -e "s|\"passive\"|\"Passive\"|" \
-	    -e "s|\"active\"|\"Active\"|" \
-	    -e "s|\"attention\"|\"NeedsAttention\"|" \
-	    -e "s|\"application-status\"|\"ApplicationStatus\"|" \
-	    -e "s|\"communications\"|\"Communications\"|" \
-	    -e "s|\"system-services\"|\"SystemServices\"|" \
-	    -e "s|\"hardware\"|\"Hardware\"|" \
-	    -e "s|\"other\"|\"Other\"|" \
-	       $< > $@
 DISTCLEANFILES += app-indicator-enum-types.c
 
 lib_LTLIBRARIES = \
