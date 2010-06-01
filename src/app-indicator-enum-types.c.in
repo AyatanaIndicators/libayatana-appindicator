@@ -36,6 +36,13 @@ License version 3 and version 2.1 along with this program.  If not, see
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
+/**
+	@enum_name@_get_type:
+
+	Builds a GLib type for the #@EnumName@ enumeration.
+
+	Return value: A unique #GType for the #@EnumName@ enum.
+*/
 GType
 @enum_name@_get_type (void)
 {
