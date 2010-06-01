@@ -32,22 +32,25 @@ libapplication_la_LDFLAGS = -module -avoid-version
 
 libexec_PROGRAMS = indicator-application-service
 
+BUILT_SOURCES += \
+	application-service-server.h \
+	application-service-marshal.h \
+	application-service-marshal.c \
+	dbus-properties-client.h \
+	notification-item-client.h \
+	notification-watcher-server.h
+
 indicator_application_service_SOURCES = \
 	application-service.c \
 	application-service-appstore.h \
 	application-service-appstore.c \
 	application-service-lru-file.h \
 	application-service-lru-file.c \
-	application-service-marshal.h \
 	application-service-marshal.c \
-	application-service-server.h \
 	application-service-watcher.h \
 	application-service-watcher.c \
 	app-indicator-enum-types.c \
-	dbus-properties-client.h \
-	dbus-shared.h \
-	notification-item-client.h \
-	notification-watcher-server.h
+	dbus-shared.h
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
@@ -84,11 +87,13 @@ libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
 	$(glib_enum_h)
 
+BUILT_SOURCES += \
+	notification-watcher-client.h \
+	notification-item-server.h
+
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
-	notification-watcher-client.h \
-	notification-item-server.h \
 	app-indicator.c
 
 libappindicator_la_LDFLAGS = \
@@ -109,6 +114,7 @@ libappindicator_la_LIBADD = \
 ##################################
 
 DBUS_SPECS = \
+	dbus-properties.xml \
 	application-service.xml \
 	notification-item.xml \
 	notification-watcher.xml
@@ -148,15 +154,17 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
-introspection_sources = $(libappindicatorinclude_HEADERS)
+introspection_sources = \
+	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
+	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
 
-AppIndicator-0.1.gir: libappindicator.la
+AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     Gtk-2.0
-AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS)
+AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator.la
-AppIndicator_0_1_gir_FILES = $(addprefix $(srcdir)/, $(introspection_sources))
+AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
 INTROSPECTION_GIRS += AppIndicator-0.1.gir
 
