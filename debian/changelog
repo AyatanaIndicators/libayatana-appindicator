@@ -1,0 +1,458 @@
+indicator-application (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Unref the child that was created
+    * Build GIR and VAPI files (LP: #510610)
+    * Fixes to documentation and enum construction
+    * Fix distcheck
+  * debian/control: Add GObject Introspection and Vala build
+    dependencies.
+  * Added debian/gir1.0-libappindicator-0.1.install and modified
+    debian/control and debian/libappindicator-dev.install to handle
+    the VAPI and GI files.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:19:48 -0500
+
+indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Adding AssemblyInfo.cs for building
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:59:48 -0500
+
+indicator-application (0.0.20-0ubuntu1~ppa1) lucid; urgency=low
+
+  * New upstream release.
+    * Unref the child when created in libappindicator (LP: #569273)
+    * Merging patch to add assembly information to Mono
+      binding (LP: #547195)
+  * Remove child-leakage.patch as merged upstream
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:56:44 -0500
+
+indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
+
+  * debian/patches/child-leakage.patch
+    - Fixes a memory leak (LP: #569273)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 20 May 2010 07:35:33 -0400
+
+indicator-application (0.0.19-0ubuntu4) lucid; urgency=low
+
+  * bindings/mono/appindicator-sharp-0.1.pc.in:
+    + Fix pcfile to point to library install location (LP: #564506)
+  * debian/control,
+    debian/libappindicator0-cil.install,
+    debian/libappindicator0-cil.installcligac,
+    debian/libappindicator-cil-dev.install,
+    debian/libappindicator0.0-cil.install,
+    debian/libappindicator0.0-cil.installcligac,
+    debian/libappindicator0.1-cil-dev.install:
+    + Rename packages to comply with Debian CLI policy
+  * debian/libappindicator0.0-cil.install,
+    debian/libappindicator0.0-cil.installcligac:
+    + Fix library install location to comply with Debian CLI policy
+  * debian/control,
+    debian/rules:
+    + Pass CSC variable to use mono-csc default compiler from mono-devel
+      2.4.3, rather than the default 2.0-only compiler
+  * debian/rules:
+    + Fix processing of rules to track dependency information on Mono
+      binding, by running rules in correct order
+
+ -- Jo Shields <directhex@apebox.org>  Fri, 16 Apr 2010 10:42:48 +0100
+
+indicator-application (0.0.19-0ubuntu3) lucid; urgency=low
+
+  * Merging patch to add assembly information to Mono binding (LP: #547195)
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 14 Apr 2010 11:48:49 -0500
+
+indicator-application (0.0.19-0ubuntu2) lucid; urgency=low
+
+  * debian/control:
+    + Set libappindicator0-cil and libappindicator-cil-dev to Arch: all
+    + Make libappindicator0-cil depend on libappindicator0 >= ${source:Version}
+      instead
+  * debian/rules:
+    + Fix ordering of dh_*cli* (LP: #560095)
+  * debian/libappindicator0-cil.install,
+    debian/libappindicator0-cil.installcligac:
+    + Fix CLI policy breakage:
+      - Wrong installation paths for GAC'd CLI libraries
+      - Direct installation of GAC'd libraries
+
+ -- Chow Loong Jin <hyperair@ubuntu.com>  Wed, 14 Apr 2010 18:44:22 +0800
+
+indicator-application (0.0.19-0ubuntu1) lucid; urgency=low
+
+  * New upstream release.
+    * Setup the icons to use the -panel variants even when falling
+      back to status icons.  (LP: #547072)
+    * Change python bindings to use _with_path so that they can set
+      the icon path.  (LP: #527061)
+    * Don't set the fallback timer if we're already in a fallback
+      mode to avoid unfalling back excessively. (LP: #529052)
+    * Fix distcheck of documentation
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 01 Apr 2010 15:56:02 -0500
+
+indicator-application (0.0.18-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.18
+    * Change when there are updates to Check and Radio buttons via
+      their actions.  (LP: #542221)
+    * Fixing icon updating with themes and naming fallbacks with
+      the status icon fallback.  (LP: #532858)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Mar 2010 12:14:23 -0500
+
+indicator-application (0.0.17-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.17
+    * Support GTK's show menu items property (LP: #528527)
+    * Fix status and category nicks in Python bindings (LP: #539858)
+    * Switch domains to org.kde instead of org.freedesktop as spec
+      was never officially approved by that body.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 18 Mar 2010 13:11:00 -0500
+
+indicator-application (0.0.16-0ubuntu2) lucid; urgency=low
+
+  * Backported upstream change to respect gtk "always-show-image" (lp: #528527)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 15 Mar 2010 16:39:09 +0100
+
+indicator-application (0.0.16-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.16
+    * Use libindicator icon loading helper
+    * Workaround for label changes on GtkActions
+    * Testing fix for using xvfb
+  * debian/control: Increasing the libindicator-dev dependency to
+    0.3.5 to match upstream.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Mar 2010 16:22:06 -0600
+
+indicator-application (0.0.15-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.15
+    * Icon size fix to 22 px
+    * Status icon correctly removed in fallback
+    * Fixed test suite to run better on slow machines.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 04 Mar 2010 11:42:40 -0600
+
+indicator-application (0.0.14-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.14
+    ∘ Fix mono bindings to include proper metadata (LP: #526620)
+    ∘ Send connection changed signal when the proxy is created
+      and destroyed (LP: #527082)
+    ∘ Hide the fallback status icon before unrefing it. (LP: #526041)
+    ∘ Increase dbus-glib version check to 0.82
+    ∘ Handle menu layout changes and visibility changes better.
+    ∘ Improve testing stability
+    ∘ Read menu sensitivity on startup.
+    ∘ Handle null strings when evaluating whether we have an
+      attention icon.
+    ∘ Remove dbus objects when we fallback
+    ∘ Disconnect client_menu_changed signal handlers on cleanup.
+    ∘ Handle cases where the menu gets unset on updates.
+    ∘ Fix custom labels on stock items.
+    ∘ Adds support for submenus
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 25 Feb 2010 15:22:28 -0600
+
+indicator-application (0.0.13-0ubuntu8) lucid; urgency=low
+
+  * Upstream Merge
+    * Checking for dbus-glib version 0.82
+  * debian/control: Checking for dbus-glib >= 0.82
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 23 Feb 2010 10:30:27 -0600
+
+indicator-application (0.0.13-0ubuntu7) lucid; urgency=low
+
+  * Backported upstream change to fix menu item sensitivity update,
+    thanks to Jan Arne Petersen (lp: #522151)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 22 Feb 2010 17:49:23 +0100
+
+indicator-application (0.0.13-0ubuntu6) lucid; urgency=low
+
+  * Cherrypick fix to check for a null string as the attention icon 
+  * Cherrypick fix to remove the registration of dbus objects (LP: #497870)
+    - lets us drop debian/patches/unregister.patch
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 18:52:40 +0100
+
+indicator-application (0.0.13-0ubuntu5) lucid; urgency=low
+
+  * debian/patches/unregister.patch
+    - Fix to remove the registration of dbus objects (LP: #497870) 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Feb 2010 17:55:11 +0100
+
+indicator-application (0.0.13-0ubuntu4) lucid; urgency=low
+
+  * Backport Cody Russell's change to fix rhythmbox crashing on closing
+    (lp: #522942)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 17 Feb 2010 23:13:10 +0100
+
+indicator-application (0.0.13-0ubuntu3) lucid; urgency=low
+
+  * Backport trunk change to fix stock items labels (lp: #520048)
+  * Backport trunk change to fix menus update issues (lp: #521181)
+  * debian/control: updated standards-version
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 16 Feb 2010 16:22:31 +0100
+
+indicator-application (0.0.13-0ubuntu2) lucid; urgency=low
+
+  * Backported lp:~bratsche/indicator-application/submenus to make the submenus
+    working in the application indicators (lp: #519625)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 12 Feb 2010 17:12:58 +0100
+
+indicator-application (0.0.13-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.13
+    * Changing the menu property to be a proper DBus object path
+    * Make object paths unique by including application IDs in them
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Feb 2010 10:41:53 -0600
+
+indicator-application (0.0.12-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.12
+    * Handling the service restarting better by removing the icons
+      after a small delay to ensure they don't return.
+    * Fixing a crash where a proxy was created while the previous
+      one was being destroyed.
+    * Fixing copying of the attention icon
+    * Adding status changing to the example application
+    * Adding a test for status changing getting sent over DBus.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 08 Feb 2010 10:01:42 -0600
+
+indicator-application (0.0.11-0ubuntu1) lucid; urgency=low
+
+  * debian/control:
+    - updated libunit-cil build-depends
+
+  [ Ted Gould ]
+  * Upstream release 0.0.11
+    * Interoperability Fixes
+    * Adding in XVFB support for tests
+    * Adding support for icons with the '-panel' suffix
+  * debian/control: Increasing dbusmenu* deps to 0.2.2
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 04 Feb 2010 17:35:19 -0800
+
+indicator-application (0.0.10-0ubuntu2) lucid; urgency=low
+
+  * debian/control
+    - bumped build depends version for libindicator-dev to 0.3.1 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 21 Jan 2010 16:38:18 -0500
+
+indicator-application (0.0.10-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.10
+    * Adding in a file to position the indicators
+    * Ref counting theme directories as they get added and removed
+    * Use the right callback function for fallback (LP: #507975)
+    * Support getting the app list from a running service.
+  * debian/control: Adding dependency for json-glib to build.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 21 Jan 2010 14:21:00 -0600
+
+indicator-application (0.0.9-0ubuntu3) lucid; urgency=low
+
+  * debian/control:
+    - updated the build-depends for the gtk binding changes.
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 22:57:02 +0100
+
+indicator-application (0.0.9-0ubuntu2) lucid; urgency=low
+
+  * Backport an upstream change to a fallback situation crasher 
+    (lp: #507975)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 19 Jan 2010 20:52:41 +0100
+
+indicator-application (0.0.9-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.9
+    * Add fallback support for situations where the NotificationWatcher
+      isn't available.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 14 Jan 2010 10:39:43 -0600
+
+indicator-application (0.0.8-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.8
+    - Mono bindings fixes (LP: #505923)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 12 Jan 2010 01:35:44 -0500
+
+indicator-application (0.0.7-0ubuntu1) lucid; urgency=low
+
+  * Upstream Release 0.0.7
+    * Making the Notification Watcher register for it's own DBus
+      name to keep the service one unique.
+    * Adding support for icons changing through the service and
+      in the indicator.
+    * Fixing the generated headers for DBus Properties calls
+    * Fixing libappindicator set_icon to set the right icon.
+    * Adding in icon path support.
+    * Switching DBus interface to org.freedesktop
+    * Adding check/radio support to menu parsing
+    * Adding ChangeLog to dist
+    * Adding check item support to menu parsing
+
+  [Ken VanDine]
+  * debian/control
+    - bump build depends version of libdbusmenu to 0.2.0
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 08 Jan 2010 16:05:39 -0600
+
+indicator-application (0.0.6-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.6
+    * Include Python binding
+    * Include Mono binding
+    * Minor bug fixes
+    * Fixing when menus are set twice.  (LP: #497812)
+    * Keeping a constant signature for the library instead of
+      building it each time.
+  * debian/control, debian/python-appindicator.install: Building
+    a binary package for the python bindings.
+  * debian/control: Adding python building build deps
+  * debian/control, debian/libappindicator0-cil.install: Building
+    a binary package for the Mono bindings.
+  * debian/control: Adding Mono building build deps
+
+  [Ken VanDine]
+  * Added mono bindings 
+    - debian/libappindicator0-cil.install
+    - debian/libappindicator0-cil-dev.install
+    - debian/control
+  * debian/rules
+    - don't use gnome.mk, specify all the targets to build python
+      bindings for each supported python version
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Dec 2009 14:45:50 -0600
+
+indicator-application (0.0.4-0ubuntu2) lucid; urgency=low
+
+  * debian/control
+    - make libappindicator0 recommend indicator-application
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 15 Dec 2009 10:40:07 -0500
+
+indicator-application (0.0.4-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.4
+  * debian/rules:
+    - removed the disable-scrollkeeper configure arg
+    - don't include .la and .a files
+  * debian/patches/clean_up_docs.patch
+    - removed, merged upstream
+  * debian/control:
+    - removed Build-Depend for scrollkeeper
+    - libappindicator-dev needs to depend on libdbusmenu-glib-dev
+    - bump standards version to 3.8.3
+    - libappindicator-doc doesn't need to depend on libappindicator0
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Dec 2009 09:18:58 -0500
+
+indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
+
+  * Upstream release 0.0.3
+    * Adding in documentation
+    * Adding a pkg-config .pc file for libappindicator
+    * More GtkMenu support in libappindicator
+  * debian/libappindicator-dev.install: Adding pkgconfig files. 
+  * debian/control: Adding a build dep on gtk-doc-tools 
+  * debian/control: Increasing libdbusmenu requirements to 0.1.8
+
+  [Ken VanDine]
+  * debian/control
+    - set Vcs-Bzr to ~ubuntu-desktop
+    - set libappindicator-doc arch all
+    - make libappindicator-dev depend on libappindicator0
+  * debian/libappindicator-doc.install
+    - install the developer docs
+  * debian/rules
+    - enable-gtk-doc
+    - added simple-patchsys.mk
+  * debian/patches/clean_up_docs.patch
+    - Remove template values and set a proper title
+  * debian/copyright
+    - Include the proper licenses (LGPL-2.1 and LGPL-3)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
+
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.0.2
+    * Updates API to use GTK instead of dbusmenu to make it
+      easier for upstream developers to use.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
+
+indicator-application (0.0.2-0~ppa3) karmic; urgency=low
+
+  * debian/watch:
+    - Updated url to point to the LP project 
+  * debian/control
+    - Updated Vcs-Bzr, project urls and description
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
+
+indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
+
+  * Adding in copyright headers and licenses
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 12:17:00 -0600
+
+indicator-application (0.0.1-0ubuntu3~ppa3) karmic; urgency=low
+
+  * Massive name change.
+  * debian/* changing packaging to not be "custom" anymore and now
+    everything is "application"
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 12:06:25 -0600
+
+indicator-application (0.0.1-0ubuntu3~ppa2) karmic; urgency=low
+
+  * Implementing the service and having the indicator and app
+    library start using it.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 02 Dec 2009 11:58:08 -0600
+
+indicator-application (0.0.1-0ubuntu3~ppa1) karmic; urgency=low
+
+  * Flesh out the library to have stuff working.
+  * Updating test suite to run under dbus-test-runner.
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 01 Dec 2009 09:17:24 -0600
+
+indicator-application (0.0.1-0ubuntu2) karmic; urgency=low
+
+  * debian/control: Splitting out libappindicator
+  * Adding debian/libappindicator0.install,
+    debian/libappindicator-dev.install,
+    debian/indicator-application.install
+    to make all the different packages.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 02 Nov 2009 21:41:20 -0600
+
+indicator-application (0.0.1-0ubuntu1) karmic; urgency=low
+
+  * Development packaging edition.
+
+ -- Robert Collins <robert@canonical.com>  Thu, 29 Oct 2009 15:44:14 +1100
