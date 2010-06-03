@@ -1,4 +1,4 @@
-indicator-application (0.2.0~dev-0ubuntu1~ppa2) lucid; urgency=low
+indicator-application (0.0.21-0ubuntu1~ppa2) lucid; urgency=low
 
   * Upstream Merge
     * Unref the child that was created
