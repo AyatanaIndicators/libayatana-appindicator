@@ -5,8 +5,10 @@ indicator-application (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Build GIR and VAPI files
     * Fixes to documentation and enum construction
     * Fix distcheck
+  * debian/control: Add GObject Introspection and Vala build
+    dependencies.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 13:55:12 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:13:56 -0500
 
 indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
 
