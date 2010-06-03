@@ -25,7 +25,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 #include <dbus/dbus-glib-lowlevel.h>
-#include <libappindicator/app-indicator.h>
+#include <app-indicator.h>
 #include "test-defines.h"
 
 #include "../src/dbus-shared.h"

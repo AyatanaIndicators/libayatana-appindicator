@@ -25,6 +25,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include <dbus/dbus-glib.h>
+#include "app-indicator.h"
+#include "app-indicator-enum-types.h"
 #include "application-service-appstore.h"
 #include "application-service-marshal.h"
 #include "dbus-properties-client.h"
@@ -55,17 +57,6 @@ struct _ApplicationServiceAppstorePrivate {
 	AppLruFile * lrufile;
 };
 
-#define APP_STATUS_PASSIVE_STR    "Passive"
-#define APP_STATUS_ACTIVE_STR     "Active"
-#define APP_STATUS_ATTENTION_STR  "NeedsAttention"
-
-typedef enum _ApplicationStatus ApplicationStatus;
-enum _ApplicationStatus {
-	APP_STATUS_PASSIVE,
-	APP_STATUS_ACTIVE,
-	APP_STATUS_ATTENTION
-};
-
 typedef struct _Application Application;
 struct _Application {
 	gchar * id;
@@ -76,7 +67,7 @@ struct _Application {
 	DBusGProxy * dbus_proxy;
 	DBusGProxy * prop_proxy;
 	gboolean validated; /* Whether we've gotten all the parameters and they look good. */
-	ApplicationStatus status;
+	AppIndicatorStatus status;
 	gchar * icon;
 	gchar * aicon;
 	gchar * menu;
@@ -102,8 +93,8 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
-static ApplicationStatus string_to_status(const gchar * status_string);
-static void apply_status (Application * app, ApplicationStatus status);
+static AppIndicatorStatus string_to_status(const gchar * status_string);
+static void apply_status (Application * app, AppIndicatorStatus status);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -249,14 +240,10 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 }
 
 /* Simple translation function -- could be optimized */
-static ApplicationStatus
+static AppIndicatorStatus
 string_to_status(const gchar * status_string)
 {
-	if (!g_strcmp0(status_string, APP_STATUS_ACTIVE_STR))
-		return APP_STATUS_ACTIVE;
-	if (!g_strcmp0(status_string, APP_STATUS_ATTENTION_STR))
-		return APP_STATUS_ATTENTION;
-	return APP_STATUS_PASSIVE;
+	return (AppIndicatorStatus) g_enum_get_value_by_nick((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status_string);
 }
 
 /* A small helper function to get the position of an application
@@ -330,7 +317,7 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	Application * app = (Application *)userdata;
 
 	/* Remove from the panel */
-	apply_status(app, APP_STATUS_PASSIVE);
+	apply_status(app, APP_INDICATOR_STATUS_PASSIVE);
 
 	/* Destroy the data */
 	application_free(app);
@@ -375,7 +362,7 @@ app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
 static void
-apply_status (Application * app, ApplicationStatus status)
+apply_status (Application * app, AppIndicatorStatus status)
 {
 	if (app->status == status) {
 		return;
@@ -386,7 +373,7 @@ apply_status (Application * app, ApplicationStatus status)
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
 
 	/* This means we're going off line */
-	if (status == APP_STATUS_PASSIVE) {
+	if (status == APP_INDICATOR_STATUS_PASSIVE) {
 		gint position = get_position(app);
 		if (position == -1) return;
 
@@ -397,12 +384,12 @@ apply_status (Application * app, ApplicationStatus status)
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
-		if (status == APP_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
+		if (status == APP_INDICATOR_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
 			newicon = app->aicon;
 		}
 
 		/* Determine whether we're already shown or not */
-		if (app->status == APP_STATUS_PASSIVE) {
+		if (app->status == APP_INDICATOR_STATUS_PASSIVE) {
                         if (can_add_application (priv->applications, app)) {
                                 /* Put on panel */
                                 priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
@@ -457,7 +444,7 @@ new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata
 		if (app->icon != NULL) g_free(app->icon);
 		app->icon = g_strdup(newicon);
 
-		if (app->status == APP_STATUS_ACTIVE) {
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -495,7 +482,7 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 		if (app->aicon != NULL) g_free(app->aicon);
 		app->aicon = g_strdup(newicon);
 
-		if (app->status == APP_STATUS_ATTENTION) {
+		if (app->status == APP_INDICATOR_STATUS_ATTENTION) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -576,7 +563,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->dbus_name = g_strdup(dbus_name);
 	app->dbus_object = g_strdup(dbus_object);
 	app->appstore = appstore;
-	app->status = APP_STATUS_PASSIVE;
+	app->status = APP_INDICATOR_STATUS_PASSIVE;
 	app->icon = NULL;
 	app->aicon = NULL;
 	app->menu = NULL;
