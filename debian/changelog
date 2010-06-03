@@ -2,7 +2,7 @@ indicator-application (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
   * New upstream release.
     * Unref the child that was created
-    * Build GIR and VAPI files
+    * Build GIR and VAPI files (LP: #510610)
     * Fixes to documentation and enum construction
     * Fix distcheck
   * debian/control: Add GObject Introspection and Vala build
