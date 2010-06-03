@@ -10,8 +10,9 @@ indicator-application (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * Added debian/gir1.0-libappindicator-0.1.install and modified
     debian/control and debian/libappindicator-dev.install to handle
     the VAPI and GI files.
+  * debian/libappindicator0-cli.install: Fixing directory of cli files 
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:19:48 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:37:33 -0500
 
 indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
 
