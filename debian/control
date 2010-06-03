@@ -122,3 +122,15 @@ Description: Application Indicators
  .
  This package contains files that are needed to build applications.
 
+Package: gir1.0-libappindicator-0.1.install
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         gir1.0-glib-2.0,
+         gir1.0-gtk-2.0,
+         libappindicator0 (= ${binary:Version})
+Description: Typelib files for libappindicator0.
+ .
+ This package can be used by other packages using the GIRepository format
+ to generate dynamic bindings.
