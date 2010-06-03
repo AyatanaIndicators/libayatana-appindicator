@@ -1,7 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-assemblies_dir=${libdir}/cli/appindicator-sharp-0.0
+assemblies_dir=${libdir}/cli/appindicator-sharp-0.1
 
 Name: appindicator-sharp
 Description: application indicators for .NET

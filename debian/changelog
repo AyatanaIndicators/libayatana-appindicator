@@ -1,16 +1,12 @@
-indicator-application (0.0.21-0ubuntu1~ppa2) lucid; urgency=low
+indicator-application (0.2.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Unref the child that was created
+    * Build GIR and VAPI files
+    * Fixes to documentation and enum construction
+    * Fix distcheck
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 14:32:55 -0500
-
-indicator-application (0.2.0~dev-0ubuntu1~ppa1) lucid; urgency=low
-
-  * Upstream Merge
-    * kicking off new branch
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 19 May 2010 14:04:29 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 13:55:12 -0500
 
 indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
 

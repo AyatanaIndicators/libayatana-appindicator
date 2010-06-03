@@ -28,8 +28,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 %%
 headers
 #include <Python.h>
-#include "../src/libappindicator/app-indicator.h"
-#include "../src/libappindicator/app-indicator-enum-types.h"
+#include "../src/app-indicator.h"
+#include "../src/app-indicator-enum-types.h"
 #include <glib.h>
 #include "pygobject.h"
 #include "pyglib.h"

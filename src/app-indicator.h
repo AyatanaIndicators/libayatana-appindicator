@@ -113,11 +113,11 @@ G_BEGIN_DECLS
 	users can find indicators that are similar together.
 */
 typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
-	APP_INDICATOR_CATEGORY_APPLICATION_STATUS,
-	APP_INDICATOR_CATEGORY_COMMUNICATIONS,
-	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES,
-	APP_INDICATOR_CATEGORY_HARDWARE,
-	APP_INDICATOR_CATEGORY_OTHER
+	APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*< nick=ApplicationStatus >*/
+	APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*< nick=Communications >*/
+	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES, /*< nick=SystemServices >*/
+	APP_INDICATOR_CATEGORY_HARDWARE, /*< nick=Hardware >*/
+	APP_INDICATOR_CATEGORY_OTHER /*< nick=Other >*/
 } AppIndicatorCategory;
 
 /**
@@ -132,9 +132,9 @@ typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
 	shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
 */
 typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
-	APP_INDICATOR_STATUS_PASSIVE,
-	APP_INDICATOR_STATUS_ACTIVE,
-	APP_INDICATOR_STATUS_ATTENTION
+	APP_INDICATOR_STATUS_PASSIVE, /*< nick=Passive >*/
+	APP_INDICATOR_STATUS_ACTIVE, /*< nick=Active >*/
+	APP_INDICATOR_STATUS_ATTENTION /*< nick=NeedsAttention >*/
 } AppIndicatorStatus;
 
 typedef struct _AppIndicator        AppIndicator;
