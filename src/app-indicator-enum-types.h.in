@@ -1,6 +1,4 @@
-
-/* Generated data (by glib-mkenums) */
-
+/*** BEGIN file-header ***/
 /*
 An object to represent the application as an application indicator
 in the system panel.
@@ -36,31 +34,21 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-/* Enumerations from file: "./libappindicator/app-indicator.h" */
-/**
-	app_indicator_category_get_type:
+/*** END file-header ***/
 
-	Builds a glib type for the AppIndicatorCategory enumeration.
-
-	Return value: A registered type for the enum
-*/
-GType app_indicator_category_get_type (void) G_GNUC_CONST;
-#define APP_INDICATOR_TYPE_INDICATOR_CATEGORY (app_indicator_category_get_type())
-
-/**
-	app_indicator_status_get_type:
-
-	Builds a glib type for the AppIndicatorStatus enumeration.
-
-	Return value: A registered type for the enum
-*/
-GType app_indicator_status_get_type (void) G_GNUC_CONST;
-#define APP_INDICATOR_TYPE_INDICATOR_STATUS (app_indicator_status_get_type())
-
+/*** BEGIN file-tail ***/
 
 G_END_DECLS
 
 #endif /* __APP_INDICATOR_ENUM_TYPES_H__ */
+/*** END file-tail ***/
 
-/* Generated data ends here */
+/*** BEGIN file-production ***/
+/* Enumerations from file: "@filename@" */
+/*** END file-production ***/
 
+/*** BEGIN value-header ***/
+GType @enum_name@_get_type (void) G_GNUC_CONST;
+#define APP_INDICATOR_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+
+/*** END value-header ***/

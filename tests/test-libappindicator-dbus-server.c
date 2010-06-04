@@ -24,7 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <gtk/gtk.h>
-#include <libappindicator/app-indicator.h>
+#include <app-indicator.h>
 #include "test-defines.h"
 
 static GMainLoop * mainloop = NULL;

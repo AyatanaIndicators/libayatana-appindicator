@@ -6,6 +6,7 @@ SUBDIRS = data		\
 	  docs
 
 EXTRA_DIST = \
+	m4/introspection.m4 \
 	gtk-doc.make \
 	omf.make \
 	xmldocs.make \
@@ -14,7 +15,7 @@ EXTRA_DIST = \
 	COPYING.LGPL.3 \
 	ChangeLog
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-localinstall
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-localinstall --enable-introspection
 
 dist-hook:
 	@if test -d "$(top_srcdir)/.bzr"; \

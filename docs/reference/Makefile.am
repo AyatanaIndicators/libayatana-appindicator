@@ -22,7 +22,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
 # e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../src/libappindicator
+DOC_SOURCE_DIR=../../src
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=--nogtkinit --type-init-func="g_type_init()"
@@ -50,12 +50,26 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/src/libappindicator/*.h
-CFILE_GLOB=$(top_srcdir)/src/libappindicator/*.c
+HFILE_GLOB=$(top_srcdir)/src/app-indicator*.h
+CFILE_GLOB=$(top_srcdir)/src/app-indicator*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=app-indicator-enum-types.h application-service-appstore.h application-service-client.h application-service-marshal.h application-service-server.h application-service-watcher.h dbus-properties-client.h dbus-properties-server.h dbus-shared.h notification-item-client.h notification-item-server.h notification-watcher-client.h notification-watcher-server.h
+IGNORE_HFILES= \
+	app-indicator-enum-types.h \
+	application-service-appstore.h \
+	application-service-client.h \
+	application-service-lru-file.h \
+	application-service-marshal.h \
+	application-service-server.h \
+	application-service-watcher.h \
+	dbus-properties-client.h \
+	dbus-properties-server.h \
+	dbus-shared.h \
+	notification-item-client.h \
+	notification-item-server.h \
+	notification-watcher-client.h \
+	notification-watcher-server.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -75,7 +89,7 @@ expand_content_files=
 # signals and properties.
 # e.g. GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
-GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src/libappindicator $(INDICATOR_CFLAGS)
+GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src $(INDICATOR_CFLAGS)
 GTKDOC_LIBS=$(top_builddir)/src/libappindicator.la $(top_builddir)/src/libapplication.la 
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.

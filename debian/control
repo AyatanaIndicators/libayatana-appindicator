@@ -2,7 +2,7 @@ Source: indicator-application
 Section: gnome
 Priority: optional
 XS-Python-Version: all
-Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: Ubuntu Desktop Team <ubuntu-desktop@lists.ubuntu.com>
 Build-Depends: debhelper (>= 5.0),
                cdbs (>= 0.4.41),
                python-central (>= 0.6),
@@ -24,7 +24,13 @@ Build-Depends: debhelper (>= 5.0),
                gtk-sharp2-gapi,
                libmono-dev,
                libnunit-cil-dev,
-               libgtk2.0-cil-dev
+               libgtk2.0-cil-dev,
+               gobject-introspection,
+               gir-repository-dev,
+               libgirepository1.0-dev,
+               gir1.0-glib-2.0,
+               gir1.0-gtk-2.0,
+               valac
 Standards-Version: 3.8.4
 Homepage: https://launchpad.net/indicator-application
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-application/ubuntu
@@ -116,3 +122,15 @@ Description: Application Indicators
  .
  This package contains files that are needed to build applications.
 
+Package: gir1.0-libappindicator-0.1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         gir1.0-glib-2.0,
+         gir1.0-gtk-2.0,
+         libappindicator0 (= ${binary:Version})
+Description: Typelib files for libappindicator0.
+ .
+ This package can be used by other packages using the GIRepository format
+ to generate dynamic bindings.

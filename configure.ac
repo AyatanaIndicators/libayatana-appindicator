@@ -1,11 +1,11 @@
 
-AC_INIT(indicator-application, 0.0.19, ted@canonical.com)
+AC_INIT(indicator-application, 0.2.0, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(indicator-application, 0.0.19)
+AM_INIT_AUTOMAKE(indicator-application, 0.2.0)
 
 AM_MAINTAINER_MODE
 
@@ -51,6 +51,18 @@ PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
+
+###########################
+# GObject Introspection
+###########################
+
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
+
+###########################
+# Vala API Generation
+###########################
+
+AC_PATH_PROG([VALA_API_GEN], [vapigen])
 
 ###########################
 # Check for Mono support
@@ -178,7 +190,7 @@ AC_MSG_RESULT($PYGTK_CODEGEN)
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/libappindicator/appindicator-0.1.pc
+src/appindicator-0.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config

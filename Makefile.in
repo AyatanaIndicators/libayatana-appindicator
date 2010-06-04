@@ -36,10 +36,9 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure \
-	$(top_srcdir)/src/libappindicator/appindicator-0.1.pc.in \
-	AUTHORS COPYING ChangeLog INSTALL NEWS compile config.guess \
-	config.sub depcomp install-sh ltmain.sh missing py-compile
+	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
+	compile config.guess config.sub depcomp install-sh ltmain.sh \
+	missing py-compile
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
@@ -49,7 +48,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = src/libappindicator/appindicator-0.1.pc
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -164,6 +163,14 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTROSPECTION_CFLAGS = @INTROSPECTION_CFLAGS@
+INTROSPECTION_COMPILER = @INTROSPECTION_COMPILER@
+INTROSPECTION_GENERATE = @INTROSPECTION_GENERATE@
+INTROSPECTION_GIRDIR = @INTROSPECTION_GIRDIR@
+INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
+INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
+INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
+INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -210,6 +217,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -275,6 +283,7 @@ SUBDIRS = data		\
 	  docs
 
 EXTRA_DIST = \
+	m4/introspection.m4 \
 	gtk-doc.make \
 	omf.make \
 	xmldocs.make \
@@ -283,7 +292,7 @@ EXTRA_DIST = \
 	COPYING.LGPL.3 \
 	ChangeLog
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-localinstall
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-localinstall --enable-introspection
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -339,8 +348,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-src/libappindicator/appindicator-0.1.pc: $(top_builddir)/config.status $(top_srcdir)/src/libappindicator/appindicator-0.1.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -71,9 +71,13 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(libappindicatorinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/Makefile.am.enum \
+	$(srcdir)/Makefile.in $(srcdir)/appindicator-0.1.pc.in \
+	$(top_srcdir)/Makefile.am.enum \
 	$(top_srcdir)/Makefile.am.marshal
 libexec_PROGRAMS = indicator-application-service$(EXEEXT)
+@HAVE_INTROSPECTION_TRUE@am__append_1 = AppIndicator-0.1.gir
+@HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
+@HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -82,7 +86,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = appindicator-0.1.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -107,7 +111,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(applicationlibdir)" \
 	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" \
-	"$(DESTDIR)$(pkgconfigdir)" \
+	"$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" \
+	"$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" \
 	"$(DESTDIR)$(libappindicatorincludedir)"
 LTLIBRARIES = $(applicationlib_LTLIBRARIES) $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
@@ -139,10 +144,12 @@ am_indicator_application_service_OBJECTS =  \
 	indicator_application_service-application-service-appstore.$(OBJEXT) \
 	indicator_application_service-application-service-lru-file.$(OBJEXT) \
 	indicator_application_service-application-service-marshal.$(OBJEXT) \
-	indicator_application_service-application-service-watcher.$(OBJEXT)
+	indicator_application_service-application-service-watcher.$(OBJEXT) \
+	indicator_application_service-app-indicator-enum-types.$(OBJEXT)
 indicator_application_service_OBJECTS =  \
 	$(am_indicator_application_service_OBJECTS)
-indicator_application_service_DEPENDENCIES = $(am__DEPENDENCIES_1)
+indicator_application_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	libappindicator.la
 indicator_application_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(indicator_application_service_CFLAGS) $(CFLAGS) \
@@ -178,7 +185,7 @@ SOURCES = $(libappindicator_la_SOURCES) $(libapplication_la_SOURCES) \
 DIST_SOURCES = $(libappindicator_la_SOURCES) \
 	$(libapplication_la_SOURCES) \
 	$(indicator_application_service_SOURCES)
-DATA = $(pkgconfig_DATA)
+DATA = $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA) $(vapi_DATA)
 HEADERS = $(libappindicatorinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -237,6 +244,14 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTROSPECTION_CFLAGS = @INTROSPECTION_CFLAGS@
+INTROSPECTION_COMPILER = @INTROSPECTION_COMPILER@
+INTROSPECTION_GENERATE = @INTROSPECTION_GENERATE@
+INTROSPECTION_GIRDIR = @INTROSPECTION_GIRDIR@
+INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
+INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
+INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
+INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -283,6 +298,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -340,14 +356,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-CLEANFILES = stamp-enum-types stamp-marshal $(BUILT_SOURCES)
+CLEANFILES = stamp-enum-types stamp-marshal $(BUILT_SOURCES) \
+	$(am__append_2)
 DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
-	$(marshal_c) libappindicator/app-indicator-enum-types.c
+	$(marshal_c) app-indicator-enum-types.c
 BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
-	$(marshal_c) $(DBUS_SPECS:.xml=-client.h) \
+	$(marshal_c) application-service-server.h \
+	application-service-marshal.h application-service-marshal.c \
+	dbus-properties-client.h notification-item-client.h \
+	notification-watcher-server.h notification-watcher-client.h \
+	notification-item-server.h $(DBUS_SPECS:.xml=-client.h) \
 	$(DBUS_SPECS:.xml=-server.h)
-EXTRA_DIST = libappindicator/appindicator-0.1.pc.in $(enum_tmpl_h) \
-	$(enum_tmpl_c) $(glib_marshal_list) $(DBUS_SPECS)
+EXTRA_DIST = appindicator-0.1.pc.in $(enum_tmpl_h) $(enum_tmpl_c) \
+	$(glib_marshal_list) $(DBUS_SPECS)
 enum_tmpl_h = $(glib_enum_h:.h=.h.in)
 enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 marshal_h = $(glib_marshal_list:.list=.h)
@@ -368,7 +389,8 @@ libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wl,-Bsymbolic-functions \
 	-Wl,-z,defs \
 	-Wl,--as-needed \
-	-Werror
+	-Werror \
+	-DG_LOG_DOMAIN=\"Indicator-Application\"
 
 libapplication_la_LIBADD = $(INDICATOR_LIBS)
 libapplication_la_LDFLAGS = -module -avoid-version
@@ -378,22 +400,20 @@ indicator_application_service_SOURCES = \
 	application-service-appstore.c \
 	application-service-lru-file.h \
 	application-service-lru-file.c \
-	application-service-marshal.h \
 	application-service-marshal.c \
-	application-service-server.h \
 	application-service-watcher.h \
 	application-service-watcher.c \
-	dbus-properties-client.h \
-	dbus-shared.h \
-	notification-item-client.h \
-	notification-watcher-server.h
+	app-indicator-enum-types.c \
+	dbus-shared.h
 
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
-	-Wall -Werror
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"indicator-application-service\"
 
 indicator_application_service_LDADD = \
-	$(INDICATOR_LIBS)
+	$(INDICATOR_LIBS) \
+	libappindicator.la
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -401,17 +421,17 @@ glib_marshal_prefix = _application_service_marshal
 ##################################
 # Library
 ##################################
-pkgconfig_DATA = libappindicator/appindicator-0.1.pc
+pkgconfig_DATA = appindicator-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
-glib_enum_h = libappindicator/app-indicator-enum-types.h
-glib_enum_c = libappindicator/app-indicator-enum-types.gen.c
-glib_enum_headers = $(libappindicator_headers)
+glib_enum_h = app-indicator-enum-types.h
+glib_enum_c = app-indicator-enum-types.c
+glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 lib_LTLIBRARIES = \
 	libappindicator.la
 
 libappindicatorincludedir = $(includedir)/libappindicator-0.1/libappindicator
 libappindicator_headers = \
-	$(srcdir)/libappindicator/app-indicator.h
+	app-indicator.h
 
 libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
@@ -419,10 +439,8 @@ libappindicatorinclude_HEADERS = \
 
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
-	libappindicator/app-indicator-enum-types.c \
-	notification-watcher-client.h \
-	notification-item-server.h \
-	libappindicator/app-indicator.c
+	app-indicator-enum-types.c \
+	app-indicator.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
@@ -431,7 +449,8 @@ libappindicator_la_LDFLAGS = \
 
 libappindicator_la_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
-	-Wall -Werror
+	-Wall -Werror \
+	-DG_LOG_DOMAIN=\"libappindicator\"
 
 libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
@@ -441,10 +460,38 @@ libappindicator_la_LIBADD = \
 # DBus Specs
 ##################################
 DBUS_SPECS = \
+	dbus-properties.xml \
 	application-service.xml \
 	notification-item.xml \
 	notification-watcher.xml
 
+INTROSPECTION_GIRS = $(am__append_1)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=libappindicator/, $(introspection_sources))
+
+INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
+@HAVE_INTROSPECTION_TRUE@introspection_sources = \
+@HAVE_INTROSPECTION_TRUE@	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
+@HAVE_INTROSPECTION_TRUE@	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
+
+@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_INCLUDES = \
+@HAVE_INTROSPECTION_TRUE@    GObject-2.0 \
+@HAVE_INTROSPECTION_TRUE@    Gtk-2.0
+
+@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
+@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_LIBS = libappindicator.la
+@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_FILES = $(introspection_sources)
+@HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
+@HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
+@HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
+@HAVE_INTROSPECTION_TRUE@typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+#########################
+# VAPI Files
+#########################
+@HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = AppIndicator-0.1.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -480,6 +527,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+appindicator-0.1.pc: $(top_builddir)/config.status $(srcdir)/appindicator-0.1.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-applicationlibLTLIBRARIES: $(applicationlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(applicationlibdir)" || $(MKDIR_P) "$(DESTDIR)$(applicationlibdir)"
@@ -599,6 +648,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-app-indicator-enum-types.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-appstore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-lru-file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-marshal.Po@am__quote@
@@ -633,21 +683,21 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libappindicator_la-app-indicator-enum-types.lo: libappindicator/app-indicator-enum-types.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-app-indicator-enum-types.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-app-indicator-enum-types.Tpo -c -o libappindicator_la-app-indicator-enum-types.lo `test -f 'libappindicator/app-indicator-enum-types.c' || echo '$(srcdir)/'`libappindicator/app-indicator-enum-types.c
+libappindicator_la-app-indicator-enum-types.lo: app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-app-indicator-enum-types.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-app-indicator-enum-types.Tpo -c -o libappindicator_la-app-indicator-enum-types.lo `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator_la-app-indicator-enum-types.Tpo $(DEPDIR)/libappindicator_la-app-indicator-enum-types.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libappindicator/app-indicator-enum-types.c' object='libappindicator_la-app-indicator-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator-enum-types.c' object='libappindicator_la-app-indicator-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator-enum-types.lo `test -f 'libappindicator/app-indicator-enum-types.c' || echo '$(srcdir)/'`libappindicator/app-indicator-enum-types.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator-enum-types.lo `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
 
-libappindicator_la-app-indicator.lo: libappindicator/app-indicator.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-app-indicator.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-app-indicator.Tpo -c -o libappindicator_la-app-indicator.lo `test -f 'libappindicator/app-indicator.c' || echo '$(srcdir)/'`libappindicator/app-indicator.c
+libappindicator_la-app-indicator.lo: app-indicator.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-app-indicator.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-app-indicator.Tpo -c -o libappindicator_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator_la-app-indicator.Tpo $(DEPDIR)/libappindicator_la-app-indicator.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libappindicator/app-indicator.c' object='libappindicator_la-app-indicator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator.c' object='libappindicator_la-app-indicator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator.lo `test -f 'libappindicator/app-indicator.c' || echo '$(srcdir)/'`libappindicator/app-indicator.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
 
 libapplication_la-application-service-marshal.lo: application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libapplication_la_CFLAGS) $(CFLAGS) -MT libapplication_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libapplication_la-application-service-marshal.Tpo -c -o libapplication_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
@@ -745,11 +795,47 @@ indicator_application_service-application-service-watcher.obj: application-servi
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-application-service-watcher.obj `if test -f 'application-service-watcher.c'; then $(CYGPATH_W) 'application-service-watcher.c'; else $(CYGPATH_W) '$(srcdir)/application-service-watcher.c'; fi`
 
+indicator_application_service-app-indicator-enum-types.o: app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-app-indicator-enum-types.o -MD -MP -MF $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Tpo -c -o indicator_application_service-app-indicator-enum-types.o `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Tpo $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator-enum-types.c' object='indicator_application_service-app-indicator-enum-types.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-app-indicator-enum-types.o `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
+
+indicator_application_service-app-indicator-enum-types.obj: app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-app-indicator-enum-types.obj -MD -MP -MF $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Tpo -c -o indicator_application_service-app-indicator-enum-types.obj `if test -f 'app-indicator-enum-types.c'; then $(CYGPATH_W) 'app-indicator-enum-types.c'; else $(CYGPATH_W) '$(srcdir)/app-indicator-enum-types.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Tpo $(DEPDIR)/indicator_application_service-app-indicator-enum-types.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator-enum-types.c' object='indicator_application_service-app-indicator-enum-types.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-app-indicator-enum-types.obj `if test -f 'app-indicator-enum-types.c'; then $(CYGPATH_W) 'app-indicator-enum-types.c'; else $(CYGPATH_W) '$(srcdir)/app-indicator-enum-types.c'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-girDATA: $(gir_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(girdir)" || $(MKDIR_P) "$(DESTDIR)$(girdir)"
+	@list='$(gir_DATA)'; test -n "$(girdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(girdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(girdir)" || exit $$?; \
+	done
+
+uninstall-girDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(gir_DATA)'; test -n "$(girdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(girdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(girdir)" && rm -f $$files
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgconfigdir)" || $(MKDIR_P) "$(DESTDIR)$(pkgconfigdir)"
@@ -770,6 +856,46 @@ uninstall-pkgconfigDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(pkgconfigdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(pkgconfigdir)" && rm -f $$files
+install-typelibDATA: $(typelib_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(typelibdir)" || $(MKDIR_P) "$(DESTDIR)$(typelibdir)"
+	@list='$(typelib_DATA)'; test -n "$(typelibdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(typelibdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(typelibdir)" || exit $$?; \
+	done
+
+uninstall-typelibDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(typelib_DATA)'; test -n "$(typelibdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(typelibdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(typelibdir)" && rm -f $$files
+install-vapiDATA: $(vapi_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(vapidir)" || $(MKDIR_P) "$(DESTDIR)$(vapidir)"
+	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(vapidir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(vapidir)" || exit $$?; \
+	done
+
+uninstall-vapiDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(vapidir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(vapidir)" && rm -f $$files
 install-libappindicatorincludeHEADERS: $(libappindicatorinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libappindicatorincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libappindicatorincludedir)"
@@ -878,7 +1004,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(applicationlibdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
+	for dir in "$(DESTDIR)$(applicationlibdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -934,8 +1060,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-applicationlibLTLIBRARIES \
-	install-libappindicatorincludeHEADERS install-pkgconfigDATA
+install-data-am: install-applicationlibLTLIBRARIES install-girDATA \
+	install-libappindicatorincludeHEADERS install-pkgconfigDATA \
+	install-typelibDATA install-vapiDATA
 
 install-dvi: install-dvi-am
 
@@ -981,10 +1108,11 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-applicationlibLTLIBRARIES \
+uninstall-am: uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
 	uninstall-libLTLIBRARIES \
 	uninstall-libappindicatorincludeHEADERS \
-	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA
+	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA \
+	uninstall-typelibDATA uninstall-vapiDATA
 
 .MAKE: all check install install-am install-strip
 
@@ -996,17 +1124,20 @@ uninstall-am: uninstall-applicationlibLTLIBRARIES \
 	html-am info info-am install install-am \
 	install-applicationlibLTLIBRARIES install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-libappindicatorincludeHEADERS \
-	install-libexecPROGRAMS install-man install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am \
-	uninstall-applicationlibLTLIBRARIES uninstall-libLTLIBRARIES \
+	install-girDATA install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES \
+	install-libappindicatorincludeHEADERS install-libexecPROGRAMS \
+	install-man install-pdf install-pdf-am install-pkgconfigDATA \
+	install-ps install-ps-am install-strip install-typelibDATA \
+	install-vapiDATA installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
+	uninstall-libLTLIBRARIES \
 	uninstall-libappindicatorincludeHEADERS \
-	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA
+	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA \
+	uninstall-typelibDATA uninstall-vapiDATA
 
 
 stamp-enum-types: $(glib_enum_headers)
@@ -1050,17 +1181,6 @@ $(marshal_c): $(marshal_h)
 	&& cp xgen-mc $(marshal_c) \
 	&& rm -f xgen-mc
 
-libappindicator/app-indicator-enum-types.c: libappindicator/app-indicator-enum-types.gen.c
-	sed -e "s|\"passive\"|\"Passive\"|" \
-	    -e "s|\"active\"|\"Active\"|" \
-	    -e "s|\"attention\"|\"NeedsAttention\"|" \
-	    -e "s|\"application-status\"|\"ApplicationStatus\"|" \
-	    -e "s|\"communications\"|\"Communications\"|" \
-	    -e "s|\"system-services\"|\"SystemServices\"|" \
-	    -e "s|\"hardware\"|\"Hardware\"|" \
-	    -e "s|\"other\"|\"Other\"|" \
-	       $< > $@
-
 %-client.h: %.xml
 	dbus-binding-tool \
 		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_client \
@@ -1074,6 +1194,20 @@ libappindicator/app-indicator-enum-types.c: libappindicator/app-indicator-enum-t
 		--mode=glib-server \
 		--output=$@ \
 		$<
+
+#########################
+# GObject Introsepction 
+#########################
+
+-include $(INTROSPECTION_MAKEFILE)
+
+@HAVE_INTROSPECTION_TRUE@AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
+
+@HAVE_INTROSPECTION_TRUE@AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=AppIndicator-0.1 \
+@HAVE_INTROSPECTION_TRUE@		--pkg gtk+-2.0 \
+@HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/src \
+@HAVE_INTROSPECTION_TRUE@		$<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,3 +1,21 @@
+indicator-application (0.2.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Unref the child that was created
+    * Build GIR and VAPI files (LP: #510610)
+    * Fixes to documentation and enum construction
+    * Fix distcheck
+    * Merging patch to add assembly information to Mono
+      binding (LP: #547195)
+  * debian/control: Add GObject Introspection and Vala build
+    dependencies.
+  * Added debian/gir1.0-libappindicator-0.1.install and modified
+    debian/control and debian/libappindicator-dev.install to handle
+    the VAPI and GI files.
+  * debian/libappindicator0.0-cil.install: Fixing directory of cli files 
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:49:48 -0500
+
 indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
 
   * debian/patches/child-leakage.patch
