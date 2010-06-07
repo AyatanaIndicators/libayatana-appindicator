@@ -1,4 +1,4 @@
-indicator-application (0.2.0-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Unref the child that was created
