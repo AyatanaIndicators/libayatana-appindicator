@@ -1,3 +1,9 @@
+indicator-application (0.2.0-0ubuntu2) maverick; urgency=low
+
+  * Renamed the gir binary to gir1.0-appindicator-0.1 to match the typelib
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 08 Jun 2010 11:01:04 +0200
+
 indicator-application (0.2.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
