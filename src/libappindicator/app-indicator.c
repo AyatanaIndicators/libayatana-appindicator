@@ -1364,12 +1364,12 @@ container_iterate (GtkWidget *widget,
                                 container_iterate,
                                 child);
           g_signal_connect_object (submenu,
-                                   "GtkContainer::child-added",
+                                   "child-added",
                                    G_CALLBACK (submenu_changed),
                                    child,
                                    0);
           g_signal_connect_object (submenu,
-                                   "GtkContainer::child-removed",
+                                   "child-removed",
                                    G_CALLBACK (submenu_changed),
                                    child,
                                    0);
@@ -1506,11 +1506,11 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
   check_connect (self);
 
   g_signal_connect (menu,
-                    "add",
+                    "child-added",
                     G_CALLBACK (client_menu_changed),
                     self);
   g_signal_connect (menu,
-                    "remove",
+                    "child-removed",
                     G_CALLBACK (client_menu_changed),
                     self);
 }
