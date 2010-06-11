@@ -97,7 +97,7 @@ main (int argv, char ** argc)
 	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
 
 	/* After we've got the name, let it unfallback, and then we'll drop again */
-	g_timeout_add(250, kill_func, NULL);
+	g_timeout_add(1000, kill_func, NULL);
 
 	g_debug("Entering Mainloop");
 
