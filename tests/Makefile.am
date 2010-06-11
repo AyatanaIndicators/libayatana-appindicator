@@ -142,7 +142,7 @@ XML_REPORT   = libappindicator-check-results.xml
 HTML_REPORT  = libappindicator-check-results.html
 
 libappindicator-tests: libappindicator-tests-gtester Makefile.am
-	@echo "#!/bin/sh" > $@
+	@echo "#!/bin/bash" > $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./libappindicator-tests-gtester >> $@
 	@chmod +x $@
