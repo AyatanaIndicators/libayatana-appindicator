@@ -84,7 +84,7 @@ main (int argv, char ** argc)
 		return 1;
 	}
 
-	g_usleep(250000);
+	g_usleep(500000);
 
 	g_debug("Initing");
 
