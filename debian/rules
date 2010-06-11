@@ -38,14 +38,14 @@ install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
 binary-install/python-appindicator::
 	dh_pycentral
 
-binary-install/libappindicator0.0-cil::
+binary-install/libappindicator0.1-cil::
 	dh_clistrip
 	dh_clifixperms
 	dh_makeclilibs -V
 	dh_installcligac
 
-binary-predeb/libappindicator0.0-cil:: binary-fixup/libappindicator0
-	dh_clideps -plibappindicator0.0-cil
+binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator0
+	dh_clideps -plibappindicator0.1-cil
 
 configure-stamp:
 	$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
