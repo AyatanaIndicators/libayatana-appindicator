@@ -1364,12 +1364,12 @@ container_iterate (GtkWidget *widget,
                                 container_iterate,
                                 child);
           g_signal_connect_object (submenu,
-                                   "add",
+                                   "GtkContainer::child-added",
                                    G_CALLBACK (submenu_changed),
                                    child,
                                    0);
           g_signal_connect_object (submenu,
-                                   "remove",
+                                   "GtkContainer::child-removed",
                                    G_CALLBACK (submenu_changed),
                                    child,
                                    0);
