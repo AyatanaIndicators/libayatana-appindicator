@@ -1,6 +1,7 @@
 indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
 
-  * renamed cil binary to libappindicator0.1 to match the assembly version
+  * renamed cil binary to libappindicator0.1 to match the assembly 
+    version (LP: #592706)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Jun 2010 10:56:46 -0400
 
