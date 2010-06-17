@@ -1,9 +1,9 @@
-indicator-application (0.2.0-0ubuntu4~ppa2~icons2) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu4~ppa2~icons2) lucid; urgency=low
 
   * Upstream Merge
     * Fixing the enum lookup from nick
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 17:04:32 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 17:06:20 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa2~icons1) lucid; urgency=low
 
