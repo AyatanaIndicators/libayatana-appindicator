@@ -1,10 +1,25 @@
-indicator-application (0.2.0-0ubuntu1~ppa1) lucid; urgency=low
+indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
+
+  * renamed cil binary to libappindicator0.1 to match the assembly 
+    version (LP: #592706)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Jun 2010 10:56:46 -0400
+
+indicator-application (0.2.0-0ubuntu2) maverick; urgency=low
+
+  * Renamed the gir binary to gir1.0-appindicator-0.1 to match the typelib
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 08 Jun 2010 11:01:04 +0200
+
+indicator-application (0.2.0-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Unref the child that was created
     * Build GIR and VAPI files (LP: #510610)
     * Fixes to documentation and enum construction
     * Fix distcheck
+    * Merging patch to add assembly information to Mono
+      binding (LP: #547195)
   * debian/control: Add GObject Introspection and Vala build
     dependencies.
   * Added debian/gir1.0-libappindicator-0.1.install and modified
@@ -13,23 +28,6 @@ indicator-application (0.2.0-0ubuntu1~ppa1) lucid; urgency=low
   * debian/libappindicator0.0-cil.install: Fixing directory of cli files 
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 03 Jun 2010 14:49:48 -0500
-
-indicator-application (0.0.21-0ubuntu1~ppa1) lucid; urgency=low
-
-  * New upstream release.
-    * Adding AssemblyInfo.cs for building
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:59:48 -0500
-
-indicator-application (0.0.20-0ubuntu1~ppa1) lucid; urgency=low
-
-  * New upstream release.
-    * Unref the child when created in libappindicator (LP: #569273)
-    * Merging patch to add assembly information to Mono
-      binding (LP: #547195)
-  * Remove child-leakage.patch as merged upstream
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 20 May 2010 21:56:44 -0500
 
 indicator-application (0.0.19-0ubuntu5) lucid-proposed; urgency=low
 
@@ -397,14 +395,6 @@ indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
-indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Upstream release 0.0.2
-    * Updates API to use GTK instead of dbusmenu to make it
-      easier for upstream developers to use.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
-
 indicator-application (0.0.2-0~ppa3) karmic; urgency=low
 
   * debian/watch:
@@ -413,6 +403,14 @@ indicator-application (0.0.2-0~ppa3) karmic; urgency=low
     - Updated Vcs-Bzr, project urls and description
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
+
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.0.2
+    * Updates API to use GTK instead of dbusmenu to make it
+      easier for upstream developers to use.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
 
