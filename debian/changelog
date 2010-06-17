@@ -1,3 +1,11 @@
+indicator-application (0.2.0-0ubuntu4~ppa1~monofix1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Change Mono bindings to only parse particular files
+    * Test fixes for Hudson builds
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 12:43:59 -0500
+
 indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
 
   * renamed cil binary to libappindicator0.1 to match the assembly 

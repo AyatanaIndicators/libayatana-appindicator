@@ -27,6 +27,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../src/dbus-shared.h"
 
+gboolean kill_func (gpointer userdata);
+
 static GMainLoop * mainloop = NULL;
 
 static DBusHandlerResult
@@ -36,6 +38,10 @@ dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_dat
 		DBusMessage * reply = dbus_message_new_method_return(message);
 		dbus_connection_send(connection, reply, NULL);
 		dbus_message_unref(reply);
+
+		/* Let the messages get out, but we're done at this point */
+		g_timeout_add(50, kill_func, NULL);
+
 		return DBUS_HANDLER_RESULT_HANDLED;
 	}
 
@@ -78,7 +84,7 @@ main (int argv, char ** argc)
 		return 1;
 	}
 
-	g_usleep(250000);
+	g_usleep(500000);
 
 	g_debug("Initing");
 
@@ -96,8 +102,9 @@ main (int argv, char ** argc)
 
 	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
 
-	/* After we've got the name, let it unfallback, and then we'll drop again */
-	g_timeout_add(250, kill_func, NULL);
+	/* This is the final kill function.  It really shouldn't happen
+	   unless we get an error. */
+	g_timeout_add(2000, kill_func, NULL);
 
 	g_debug("Entering Mainloop");
 
