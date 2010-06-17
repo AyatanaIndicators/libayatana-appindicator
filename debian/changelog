@@ -1,8 +1,8 @@
-indicator-application (0.2.0-0ubuntu4~ppa1~monofix2) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu4~ppa1~monofix2) lucid; urgency=low
 
   * Autogen.  For fun and profit.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 13:02:20 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 13:04:34 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa1~monofix1) lucid; urgency=low
 
