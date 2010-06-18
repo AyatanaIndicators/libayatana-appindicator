@@ -3,8 +3,10 @@ indicator-application (0.2.0-0ubuntu4~ppa5) UNRELEASED; urgency=low
   * Upstream merge
     * Changing the policy to be for 0.0
   * Autogen
+  * debian/libappindicator0.1-cil.installcligac: Changing version
+    policy applies to.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 16:44:57 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 16:47:20 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa4) lucid; urgency=low
 
