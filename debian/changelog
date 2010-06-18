@@ -1,3 +1,10 @@
+indicator-application (0.2.0-0ubuntu4~ppa2~icons3) UNRELEASED; urgency=low
+
+  * Upstream merge
+    * Using class_ref and unref to allocate the type if need be
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 22:16:47 -0500
+
 indicator-application (0.2.0-0ubuntu4~ppa2~icons2) lucid; urgency=low
 
   * Upstream Merge
