@@ -11,7 +11,8 @@ RAW_API = libappindicator-api.raw
 METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
 ASSEMBLY = appindicator-sharp.dll
-TARGET = $(ASSEMBLY) $(ASSEMBLY).config
+DLLPOLICY = policy.$(ASSEMBLY)
+TARGET = $(ASSEMBLY) $(ASSEMBLY).config $(DLLPOLICY)
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(MIDDLE_API) $(RAW_API) $(TEST)
@@ -26,6 +27,7 @@ EXTRA_DIST =					\
 	appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
+	policy.2.0.$(ASSMEBLY_NAME).config \
 	$(customs)				\
 	$(TEST_SOURCES)
 
@@ -83,3 +85,7 @@ $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
+
+$(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk
+	$(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(ASSEMBLY_NAME).snk
+
