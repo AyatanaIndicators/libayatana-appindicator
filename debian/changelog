@@ -1,3 +1,11 @@
+indicator-application (0.2.0-0ubuntu4~ppa2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Change Mono bindings to only parse particular files
+  * Autogen.  For fun and profit.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 08:44:30 -0500
+
 indicator-application (0.2.0-0ubuntu4~ppa1) lucid; urgency=low
 
   * Upstream Merge
@@ -402,6 +410,14 @@ indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.0.2
+    * Updates API to use GTK instead of dbusmenu to make it
+      easier for upstream developers to use.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
+
 indicator-application (0.0.2-0~ppa3) karmic; urgency=low
 
   * debian/watch:
@@ -410,14 +426,6 @@ indicator-application (0.0.2-0~ppa3) karmic; urgency=low
     - Updated Vcs-Bzr, project urls and description
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
-
-indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Upstream release 0.0.2
-    * Updates API to use GTK instead of dbusmenu to make it
-      easier for upstream developers to use.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
 
