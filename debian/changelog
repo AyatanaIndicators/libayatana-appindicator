@@ -2,8 +2,11 @@ indicator-application (0.2.0-0ubuntu4~ppa4) UNRELEASED; urgency=low
 
   * Upstream merge
     * Make a policy for migrating the mono bindings
+  * debian/libappindicator0.1-cil.installcligac: Add the policy.dll
+    file to the install.
+  * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 14:50:44 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 15:02:52 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa3) lucid; urgency=low
 
