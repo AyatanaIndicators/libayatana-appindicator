@@ -243,7 +243,21 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 static AppIndicatorStatus
 string_to_status(const gchar * status_string)
 {
-	return (AppIndicatorStatus) g_enum_get_value_by_nick((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status_string);
+	GEnumClass * klass = G_ENUM_CLASS(g_type_class_ref(APP_INDICATOR_TYPE_INDICATOR_STATUS));
+	g_return_val_if_fail(klass != NULL, APP_INDICATOR_STATUS_PASSIVE);
+
+	AppIndicatorStatus retval = APP_INDICATOR_STATUS_PASSIVE;
+
+	GEnumValue * val = g_enum_get_value_by_nick(klass, status_string);
+	if (val == NULL) {
+		g_warning("Unrecognized status '%s' assuming passive.", status_string);
+	} else {
+		retval = (AppIndicatorStatus)val->value;
+	}
+
+	g_type_class_unref(klass);
+
+	return retval;
 }
 
 /* A small helper function to get the position of an application
