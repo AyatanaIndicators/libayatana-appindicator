@@ -1,3 +1,9 @@
+indicator-application (0.2.0-0ubuntu4~ppa6) UNRELEASED; urgency=low
+
+  * debian/control: Fixing version numbers
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 16:59:58 -0500
+
 indicator-application (0.2.0-0ubuntu4~ppa5) lucid; urgency=low
 
   * Upstream merge

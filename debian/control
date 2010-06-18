@@ -96,8 +96,8 @@ Description:  Application Indicators
 Package: libappindicator0.1-cil
 Section: cli-mono
 Architecture: all
-Replaces: libappindicator0-cil (<= 0.0.19-0ubuntu4~)
-Conflicts: libappindicator0-cil (<= 0.0.19-0ubuntu4~)
+Replaces: libappindicator0-cil (<= 0.0.19-0ubuntu4)
+Conflicts: libappindicator0-cil (<= 0.0.19-0ubuntu4)
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends}
@@ -110,8 +110,8 @@ Description: CLI bindings for libappindicator
 Package: libappindicator0.1-cil-dev
 Section: libdevel
 Architecture: all
-Replaces: libappindicator-cil-dev (<= 0.0.19-0ubuntu4~)
-Conflicts: libappindicator-cil-dev (<= 0.0.19-0ubuntu4~)
+Replaces: libappindicator-cil-dev (<= 0.0.19-0ubuntu4)
+Conflicts: libappindicator-cil-dev (<= 0.0.19-0ubuntu4)
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends},
