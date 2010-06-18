@@ -43,7 +43,7 @@ EXTRA_DIST =					\
 	$(customs)				\
 	$(TEST_SOURCES)
 
-GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
+GACUTIL_FLAGS=-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
 
 references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
@@ -86,12 +86,16 @@ $(ASSEMBLY): generated-stamp $(srcdir)/AssemblyInfo.cs
 	$(CSC) $(CSFLAGS) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES) $(srcdir)/AssemblyInfo.cs
 
 install-data-local:
-	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib";  \
-            $(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
+	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS) || exit 1;
 
 uninstall-local:
-	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"; \
-            $(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
+	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
+            $(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -u $(DLLPOLICY),version=0.0.0.0,Culture=en,PublicKeyToken=bcae265d1c7ab4c2 $(GACUTIL_FLAGS) || exit 1;
 
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
