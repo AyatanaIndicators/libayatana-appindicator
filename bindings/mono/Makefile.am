@@ -99,7 +99,9 @@ $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 all: $(TEST)
 
 policy.2.0.$(ASSEMBLY_NAME).config: policy.2.0.$(ASSEMBLY_NAME).config.in Makefile
-	cp $< $@
+	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
+		-e "s|@ASSEMBLY_VERSION@|0.1|g" \
+		$< > $@
 
 $(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk Makefile
 	$(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
