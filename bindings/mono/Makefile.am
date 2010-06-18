@@ -96,7 +96,7 @@ uninstall-local:
 	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
             $(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
-            $(GACUTIL) -u $(ASSEMBLY_NAME),version=0.0.0.0,Culture=en,PublicKeyToken=bcae265d1c7ab4c2 $(GACUTIL_FLAGS) || exit 1;
+            $(GACUTIL) -u policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
 
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
