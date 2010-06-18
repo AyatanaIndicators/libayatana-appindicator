@@ -1,10 +1,10 @@
-indicator-application (0.2.0-0ubuntu4~ppa2) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu4~ppa2) lucid; urgency=low
 
   * Upstream Merge
     * Change Mono bindings to only parse particular files
   * Autogen.  For fun and profit.
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 08:44:30 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 08:46:44 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa1) lucid; urgency=low
 
