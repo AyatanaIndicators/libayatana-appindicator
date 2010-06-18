@@ -1,3 +1,10 @@
+indicator-application (0.2.0-0ubuntu4~ppa5) lucid; urgency=low
+
+  * Upstream merge
+    * Changing the policy to be for 0.0
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 16:44:05 -0500
+
 indicator-application (0.2.0-0ubuntu4~ppa4) lucid; urgency=low
 
   * Upstream merge
