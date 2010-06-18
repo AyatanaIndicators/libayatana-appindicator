@@ -1,9 +1,9 @@
-indicator-application (0.2.0-0ubuntu4~ppa3) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu4~ppa3) lucid; urgency=low
 
   * Upstream merge
     * Fix icon updating (LP: #594199)
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 11:18:14 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 11:22:06 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa2) lucid; urgency=low
 
