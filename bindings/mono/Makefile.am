@@ -13,7 +13,13 @@ ASSEMBLY_NAME = appindicator-sharp
 ASSEMBLY_VERSION = 0.1
 ASSEMBLY = appindicator-sharp.dll
 DLLPOLICY = policy.$(ASSEMBLY_VERSION).$(ASSEMBLY)
-TARGET = $(ASSEMBLY) $(ASSEMBLY).config $(DLLPOLICY)
+
+TARGET = \
+	$(ASSEMBLY) \
+	$(ASSEMBLY).config \
+	$(DLLPOLICY) \
+	policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config
+
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
 
