@@ -10,8 +10,9 @@ MIDDLE_API = libappindicator-api.middle
 RAW_API = libappindicator-api.raw
 METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
+ASSEMBLY_VERSION = 0.1
 ASSEMBLY = appindicator-sharp.dll
-DLLPOLICY = policy.2.0.$(ASSEMBLY)
+DLLPOLICY = policy.$(ASSEMBLY_VERSION).$(ASSEMBLY)
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config $(DLLPOLICY)
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
@@ -26,7 +27,7 @@ CLEANFILES = \
 	$(RAW_API) \
 	$(TEST) \
 	$(DLLPOLICY) \
-	policy.2.0.$(ASSEMBLY_NAME).config
+	policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config
 
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
@@ -39,7 +40,7 @@ EXTRA_DIST =					\
 	appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
-	policy.2.0.$(ASSEMBLY_NAME).config.in \
+	policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config.in \
 	$(customs)				\
 	$(TEST_SOURCES)
 
@@ -95,18 +96,18 @@ uninstall-local:
 	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
             $(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
 	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
-            $(GACUTIL) -u $(DLLPOLICY),version=0.0.0.0,Culture=en,PublicKeyToken=bcae265d1c7ab4c2 $(GACUTIL_FLAGS) || exit 1;
+            $(GACUTIL) -u $(ASSEMBLY_NAME),version=0.0.0.0,Culture=en,PublicKeyToken=bcae265d1c7ab4c2 $(GACUTIL_FLAGS) || exit 1;
 
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
 
-policy.2.0.$(ASSEMBLY_NAME).config: policy.2.0.$(ASSEMBLY_NAME).config.in Makefile
+policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config: policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config.in Makefile
 	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
-		-e "s|@ASSEMBLY_VERSION@|0.1|g" \
+		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
 		$< > $@
 
-$(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk Makefile
-	$(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
+$(DLLPOLICY): policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk Makefile
+	$(AL) -link:policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
 
