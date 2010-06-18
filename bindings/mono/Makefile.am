@@ -27,7 +27,7 @@ EXTRA_DIST =					\
 	appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
-	policy.2.0.$(ASSMEBLY_NAME).config \
+	policy.2.0.$(ASSEMBLY_NAME).config \
 	$(customs)				\
 	$(TEST_SOURCES)
 
