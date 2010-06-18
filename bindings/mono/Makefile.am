@@ -27,7 +27,7 @@ EXTRA_DIST =					\
 	appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
-	policy.2.0.$(ASSEMBLY_NAME).config \
+	policy.2.0.$(ASSEMBLY_NAME).config.in \
 	$(customs)				\
 	$(TEST_SOURCES)
 
@@ -86,6 +86,9 @@ $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 
 all: $(TEST)
 
+policy.2.0.$(ASSEMBLY_NAME).config: policy.2.0.$(ASSEMBLY_NAME).config.in Makefile
+	cp $< $@
+
 $(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk Makefile
-	(cd $(srcdir) ; $(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(abs_builddir)/$(DLLPOLICY) -keyfile:$(ASSEMBLY_NAME).snk)
+	$(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
 
