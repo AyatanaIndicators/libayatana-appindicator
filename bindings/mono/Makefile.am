@@ -15,7 +15,19 @@ DLLPOLICY = policy.$(ASSEMBLY)
 TARGET = $(ASSEMBLY) $(ASSEMBLY).config $(DLLPOLICY)
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(MIDDLE_API) $(RAW_API) $(TEST)
+
+CLEANFILES = \
+	$(ASSEMBLY) \
+	$(ASSEMBLY).mdb \
+	generated-stamp \
+	generated/*.cs \
+	$(API) \
+	$(MIDDLE_API) \
+	$(RAW_API) \
+	$(TEST) \
+	$(DLLPOLICY) \
+	policy.2.0.$(ASSEMBLY_NAME).config
+
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
 customs = ApplicationIndicator.custom
