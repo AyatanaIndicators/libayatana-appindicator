@@ -86,6 +86,6 @@ $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 
 all: $(TEST)
 
-$(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk
-	$(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(DLLPOLICY) -keyfile:$(ASSEMBLY_NAME).snk
+$(DLLPOLICY): policy.2.0.$(ASSEMBLY_NAME).config $(ASSEMBLY_NAME).snk Makefile
+	(cd $(srcdir) ; $(AL) -link:policy.2.0.$(ASSEMBLY_NAME).config -out:$(abs_builddir)/$(DLLPOLICY) -keyfile:$(ASSEMBLY_NAME).snk)
 
