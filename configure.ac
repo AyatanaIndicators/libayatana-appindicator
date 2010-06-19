@@ -37,7 +37,8 @@ AC_CONFIG_MACRO_DIR(m4)
 # Dependencies
 ###########################
 
-GTK_REQUIRED_VERSION=2.12
+GTK_REQUIRED_VERSION=2.18
+GTK3_REQUIRED_VERSION=2.90
 INDICATOR_REQUIRED_VERSION=0.3.5
 DBUSMENUGTK_REQUIRED_VERSION=0.2.2
 JSON_GLIB_REQUIRED_VERSION=0.7.6
@@ -51,6 +52,15 @@ PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 
 AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
+
+PKG_CHECK_MODULES(INDICATOR3, gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                              indicator >= $INDICATOR_REQUIRED_VERSION
+                              json-glib-1.0 >= $JSON_GLIB_REQUIRED_VERSION
+                              dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+                              dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
+
+AC_SUBST(INDICATOR3_CFLAGS)
+AC_SUBST(INDICATOR3_LIBS)
 
 ###########################
 # GObject Introspection
@@ -191,6 +201,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/appindicator-0.1.pc
+src/appindicator-3.1.pc
 bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config

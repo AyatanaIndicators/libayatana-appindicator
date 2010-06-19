@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+bindir=@bindir@
+includedir=@includedir@
+
+Cflags: -I${includedir}/libappindicator-3.1
+Requires: dbusmenu-glib gtk+-3.0
+Libs: -L${libdir} -lappindicator3
+
+Name: appindicator-3.1
+Description: Application indicators
+Version: @VERSION@
+

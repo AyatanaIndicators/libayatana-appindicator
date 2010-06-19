@@ -1270,7 +1270,7 @@ widget_notify_cb (GtkWidget  *widget,
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
-                                           GTK_WIDGET_IS_SENSITIVE (widget));
+                                           gtk_widget_is_sensitive (widget));
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
@@ -1422,7 +1422,7 @@ container_iterate (GtkWidget *widget,
 
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_ENABLED,
-                                       GTK_WIDGET_IS_SENSITIVE (widget));
+                                       gtk_widget_is_sensitive (widget));
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        gtk_widget_get_visible (widget));
