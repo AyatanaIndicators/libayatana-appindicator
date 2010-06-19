@@ -1,7 +1,7 @@
 CLEANFILES =
 DISTCLEANFILES =
 BUILT_SOURCES =
-EXTRA_DIST = appindicator-0.1.pc.in appindicator-3.1.pc.in
+EXTRA_DIST = appindicator-0.1.pc.in appindicator3-0.1.pc.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -79,7 +79,7 @@ glib_marshal_prefix = _application_service_marshal
 # Library
 ##################################
 
-pkgconfig_DATA = appindicator-0.1.pc appindicator-3.1.pc
+pkgconfig_DATA = appindicator-0.1.pc appindicator3-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = app-indicator-enum-types.h
@@ -93,7 +93,7 @@ lib_LTLIBRARIES = \
 	libappindicator3.la
 
 libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
-libappindicator3includedir=$(includedir)/libappindicator-3.1/libappindicator
+libappindicator3includedir=$(includedir)/libappindicator3-0.1/libappindicator
 
 libappindicator_headers = \
 	app-indicator.h
@@ -191,15 +191,15 @@ AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/
 AppIndicator_0_1_gir_LIBS = libappindicator.la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
-AppIndicator-3.1.gir: libappindicator.la $(glib_enum_h)
-AppIndicator_3_1_gir_INCLUDES = \
+AppIndicator3-0.1.gir: libappindicator3.la $(glib_enum_h)
+AppIndicator3_0_1_gir_INCLUDES = \
     GObject-2.0 \
     Gtk-3.0
-AppIndicator_3_1_gir_CFLAGS = $(INDICATOR3_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
-AppIndicator_3_1_gir_LIBS = libappindicator3.la
-AppIndicator_3_1_gir_FILES = $(introspection_sources)
+AppIndicator3_0_1_gir_CFLAGS = $(INDICATOR3_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
+AppIndicator3_0_1_gir_LIBS = libappindicator3.la
+AppIndicator3_0_1_gir_FILES = $(introspection_sources)
 
-INTROSPECTION_GIRS += AppIndicator-0.1.gir AppIndicator-3.1.gir
+INTROSPECTION_GIRS += AppIndicator-0.1.gir AppIndicator3-0.1.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -218,7 +218,7 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = AppIndicator-0.1.vapi AppIndicator-3.1.vapi
+vapi_DATA = AppIndicator-0.1.vapi AppIndicator3-0.1.vapi
 
 AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
 	$(VALA_API_GEN) --library=AppIndicator-0.1 \
@@ -226,8 +226,8 @@ AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
 		--vapidir=$(top_builddir)/src \
 		$<
 
-AppIndicator-3.1.vapi: AppIndicator-3.1.gir Makefile.am
-	$(VALA_API_GEN) --library=AppIndicator-3.1 \
+AppIndicator3-0.1.vapi: AppIndicator3-0.1.gir Makefile.am
+	$(VALA_API_GEN) --library=AppIndicator3-0.1 \
 		--pkg gtk+-3.0 \
 		--vapidir=$(top_builddir)/src \
 		$<

@@ -39,7 +39,7 @@ org_freedesktop_DBus_Properties_get_async_callback (DBusGProxy *proxy, DBusGProx
 {
   DBusGAsyncData *data = (DBusGAsyncData*) user_data;
   GError *error = NULL;
-  GValue OUT_Value = {0};
+  GValue OUT_Value = { 0, };
   dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_VALUE, &OUT_Value, G_TYPE_INVALID);
   (*(org_freedesktop_DBus_Properties_get_reply)data->cb) (proxy, OUT_Value, error, data->userdata);
   return;
