@@ -1,4 +1,4 @@
-indicator-application (0.2.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.2.1-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Fix icon updating (LP: #594199)
@@ -10,7 +10,7 @@ indicator-application (0.2.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
   * debian/libappindicator0.1-cil.installcligac: Add the policy.dll
     file to the install.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 14:16:15 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 14:25:39 -0500
 
 indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
 
