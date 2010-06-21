@@ -229,7 +229,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              "An icon for the indicator",
                                                              "The default icon that is shown for the indicator.",
                                                              NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 		AppIndicator:attention-icon-name:

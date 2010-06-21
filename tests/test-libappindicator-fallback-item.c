@@ -138,7 +138,7 @@ main (int argc, char ** argv)
 	GtkWidget * menu = gtk_menu_new();
 	app_indicator_set_menu(APP_INDICATOR(item), GTK_MENU(menu));
 
-	g_timeout_add_seconds(1, kill_func, NULL);
+	g_timeout_add_seconds(2, kill_func, NULL);
 
 	mainloop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(mainloop);

@@ -10,11 +10,33 @@ MIDDLE_API = libappindicator-api.middle
 RAW_API = libappindicator-api.raw
 METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
-ASSEMBLY = appindicator-sharp.dll
-TARGET = $(ASSEMBLY) $(ASSEMBLY).config
+ASSEMBLY_VERSION = 0.1.0.0
+ASSEMBLY = $(ASSEMBLY_NAME).dll
+POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
+POLICY_VERSION = 0.0
+DLLPOLICY = $(POLICY).dll
+
+TARGET = \
+	$(ASSEMBLY) \
+	$(ASSEMBLY).config \
+	$(DLLPOLICY) \
+	$(POLICY).config
+
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
-CLEANFILES = $(ASSEMBLY) $(ASSEMBLY).mdb generated-stamp generated/*.cs $(API) $(MIDDLE_API) $(RAW_API) $(TEST)
+
+CLEANFILES = \
+	$(ASSEMBLY) \
+	$(ASSEMBLY).mdb \
+	generated-stamp \
+	generated/*.cs \
+	$(API) \
+	$(MIDDLE_API) \
+	$(RAW_API) \
+	$(TEST) \
+	$(DLLPOLICY) \
+	$(POLICY).config
+
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
 customs = ApplicationIndicator.custom
@@ -26,10 +48,11 @@ EXTRA_DIST =					\
 	appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
+	$(POLICY).config.in \
 	$(customs)				\
 	$(TEST_SOURCES)
 
-GACUTIL_FLAGS="-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"
+GACUTIL_FLAGS=-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
 
 references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
@@ -72,14 +95,27 @@ $(ASSEMBLY): generated-stamp $(srcdir)/AssemblyInfo.cs
 	$(CSC) $(CSFLAGS) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES) $(srcdir)/AssemblyInfo.cs
 
 install-data-local:
-	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib";  \
-            $(GACUTIL) -i $(ASSEMBLY_NAME).dll  -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
+	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS) || exit 1;
 
 uninstall-local:
-	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib"; \
-            $(GACUTIL) -u $(ASSEMBLY_NAME) -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib || exit 1;
+	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
+            $(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
+	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
+            $(GACUTIL) -u $(POLICY) $(GACUTIL_FLAGS) || exit 1;
 
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
+
+$(POLICY).config: $(POLICY).config.in Makefile
+	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
+		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
+		$< > $@
+
+$(DLLPOLICY): $(POLICY).config $(ASSEMBLY_NAME).snk Makefile
+	$(AL) -link:$(POLICY).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
+

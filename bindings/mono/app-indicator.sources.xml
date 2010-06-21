@@ -2,10 +2,10 @@
 	<api filename="libappindicator-api.raw">
 		<library name="libappindicator.so.0">
 			<namespace name="AppIndicator">
-				<directory path="../../src">
-					<exclude>app-indicator-enum-types.h.in</exclude>
-					<exclude>app-indicator-enum-types.c.in</exclude>
-				</directory>
+				<file>../../src/app-indicator.c</file>
+				<file>../../src/app-indicator-enum-types.c</file>
+				<file>../../src/app-indicator-enum-types.h</file>
+				<file>../../src/app-indicator.h</file>
 			</namespace>
 		</library>
 	</api>
