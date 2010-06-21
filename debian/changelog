@@ -1,9 +1,9 @@
-indicator-application (0.2.0-0ubuntu4~ppa6) UNRELEASED; urgency=low
+indicator-application (0.2.0-0ubuntu4~ppa6) lucid; urgency=low
 
   * debian/control: Fixing version numbers
   * debian/control: Making the 0.1-cil replace and provide the 0.0-cil 
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 17:11:53 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 09:00:10 -0500
 
 indicator-application (0.2.0-0ubuntu4~ppa5) lucid; urgency=low
 
