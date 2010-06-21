@@ -1,9 +1,20 @@
-indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
+indicator-application (0.2.1-0ubuntu1) UNRELEASED; urgency=low
 
+  * New upstream release.
+    * Fix icon updating (LP: #594199)
+    * Change Mono bindings to only parse particular files (LP: #592706)
+    * Make a policy for migrating the mono bindings
+    * Test fixes to make them more reliable
+  * debian/control: Fixing version numbers
+  * debian/control: Making the 0.1-cil replace and provide the 0.0-cil 
+  * debian/libappindicator0.1-cil.installcligac: Add the policy.dll
+    file to the install.
+
+  [Ken VanDine]
   * renamed cil binary to libappindicator0.1 to match the assembly 
     version (LP: #592706)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Jun 2010 10:56:46 -0400
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 14:25:39 -0500
 
 indicator-application (0.2.0-0ubuntu2) maverick; urgency=low
 
@@ -395,6 +406,14 @@ indicator-application (0.0.3-0ubuntu1) lucid; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 10 Dec 2009 13:34:40 -0600
 
+indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
+
+  * Upstream release 0.0.2
+    * Updates API to use GTK instead of dbusmenu to make it
+      easier for upstream developers to use.
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
+
 indicator-application (0.0.2-0~ppa3) karmic; urgency=low
 
   * debian/watch:
@@ -403,14 +422,6 @@ indicator-application (0.0.2-0~ppa3) karmic; urgency=low
     - Updated Vcs-Bzr, project urls and description
 
  -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Dec 2009 09:00:06 -0500
-
-indicator-application (0.0.2-0ubuntu1~ppa1) karmic; urgency=low
-
-  * Upstream release 0.0.2
-    * Updates API to use GTK instead of dbusmenu to make it
-      easier for upstream developers to use.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 04 Dec 2009 14:50:45 -0600
 
 indicator-application (0.0.1-0ubuntu3~ppa4) karmic; urgency=low
 
