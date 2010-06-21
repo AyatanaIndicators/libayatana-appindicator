@@ -10,9 +10,10 @@ MIDDLE_API = libappindicator-api.middle
 RAW_API = libappindicator-api.raw
 METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
-ASSEMBLY_VERSION = 0.1
+ASSEMBLY_VERSION = 0.1.0.0
 ASSEMBLY = $(ASSEMBLY_NAME).dll
-POLICY = policy.$(ASSEMBLY_VERSION).$(ASSEMBLY_NAME)
+POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
+POLICY_VERSION = 0.0
 DLLPOLICY = $(POLICY).dll
 
 TARGET = \
