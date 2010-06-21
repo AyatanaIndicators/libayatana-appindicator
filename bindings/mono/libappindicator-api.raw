@@ -24,7 +24,7 @@
       <property name="PROP_ID_S" cname="PROP_ID_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
       <property name="PROP_CATEGORY_S" cname="PROP_CATEGORY_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
       <property name="PROP_STATUS_S" cname="PROP_STATUS_S" type="gchar*" readable="true" writeable="true" />
-      <property name="PROP_ICON_NAME_S" cname="PROP_ICON_NAME_S" type="gchar*" readable="true" writeable="true" construct="true" />
+      <property name="PROP_ICON_NAME_S" cname="PROP_ICON_NAME_S" type="gchar*" readable="true" writeable="true" />
       <property name="PROP_ATTENTION_ICON_NAME_S" cname="PROP_ATTENTION_ICON_NAME_S" type="gchar*" readable="true" writeable="true" />
       <property name="PROP_ICON_THEME_PATH_S" cname="PROP_ICON_THEME_PATH_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
       <property name="PROP_MENU_S" cname="PROP_MENU_S" type="DbusGObjectPath" readable="true" />

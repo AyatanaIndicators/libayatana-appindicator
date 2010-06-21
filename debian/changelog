@@ -1,51 +1,16 @@
-indicator-application (0.2.0-0ubuntu4~ppa6) lucid; urgency=low
+indicator-application (0.2.1-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
+  * New upstream release.
+    * Fix icon updating (LP: #594199)
+    * Change Mono bindings to only parse particular files (LP: #592706)
+    * Make a policy for migrating the mono bindings
+    * Test fixes to make them more reliable
   * debian/control: Fixing version numbers
   * debian/control: Making the 0.1-cil replace and provide the 0.0-cil 
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 09:00:10 -0500
-
-indicator-application (0.2.0-0ubuntu4~ppa5) lucid; urgency=low
-
-  * Upstream merge
-    * Changing the policy to be for 0.0
-  * Autogen
-  * debian/libappindicator0.1-cil.installcligac: Changing version
-    policy applies to.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 16:52:26 -0500
-
-indicator-application (0.2.0-0ubuntu4~ppa4) lucid; urgency=low
-
-  * Upstream merge
-    * Make a policy for migrating the mono bindings
   * debian/libappindicator0.1-cil.installcligac: Add the policy.dll
     file to the install.
-  * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 15:04:24 -0500
-
-indicator-application (0.2.0-0ubuntu4~ppa3) lucid; urgency=low
-
-  * Upstream merge
-    * Fix icon updating (LP: #594199)
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 11:22:06 -0500
-
-indicator-application (0.2.0-0ubuntu4~ppa2) lucid; urgency=low
-
-  * Upstream Merge
-    * Change Mono bindings to only parse particular files (LP: #592706)
-  * Autogen.  For fun and profit.
-
- -- Ted Gould <ted@ubuntu.com>  Fri, 18 Jun 2010 08:46:44 -0500
-
-indicator-application (0.2.0-0ubuntu4~ppa1) lucid; urgency=low
-
-  * Upstream Merge
-    * Test fixes to make them more reliable
-
- -- Ted Gould <ted@ubuntu.com>  Thu, 17 Jun 2010 13:27:26 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 14:16:15 -0500
 
 indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
 
