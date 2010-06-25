@@ -107,3 +107,5 @@ docs/reference/libappindicator-decl.txt.bak
 docs/reference/libappindicator-decl-list.txt.bak
 src/AppIndicator-0.1.vapi
 bindings/mono/policy.appindicator-sharp.dll
+src/notification-approver-client.h
+src/notification-approver-server.h
