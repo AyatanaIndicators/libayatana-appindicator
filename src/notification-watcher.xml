@@ -22,6 +22,12 @@
 		<method name="IsNotificationHostRegistered">
 			<arg type="b" name="hasHost" direction="out" />
 		</method>
+		<method name="RegisterNotificationApprover">
+			<!-- The path where to find the approver interface -->
+			<arg type="o" name="path" direction="in" />
+			<!-- List of categories to approve, none represents all -->
+			<arg type="as" name="categories" direction="in" />
+		</method>
 
 <!-- Signals -->
 		<signal name="ServiceRegistered">
