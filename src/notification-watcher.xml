@@ -23,6 +23,7 @@
 			<arg type="b" name="hasHost" direction="out" />
 		</method>
 		<method name="RegisterNotificationApprover">
+		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<!-- The path where to find the approver interface -->
 			<arg type="o" name="path" direction="in" />
 			<!-- List of categories to approve, none represents all -->
