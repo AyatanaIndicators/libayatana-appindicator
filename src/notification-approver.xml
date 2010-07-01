@@ -15,7 +15,7 @@
 			<!-- Application DBus Path for KSNI interface -->
 			<arg type="o" name="path" direction="in" />
 			<!-- So, what do you think? -->
-			<arg type="s" name="approved" direction="out" />
+			<arg type="b" name="approved" direction="out" />
 		</method>
 
 	</interface>
