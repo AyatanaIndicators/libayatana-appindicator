@@ -1,5 +1,6 @@
-indicator-application (0.2.1-0ubuntu1~ppa1) lucid; urgency=low
+indicator-application (0.2.1-0ubuntu1) maverick; urgency=low
 
+  [ Ted Gould ]
   * New upstream release.
     * Fix icon updating (LP: #594199)
     * Change Mono bindings to only parse particular files (LP: #592706)
@@ -10,14 +11,11 @@ indicator-application (0.2.1-0ubuntu1~ppa1) lucid; urgency=low
   * debian/libappindicator0.1-cil.installcligac: Add the policy.dll
     file to the install.
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 21 Jun 2010 14:25:39 -0500
-
-indicator-application (0.2.0-0ubuntu3) UNRELEASED; urgency=low
-
+  [Ken VanDine]
   * renamed cil binary to libappindicator0.1 to match the assembly 
     version (LP: #592706)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Jun 2010 10:56:46 -0400
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 22 Jun 2010 09:31:43 +0200
 
 indicator-application (0.2.0-0ubuntu2) maverick; urgency=low
 
