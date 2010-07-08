@@ -50,7 +50,6 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
 
 /* Private Stuff */
-typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePrivate;
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
@@ -139,7 +138,8 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 static void
 application_service_appstore_init (ApplicationServiceAppstore *self)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
+    
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (self);
 
 	priv->applications = NULL;
 	priv->lrufile = NULL;
@@ -155,6 +155,8 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	dbus_g_connection_register_g_object(priv->bus,
 	                                    INDICATOR_APPLICATION_DBUS_OBJ,
 	                                    G_OBJECT(self));
+	                                    
+    self->priv = priv;
 
 	return;
 }
@@ -162,7 +164,7 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 static void
 application_service_appstore_dispose (GObject *object)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(object);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE(object)->priv;
 
 	while (priv->applications != NULL) {
 		application_service_appstore_application_remove(APPLICATION_SERVICE_APPSTORE(object),
@@ -209,7 +211,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
 	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
@@ -265,7 +267,7 @@ string_to_status(const gchar * status_string)
 static gint 
 get_position (Application * app) {
 	ApplicationServiceAppstore * appstore = app->appstore;
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	GList * applistitem = g_list_find(priv->applications, app);
 	if (applistitem == NULL) {
@@ -384,7 +386,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 	g_debug("Changing app status to: %d", status);
 
 	ApplicationServiceAppstore * appstore = app->appstore;
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	/* This means we're going off line */
 	if (status == APP_INDICATOR_STATUS_PASSIVE) {
@@ -567,7 +569,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
@@ -665,7 +667,7 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 	GList * listpntr;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
@@ -687,7 +689,7 @@ application_service_appstore_new (AppLruFile * lrufile)
 {
 	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 	priv->lrufile = lrufile;
 	return appstore;
 }
@@ -696,7 +698,7 @@ application_service_appstore_new (AppLruFile * lrufile)
 static gboolean
 _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	*apps = g_ptr_array_new();
 	GList * listpntr;
