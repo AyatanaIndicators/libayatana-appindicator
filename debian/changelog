@@ -1,3 +1,15 @@
+indicator-application (0.2.2-0ubuntu1) maverick; urgency=low
+
+  * debian/control, debian/rules:
+    - use dh_girepository and gir:Depends to get the gir depends, 
+      clean the build-depends on gir-repository-dev not required
+
+  [ Ted Gould ]
+  * New upstream release.
+    ∘ Work with updated container signal names (lp: #558841)
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 08 Jul 2010 18:12:00 +0200
+
 indicator-application (0.2.1-0ubuntu1) maverick; urgency=low
 
   [ Ted Gould ]

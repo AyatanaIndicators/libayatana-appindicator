@@ -44,6 +44,9 @@ binary-install/libappindicator0.1-cil::
 	dh_makeclilibs -V
 	dh_installcligac
 
+binary-predeb/gir1.0-appindicator-0.1::
+	dh_girepository -p$(cdbs_curpkg)
+
 binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator0
 	dh_clideps -plibappindicator0.1-cil
 
