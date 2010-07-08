@@ -1,9 +1,9 @@
-indicator-application (0.2.2-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.2.2-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     ∘ Work with updated container signal names
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 08 Jul 2010 10:22:27 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 08 Jul 2010 10:28:24 -0500
 
 indicator-application (0.2.1-0ubuntu1) maverick; urgency=low
 
