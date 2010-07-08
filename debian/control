@@ -26,7 +26,6 @@ Build-Depends: debhelper (>= 5.0),
                libnunit-cil-dev,
                libgtk2.0-cil-dev,
                gobject-introspection,
-               gir-repository-dev,
                libgirepository1.0-dev,
                gir1.0-glib-2.0,
                gir1.0-gtk-2.0,
@@ -129,9 +128,7 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         gir1.0-glib-2.0,
-         gir1.0-gtk-2.0,
-         libappindicator0 (= ${binary:Version})
+         ${gir:Depends}
 Description: Typelib files for libappindicator0.
  .
  This package can be used by other packages using the GIRepository format
