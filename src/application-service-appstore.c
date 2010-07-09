@@ -31,6 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-marshal.h"
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
+#include "notification-approver-client.h"
 
 /* DBus Prototypes */
 static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
@@ -100,7 +101,7 @@ static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
-void approver_free (gpointer papprover, gpointer user_data);
+static void approver_free (gpointer papprover, gpointer user_data);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -760,7 +761,7 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 }
 
 /* Frees the data associated with an approver */
-void
+static void
 approver_free (gpointer papprover, gpointer user_data)
 {
 	Approver * approver = (Approver *)papprover;
@@ -772,6 +773,33 @@ approver_free (gpointer papprover, gpointer user_data)
 	}
 
 	g_free(approver);
+	return;
+}
+
+/* What did the approver tell us? */
+static void
+approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gpointer userdata)
+{
+	g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	return;
+}
+
+/* Run the applications through the new approver */
+static void
+check_with_new_approver (gpointer papp, gpointer papprove)
+{
+	Application * app = (Application *)papp;
+	Approver * approver = (Approver *)papprove;
+
+	org_ayatana_StatusNotifierApprover_approve_item_async(approver->proxy,
+	                                                      app->id,
+	                                                      app->category,
+	                                                      0,
+	                                                      app->dbus_name,
+	                                                      app->dbus_object,
+	                                                      approver_request_cb,
+	                                                      app);
+
 	return;
 }
 
@@ -800,6 +828,8 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 	}
 
 	priv->approvers = g_list_prepend(priv->approvers, approver);
+
+	g_list_foreach(priv->applications, check_with_new_approver, approver);
 
 	return;
 }
