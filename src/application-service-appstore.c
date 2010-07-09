@@ -53,7 +53,13 @@ static gboolean _application_service_server_get_applications (ApplicationService
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
+	GList * approvers;
 	AppLruFile * lrufile;
+};
+
+typedef struct _Approver Approver;
+struct _Approver {
+	DBusGProxy * proxy;
 };
 
 typedef struct _Application Application;
@@ -94,6 +100,7 @@ static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
+void approver_free (gpointer papprover, gpointer user_data);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -142,6 +149,7 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (self);
 
 	priv->applications = NULL;
+	priv->approvers = NULL;
 	priv->lrufile = NULL;
 	
 	GError * error = NULL;
@@ -170,6 +178,12 @@ application_service_appstore_dispose (GObject *object)
 		application_service_appstore_application_remove(APPLICATION_SERVICE_APPSTORE(object),
 		                                           ((Application *)priv->applications->data)->dbus_name,
 		                                           ((Application *)priv->applications->data)->dbus_object);
+	}
+
+	if (priv->approvers != NULL) {
+		g_list_foreach(priv->approvers, approver_free, NULL);
+		g_list_free(priv->approvers);
+		priv->approvers = NULL;
 	}
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->dispose (object);
@@ -743,6 +757,21 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	}
 
 	return TRUE;
+}
+
+void
+approver_free (gpointer papprover, gpointer user_data)
+{
+	Approver * approver = (Approver *)papprover;
+	g_return_if_fail(approver != NULL);
+	
+	if (approver->proxy != NULL) {
+		g_object_unref(approver->proxy);
+		approver->proxy = NULL;
+	}
+
+	g_free(approver);
+	return;
 }
 
 void
