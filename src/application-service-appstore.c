@@ -759,6 +759,7 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	return TRUE;
 }
 
+/* Frees the data associated with an approver */
 void
 approver_free (gpointer papprover, gpointer user_data)
 {
@@ -774,6 +775,7 @@ approver_free (gpointer papprover, gpointer user_data)
 	return;
 }
 
+/* Adds a new approver to the app store */
 void
 application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
