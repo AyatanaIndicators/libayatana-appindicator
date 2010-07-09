@@ -779,6 +779,27 @@ approver_free (gpointer papprover, gpointer user_data)
 void
 application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(dbus_name != NULL);
+	g_return_if_fail(dbus_object != NULL);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (appstore);
+
+	Approver * approver = g_new0(Approver, 1);
+
+	GError * error = NULL;
+	approver->proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
+	                                                  dbus_name,
+	                                                  dbus_object,
+	                                                  NOTIFICATION_APPROVER_DBUS_IFACE,
+	                                                  &error);
+	if (error != NULL) {
+		g_warning("Unable to get approver interface on '%s:%s' : %s", dbus_name, dbus_object, error->message);
+		g_error_free(error);
+		g_free(approver);
+		return;
+	}
+
+	priv->approvers = g_list_prepend(priv->approvers, approver);
 
 	return;
 }
