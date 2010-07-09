@@ -745,3 +745,10 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	return TRUE;
 }
 
+void
+application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
+{
+
+	return;
+}
+
