@@ -1,5 +1,6 @@
 
 check_PROGRAMS = \
+	test-approver \
 	test-libappindicator \
 	test-libappindicator-dbus-client \
 	test-libappindicator-dbus-server \
@@ -97,6 +98,21 @@ test_libappindicator_status_server_CFLAGS = \
 test_libappindicator_status_server_LDADD = \
 	$(INDICATOR_LIBS) \
 	$(top_builddir)/src/libappindicator.la
+
+#########################################
+##  test-approver
+#########################################
+
+test_approver_SOURCES = \
+	test-approver.c
+
+test_approver_CFLAGS = \
+	$(INDICATOR_CFLAGS) \
+	-Wall -Werror \
+	-I$(top_srcdir)/src
+
+test_approver_LDADD = \
+	$(INDICATOR_LIBS)
 
 #########################################
 ##  test-libappindicator-fallback
