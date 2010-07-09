@@ -102,6 +102,8 @@ static void application_service_appstore_finalize   (GObject *object);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
 static void approver_free (gpointer papprover, gpointer user_data);
+static void check_with_new_approver (gpointer papp, gpointer papprove);
+static void check_with_old_approver (gpointer papprove, gpointer papp);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -251,8 +253,20 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_path = g_strdup("");
 	}
 
+	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
+	g_list_foreach(priv->approvers, check_with_old_approver, app);
+
 	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
 
+	return;
+}
+
+/* Check the application against an approver */
+static void
+check_with_old_approver (gpointer papprove, gpointer papp)
+{
+	/* Funny the parallels, eh? */
+	check_with_new_approver(papp, papprove);
 	return;
 }
 
