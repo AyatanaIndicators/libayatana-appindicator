@@ -5,8 +5,13 @@
 
 #include "notification-watcher-client.h"
 #include "dbus-shared.h"
+#include "app-indicator.h"
 
 #define APPROVER_PATH  "/my/approver"
+
+#define INDICATOR_ID        "test-indicator-id"
+#define INDICATOR_ICON      "test-indicator-icon-name"
+#define INDICATOR_CATEGORY  APP_INDICATOR_CATEGORY_APPLICATION_STATUS
 
 #define TEST_APPROVER_TYPE            (test_approver_get_type ())
 #define TEST_APPROVER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), TEST_APPROVER_TYPE, TestApprover))
@@ -37,6 +42,7 @@ static void _notification_approver_server_approve_item (void);
 GMainLoop * main_loop = NULL;
 DBusGConnection * session_bus = NULL;
 DBusGProxy * bus_proxy = NULL;
+AppIndicator * app_indicator = NULL;
 gboolean passed = FALSE;
 
 G_DEFINE_TYPE (TestApprover, test_approver, G_TYPE_OBJECT);
@@ -77,6 +83,13 @@ register_cb (DBusGProxy * proxy, GError * error, gpointer user_data)
 	}
 
 	g_debug("Building App Indicator");
+	app_indicator = app_indicator_new(INDICATOR_ID, INDICATOR_ICON, INDICATOR_CATEGORY);
+
+	GtkWidget * menu = gtk_menu_new();
+	GtkWidget * mi = gtk_image_menu_item_new_from_stock(GTK_STOCK_ABOUT, NULL);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), mi);
+
+	app_indicator_set_menu(app_indicator, GTK_MENU(menu));
 
 	return;
 }

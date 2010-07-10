@@ -112,7 +112,8 @@ test_approver_CFLAGS = \
 	-I$(top_srcdir)/src
 
 test_approver_LDADD = \
-	$(INDICATOR_LIBS)
+	$(INDICATOR_LIBS) \
+	$(top_builddir)/src/libappindicator.la
 
 #########################################
 ##  test-libappindicator-fallback
