@@ -70,7 +70,13 @@ static gboolean
 _notification_approver_server_approve_item (TestApprover * ta, const gchar * id, const gchar * category, guint pid, const gchar * address, const gchar * path, gboolean * approved, GError ** error)
 {
 	*approved = TRUE;
+	g_debug("Asked to approve indicator");
 
+	if (g_strcmp0(id, INDICATOR_ID) == 0) {
+		passed = TRUE;
+	}
+
+	g_main_loop_quit(main_loop);
 
 	return TRUE;
 }
