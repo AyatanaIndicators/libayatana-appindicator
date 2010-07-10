@@ -141,7 +141,7 @@ main (int argc, char ** argv)
 {
 	GError * error = NULL;
 
-	g_type_init();
+	gtk_init(&argc, &argv);
 	g_debug("Initing");
 
 	session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
