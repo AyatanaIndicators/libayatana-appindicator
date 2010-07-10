@@ -115,6 +115,15 @@ test_approver_LDADD = \
 	$(INDICATOR_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
+test-approver-tester: test-approver Makefile.am
+	@echo "#!/bin/bash" > $@
+	@echo . $(srcdir)/run-xvfb.sh >> $@
+	@echo $(DBUS_RUNNER) --task $(builddir)/test-approver --task-name Approver --task $(top_builddir)/src/indicator-application-service --task-name Service --ignore-return >> $@
+	@chmod +x $@
+
+TESTS += test-approver-tester
+
+
 #########################################
 ##  test-libappindicator-fallback
 #########################################
