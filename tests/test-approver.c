@@ -69,6 +69,8 @@ gint owner_count = 0;
 gboolean
 check_for_service (gpointer user_data)
 {
+	g_debug("Checking for Watcher");
+
 	if (owner_count > 100) {
 		g_main_loop_quit(main_loop);
 		return FALSE;
@@ -86,6 +88,7 @@ check_for_service (gpointer user_data)
 		                                               NOTIFICATION_WATCHER_DBUS_OBJ,
 		                                               NOTIFICATION_WATCHER_DBUS_IFACE);
 
+		g_debug("Registering Approver");
 		org_kde_StatusNotifierWatcher_register_notification_approver (proxy, APPROVER_PATH, &cats, NULL);
 		return FALSE;
 	}
@@ -97,12 +100,13 @@ int
 main (int argc, char ** argv)
 {
 	g_type_init();
+	g_debug("Initing");
 
 	session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
 
 	TestApprover * approver = g_object_new(TEST_APPROVER_TYPE, NULL);
 
-    bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+	bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 
 	g_timeout_add(100, check_for_service, NULL);
 
