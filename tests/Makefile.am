@@ -109,7 +109,8 @@ test_approver_SOURCES = \
 test_approver_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src
 
 test_approver_LDADD = \
 	$(INDICATOR_LIBS) \
