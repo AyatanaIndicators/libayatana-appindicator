@@ -1,6 +1,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <dbus/dbus-glib-bindings.h>
+
+#include "notification-watcher-client.h"
+#include "dbus-shared.h"
+
 #define APPROVER_PATH  "/my/approver"
 
 #define TEST_APPROVER_TYPE            (test_approver_get_type ())
@@ -29,6 +34,10 @@ static void _notification_approver_server_approve_item (void);
 
 #include "../src/notification-approver-server.h"
 
+GMainLoop * main_loop = NULL;
+DBusGConnection * session_bus = NULL;
+DBusGProxy * bus_proxy = NULL;
+
 G_DEFINE_TYPE (TestApprover, test_approver, G_TYPE_OBJECT);
 
 static void
@@ -43,8 +52,6 @@ test_approver_class_init (TestApproverClass *klass)
 static void
 test_approver_init (TestApprover *self)
 {
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
-
 	dbus_g_connection_register_g_object(session_bus,
 	                                    APPROVER_PATH,
 	                                    G_OBJECT(self));
@@ -58,14 +65,48 @@ _notification_approver_server_approve_item (void)
 	return;
 }
 
+gint owner_count = 0;
+gboolean
+check_for_service (gpointer user_data)
+{
+	if (owner_count > 100) {
+		g_main_loop_quit(main_loop);
+		return FALSE;
+	}
+
+	owner_count++;
+
+	gboolean has_owner = FALSE;
+	org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
+
+	if (has_owner) {
+		const char * cats = NULL;
+		DBusGProxy * proxy = dbus_g_proxy_new_for_name(session_bus,
+		                                               NOTIFICATION_WATCHER_DBUS_ADDR,
+		                                               NOTIFICATION_WATCHER_DBUS_OBJ,
+		                                               NOTIFICATION_WATCHER_DBUS_IFACE);
+
+		org_kde_StatusNotifierWatcher_register_notification_approver (proxy, APPROVER_PATH, &cats, NULL);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 int
 main (int argc, char ** argv)
 {
 	g_type_init();
 
+	session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+
 	TestApprover * approver = g_object_new(TEST_APPROVER_TYPE, NULL);
 
-	GMainLoop * main_loop = g_main_loop_new(NULL, FALSE);
+    bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+
+	g_timeout_add(100, check_for_service, NULL);
+
+	main_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(main_loop);
 
 	g_object_unref(approver);
