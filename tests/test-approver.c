@@ -37,6 +37,7 @@ static void _notification_approver_server_approve_item (void);
 GMainLoop * main_loop = NULL;
 DBusGConnection * session_bus = NULL;
 DBusGProxy * bus_proxy = NULL;
+gboolean passed = FALSE;
 
 G_DEFINE_TYPE (TestApprover, test_approver, G_TYPE_OBJECT);
 
@@ -72,6 +73,7 @@ check_for_service (gpointer user_data)
 	g_debug("Checking for Watcher");
 
 	if (owner_count > 100) {
+		g_warning("Couldn't find watcher after 100 tries.");
 		g_main_loop_quit(main_loop);
 		return FALSE;
 	}
@@ -79,7 +81,7 @@ check_for_service (gpointer user_data)
 	owner_count++;
 
 	gboolean has_owner = FALSE;
-	org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
+	org_freedesktop_DBus_name_has_owner(bus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, &has_owner, NULL);
 
 	if (has_owner) {
 		const char * cats = NULL;
@@ -89,7 +91,15 @@ check_for_service (gpointer user_data)
 		                                               NOTIFICATION_WATCHER_DBUS_IFACE);
 
 		g_debug("Registering Approver");
-		org_kde_StatusNotifierWatcher_register_notification_approver (proxy, APPROVER_PATH, &cats, NULL);
+		GError * error = NULL;
+		org_kde_StatusNotifierWatcher_register_notification_approver (proxy, APPROVER_PATH, &cats, &error);
+
+		if (error != NULL) {
+			g_warning("Unable to register approver: %s", error->message);
+			g_error_free(error);
+			g_main_loop_quit(main_loop);
+		}
+
 		return FALSE;
 	}
 
@@ -99,10 +109,17 @@ check_for_service (gpointer user_data)
 int
 main (int argc, char ** argv)
 {
+	GError * error = NULL;
+
 	g_type_init();
 	g_debug("Initing");
 
-	session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, NULL);
+	session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	if (error != NULL) {
+		g_warning("Unable to get session bus: %s", error->message);
+		g_error_free(error);
+		return -1;
+	}
 
 	TestApprover * approver = g_object_new(TEST_APPROVER_TYPE, NULL);
 
@@ -114,6 +131,10 @@ main (int argc, char ** argv)
 	g_main_loop_run(main_loop);
 
 	g_object_unref(approver);
+
+	if (!passed) {
+		return -1;
+	}
 
 	return 0;
 }
