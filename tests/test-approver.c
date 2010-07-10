@@ -66,6 +66,21 @@ _notification_approver_server_approve_item (void)
 	return;
 }
 
+static void
+register_cb (DBusGProxy * proxy, GError * error, gpointer user_data)
+{
+	if (error != NULL) {
+		g_warning("Unable to register approver: %s", error->message);
+		g_error_free(error);
+		g_main_loop_quit(main_loop);
+		return;
+	}
+
+	g_debug("Building App Indicator");
+
+	return;
+}
+
 gint owner_count = 0;
 gboolean
 check_for_service (gpointer user_data)
@@ -91,14 +106,7 @@ check_for_service (gpointer user_data)
 		                                               NOTIFICATION_WATCHER_DBUS_IFACE);
 
 		g_debug("Registering Approver");
-		GError * error = NULL;
-		org_kde_StatusNotifierWatcher_register_notification_approver (proxy, APPROVER_PATH, &cats, &error);
-
-		if (error != NULL) {
-			g_warning("Unable to register approver: %s", error->message);
-			g_error_free(error);
-			g_main_loop_quit(main_loop);
-		}
+		org_kde_StatusNotifierWatcher_register_notification_approver_async (proxy, APPROVER_PATH, &cats, register_cb, NULL);
 
 		return FALSE;
 	}
