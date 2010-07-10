@@ -35,7 +35,7 @@ GType test_approver_get_type (void);
 
 static void test_approver_class_init (TestApproverClass *klass);
 static void test_approver_init       (TestApprover *self);
-static void _notification_approver_server_approve_item (void);
+static gboolean _notification_approver_server_approve_item (TestApprover * ta, const gchar * id, const gchar * category, guint pid, const gchar * address, const gchar * path, gboolean * approved, GError ** error);
 
 #include "../src/notification-approver-server.h"
 
@@ -66,10 +66,13 @@ test_approver_init (TestApprover *self)
 	return;
 }
 
-static void
-_notification_approver_server_approve_item (void)
+static gboolean 
+_notification_approver_server_approve_item (TestApprover * ta, const gchar * id, const gchar * category, guint pid, const gchar * address, const gchar * path, gboolean * approved, GError ** error)
 {
-	return;
+	*approved = TRUE;
+
+
+	return TRUE;
 }
 
 static void
