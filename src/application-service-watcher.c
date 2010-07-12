@@ -34,6 +34,7 @@ static gboolean _notification_watcher_server_register_status_notifier_item (Appl
 static gboolean _notification_watcher_server_registered_status_notifier_items (ApplicationServiceWatcher * appwatcher, GArray ** apps);
 static gboolean _notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version);
 static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
+static gboolean _notification_watcher_server_register_notification_approver (ApplicationServiceWatcher * appwatcher, const gchar * path, const GArray * categories, DBusGMethodInvocation * method);
 static gboolean _notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost);
 static void get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data);
 
@@ -248,4 +249,17 @@ get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data)
 	}
 
 	return;
+}
+
+static gboolean
+_notification_watcher_server_register_notification_approver (ApplicationServiceWatcher * appwatcher, const gchar * path, const GArray * categories, DBusGMethodInvocation * method)
+{
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(appwatcher);
+
+	application_service_appstore_approver_add(priv->appstore,
+	                                          dbus_g_method_get_sender(method),
+	                                          path);
+
+	dbus_g_method_return(method, G_TYPE_NONE);
+	return TRUE;
 }
