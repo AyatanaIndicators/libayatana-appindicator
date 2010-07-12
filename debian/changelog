@@ -1,10 +1,10 @@
-indicator-application (0.2.2-0ubuntu2~ppa1) UNRELEASED; urgency=low
+indicator-application (0.2.2-0ubuntu2~ppa1) lucid; urgency=low
 
   * Merge upstream
     * Adding an Approver API to remove things from the AppIndicators.
   * Autogen update
 
- -- Ted Gould <ted@ubuntu.com>  Mon, 12 Jul 2010 09:43:02 -0500
+ -- Ted Gould <ted@ubuntu.com>  Mon, 12 Jul 2010 09:44:37 -0500
 
 indicator-application (0.2.2-0ubuntu1) maverick; urgency=low
 
