@@ -136,6 +136,14 @@ check_for_service (gpointer user_data)
 	return TRUE;
 }
 
+gboolean
+fail_timeout (gpointer user_data)
+{
+	g_debug("Failure timeout initiated.");
+	g_main_loop_quit(main_loop);
+	return FALSE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -156,6 +164,7 @@ main (int argc, char ** argv)
 	bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 
 	g_timeout_add(100, check_for_service, NULL);
+	g_timeout_add_seconds(2, fail_timeout, NULL);
 
 	main_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(main_loop);
