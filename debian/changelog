@@ -1,3 +1,10 @@
+indicator-application (0.2.2-0ubuntu2~ppa1) UNRELEASED; urgency=low
+
+  * Merge upstream
+    * Adding an Approver API to remove things from the AppIndicators.
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 12 Jul 2010 09:27:41 -0500
+
 indicator-application (0.2.2-0ubuntu1) maverick; urgency=low
 
   * debian/control, debian/rules:

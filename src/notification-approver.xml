@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/">
+	<interface name="org.ayatana.StatusNotifierApprover">
+
+<!-- Methods -->
+		<method name="ApproveItem">
+			<!-- KSNI ID -->
+			<arg type="s" name="id" direction="in" />
+			<!-- KSNI Category -->
+			<arg type="s" name="category" direction="in" />
+			<!-- Application PID -->
+			<arg type="u" name="pid" direction="in" />
+			<!-- Application DBus Address -->
+			<arg type="s" name="address" direction="in" />
+			<!-- Application DBus Path for KSNI interface -->
+			<arg type="o" name="path" direction="in" />
+			<!-- So, what do you think? -->
+			<arg type="b" name="approved" direction="out" />
+		</method>
+
+	</interface>
+</node>
