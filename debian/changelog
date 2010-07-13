@@ -2,8 +2,9 @@ indicator-application (0.2.2-0ubuntu2~ppa2) UNRELEASED; urgency=low
 
   * Merge upstream
     * Fixing test for slower machines
+  * Autogen update
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 13 Jul 2010 10:55:02 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 13 Jul 2010 10:55:35 -0500
 
 indicator-application (0.2.2-0ubuntu2~ppa1) lucid; urgency=low
 
