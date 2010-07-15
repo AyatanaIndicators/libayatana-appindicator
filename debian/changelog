@@ -1,4 +1,4 @@
-indicator-application (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
+indicator-application (0.2.3-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Fixing test for slower machines
