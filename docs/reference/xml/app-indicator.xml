@@ -80,7 +80,7 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
   &quot;<link linkend="AppIndicator--attention-icon-name">attention-icon-name</link>&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--category">category</link>&quot;                 <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--connected">connected</link>&quot;                <link linkend="gboolean"><type>gboolean</type></link>              : Read
-  &quot;<link linkend="AppIndicator--icon-name">icon-name</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct
+  &quot;<link linkend="AppIndicator--icon-name">icon-name</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--icon-theme-path">icon-theme-path</link>&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--id">id</link>&quot;                       <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--menu">menu</link>&quot;                     <link linkend="DBusGObjectPath"><type>DBusGObjectPath</type></link>*      : Read
@@ -614,7 +614,7 @@ Pretty simple, <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if we ha
 </refsect2>
 <refsect2 id="AppIndicator--icon-name" role="property"><title>The <literal>&quot;icon-name&quot;</literal> property</title>
 <indexterm zone="AppIndicator--icon-name"><primary>AppIndicator:icon-name</primary></indexterm>
-<programlisting>  &quot;icon-name&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct</programlisting>
+<programlisting>  &quot;icon-name&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 The name of the regular icon that is shown for the indicator.
 </para><para>Default value: NULL</para>
