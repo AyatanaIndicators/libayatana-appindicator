@@ -31,6 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-marshal.h"
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
+#include "notification-approver-client.h"
 
 /* DBus Prototypes */
 static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
@@ -50,11 +51,16 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
 
 /* Private Stuff */
-typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePrivate;
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
+	GList * approvers;
 	AppLruFile * lrufile;
+};
+
+typedef struct _Approver Approver;
+struct _Approver {
+	DBusGProxy * proxy;
 };
 
 typedef struct _Application Application;
@@ -95,6 +101,9 @@ static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
+static void approver_free (gpointer papprover, gpointer user_data);
+static void check_with_new_approver (gpointer papp, gpointer papprove);
+static void check_with_old_approver (gpointer papprove, gpointer papp);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -139,9 +148,11 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 static void
 application_service_appstore_init (ApplicationServiceAppstore *self)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(self);
+    
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (self);
 
 	priv->applications = NULL;
+	priv->approvers = NULL;
 	priv->lrufile = NULL;
 	
 	GError * error = NULL;
@@ -155,6 +166,8 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	dbus_g_connection_register_g_object(priv->bus,
 	                                    INDICATOR_APPLICATION_DBUS_OBJ,
 	                                    G_OBJECT(self));
+	                                    
+    self->priv = priv;
 
 	return;
 }
@@ -162,12 +175,18 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 static void
 application_service_appstore_dispose (GObject *object)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(object);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE(object)->priv;
 
 	while (priv->applications != NULL) {
 		application_service_appstore_application_remove(APPLICATION_SERVICE_APPSTORE(object),
 		                                           ((Application *)priv->applications->data)->dbus_name,
 		                                           ((Application *)priv->applications->data)->dbus_object);
+	}
+
+	if (priv->approvers != NULL) {
+		g_list_foreach(priv->approvers, approver_free, NULL);
+		g_list_free(priv->approvers);
+		priv->approvers = NULL;
 	}
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->dispose (object);
@@ -209,7 +228,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(app->appstore);
+	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
 	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
@@ -234,8 +253,20 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_path = g_strdup("");
 	}
 
+	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
+	g_list_foreach(priv->approvers, check_with_old_approver, app);
+
 	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
 
+	return;
+}
+
+/* Check the application against an approver */
+static void
+check_with_old_approver (gpointer papprove, gpointer papp)
+{
+	/* Funny the parallels, eh? */
+	check_with_new_approver(papp, papprove);
 	return;
 }
 
@@ -265,7 +296,7 @@ string_to_status(const gchar * status_string)
 static gint 
 get_position (Application * app) {
 	ApplicationServiceAppstore * appstore = app->appstore;
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	GList * applistitem = g_list_find(priv->applications, app);
 	if (applistitem == NULL) {
@@ -384,7 +415,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 	g_debug("Changing app status to: %d", status);
 
 	ApplicationServiceAppstore * appstore = app->appstore;
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	/* This means we're going off line */
 	if (status == APP_INDICATOR_STATUS_PASSIVE) {
@@ -567,7 +598,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
@@ -665,7 +696,7 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 	GList * listpntr;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
@@ -687,7 +718,7 @@ application_service_appstore_new (AppLruFile * lrufile)
 {
 	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 	priv->lrufile = lrufile;
 	return appstore;
 }
@@ -696,7 +727,7 @@ application_service_appstore_new (AppLruFile * lrufile)
 static gboolean
 _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error)
 {
-	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(appstore);
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
 	*apps = g_ptr_array_new();
 	GList * listpntr;
@@ -741,5 +772,79 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	}
 
 	return TRUE;
+}
+
+/* Frees the data associated with an approver */
+static void
+approver_free (gpointer papprover, gpointer user_data)
+{
+	Approver * approver = (Approver *)papprover;
+	g_return_if_fail(approver != NULL);
+	
+	if (approver->proxy != NULL) {
+		g_object_unref(approver->proxy);
+		approver->proxy = NULL;
+	}
+
+	g_free(approver);
+	return;
+}
+
+/* What did the approver tell us? */
+static void
+approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gpointer userdata)
+{
+	g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	return;
+}
+
+/* Run the applications through the new approver */
+static void
+check_with_new_approver (gpointer papp, gpointer papprove)
+{
+	Application * app = (Application *)papp;
+	Approver * approver = (Approver *)papprove;
+
+	org_ayatana_StatusNotifierApprover_approve_item_async(approver->proxy,
+	                                                      app->id,
+	                                                      app->category,
+	                                                      0,
+	                                                      app->dbus_name,
+	                                                      app->dbus_object,
+	                                                      approver_request_cb,
+	                                                      app);
+
+	return;
+}
+
+/* Adds a new approver to the app store */
+void
+application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
+{
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(appstore));
+	g_return_if_fail(dbus_name != NULL);
+	g_return_if_fail(dbus_object != NULL);
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (appstore);
+
+	Approver * approver = g_new0(Approver, 1);
+
+	GError * error = NULL;
+	approver->proxy = dbus_g_proxy_new_for_name_owner(priv->bus,
+	                                                  dbus_name,
+	                                                  dbus_object,
+	                                                  NOTIFICATION_APPROVER_DBUS_IFACE,
+	                                                  &error);
+	if (error != NULL) {
+		g_warning("Unable to get approver interface on '%s:%s' : %s", dbus_name, dbus_object, error->message);
+		g_error_free(error);
+		g_free(approver);
+		return;
+	}
+
+	priv->approvers = g_list_prepend(priv->approvers, approver);
+
+	g_list_foreach(priv->applications, check_with_new_approver, approver);
+
+	return;
 }
 
