@@ -1,10 +1,10 @@
-indicator-application (0.2.3-0ubuntu1~ppa1) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu1~ppa1) lucid; urgency=low
 
   * New upstream release.
     * Fixing test for slower machines
     * Adding an Approver API to remove things from the AppIndicators.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 15 Jul 2010 10:20:35 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 15 Jul 2010 10:22:33 -0500
 
 indicator-application (0.2.2-0ubuntu1) maverick; urgency=low
 
