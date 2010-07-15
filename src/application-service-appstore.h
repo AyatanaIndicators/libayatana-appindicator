@@ -38,6 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _ApplicationServiceAppstore      ApplicationServiceAppstore;
 typedef struct _ApplicationServiceAppstoreClass ApplicationServiceAppstoreClass;
+typedef struct _ApplicationServiceAppstorePrivate ApplicationServiceAppstorePrivate;
 
 struct _ApplicationServiceAppstoreClass {
 	GObjectClass parent_class;
@@ -49,16 +50,21 @@ struct _ApplicationServiceAppstoreClass {
 
 struct _ApplicationServiceAppstore {
 	GObject parent;
+	
+	ApplicationServiceAppstorePrivate * priv;
 };
 
 ApplicationServiceAppstore * application_service_appstore_new (AppLruFile * lrufile);
 GType application_service_appstore_get_type               (void);
 void  application_service_appstore_application_add        (ApplicationServiceAppstore *   appstore,
-                                                      const gchar *             dbus_name,
-                                                      const gchar *             dbus_object);
+                                                           const gchar *             dbus_name,
+                                                           const gchar *             dbus_object);
 void  application_service_appstore_application_remove     (ApplicationServiceAppstore *   appstore,
-                                                      const gchar *             dbus_name,
-                                                      const gchar *             dbus_object);
+                                                           const gchar *             dbus_name,
+                                                           const gchar *             dbus_object);
+void  application_service_appstore_approver_add           (ApplicationServiceAppstore *   appstore,
+                                                           const gchar *             dbus_name,
+                                                           const gchar *             dbus_object);
 
 G_END_DECLS
 
