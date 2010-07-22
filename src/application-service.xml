@@ -44,6 +44,10 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<arg type="i" name="position" direction="out" />
 			<arg type="s" name="icon_name" direction="out" />
 		</signal>
+		<signal name="ApplicationIconPathChanged">
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="icon_path" direction="out" />
+		</signal>
 
 	</interface>
 </node>

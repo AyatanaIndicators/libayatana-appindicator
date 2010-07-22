@@ -108,6 +108,7 @@ static void disconnected_kill_helper (gpointer data, gpointer user_data);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
+static void application_icon_path_changed (DBusGProxy * proxy, gint position, const gchar * iconpath, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 static void get_applications_helper (gpointer data, gpointer user_data);
 static void theme_dir_unref(IndicatorApplication * ia, const gchar * dir);
@@ -280,6 +281,11 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_INT,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationIconPathChanged",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
 
 		/* Connect to them */
 		g_debug("Connect to them.");
@@ -296,6 +302,11 @@ connected (IndicatorApplication * application)
 		dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            	"ApplicationIconChanged",
 	                            	G_CALLBACK(application_icon_changed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationIconPathChanged",
+	                            	G_CALLBACK(application_icon_path_changed),
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 	}
@@ -533,6 +544,29 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	indicator_image_helper_update(app->entry.image, longname);
 	g_free(longname);
+
+	return;
+}
+
+/* The callback for the signal that the icon path for an application
+   has changed. */
+static void
+application_icon_path_changed (DBusGProxy * proxy, gint position, const gchar * iconpath, IndicatorApplication * application)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
+
+    g_free(app->icon_path);
+	app->icon_path = NULL;
+	if (iconpath != NULL && iconpath[0] != '\0') {
+		app->icon_path = g_strdup(iconpath);
+		theme_dir_ref(application, iconpath);
+	}
 
 	return;
 }

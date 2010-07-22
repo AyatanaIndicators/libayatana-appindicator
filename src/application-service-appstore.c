@@ -49,6 +49,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON_PATH    "NewIconPath"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
@@ -89,6 +90,7 @@ enum {
 	APPLICATION_ADDED,
 	APPLICATION_REMOVED,
 	APPLICATION_ICON_CHANGED,
+	APPLICATION_ICON_PATH_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -135,6 +137,13 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_ICON_PATH_CHANGED] = g_signal_new ("application-icon-path-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_path_changed),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
@@ -540,6 +549,44 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 	return;
 }
 
+/* Gets the data back on an updated icon signal.  Hopefully
+   a new fun icon. */
+static void
+new_path_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata)
+{
+	/* Check for errors */
+	if (error != NULL) {
+		g_warning("Unable to get updated icon name: %s", error->message);
+		return;
+	}
+
+	/* Grab the icon and make sure we have one */
+	const gchar * newpath = g_value_get_string(&value);
+	if (newpath == NULL) {
+		g_warning("Bad new path :(");
+		return;
+	}
+
+	Application * app = (Application *) userdata;
+
+	if (g_strcmp0(newpath, app->icon_path)) {
+		/* If the new path is actually a new path */
+		if (app->icon_path != NULL) g_free(app->icon_path);
+		app->icon_path = g_strdup(newpath);
+
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+			gint position = get_position(app);
+			if (position == -1) return;
+
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ICON_PATH_CHANGED], 0, 
+			              position, newpath, TRUE);
+		}
+	}
+
+	return;
+}
+
 /* Called when the Notification Item signals that it
    has a new icon. */
 static void
@@ -583,6 +630,22 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 
 	apply_status(app, string_to_status(status));
 
+	return;
+}
+
+/* Called when the Notification Item signals that it
+   has a new icon. */
+static void
+new_path (DBusGProxy * proxy, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	org_freedesktop_DBus_Properties_get_async(app->prop_proxy,
+	                                          NOTIFICATION_ITEM_DBUS_IFACE,
+	                                          NOTIFICATION_ITEM_PROP_ICON_PATH,
+	                                          new_path_cb,
+	                                          app);
 	return;
 }
 
@@ -659,7 +722,10 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
-
+    dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_ICON_PATH,
+	                        G_TYPE_INVALID);
+	
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
 	                            G_CALLBACK(new_icon),
@@ -675,7 +741,12 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                            G_CALLBACK(new_status),
 	                            app,
 	                            NULL);
-
+    dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_ICON_PATH,
+	                            G_CALLBACK(new_path),
+	                            app,
+	                            NULL);
+	
 	/* Get all the propertiees */
 	org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
 	                                              NOTIFICATION_ITEM_DBUS_IFACE,
