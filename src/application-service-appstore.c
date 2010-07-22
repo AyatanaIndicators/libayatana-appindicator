@@ -49,7 +49,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
-#define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconPath"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
