@@ -89,6 +89,15 @@
   )
 )
 
+(define-method set_icon_path
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_icon_path")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_path")
+  )
+)
+
 (define-method get_id
   (of-object "AppIndicator")
   (c-name "app_indicator_get_id")

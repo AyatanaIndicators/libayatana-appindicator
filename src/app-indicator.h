@@ -69,6 +69,7 @@ G_BEGIN_DECLS
 
 	Gets a pointer to the #AppIndicatorClass for the object @obj.
 */
+
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
 #define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
@@ -96,10 +97,16 @@ G_BEGIN_DECLS
 
 	String identifier for the #AppIndicator::connection-changed signal.
 */
+/**
+	APP_INDICATOR_SIGNAL_NEW_PATH:
+
+	String identifier for the #AppIndicator::new-path signal.
+*/
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
+#define APP_INDICATOR_SIGNAL_NEW_PATH            "new-path"
 
 /**
 	AppIndicatorCategory:
@@ -170,6 +177,8 @@ struct _AppIndicatorClass {
 	void (* new_status)             (AppIndicator       *indicator,
 	                                 const gchar        *status,
 	                                 gpointer            user_data);
+    void (* new_path)               (AppIndicator       *indicator,
+	                                 gpointer            user_data);
 
 	/* Local Signals */
 	void (* connection_changed)     (AppIndicator * indicator,
@@ -226,6 +235,8 @@ void                            app_indicator_set_menu           (AppIndicator  
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_icon_path      (AppIndicator       *self,
+                                                                  const gchar        *icon_path);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id             (AppIndicator *self);

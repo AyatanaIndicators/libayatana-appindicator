@@ -88,6 +88,7 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	CONNECTION_CHANGED,
+    NEW_PATH,
 	LAST_SIGNAL
 };
 
@@ -347,6 +348,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            g_cclosure_marshal_VOID__BOOLEAN,
 	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
 
+	/**
+		AppIndicator::new-icon:
+		@arg0: The #AppIndicator object
+
+		Signaled when there is a new icon set for the
+		object.
+	*/
+	signals[NEW_PATH] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_PATH,
+	                                  G_TYPE_FROM_CLASS(klass),
+	                                  G_SIGNAL_RUN_LAST,
+	                                  G_STRUCT_OFFSET (AppIndicatorClass, new_path),
+	                                  NULL, NULL,
+	                                  g_cclosure_marshal_VOID__VOID,
+	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
+
 	/* Initialize the object as a DBus type */
 	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
 	                                &dbus_glib__notification_item_server_object_info);
@@ -557,10 +573,9 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           break;
 
         case PROP_ICON_THEME_PATH:
-          if (priv->icon_path != NULL) {
-            g_free(priv->icon_path);
-          }
-          priv->icon_path = g_value_dup_string(value);
+          app_indicator_set_icon_path (APP_INDICATOR (object),
+                                            g_value_get_string (value));
+          check_connect (self);
           break;
 
         default:
@@ -1129,6 +1144,32 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
       self->priv->icon_name = g_strdup(icon_name);
 
       g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
+    }
+
+  return;
+}
+
+/**
+        app_indicator_set_icon_theme:
+        @self: The #AppIndicator object to use
+        @icon_path: The icon theme path to set.
+
+		Sets the path to use when searching for icons.
+**/
+void
+app_indicator_set_icon_path (AppIndicator *self, const gchar *icon_path)
+{
+  g_return_if_fail (IS_APP_INDICATOR (self));
+  g_return_if_fail (icon_path != NULL);
+
+  if (g_strcmp0 (self->priv->icon_path, icon_path) != 0)
+    {
+      if (self->priv->icon_path != NULL)
+            g_free(self->priv->icon_path);
+
+      self->priv->icon_path = g_strdup(icon_path);
+
+      g_signal_emit (self, signals[NEW_PATH], 0, TRUE);
     }
 
   return;
