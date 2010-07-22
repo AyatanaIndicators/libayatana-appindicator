@@ -568,13 +568,13 @@ application_icon_theme_path_changed (DBusGProxy * proxy, gint position, const gc
 		return;
 	}
 
-	if (icon_theme_path[0] != '\0' && g_strcmp0(icon_theme_path, app->icon_theme_path) != 0) {
+	if (g_strcmp0(icon_theme_path, app->icon_theme_path) != 0) {
 	    if(app->icon_theme_path != NULL) {
 	        theme_dir_unref(application, app->icon_theme_path);
 	        g_free(app->icon_theme_path);
             app->icon_theme_path = NULL;
         }
-        if (icon_theme_path != NULL ) {
+        if (icon_theme_path != NULL && icon_theme_path[0] != '\0') {
 		    app->icon_theme_path = g_strdup(icon_theme_path);
 		    theme_dir_ref(application, app->icon_theme_path);
 	    }
