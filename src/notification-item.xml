@@ -19,6 +19,8 @@
 <!-- Signals -->
 		<signal name="NewIcon">
 		</signal>
+		<signal name="NewIconThemePath">
+	    </signal>
 		<signal name="NewAttentionIcon">
 		</signal>
 		<signal name="NewStatus">

@@ -84,7 +84,8 @@ struct _IndicatorApplicationPrivate {
 typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
-	gchar * icon_path;
+	gchar * icon_theme_path;
+	gchar * icon_name;
 	gboolean old_service;
 	gchar * dbusobject;
 	gchar * dbusaddress;
@@ -105,10 +106,10 @@ static void disconnected (IndicatorApplication * application);
 static void disconnected_helper (gpointer data, gpointer user_data);
 static gboolean disconnected_kill (gpointer user_data);
 static void disconnected_kill_helper (gpointer data, gpointer user_data);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
-static void application_icon_path_changed (DBusGProxy * proxy, gint position, const gchar * iconpath, IndicatorApplication * application);
+static void application_icon_theme_path_changed (DBusGProxy * proxy, gint position, const gchar * icon_theme_path, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 static void get_applications_helper (gpointer data, gpointer user_data);
 static void theme_dir_unref(IndicatorApplication * ia, const gchar * dir);
@@ -282,7 +283,7 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
 		dbus_g_proxy_add_signal(priv->service_proxy,
-	                        	"ApplicationIconPathChanged",
+	                        	"ApplicationIconThemePathChanged",
 	                        	G_TYPE_INT,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
@@ -305,8 +306,8 @@ connected (IndicatorApplication * application)
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 		dbus_g_proxy_connect_signal(priv->service_proxy,
-	                            	"ApplicationIconPathChanged",
-	                            	G_CALLBACK(application_icon_path_changed),
+	                            	"ApplicationIconThemePathChanged",
+	                            	G_CALLBACK(application_icon_theme_path_changed),
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 	}
@@ -424,7 +425,7 @@ application_added_search (gconstpointer a, gconstpointer b)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, IndicatorApplication * application)
 {
 	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
@@ -446,15 +447,16 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	ApplicationEntry * app = g_new(ApplicationEntry, 1);
 
 	app->old_service = FALSE;
-	app->icon_path = NULL;
-	if (icon_path != NULL && icon_path[0] != '\0') {
-		app->icon_path = g_strdup(icon_path);
-		theme_dir_ref(application, icon_path);
+	app->icon_theme_path = NULL;
+	if (icon_theme_path != NULL && icon_theme_path[0] != '\0') {
+		app->icon_theme_path = g_strdup(icon_theme_path);
+		theme_dir_ref(application, icon_theme_path);
 	}
 
 	app->dbusaddress = g_strdup(dbusaddress);
 	app->dbusobject = g_strdup(dbusobject);
 
+    app->icon_name = g_strdup(iconname);
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
@@ -500,9 +502,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	priv->applications = g_list_remove(priv->applications, app);
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
 
-	if (app->icon_path != NULL) {
-		theme_dir_unref(application, app->icon_path);
-		g_free(app->icon_path);
+	if (app->icon_theme_path != NULL) {
+		theme_dir_unref(application, app->icon_theme_path);
+		g_free(app->icon_theme_path);
 	}
 	if (app->dbusaddress != NULL) {
 		g_free(app->dbusaddress);
@@ -510,6 +512,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	if (app->dbusobject != NULL) {
 		g_free(app->dbusobject);
 	}
+	if (app->icon_name != NULL) {
+	    g_free(app->icon_name);
+    }
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
 	}
@@ -544,14 +549,16 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	indicator_image_helper_update(app->entry.image, longname);
 	g_free(longname);
+	
+	app->icon_name = g_strdup(iconname);
 
 	return;
 }
 
-/* The callback for the signal that the icon path for an application
+/* The callback for the signal that the icon theme path for an application
    has changed. */
 static void
-application_icon_path_changed (DBusGProxy * proxy, gint position, const gchar * iconpath, IndicatorApplication * application)
+application_icon_theme_path_changed (DBusGProxy * proxy, gint position, const gchar * icon_theme_path, IndicatorApplication * application)
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
@@ -561,11 +568,17 @@ application_icon_path_changed (DBusGProxy * proxy, gint position, const gchar * 
 		return;
 	}
 
-    g_free(app->icon_path);
-	app->icon_path = NULL;
-	if (iconpath != NULL && iconpath[0] != '\0') {
-		app->icon_path = g_strdup(iconpath);
-		theme_dir_ref(application, iconpath);
+	if (icon_theme_path[0] != '\0' && g_strcmp0(icon_theme_path, app->icon_theme_path) != 0) {
+	    if(app->icon_theme_path != NULL) {
+	        theme_dir_unref(application, app->icon_theme_path);
+	        g_free(app->icon_theme_path);
+            app->icon_theme_path = NULL;
+        }
+        if (icon_theme_path != NULL ) {
+		    app->icon_theme_path = g_strdup(icon_theme_path);
+		    theme_dir_ref(application, app->icon_theme_path);
+	    }
+	   indicator_image_helper_update(app->entry.image, app->icon_name);
 	}
 
 	return;
@@ -598,13 +611,13 @@ get_applications_helper (gpointer data, gpointer user_data)
 	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
 	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
 	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
-	const gchar * icon_path = g_value_get_string(g_value_array_get_nth(array, 4));
+	const gchar * icon_theme_path = g_value_get_string(g_value_array_get_nth(array, 4));
 
-	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, user_data);
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_theme_path, user_data);
 }
 
-/* Refs a theme directory, and it may add it to the search
-   path */
+/* Unrefs a theme directory.  This may involve removing it from
+   the search path. */
 static void
 theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
 {
@@ -663,8 +676,8 @@ theme_dir_unref(IndicatorApplication * ia, const gchar * dir)
 	return;
 }
 
-/* Unrefs a theme directory.  This may involve removing it from
-   the search path. */
+/* Refs a theme directory, and it may add it to the search
+   path */
 static void
 theme_dir_ref(IndicatorApplication * ia, const gchar * dir)
 {
