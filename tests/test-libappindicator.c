@@ -163,12 +163,75 @@ test_libappindicator_init (void)
 }
 
 void
+test_libappindicator_set_label (void)
+{
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	/* First check all the clearing modes, this is important as
+	   we're going to use them later, we need them to work. */
+	app_indicator_set_label(ci, NULL, NULL);
+
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, "", NULL);
+
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, NULL, "");
+
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, "", "");
+
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, "label", "");
+
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label"));
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, NULL, NULL);
+
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_set_label(ci, "label", "guide");
+
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label"));
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide"));
+
+	app_indicator_set_label(ci, "label2", "guide");
+
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label2"));
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide"));
+
+	app_indicator_set_label(ci, "trick-label", "trick-guide");
+
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "trick-label"));
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "trick-guide"));
+
+	g_object_unref(G_OBJECT(ci));
+	return;
+}
+
+void
 test_libappindicator_props_suite (void)
 {
 	g_test_add_func ("/indicator-application/libappindicator/init",            test_libappindicator_init);
 	g_test_add_func ("/indicator-application/libappindicator/init_props",      test_libappindicator_init_with_props);
 	g_test_add_func ("/indicator-application/libappindicator/init_set_props",  test_libappindicator_init_set_props);
 	g_test_add_func ("/indicator-application/libappindicator/prop_signals",    test_libappindicator_prop_signals);
+	g_test_add_func ("/indicator-application/libappindicator/set_label",       test_libappindicator_set_label);
 
 	return;
 }
