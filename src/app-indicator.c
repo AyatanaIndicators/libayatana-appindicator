@@ -104,7 +104,9 @@ enum {
 	PROP_ATTENTION_ICON_NAME,
 	PROP_ICON_THEME_PATH,
 	PROP_MENU,
-	PROP_CONNECTED
+	PROP_CONNECTED,
+	PROP_LABEL,
+	PROP_LABEL_GUIDE
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -116,6 +118,8 @@ enum {
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
+#define PROP_LABEL_S                 "label"
+#define PROP_LABEL_GUIDE_S           "label-guide"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -284,6 +288,41 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                                "Pretty simple, true if we have a reasonable expectation of being displayed through this object.  You should hide your TrayIcon if so.",
                                                                FALSE,
                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:label:
+		
+		A label that can be shown next to the string in the application
+		indicator.  The label will not be shown unless there is an icon
+		as well.  The label is useful for numerical and other frequently
+		updated information.  In general, it shouldn't be shown unless a
+		user requests it as it can take up a significant amount of space
+		on the user's panel.  This may not be shown in all visualizations.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_LABEL,
+	                                g_param_spec_string (PROP_LABEL_S,
+	                                                     "A label next to the icon",
+	                                                     "A label to provide dynamic information.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:label-guide:
+		
+		An optional string to provide guidance to the panel on how big
+		the #AppIndicator:label string could get.  If this is set correctly
+		then the panel should never 'jiggle' as the string adjusts through
+		out the range of options.  For instance, if you were providing a
+		percentage like "54% thrust" in #AppIndicator:label you'd want to
+		set this string to "100% thrust" to ensure space when Scotty can
+		get you enough power.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_LABEL_GUIDE,
+	                                g_param_spec_string (PROP_LABEL_GUIDE_S,
+	                                                     "A string to size the space available for the label.",
+	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 
 	/* Signals */
