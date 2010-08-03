@@ -651,6 +651,11 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		    signal_label_change(APP_INDICATOR(object));
 		  }
 
+		  if (priv->label != NULL && priv->label[0] == '\0') {
+		  	g_free(priv->label);
+			priv->label = NULL;
+		  }
+
 		  if (oldlabel != NULL) {
 		  	g_free(oldlabel);
 		  }
@@ -662,6 +667,11 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 
 		  if (g_strcmp0(oldguide, priv->label_guide) != 0) {
 		    signal_label_change(APP_INDICATOR(object));
+		  }
+
+		  if (priv->label_guide != NULL && priv->label_guide[0] == '\0') {
+		  	g_free(priv->label_guide);
+			priv->label_guide = NULL;
 		  }
 
 		  if (oldguide != NULL) {
