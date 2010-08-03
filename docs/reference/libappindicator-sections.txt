@@ -23,11 +23,14 @@ app_indicator_set_status
 app_indicator_set_attention_icon
 app_indicator_set_menu
 app_indicator_set_icon
+app_indicator_set_label
 app_indicator_get_id
 app_indicator_get_category
 app_indicator_get_status
 app_indicator_get_icon
 app_indicator_get_attention_icon
 app_indicator_get_menu
+app_indicator_get_label
+app_indicator_get_label_guide
 </SECTION>
 
