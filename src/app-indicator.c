@@ -89,6 +89,7 @@ enum {
 	NEW_ICON,
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
+	NEW_LABEL,
 	CONNECTION_CHANGED,
 	LAST_SIGNAL
 };
@@ -372,6 +373,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    g_cclosure_marshal_VOID__STRING,
 	                                    G_TYPE_NONE, 1,
                                             G_TYPE_STRING);
+
+	/**
+		AppIndicator::new-label:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the label
+		@arg1: The string for the guide
+
+		Emitted when either #AppIndicator:label or #AppIndicator:label-guide are
+		changed.
+	*/
+	signals[NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_LABEL,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
+	                                    NULL, NULL,
+	                                    g_cclosure_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
 		AppIndicator::connection-changed:

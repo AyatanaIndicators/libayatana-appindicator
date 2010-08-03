@@ -92,6 +92,11 @@ G_BEGIN_DECLS
 	String identifier for the #AppIndicator::new-status signal.
 */
 /**
+	APP_INDICATOR_SIGNAL_NEW_LABEL:
+
+	String identifier for the #AppIndicator::new-label signal.
+*/
+/**
 	APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
 
 	String identifier for the #AppIndicator::connection-changed signal.
@@ -99,6 +104,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
+#define APP_INDICATOR_SIGNAL_NEW_LABEL           "new-label"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 
 /**
@@ -152,8 +158,8 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 		there is no Application Indicator area available.
 	@unfallback: The function that gets called if an Application
 		Indicator area appears after the fallback has been created.
+	@new_label: Slot for #AppIndicator::new-label.
 	@app_indicator_reserved_1: Reserved for future use.
-	@app_indicator_reserved_2: Reserved for future use.
 
 	The signals and external functions that make up the #AppIndicator
 	class object.
@@ -181,9 +187,14 @@ struct _AppIndicatorClass {
 	void (*unfallback)              (AppIndicator * indicator,
 	                                 GtkStatusIcon * status_icon);
 
+	/* Another DBus Signal */
+	void (* new_label)              (AppIndicator       *indicator,
+	                                 const gchar        *label,
+	                                 const gchar        *guide,
+	                                 gpointer            user_data);
+
 	/* Reserved */
 	void (*app_indicator_reserved_1)(void);
-	void (*app_indicator_reserved_2)(void);
 };
 
 /**
