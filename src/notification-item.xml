@@ -12,6 +12,7 @@
 		     to find the icons specified above. -->
 		<property name="IconThemePath" type="s" access="read" />
 		<property name="Menu" type="o" access="read" />
+		<property name="Label" type="s" access="read" />
 
 <!-- Methods -->
 		<!-- None currently -->
@@ -23,6 +24,9 @@
 		</signal>
 		<signal name="NewStatus">
 			<arg type="s" name="status" direction="out" />
+		</signal>
+		<signal name="NewLabel">
+			<arg type="s" name="label" direction="out" />
 		</signal>
 
 	</interface>
