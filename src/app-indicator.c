@@ -72,6 +72,8 @@ struct _AppIndicatorPrivate {
 	gchar *               icon_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	gchar *               label;
+	gchar *               label_guide;
 
 	GtkStatusIcon *       status_icon;
 	gint                  fallback_timer;
@@ -407,6 +409,8 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
+	priv->label = NULL;
+	priv->label_guide = NULL;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -530,6 +534,16 @@ app_indicator_finalize (GObject *object)
 		g_free(priv->icon_path);
 		priv->icon_path = NULL;
 	}
+	
+	if (priv->label != NULL) {
+		g_free(priv->label);
+		priv->label = NULL;
+	}
+
+	if (priv->label_guide != NULL) {
+		g_free(priv->label_guide);
+		priv->label_guide = NULL;
+	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
 	return;
@@ -602,6 +616,33 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           priv->icon_path = g_value_dup_string(value);
           break;
 
+		case PROP_LABEL: {
+		  gchar * oldlabel = priv->label;
+		  priv->label = g_value_dup_string(value);
+
+		  if (g_strcmp0(oldlabel, priv->label) != 0) {
+		  	// TODO: signal change
+		  }
+
+		  if (oldlabel != NULL) {
+		  	g_free(oldlabel);
+		  }
+		  break;
+		}
+		case PROP_LABEL_GUIDE: {
+		  gchar * oldguide = priv->label_guide;
+		  priv->label_guide = g_value_dup_string(value);
+
+		  if (g_strcmp0(oldguide, priv->label_guide) != 0) {
+		  	// TODO: signal change
+		  }
+
+		  if (oldguide != NULL) {
+		  	g_free(oldguide);
+		  }
+		  break;
+		}
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -657,6 +698,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 
         case PROP_CONNECTED:
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
+          break;
+
+        case PROP_LABEL:
+          g_value_set_string (value, priv->label);
+          break;
+
+        case PROP_LABEL_GUIDE:
+          g_value_set_string (value, priv->label_guide);
           break;
 
         default:
