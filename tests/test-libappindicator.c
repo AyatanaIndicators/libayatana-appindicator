@@ -197,7 +197,7 @@ test_libappindicator_set_label (void)
 
 	app_indicator_set_label(ci, "label", "");
 
-	g_assert(g_strcmp0(app_indicator_get_label(ci), "label"));
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label") == 0);
 	g_assert(app_indicator_get_label_guide(ci) == NULL);
 
 	app_indicator_set_label(ci, NULL, NULL);
@@ -207,18 +207,18 @@ test_libappindicator_set_label (void)
 
 	app_indicator_set_label(ci, "label", "guide");
 
-	g_assert(g_strcmp0(app_indicator_get_label(ci), "label"));
-	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide"));
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label") == 0);
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide") == 0);
 
 	app_indicator_set_label(ci, "label2", "guide");
 
-	g_assert(g_strcmp0(app_indicator_get_label(ci), "label2"));
-	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide"));
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "label2") == 0);
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "guide") == 0);
 
 	app_indicator_set_label(ci, "trick-label", "trick-guide");
 
-	g_assert(g_strcmp0(app_indicator_get_label(ci), "trick-label"));
-	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "trick-guide"));
+	g_assert(g_strcmp0(app_indicator_get_label(ci), "trick-label") == 0);
+	g_assert(g_strcmp0(app_indicator_get_label_guide(ci), "trick-guide") == 0);
 
 	g_object_unref(G_OBJECT(ci));
 	return;
