@@ -75,6 +75,7 @@ struct _AppIndicatorPrivate {
 	GtkWidget            *menu;
 	gchar *               label;
 	gchar *               label_guide;
+	guint                 label_change_idle;
 
 	GtkStatusIcon *       status_icon;
 	gint                  fallback_timer;
@@ -144,6 +145,7 @@ static void app_indicator_finalize   (GObject *object);
 static void app_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
 static void app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
+static void signal_label_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
@@ -430,6 +432,7 @@ app_indicator_init (AppIndicator *self)
 	priv->menuservice = NULL;
 	priv->label = NULL;
 	priv->label_guide = NULL;
+	priv->label_change_idle = 0;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -479,6 +482,11 @@ app_indicator_dispose (GObject *object)
 	if (priv->fallback_timer != 0) {
 		g_source_remove(priv->fallback_timer);
 		priv->fallback_timer = 0;
+	}
+
+	if (priv->label_change_idle != 0) {
+		g_source_remove(priv->label_change_idle);
+		priv->label_change_idle = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -640,7 +648,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  priv->label = g_value_dup_string(value);
 
 		  if (g_strcmp0(oldlabel, priv->label) != 0) {
-		  	// TODO: signal change
+		    signal_label_change(APP_INDICATOR(object));
 		  }
 
 		  if (oldlabel != NULL) {
@@ -653,7 +661,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  priv->label_guide = g_value_dup_string(value);
 
 		  if (g_strcmp0(oldguide, priv->label_guide) != 0) {
-		  	// TODO: signal change
+		    signal_label_change(APP_INDICATOR(object));
 		  }
 
 		  if (oldguide != NULL) {
@@ -732,6 +740,39 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
         }
 
+	return;
+}
+
+/* Sends the label changed signal and resets the source ID */
+static gboolean
+signal_label_change_idle (gpointer user_data)
+{
+	AppIndicator * self = (AppIndicator *)user_data;
+	AppIndicatorPrivate *priv = self->priv;
+
+	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
+	              priv->label != NULL ? priv->label : "",
+	              priv->label_guide != NULL ? priv->label_guide : "",
+	              TRUE);
+
+	priv->label_change_idle = 0;
+
+	return FALSE;
+}
+
+/* Sets up an idle function to send the label changed signal
+   so that we don't send it too many times. */
+static void
+signal_label_change (AppIndicator * self)
+{
+	AppIndicatorPrivate *priv = self->priv;
+
+	/* don't set it twice */
+	if (priv->label_change_idle != 0) {
+		return;
+	}
+
+	priv->label_change_idle = g_idle_add(signal_label_change_idle, self);
 	return;
 }
 
