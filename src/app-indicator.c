@@ -37,6 +37,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
+#include "application-service-marshal.h"
 
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
@@ -388,7 +389,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    G_SIGNAL_RUN_LAST,
 	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
 	                                    NULL, NULL,
-	                                    g_cclosure_marshal_VOID__STRING_STRING,
+	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
