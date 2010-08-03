@@ -13,6 +13,7 @@
 		<property name="IconThemePath" type="s" access="read" />
 		<property name="Menu" type="o" access="read" />
 		<property name="Label" type="s" access="read" />
+		<property name="LabelGuide" type="s" access="read" />
 
 <!-- Methods -->
 		<!-- None currently -->
@@ -27,6 +28,7 @@
 		</signal>
 		<signal name="NewLabel">
 			<arg type="s" name="label" direction="out" />
+			<arg type="s" name="guide" direction="out" />
 		</signal>
 
 	</interface>
