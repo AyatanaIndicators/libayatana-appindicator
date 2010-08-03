@@ -1222,6 +1222,31 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
   return;
 }
 
+/**
+	app_indicator_set_label:
+	@self: The #AppIndicator object to use
+	@label: The label to show next to the icon.
+	@guide: A guide to size the label correctly.
+
+	This is a wrapper function for the #AppIndicator:label and
+	#AppIndicator:guide properties.  This function can take #NULL
+	as either @label or @guide and will clear the entries.
+*/
+void
+app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * guide)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	/* Note: The label can be NULL, it's okay */
+	/* Note: The guide can be NULL, it's okay */
+
+	g_object_set(G_OBJECT(self),
+	             PROP_LABEL_S,       label == NULL ? "" : label,
+	             PROP_LABEL_GUIDE_S, guide == NULL ? "" : guide,
+	             NULL);
+
+	return;
+}
+
 static void
 activate_menuitem (DbusmenuMenuitem *mi, guint timestamp, gpointer user_data)
 {
@@ -1749,3 +1774,36 @@ app_indicator_get_menu (AppIndicator *self)
 
 	return GTK_MENU(priv->menu);
 }
+
+/**
+	app_indicator_get_label:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:label.
+
+	Return value: The current label.
+*/
+const gchar *
+app_indicator_get_label (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->label;
+}
+
+/**
+	app_indicator_get_label_guide:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:label-guide.
+
+	Return value: The current label guide.
+*/
+const gchar *
+app_indicator_get_label_guide (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->label_guide;
+}
+

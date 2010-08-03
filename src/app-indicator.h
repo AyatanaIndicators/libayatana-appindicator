@@ -226,6 +226,9 @@ void                            app_indicator_set_menu           (AppIndicator  
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_label          (AppIndicator       *self,
+                                                                  const gchar        *label,
+                                                                  const gchar        *guide);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id             (AppIndicator *self);
@@ -234,6 +237,8 @@ AppIndicatorStatus              app_indicator_get_status         (AppIndicator *
 const gchar *                   app_indicator_get_icon           (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
 GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
+const gchar *                   app_indicator_get_label          (AppIndicator *self);
+const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
 
 G_END_DECLS
 
