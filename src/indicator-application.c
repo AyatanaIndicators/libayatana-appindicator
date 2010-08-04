@@ -608,7 +608,7 @@ get_applications_helper (gpointer data, gpointer user_data)
 {
 	GValueArray * array = (GValueArray *)data;
 
-	g_return_if_fail(array->n_values == 5);
+	g_return_if_fail(array->n_values == 7);
 
 	const gchar * icon_name = g_value_get_string(g_value_array_get_nth(array, 0));
 	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
