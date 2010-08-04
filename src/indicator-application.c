@@ -476,7 +476,15 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	app->entry.image = indicator_image_helper(longname);
 	g_free(longname);
 
-	app->entry.label = NULL;
+	if (label == NULL || label[0] == '\0') {
+		app->entry.label = NULL;
+	} else {
+		app->entry.label = GTK_LABEL(gtk_label_new(label));
+		gtk_widget_show(GTK_WIDGET(app->entry.label));
+
+		/* TODO: Use guide to size the label better */
+	}
+
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
 	/* Keep copies of these for ourself, just in case. */
