@@ -38,17 +38,20 @@ static gboolean _application_service_server_get_applications (ApplicationService
 
 #include "application-service-server.h"
 
-#define NOTIFICATION_ITEM_PROP_ID         "Id"
-#define NOTIFICATION_ITEM_PROP_CATEGORY   "Category"
-#define NOTIFICATION_ITEM_PROP_STATUS     "Status"
-#define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
-#define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
-#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconThemePath"
-#define NOTIFICATION_ITEM_PROP_MENU       "Menu"
+#define NOTIFICATION_ITEM_PROP_ID             "Id"
+#define NOTIFICATION_ITEM_PROP_CATEGORY       "Category"
+#define NOTIFICATION_ITEM_PROP_STATUS         "Status"
+#define NOTIFICATION_ITEM_PROP_ICON_NAME      "IconName"
+#define NOTIFICATION_ITEM_PROP_AICON_NAME     "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_ICON_PATH      "IconThemePath"
+#define NOTIFICATION_ITEM_PROP_MENU           "Menu"
+#define NOTIFICATION_ITEM_PROP_LABEL          "Label"
+#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE    "LabelGuide"
 
-#define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
-#define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
-#define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON        "NewIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_AICON       "NewAttentionIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_STATUS      "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_LABEL       "NewLabel"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
@@ -78,6 +81,8 @@ struct _Application {
 	gchar * aicon;
 	gchar * menu;
 	gchar * icon_path;
+	gchar * label;
+	gchar * guide;
 	gboolean currently_free;
 };
 
@@ -89,6 +94,7 @@ enum {
 	APPLICATION_ADDED,
 	APPLICATION_REMOVED,
 	APPLICATION_ICON_CHANGED,
+	APPLICATION_LABEL_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -122,8 +128,8 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_added),
 	                                           NULL, NULL,
-	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
-	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING_STRING_STRING,
+	                                           G_TYPE_NONE, 7, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
@@ -138,6 +144,19 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_LABEL_CHANGED] = g_signal_new ("application-label-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_label_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
@@ -253,6 +272,20 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_path = g_strdup("");
 	}
 
+	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
+	if (label_data != NULL) {
+		app->label = g_value_dup_string((GValue *)label_data);
+	} else {
+		app->label = g_strdup("");
+	}
+
+	gpointer guide_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL_GUIDE);
+	if (guide_data != NULL) {
+		app->guide = g_value_dup_string((GValue *)guide_data);
+	} else {
+		app->guide = g_strdup("");
+	}
+
 	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
@@ -348,6 +381,12 @@ application_free (Application * app)
 	}
 	if (app->icon_path != NULL) {
 		g_free(app->icon_path);
+	}
+	if (app->label != NULL) {
+		g_free(app->label);
+	}
+	if (app->guide != NULL) {
+		g_free(app->guide);
 	}
 
 	g_free(app);
@@ -446,6 +485,8 @@ apply_status (Application * app, AppIndicatorStatus status)
                                               app->dbus_name,
                                               app->menu,
                                               app->icon_path,
+                                              app->label,
+                                              app->guide,
                                               TRUE);
                         }
 		} else {
@@ -586,6 +627,41 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	return;
 }
 
+/* Called when the Notification Item signals that it
+   has a new label. */
+static void
+new_label (DBusGProxy * proxy, const gchar * label, const gchar * guide, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	gboolean changed = FALSE;
+
+	if (g_strcmp0(app->label, label) != 0) {
+		changed = TRUE;
+		if (app->label != NULL) {
+			g_free(app->label);
+			app->label = NULL;
+		}
+		app->label = g_strdup(label);
+	}
+
+	if (g_strcmp0(app->guide, guide) != 0) {
+		changed = TRUE;
+		if (app->guide != NULL) {
+			g_free(app->guide);
+			app->guide = NULL;
+		}
+		app->guide = g_strdup(guide);
+	}
+
+	if (changed) {
+		g_signal_emit(app->appstore, signals[APPLICATION_LABEL_CHANGED], 0, app->label, app->guide, TRUE);
+	}
+
+	return;
+}
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -613,6 +689,8 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->aicon = NULL;
 	app->menu = NULL;
 	app->icon_path = NULL;
+	app->label = NULL;
+	app->guide = NULL;
 	app->currently_free = FALSE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
@@ -659,6 +737,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
 
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
@@ -673,6 +756,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                            G_CALLBACK(new_status),
+	                            app,
+	                            NULL);
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                            G_CALLBACK(new_label),
 	                            app,
 	                            NULL);
 
@@ -734,13 +822,14 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	gint position = 0;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
 		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
 
 		/* Icon name */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon);
+		g_value_set_string(&value, app->icon);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
@@ -752,19 +841,31 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* DBus Address */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->dbus_name);
+		g_value_set_string(&value, app->dbus_name);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* DBus Object */
 		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
-		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->menu);
+		g_value_set_static_boxed(&value, app->menu);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Icon path */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_set_string(&value, app->icon_path);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Label */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, app->label);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Guide */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, app->guide);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 

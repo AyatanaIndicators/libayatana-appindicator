@@ -105,8 +105,9 @@ static void disconnected (IndicatorApplication * application);
 static void disconnected_helper (gpointer data, gpointer user_data);
 static gboolean disconnected_kill (gpointer user_data);
 static void disconnected_kill_helper (gpointer data, gpointer user_data);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
+static void application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 static void get_applications_helper (gpointer data, gpointer user_data);
@@ -130,10 +131,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	io_class->get_entries = get_entries;
 	io_class->get_location = get_location;
 
-	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
@@ -141,6 +144,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
 
@@ -280,6 +289,12 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_INT,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationLabelChanged",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
 
 		/* Connect to them */
 		g_debug("Connect to them.");
@@ -296,6 +311,11 @@ connected (IndicatorApplication * application)
 		dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            	"ApplicationIconChanged",
 	                            	G_CALLBACK(application_icon_changed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationLabelChanged",
+	                            	G_CALLBACK(application_label_changed),
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 	}
@@ -413,7 +433,7 @@ application_added_search (gconstpointer a, gconstpointer b)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, const gchar * label, const gchar * guide, IndicatorApplication * application)
 {
 	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
@@ -456,7 +476,15 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	app->entry.image = indicator_image_helper(longname);
 	g_free(longname);
 
-	app->entry.label = NULL;
+	if (label == NULL || label[0] == '\0') {
+		app->entry.label = NULL;
+	} else {
+		app->entry.label = GTK_LABEL(gtk_label_new(label));
+		gtk_widget_show(GTK_WIDGET(app->entry.label));
+
+		/* TODO: Use guide to size the label better */
+	}
+
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
 	/* Keep copies of these for ourself, just in case. */
@@ -514,6 +542,28 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	return;
 }
 
+/* The callback for the signal that the label for an application
+   has changed. */
+static void
+application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
+
+	if (app->entry.label != NULL) {
+		gtk_label_set_text(app->entry.label, label);
+	} else {
+		/* TODO: Handle the case where we didn't have a label */
+	}
+
+	return;
+}
+
 /* The callback for the signal that the icon for an application
    has changed. */
 static void
@@ -565,8 +615,10 @@ get_applications_helper (gpointer data, gpointer user_data)
 	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
 	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
 	const gchar * icon_path = g_value_get_string(g_value_array_get_nth(array, 4));
+	const gchar * label = g_value_get_string(g_value_array_get_nth(array, 5));
+	const gchar * guide = g_value_get_string(g_value_array_get_nth(array, 6));
 
-	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, user_data);
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, label, guide, user_data);
 }
 
 /* Refs a theme directory, and it may add it to the search
