@@ -105,7 +105,7 @@ static void disconnected (IndicatorApplication * application);
 static void disconnected_helper (gpointer data, gpointer user_data);
 static gboolean disconnected_kill (gpointer user_data);
 static void disconnected_kill_helper (gpointer data, gpointer user_data);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
@@ -413,7 +413,7 @@ application_added_search (gconstpointer a, gconstpointer b)
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, const gchar * label, const gchar * guide, IndicatorApplication * application)
 {
 	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
@@ -565,8 +565,10 @@ get_applications_helper (gpointer data, gpointer user_data)
 	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
 	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
 	const gchar * icon_path = g_value_get_string(g_value_array_get_nth(array, 4));
+	const gchar * label = g_value_get_string(g_value_array_get_nth(array, 5));
+	const gchar * guide = g_value_get_string(g_value_array_get_nth(array, 6));
 
-	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, user_data);
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_path, label, guide, user_data);
 }
 
 /* Refs a theme directory, and it may add it to the search
