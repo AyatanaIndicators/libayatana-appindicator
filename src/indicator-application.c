@@ -555,6 +555,12 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		return;
 	}
 
+	if (app->entry.label != NULL) {
+		gtk_label_set_text(app->entry.label, label);
+	} else {
+		/* TODO: Handle the case where we didn't have a label */
+	}
+
 	return;
 }
 
