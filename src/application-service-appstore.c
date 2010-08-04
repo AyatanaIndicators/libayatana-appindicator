@@ -81,6 +81,8 @@ struct _Application {
 	gchar * aicon;
 	gchar * menu;
 	gchar * icon_path;
+	gchar * label;
+	gchar * guide;
 	gboolean currently_free;
 };
 
@@ -264,6 +266,20 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_path = g_strdup("");
 	}
 
+	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
+	if (label_data != NULL) {
+		app->label = g_value_dup_string((GValue *)label_data);
+	} else {
+		app->label = g_strdup("");
+	}
+
+	gpointer guide_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL_GUIDE);
+	if (guide_data != NULL) {
+		app->guide = g_value_dup_string((GValue *)guide_data);
+	} else {
+		app->guide = g_strdup("");
+	}
+
 	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
@@ -359,6 +375,12 @@ application_free (Application * app)
 	}
 	if (app->icon_path != NULL) {
 		g_free(app->icon_path);
+	}
+	if (app->label != NULL) {
+		g_free(app->label);
+	}
+	if (app->guide != NULL) {
+		g_free(app->guide);
 	}
 
 	g_free(app);
@@ -626,6 +648,8 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->aicon = NULL;
 	app->menu = NULL;
 	app->icon_path = NULL;
+	app->label = NULL;
+	app->guide = NULL;
 	app->currently_free = FALSE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
