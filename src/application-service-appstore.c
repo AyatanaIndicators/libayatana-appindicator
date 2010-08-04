@@ -152,6 +152,12 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           _application_service_marshal_VOID__INT_STRING_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
 
@@ -621,6 +627,41 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	return;
 }
 
+/* Called when the Notification Item signals that it
+   has a new label. */
+static void
+new_label (DBusGProxy * proxy, const gchar * label, const gchar * guide, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	gboolean changed = FALSE;
+
+	if (g_strcmp0(app->label, label) != 0) {
+		changed = TRUE;
+		if (app->label != NULL) {
+			g_free(app->label);
+			app->label = NULL;
+		}
+		app->label = g_strdup(label);
+	}
+
+	if (g_strcmp0(app->guide, guide) != 0) {
+		changed = TRUE;
+		if (app->guide != NULL) {
+			g_free(app->guide);
+			app->guide = NULL;
+		}
+		app->guide = g_strdup(guide);
+	}
+
+	if (changed) {
+		g_signal_emit(app->appstore, signals[APPLICATION_LABEL_CHANGED], 0, app->label, app->guide, TRUE);
+	}
+
+	return;
+}
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -696,6 +737,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
 
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
@@ -710,6 +756,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                            G_CALLBACK(new_status),
+	                            app,
+	                            NULL);
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                            G_CALLBACK(new_label),
 	                            app,
 	                            NULL);
 
