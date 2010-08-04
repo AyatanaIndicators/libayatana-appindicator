@@ -97,6 +97,18 @@ append_submenu (GtkWidget *item)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 }
 
+guint percentage = 0;
+
+static gboolean
+percent_change (gpointer user_data)
+{
+	percentage = (percentage + 1) % 100;
+	gchar * percentstr = g_strdup_printf("%d%%", percentage);
+	app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
+	g_free(percentstr);
+	return TRUE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -114,6 +126,9 @@ main (int argc, char ** argv)
 
 	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
 	app_indicator_set_attention_icon(ci, "indicator-messages-new");
+	app_indicator_set_label (ci, "1%", "100%");
+
+	g_timeout_add_seconds(1, percent_change, ci);
 
         menu = gtk_menu_new ();
         GtkWidget *item = gtk_check_menu_item_new_with_label ("1");

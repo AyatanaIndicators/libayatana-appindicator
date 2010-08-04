@@ -1,3 +1,10 @@
+indicator-application (0.2.3-0ubuntu2~ppa1~label1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding label support into the library
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 04 Aug 2010 14:54:30 -0500
+
 indicator-application (0.2.3-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
