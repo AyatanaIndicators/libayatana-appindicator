@@ -107,6 +107,7 @@ static gboolean disconnected_kill (gpointer user_data);
 static void disconnected_kill_helper (gpointer data, gpointer user_data);
 static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_path, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
+static void application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
 static void get_applications_helper (gpointer data, gpointer user_data);
@@ -143,6 +144,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
 
@@ -282,6 +289,12 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_INT,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationLabelChanged",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
 
 		/* Connect to them */
 		g_debug("Connect to them.");
@@ -298,6 +311,11 @@ connected (IndicatorApplication * application)
 		dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            	"ApplicationIconChanged",
 	                            	G_CALLBACK(application_icon_changed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationLabelChanged",
+	                            	G_CALLBACK(application_label_changed),
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 	}
@@ -512,6 +530,22 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 		g_object_unref(G_OBJECT(app->entry.menu));
 	}
 	g_free(app);
+
+	return;
+}
+
+/* The callback for the signal that the label for an application
+   has changed. */
+static void
+application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
 
 	return;
 }
