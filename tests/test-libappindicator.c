@@ -225,6 +225,47 @@ test_libappindicator_set_label (void)
 }
 
 void
+label_signals_cb (AppIndicator * appindicator, gchar * label, gchar * guide, gpointer user_data)
+{
+	gint * label_signals_count = (gint *)user_data;
+	(*label_signals_count)++;
+	return;
+}
+
+void
+label_signals_check (void)
+{
+	while (g_main_context_pending(NULL)) {
+		g_main_context_iteration(NULL, TRUE);
+	}
+
+	return;
+}
+
+void
+test_libappindicator_label_signals (void)
+{
+	gint label_signals_count = 0;
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	g_signal_connect(G_OBJECT(ci), APP_INDICATOR_SIGNAL_NEW_LABEL, G_CALLBACK(label_signals_cb), &label_signals_count);
+
+	app_indicator_set_label(ci, "label", "guide");
+	g_assert(label_signals_count == 0);
+
+	label_signals_check();
+	g_assert(label_signals_count == 1);
+
+	return;
+}
+
+void
 test_libappindicator_props_suite (void)
 {
 	g_test_add_func ("/indicator-application/libappindicator/init",            test_libappindicator_init);
@@ -232,6 +273,7 @@ test_libappindicator_props_suite (void)
 	g_test_add_func ("/indicator-application/libappindicator/init_set_props",  test_libappindicator_init_set_props);
 	g_test_add_func ("/indicator-application/libappindicator/prop_signals",    test_libappindicator_prop_signals);
 	g_test_add_func ("/indicator-application/libappindicator/set_label",       test_libappindicator_set_label);
+	g_test_add_func ("/indicator-application/libappindicator/label_signals",   test_libappindicator_label_signals);
 
 	return;
 }
