@@ -256,9 +256,37 @@ test_libappindicator_label_signals (void)
 
 	g_signal_connect(G_OBJECT(ci), APP_INDICATOR_SIGNAL_NEW_LABEL, G_CALLBACK(label_signals_cb), &label_signals_count);
 
+	/* Shouldn't be a signal as it should be stuck in idle */
 	app_indicator_set_label(ci, "label", "guide");
 	g_assert(label_signals_count == 0);
 
+	/* Should show up after idle processing */
+	label_signals_check();
+	g_assert(label_signals_count == 1);
+
+	/* Shouldn't signal with no change */
+	label_signals_count = 0;
+	app_indicator_set_label(ci, "label", "guide");
+	label_signals_check();
+	g_assert(label_signals_count == 0);
+
+	/* Change one, we should get one signal */
+	app_indicator_set_label(ci, "label2", "guide");
+	label_signals_check();
+	g_assert(label_signals_count == 1);
+
+	/* Change several times, one signal */
+	label_signals_count = 0;
+	app_indicator_set_label(ci, "label1", "guide0");
+	app_indicator_set_label(ci, "label1", "guide1");
+	app_indicator_set_label(ci, "label2", "guide2");
+	app_indicator_set_label(ci, "label3", "guide3");
+	label_signals_check();
+	g_assert(label_signals_count == 1);
+
+	/* Clear should signal too */
+	label_signals_count = 0;
+	app_indicator_set_label(ci, NULL, NULL);
 	label_signals_check();
 	g_assert(label_signals_count == 1);
 
