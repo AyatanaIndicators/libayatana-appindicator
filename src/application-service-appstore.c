@@ -771,13 +771,14 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	gint position = 0;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
 		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
 
 		/* Icon name */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon);
+		g_value_set_string(&value, app->icon);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
@@ -789,31 +790,31 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* DBus Address */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->dbus_name);
+		g_value_set_string(&value, app->dbus_name);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* DBus Object */
 		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
-		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->menu);
+		g_value_set_static_boxed(&value, app->menu);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Icon path */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_set_string(&value, app->icon_path);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Label */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->label);
+		g_value_set_string(&value, app->label);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Guide */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->guide);
+		g_value_set_string(&value, app->guide);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
