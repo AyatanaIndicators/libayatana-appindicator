@@ -479,8 +479,8 @@ apply_status (Application * app, AppIndicatorStatus status)
                                               app->dbus_name,
                                               app->menu,
                                               app->icon_path,
-                                              "",
-                                              "",
+                                              app->label,
+                                              app->guide,
                                               TRUE);
                         }
 		} else {
@@ -807,13 +807,13 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* Label */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ""); 
+		g_value_set_string(&value, ((Application *)listpntr->data)->label);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Guide */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ""); 
+		g_value_set_string(&value, ((Application *)listpntr->data)->guide);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
