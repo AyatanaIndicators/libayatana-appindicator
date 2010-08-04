@@ -130,10 +130,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	io_class->get_entries = get_entries;
 	io_class->get_location = get_location;
 
-	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
