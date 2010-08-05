@@ -18,3 +18,4 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 VOID: STRING, INT, STRING, STRING, STRING
 VOID: INT, STRING
+VOID: STRING, STRING
