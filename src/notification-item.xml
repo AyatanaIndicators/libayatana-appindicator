@@ -21,6 +21,9 @@
 <!-- Signals -->
 		<signal name="NewIcon">
 		</signal>
+		<signal name="NewIconThemePath">
+		    <arg type="s" name="icon_theme_path" direction="out" />
+	    </signal>
 		<signal name="NewAttentionIcon">
 		</signal>
 		<signal name="NewStatus">
