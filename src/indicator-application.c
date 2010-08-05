@@ -610,20 +610,34 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		return;
 	}
 	
-	/* TODO: Be able to remove labels */
+	if (label == NULL || label[0] == '\0') {
+		/* No label, let's see if we need to delete the old one */
+		if (app->entry.label != NULL) {
+			g_object_unref(G_OBJECT(app->entry.label));
+			app->entry.label = NULL;
 
-	if (app->entry.label != NULL) {
-		gtk_label_set_text(app->entry.label, label);
+			/* We tell listeners that it got removed and readded so
+			   that we can get them to remove the old label. */
+			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+		}
 	} else {
-		app->entry.label = GTK_LABEL(gtk_label_new(label));
-		gtk_widget_show(GTK_WIDGET(app->entry.label));
+		/* We've got a label, is this just an update or is
+		   it a new thing. */
+		if (app->entry.label != NULL) {
+			gtk_label_set_text(app->entry.label, label);
+		} else {
+			app->entry.label = GTK_LABEL(gtk_label_new(label));
+			gtk_widget_show(GTK_WIDGET(app->entry.label));
 
-		/* We tell listeners that it got removed and readded so
-		   that we can get them to re-look at the new label. */
-		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
-		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+			/* We tell listeners that it got removed and readded so
+			   that we can get them to re-look at the new label. */
+			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+		}
 	}
 
+	/* Copy the guide if we have one */
 	if (app->guide != NULL) {
 		g_free(app->guide);
 		app->guide = NULL;
@@ -633,6 +647,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		app->guide = g_strdup(guide);
 	}
 
+	/* Protected against not having a label */
 	guess_label_size(app);
 
 	return;
