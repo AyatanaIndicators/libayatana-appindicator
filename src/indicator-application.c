@@ -88,6 +88,7 @@ struct _ApplicationEntry {
 	gboolean old_service;
 	gchar * dbusobject;
 	gchar * dbusaddress;
+	gchar * guide;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -431,6 +432,46 @@ application_added_search (gconstpointer a, gconstpointer b)
 	return -1;
 }
 
+/* Does a quick meausre of how big the string is in
+   pixels with a Pango layout */
+static gint
+measure_string (GtkStyle * style, PangoContext * context, const gchar * string)
+{
+	PangoLayout * layout = pango_layout_new(context);
+	pango_layout_set_text(layout, string, -1);
+	pango_layout_set_font_description(layout, style->font_desc);
+
+	gint width;
+	pango_layout_get_pixel_size(layout, &width, NULL);
+	g_object_unref(layout);
+	return width;
+}
+
+/* Try to get a good guess at what a maximum width of the entire
+   string would be. */
+static void
+guess_label_size (ApplicationEntry * app)
+{
+	/* This is during startup. */
+	if (app->entry.label == NULL) return;
+
+	GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(app->entry.label));
+	PangoContext * context = gtk_widget_get_pango_context(GTK_WIDGET(app->entry.label));
+
+	gint length = measure_string(style, context, gtk_label_get_text(app->entry.label));
+
+	if (app->guide != NULL) {
+		gint guidelen = measure_string(style, context, app->guide);
+		if (guidelen > length) {
+			length = guidelen;
+		}
+	}
+
+	gtk_widget_set_size_request(GTK_WIDGET(app->entry.label), length, -1);
+
+	return;
+}
+
 /* Here we respond to new applications by building up the
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
@@ -465,6 +506,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 
 	app->dbusaddress = g_strdup(dbusaddress);
 	app->dbusobject = g_strdup(dbusobject);
+	app->guide = NULL;
 
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
@@ -484,7 +526,16 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 		app->entry.label = GTK_LABEL(gtk_label_new(label));
 		gtk_widget_show(GTK_WIDGET(app->entry.label));
 
-		/* TODO: Use guide to size the label better */
+		if (app->guide != NULL) {
+			g_free(app->guide);
+			app->guide = NULL;
+		}
+
+		if (guide != NULL) {
+			app->guide = g_strdup(guide);
+		}
+
+		guess_label_size(app);
 	}
 
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
@@ -528,6 +579,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	}
 	if (app->dbusobject != NULL) {
 		g_free(app->dbusobject);
+	}
+	if (app->guide != NULL) {
+		g_free(app->guide);
 	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
