@@ -26,6 +26,21 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GMainLoop * mainloop = NULL;
 static gboolean active = TRUE;
+static gboolean can_haz_label = TRUE;
+
+static void
+label_toggle_cb (GtkWidget * widget, gpointer data)
+{
+	can_haz_label = !can_haz_label;
+
+	if (can_haz_label) {
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Hide label");
+	} else {
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Show label");
+	}
+
+	return;
+}
 
 static void
 activate_clicked_cb (GtkWidget *widget, gpointer data)
@@ -103,9 +118,13 @@ static gboolean
 percent_change (gpointer user_data)
 {
 	percentage = (percentage + 1) % 100;
-	gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
-	app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
-	g_free(percentstr);
+	if (can_haz_label) {
+		gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
+		app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
+		g_free(percentstr);
+	} else {
+		app_indicator_set_label (APP_INDICATOR(user_data), NULL, NULL);
+	}
 	return TRUE;
 }
 
@@ -163,6 +182,13 @@ main (int argc, char ** argv)
         item = gtk_menu_item_new_with_label ("Get Attention");
         g_signal_connect (item, "activate",
                           G_CALLBACK (activate_clicked_cb), ci);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+
+        item = gtk_menu_item_new_with_label ("Show label");
+		label_toggle_cb(item, ci);
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (label_toggle_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 
