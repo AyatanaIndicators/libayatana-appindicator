@@ -69,6 +69,7 @@ G_BEGIN_DECLS
 
 	Gets a pointer to the #AppIndicatorClass for the object @obj.
 */
+
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
 #define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
@@ -96,10 +97,16 @@ G_BEGIN_DECLS
 
 	String identifier for the #AppIndicator::connection-changed signal.
 */
+/**
+	APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH:
+
+	String identifier for the #AppIndicator::new-icon-theme-path signal.
+*/
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
+#define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 
 /**
 	AppIndicatorCategory:
@@ -147,12 +154,12 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_icon: Slot for #AppIndicator::new-icon.
 	@new_attention_icon: Slot for #AppIndicator::new-attention-icon.
 	@new_status: Slot for #AppIndicator::new-status.
+	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
 	@connection_changed: Slot for #AppIndicator::connection-changed.
 	@fallback: Function that gets called to make a #GtkStatusIcon when
 		there is no Application Indicator area available.
 	@unfallback: The function that gets called if an Application
 		Indicator area appears after the fallback has been created.
-	@app_indicator_reserved_1: Reserved for future use.
 	@app_indicator_reserved_2: Reserved for future use.
 
 	The signals and external functions that make up the #AppIndicator
@@ -163,12 +170,12 @@ struct _AppIndicatorClass {
 	GObjectClass parent_class;
 
 	/* DBus Signals */
-	void (* new_icon)               (AppIndicator       *indicator,
+	void (* new_icon)               (AppIndicator      *indicator,
 	                                 gpointer            user_data);
-	void (* new_attention_icon)     (AppIndicator       *indicator,
+	void (* new_attention_icon)     (AppIndicator      *indicator,
 	                                 gpointer            user_data);
-	void (* new_status)             (AppIndicator       *indicator,
-	                                 const gchar        *status,
+	void (* new_status)             (AppIndicator      *indicator,
+	                                 const gchar       *status,
 	                                 gpointer            user_data);
 
 	/* Local Signals */
@@ -181,8 +188,11 @@ struct _AppIndicatorClass {
 	void (*unfallback)              (AppIndicator * indicator,
 	                                 GtkStatusIcon * status_icon);
 
+    void (* new_icon_theme_path)    (AppIndicator      *indicator,
+                                     const gchar       *icon_theme_path,
+	                                 gpointer            user_data);
+
 	/* Reserved */
-	void (*app_indicator_reserved_1)(void);
 	void (*app_indicator_reserved_2)(void);
 };
 
@@ -215,7 +225,7 @@ AppIndicator                   *app_indicator_new                (const gchar   
 AppIndicator                   *app_indicator_new_with_path      (const gchar          *id,
                                                                   const gchar          *icon_name,
                                                                   AppIndicatorCategory  category,
-                                                                  const gchar          *icon_path);
+                                                                  const gchar          *icon_theme_path);
 
 /* Set properties */
 void                            app_indicator_set_status         (AppIndicator       *self,
@@ -226,12 +236,15 @@ void                            app_indicator_set_menu           (AppIndicator  
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_icon_theme_path(AppIndicator       *self,
+                                                                  const gchar        *icon_theme_path);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id             (AppIndicator *self);
 AppIndicatorCategory            app_indicator_get_category       (AppIndicator *self);
 AppIndicatorStatus              app_indicator_get_status         (AppIndicator *self);
 const gchar *                   app_indicator_get_icon           (AppIndicator *self);
+const gchar *                   app_indicator_get_icon_theme_path(AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
 GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
 
