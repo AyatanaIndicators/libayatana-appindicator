@@ -548,7 +548,6 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 
 	priv->applications = g_list_insert(priv->applications, app, position);
 
-	/* TODO: Need to deal with position here somehow */
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	return;
 }
