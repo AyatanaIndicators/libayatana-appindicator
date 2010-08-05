@@ -150,7 +150,7 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_label_changed),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING_STRING,
-	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           G_TYPE_NONE, 3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 
 	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_STRING,
 	                                  G_TYPE_NONE,
@@ -656,7 +656,14 @@ new_label (DBusGProxy * proxy, const gchar * label, const gchar * guide, gpointe
 	}
 
 	if (changed) {
-		g_signal_emit(app->appstore, signals[APPLICATION_LABEL_CHANGED], 0, app->label, app->guide, TRUE);
+		gint position = get_position(app);
+		if (position == -1) return;
+
+		g_signal_emit(app->appstore, signals[APPLICATION_LABEL_CHANGED], 0,
+					  position,
+		              app->label != NULL ? app->label : "", 
+		              app->guide != NULL ? app->guide : "",
+		              TRUE);
 	}
 
 	return;

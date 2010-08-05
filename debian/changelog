@@ -2,8 +2,9 @@ indicator-application (0.2.3-0ubuntu2~ppa1~label3) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Making the test program count to 100
+    * Fixing the signal prototype
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 04 Aug 2010 20:29:47 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 04 Aug 2010 20:30:28 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa1~label2) lucid; urgency=low
 
