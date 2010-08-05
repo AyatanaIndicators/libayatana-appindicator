@@ -671,6 +671,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		}
 
 		if (app->entry.image != NULL) {
+			indicator_image_helper_update(app->entry.image, app->longname);
 			gtk_widget_show(GTK_WIDGET(app->entry.image));
 		}
 
