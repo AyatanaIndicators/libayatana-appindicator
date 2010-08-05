@@ -1,8 +1,8 @@
-indicator-application (0.2.3-0ubuntu2~ppa1~label7) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu2~ppa1~label7) lucid; urgency=low
 
   * Updating to trunk
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 16:58:34 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 17:00:55 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa1~label6) lucid; urgency=low
 
