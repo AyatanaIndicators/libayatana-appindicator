@@ -617,6 +617,17 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		/* TODO: Handle the case where we didn't have a label */
 	}
 
+	if (app->guide != NULL) {
+		g_free(app->guide);
+		app->guide = NULL;
+	}
+
+	if (guide != NULL) {
+		app->guide = g_strdup(guide);
+	}
+
+	guess_label_size(app);
+
 	return;
 }
 
