@@ -549,40 +549,6 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 	return;
 }
 
-/* Gets the data back on an updated icon theme path.
-    Maybe a new icon */
-static void
-new_icon_theme_path_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata)
-{
-	/* Check for errors */
-	if (error != NULL) {
-		g_warning("Unable to get updated icon theme path: %s", error->message);
-		return;
-	}
-
-	/* Grab the icon and make sure we have one */
-	const gchar * new_icon_theme_path = g_value_get_string(&value);
-
-	Application * app = (Application *) userdata;
-
-	if (g_strcmp0(new_icon_theme_path, app->icon_theme_path)) {
-		/* If the new icon theme path is actually a new icon theme path */
-		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
-		app->icon_theme_path = g_strdup(new_icon_theme_path);
-
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
-			gint position = get_position(app);
-			if (position == -1) return;
-
-			g_signal_emit(G_OBJECT(app->appstore),
-			              signals[APPLICATION_ICON_THEME_PATH_CHANGED], 0, 
-			              position, new_icon_theme_path, TRUE);
-		}
-	}
-
-	return;
-}
-
 /* Called when the Notification Item signals that it
    has a new icon. */
 static void
@@ -632,16 +598,26 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 /* Called when the Notification Item signals that it
    has a new icon theme path. */
 static void
-new_icon_theme_path (DBusGProxy * proxy, gpointer data)
+new_icon_theme_path (DBusGProxy * proxy, const gchar * icon_theme_path, gpointer data)
 {
 	Application * app = (Application *)data;
 	if (!app->validated) return;
 
-	org_freedesktop_DBus_Properties_get_async(app->prop_proxy,
-	                                          NOTIFICATION_ITEM_DBUS_IFACE,
-	                                          NOTIFICATION_ITEM_PROP_ICON_THEME_PATH,
-	                                          new_icon_theme_path_cb,
-	                                          app);
+	if (g_strcmp0(icon_theme_path, app->icon_theme_path)) {
+		/* If the new icon theme path is actually a new icon theme path */
+		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
+		app->icon_theme_path = g_strdup(icon_theme_path);
+
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+			gint position = get_position(app);
+			if (position == -1) return;
+
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ICON_THEME_PATH_CHANGED], 0, 
+			              position, app->icon_theme_path, TRUE);
+		}
+	}
+
 	return;
 }
 
@@ -720,6 +696,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        G_TYPE_INVALID);
     dbus_g_proxy_add_signal(app->dbus_proxy,
 	                        NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH,
+	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
 	
 	dbus_g_proxy_connect_signal(app->dbus_proxy,

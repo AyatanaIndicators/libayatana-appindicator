@@ -171,14 +171,15 @@ struct _AppIndicatorClass {
 	GObjectClass parent_class;
 
 	/* DBus Signals */
-	void (* new_icon)               (AppIndicator       *indicator,
+	void (* new_icon)               (AppIndicator      *indicator,
 	                                 gpointer            user_data);
-	void (* new_attention_icon)     (AppIndicator       *indicator,
+	void (* new_attention_icon)     (AppIndicator      *indicator,
 	                                 gpointer            user_data);
-	void (* new_status)             (AppIndicator       *indicator,
-	                                 const gchar        *status,
+	void (* new_status)             (AppIndicator      *indicator,
+	                                 const gchar       *status,
 	                                 gpointer            user_data);
-    void (* new_icon_theme_path)    (AppIndicator       *indicator,
+    void (* new_icon_theme_path)    (AppIndicator      *indicator,
+                                     const gchar       *icon_theme_path,
 	                                 gpointer            user_data);
 
 	/* Local Signals */

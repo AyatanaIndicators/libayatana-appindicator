@@ -360,8 +360,8 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  G_SIGNAL_RUN_LAST,
 	                                  G_STRUCT_OFFSET (AppIndicatorClass, new_icon_theme_path),
 	                                  NULL, NULL,
-	                                  g_cclosure_marshal_VOID__VOID,
-	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
+	                                  g_cclosure_marshal_VOID__STRING,
+	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	/* Initialize the object as a DBus type */
 	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
@@ -1168,7 +1168,7 @@ app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_p
 
       self->priv->icon_theme_path = g_strdup(icon_theme_path);
 
-      g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, TRUE);
+      g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, g_strdup(self->priv->icon_theme_path));
     }
 
   return;
