@@ -649,7 +649,28 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 	if (signal_reload) {
 		/* Telling the listener that this has been removed, and then
 		   readded to make it reparse the entry. */
+		if (app->entry.label != NULL) {
+			gtk_widget_hide(GTK_WIDGET(app->entry.label));
+		}
+
+		if (app->entry.image != NULL) {
+			gtk_widget_hide(GTK_WIDGET(app->entry.image));
+		}
+
+		if (app->entry.menu != NULL) {
+			gtk_menu_detach(app->entry.menu);
+		}
+
 		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+
+		if (app->entry.label != NULL) {
+			gtk_widget_show(GTK_WIDGET(app->entry.label));
+		}
+
+		if (app->entry.image != NULL) {
+			gtk_widget_show(GTK_WIDGET(app->entry.image));
+		}
+
 		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	}
 
