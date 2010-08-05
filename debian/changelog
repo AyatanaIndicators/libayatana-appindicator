@@ -1,3 +1,10 @@
+indicator-application (0.2.3-0ubuntu2~ppa1~label5) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Handle label updating and use the guide to guess the size.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 14:48:04 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa1~label4) lucid; urgency=low
 
   * Upstream Merge
