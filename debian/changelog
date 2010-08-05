@@ -1,9 +1,9 @@
-indicator-application (0.2.3-0ubuntu2~ppa1~label6) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu2~ppa1~label6) lucid; urgency=low
 
   * Upstream Merge
     * Adding a helper update of the icon when rebuilding
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 15:07:06 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 15:13:33 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa1~label5) lucid; urgency=low
 
