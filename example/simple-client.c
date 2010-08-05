@@ -103,7 +103,7 @@ static gboolean
 percent_change (gpointer user_data)
 {
 	percentage = (percentage + 1) % 100;
-	gchar * percentstr = g_strdup_printf("%d%%", percentage);
+	gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
 	app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
 	g_free(percentstr);
 	return TRUE;
