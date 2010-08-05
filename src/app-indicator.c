@@ -1339,6 +1339,7 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 
 		Sets the path to use when searching for icons.
 **/
+void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
   g_return_if_fail (IS_APP_INDICATOR (self));
