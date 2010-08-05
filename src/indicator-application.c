@@ -279,6 +279,8 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
 		dbus_g_proxy_add_signal(priv->service_proxy,
 	                        	"ApplicationRemoved",

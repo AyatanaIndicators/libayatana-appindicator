@@ -1,3 +1,10 @@
+indicator-application (0.2.3-0ubuntu2~ppa1~label4) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fixing the prototype of the added signal
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 08:40:41 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa1~label3) lucid; urgency=low
 
   * Upstream Merge
