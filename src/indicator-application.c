@@ -587,7 +587,6 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 		g_object_unref(G_OBJECT(app->entry.image));
 	}
 	if (app->entry.label != NULL) {
-		g_warning("Odd, an application indicator with a label?");
 		g_object_unref(G_OBJECT(app->entry.label));
 	}
 	if (app->entry.menu != NULL) {
@@ -610,11 +609,19 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		g_warning("Unable to find application at position: %d", position);
 		return;
 	}
+	
+	/* TODO: Be able to remove labels */
 
 	if (app->entry.label != NULL) {
 		gtk_label_set_text(app->entry.label, label);
 	} else {
-		/* TODO: Handle the case where we didn't have a label */
+		app->entry.label = GTK_LABEL(gtk_label_new(label));
+		gtk_widget_show(GTK_WIDGET(app->entry.label));
+
+		/* We tell listeners that it got removed and readded so
+		   that we can get them to re-look at the new label. */
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	}
 
 	if (app->guide != NULL) {
@@ -622,7 +629,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		app->guide = NULL;
 	}
 
-	if (guide != NULL) {
+	if (guide != NULL && guide[0] != '\0') {
 		app->guide = g_strdup(guide);
 	}
 
