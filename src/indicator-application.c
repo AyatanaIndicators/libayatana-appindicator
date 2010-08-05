@@ -89,6 +89,7 @@ struct _ApplicationEntry {
 	gchar * dbusobject;
 	gchar * dbusaddress;
 	gchar * guide;
+	gchar * longname;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -511,14 +512,13 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
-	gchar * longname = NULL;
+	app->longname = NULL;
 	if (!g_str_has_suffix(iconname, PANEL_ICON_SUFFIX)) {
-		longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+		app->longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	} else {
-		longname = g_strdup(iconname);
+		app->longname = g_strdup(iconname);
 	}
-	app->entry.image = indicator_image_helper(longname);
-	g_free(longname);
+	app->entry.image = indicator_image_helper(app->longname);
 
 	if (label == NULL || label[0] == '\0') {
 		app->entry.label = NULL;
@@ -582,6 +582,9 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	}
 	if (app->guide != NULL) {
 		g_free(app->guide);
+	}
+	if (app->longname != NULL) {
+		g_free(app->longname);
 	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
@@ -668,6 +671,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 		}
 
 		if (app->entry.image != NULL) {
+			indicator_image_helper_update(app->entry.image, app->longname);
 			gtk_widget_show(GTK_WIDGET(app->entry.image));
 		}
 
@@ -693,9 +697,16 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
-	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	indicator_image_helper_update(app->entry.image, longname);
-	g_free(longname);
+	if (app->longname != NULL) {
+		g_free(app->longname);
+		app->longname = NULL;
+	}
+	if (!g_str_has_suffix(iconname, PANEL_ICON_SUFFIX)) {
+		app->longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	} else {
+		app->longname = g_strdup(iconname);
+	}
+	indicator_image_helper_update(app->entry.image, app->longname);
 
 	return;
 }
