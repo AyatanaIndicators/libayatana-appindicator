@@ -43,12 +43,13 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_STATUS     "Status"
 #define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
 #define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
-#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconThemePath"
+#define NOTIFICATION_ITEM_PROP_ICON_THEME_PATH  "IconThemePath"
 #define NOTIFICATION_ITEM_PROP_MENU       "Menu"
 
 #define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
@@ -77,7 +78,7 @@ struct _Application {
 	gchar * icon;
 	gchar * aicon;
 	gchar * menu;
-	gchar * icon_path;
+	gchar * icon_theme_path;
 	gboolean currently_free;
 };
 
@@ -89,6 +90,7 @@ enum {
 	APPLICATION_ADDED,
 	APPLICATION_REMOVED,
 	APPLICATION_ICON_CHANGED,
+	APPLICATION_ICON_THEME_PATH_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -135,6 +137,13 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_ICON_THEME_PATH_CHANGED] = g_signal_new ("application-icon-theme-path-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_theme_path_changed),
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
@@ -246,11 +255,11 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_AICON_NAME));
 	}
 
-	gpointer icon_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH);
-	if (icon_path_data != NULL) {
-		app->icon_path = g_value_dup_string((GValue *)icon_path_data);
+	gpointer icon_theme_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_THEME_PATH);
+	if (icon_theme_path_data != NULL) {
+		app->icon_theme_path = g_value_dup_string((GValue *)icon_theme_path_data);
 	} else {
-		app->icon_path = g_strdup("");
+		app->icon_theme_path = g_strdup("");
 	}
 
 	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
@@ -346,8 +355,8 @@ application_free (Application * app)
 	if (app->menu != NULL) {
 		g_free(app->menu);
 	}
-	if (app->icon_path != NULL) {
-		g_free(app->icon_path);
+	if (app->icon_theme_path != NULL) {
+		g_free(app->icon_theme_path);
 	}
 
 	g_free(app);
@@ -445,7 +454,7 @@ apply_status (Application * app, AppIndicatorStatus status)
                                               g_list_index(priv->applications, app), /* Position */
                                               app->dbus_name,
                                               app->menu,
-                                              app->icon_path,
+                                              app->icon_theme_path,
                                               TRUE);
                         }
 		} else {
@@ -586,6 +595,32 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	return;
 }
 
+/* Called when the Notification Item signals that it
+   has a new icon theme path. */
+static void
+new_icon_theme_path (DBusGProxy * proxy, const gchar * icon_theme_path, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	if (g_strcmp0(icon_theme_path, app->icon_theme_path)) {
+		/* If the new icon theme path is actually a new icon theme path */
+		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
+		app->icon_theme_path = g_strdup(icon_theme_path);
+
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+			gint position = get_position(app);
+			if (position == -1) return;
+
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ICON_THEME_PATH_CHANGED], 0, 
+			              position, app->icon_theme_path, TRUE);
+		}
+	}
+
+	return;
+}
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -612,7 +647,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->icon = NULL;
 	app->aicon = NULL;
 	app->menu = NULL;
-	app->icon_path = NULL;
+	app->icon_theme_path = NULL;
 	app->currently_free = FALSE;
 
 	/* Get the DBus proxy for the NotificationItem interface */
@@ -659,7 +694,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
-
+    dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
 	                            G_CALLBACK(new_icon),
@@ -675,7 +714,12 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                            G_CALLBACK(new_status),
 	                            app,
 	                            NULL);
-
+    dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH,
+	                            G_CALLBACK(new_icon_theme_path),
+	                            app,
+	                            NULL);
+	
 	/* Get all the propertiees */
 	org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
 	                                              NOTIFICATION_ITEM_DBUS_IFACE,
@@ -764,7 +808,7 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* Icon path */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_set_string(&value, ((Application *)listpntr->data)->icon_theme_path);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
