@@ -524,6 +524,7 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 		app->entry.label = NULL;
 	} else {
 		app->entry.label = GTK_LABEL(gtk_label_new(label));
+		g_object_ref(G_OBJECT(app->entry.label));
 		gtk_widget_show(GTK_WIDGET(app->entry.label));
 
 		if (app->guide != NULL) {
@@ -603,6 +604,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 {
 	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
 	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+	gboolean signal_reload = FALSE;
 
 	if (app == NULL) {
 		g_warning("Unable to find application at position: %d", position);
@@ -615,10 +617,7 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 			g_object_unref(G_OBJECT(app->entry.label));
 			app->entry.label = NULL;
 
-			/* We tell listeners that it got removed and readded so
-			   that we can get them to remove the old label. */
-			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
-			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+			signal_reload = TRUE;
 		}
 	} else {
 		/* We've got a label, is this just an update or is
@@ -627,12 +626,10 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 			gtk_label_set_text(app->entry.label, label);
 		} else {
 			app->entry.label = GTK_LABEL(gtk_label_new(label));
+			g_object_ref(G_OBJECT(app->entry.label));
 			gtk_widget_show(GTK_WIDGET(app->entry.label));
 
-			/* We tell listeners that it got removed and readded so
-			   that we can get them to re-look at the new label. */
-			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
-			g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+			signal_reload = TRUE;
 		}
 	}
 
@@ -648,6 +645,13 @@ application_label_changed (DBusGProxy * proxy, gint position, const gchar * labe
 
 	/* Protected against not having a label */
 	guess_label_size(app);
+
+	if (signal_reload) {
+		/* Telling the listener that this has been removed, and then
+		   readded to make it reparse the entry. */
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+	}
 
 	return;
 }
