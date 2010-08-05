@@ -98,7 +98,7 @@ libappindicator_la_SOURCES = \
 	application-service-marshal.c
 
 libappindicator_la_LDFLAGS = \
-	-version-info 0:0:0 \
+	-version-info 1:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
