@@ -1,9 +1,9 @@
-indicator-application (0.2.3-0ubuntu2~ppa1) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu2~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Allow the icon theme path to be changed dynamically (LP: #607831)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 16:09:28 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 16:12:10 -0500
 
 indicator-application (0.2.3-0ubuntu1) maverick; urgency=low
 
