@@ -70,7 +70,7 @@ struct _AppIndicatorPrivate {
 	AppIndicatorStatus    status;
 	gchar                *icon_name;
 	gchar                *attention_icon_name;
-	gchar *               icon_path;
+	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
 	gchar *               label;
@@ -93,6 +93,7 @@ enum {
 	NEW_STATUS,
 	NEW_LABEL,
 	CONNECTION_CHANGED,
+    NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
 };
 
@@ -239,7 +240,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              "An icon for the indicator",
                                                              "The default icon that is shown for the indicator.",
                                                              NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
 
 	/**
 		AppIndicator:attention-icon-name:
@@ -266,7 +267,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              "An additional path for custom icons.",
                                                              "An additional place to look for icon names that may be installed by the application.",
                                                              NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
 	
 	/**
 		AppIndicator:menu:
@@ -409,6 +410,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            g_cclosure_marshal_VOID__BOOLEAN,
 	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
 
+	/**
+		AppIndicator::new-icon-theme-path:
+		@arg0: The #AppIndicator object
+
+		Signaled when there is a new icon set for the
+		object.
+	*/
+	signals[NEW_ICON_THEME_PATH] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH,
+	                                  G_TYPE_FROM_CLASS(klass),
+	                                  G_SIGNAL_RUN_LAST,
+	                                  G_STRUCT_OFFSET (AppIndicatorClass, new_icon_theme_path),
+	                                  NULL, NULL,
+	                                  g_cclosure_marshal_VOID__STRING,
+	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
+
 	/* Initialize the object as a DBus type */
 	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
 	                                &dbus_glib__notification_item_server_object_info);
@@ -427,7 +443,7 @@ app_indicator_init (AppIndicator *self)
 	priv->status = APP_INDICATOR_STATUS_PASSIVE;
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
-	priv->icon_path = NULL;
+	priv->icon_theme_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
 	priv->label = NULL;
@@ -557,9 +573,9 @@ app_indicator_finalize (GObject *object)
 		priv->attention_icon_name = NULL;
 	}
 
-	if (priv->icon_path != NULL) {
-		g_free(priv->icon_path);
-		priv->icon_path = NULL;
+	if (priv->icon_theme_path != NULL) {
+		g_free(priv->icon_theme_path);
+		priv->icon_theme_path = NULL;
 	}
 	
 	if (priv->label != NULL) {
@@ -637,10 +653,9 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           break;
 
         case PROP_ICON_THEME_PATH:
-          if (priv->icon_path != NULL) {
-            g_free(priv->icon_path);
-          }
-          priv->icon_path = g_value_dup_string(value);
+          app_indicator_set_icon_theme_path (APP_INDICATOR (object),
+                                            g_value_get_string (value));
+          check_connect (self);
           break;
 
 		case PROP_LABEL: {
@@ -720,7 +735,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
         case PROP_ICON_THEME_PATH:
-          g_value_set_string (value, priv->icon_path);
+          g_value_set_string (value, priv->icon_theme_path);
           break;
 
         case PROP_MENU:
@@ -1183,12 +1198,12 @@ app_indicator_new (const gchar          *id,
         @id: The unique id of the indicator to create.
         @icon_name: The icon name for this indicator
         @category: The category of indicator.
-        @icon_path: A custom path for finding icons.
+        @icon_theme_path: A custom path for finding icons.
 
 		Creates a new #AppIndicator setting the properties:
 		#AppIndicator:id with @id, #AppIndicator:category
 		with @category, #AppIndicator:icon-name with
-		@icon_name and #AppIndicator:icon-theme-path with @icon_path.
+		@icon_name and #AppIndicator:icon-theme-path with @icon_theme_path.
 
         Return value: A pointer to a new #AppIndicator object.
  */
@@ -1196,13 +1211,13 @@ AppIndicator *
 app_indicator_new_with_path (const gchar          *id,
                              const gchar          *icon_name,
                              AppIndicatorCategory  category,
-                             const gchar          *icon_path)
+                             const gchar          *icon_theme_path)
 {
 	AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
 	                                        PROP_ID_S, id,
 	                                        PROP_CATEGORY_S, category_from_enum (category),
 	                                        PROP_ICON_NAME_S, icon_name,
-	                                        PROP_ICON_THEME_PATH_S, icon_path,
+	                                        PROP_ICON_THEME_PATH_S, icon_theme_path,
 	                                        NULL);
 
 	return indicator;
@@ -1315,6 +1330,31 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 	             NULL);
 
 	return;
+}
+
+/**
+        app_indicator_set_icon_theme_path:
+        @self: The #AppIndicator object to use
+        @icon_theme_path: The icon theme path to set.
+
+		Sets the path to use when searching for icons.
+**/
+void
+app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
+{
+  g_return_if_fail (IS_APP_INDICATOR (self));
+
+  if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0)
+    {
+      if (self->priv->icon_theme_path != NULL)
+            g_free(self->priv->icon_theme_path);
+
+      self->priv->icon_theme_path = g_strdup(icon_theme_path);
+
+      g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, g_strdup(self->priv->icon_theme_path));
+    }
+
+  return;
 }
 
 static void
@@ -1806,6 +1846,22 @@ app_indicator_get_icon (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->icon_name;
+}
+
+/**
+	app_indicator_get_icon_theme_path:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:icon-theme-path.
+
+	Return value: The current icon theme path.
+*/
+const gchar *
+app_indicator_get_icon_theme_path (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->icon_theme_path;
 }
 
 /**
