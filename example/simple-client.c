@@ -26,6 +26,21 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GMainLoop * mainloop = NULL;
 static gboolean active = TRUE;
+static gboolean can_haz_label = TRUE;
+
+static void
+label_toggle_cb (GtkWidget * widget, gpointer data)
+{
+	can_haz_label = !can_haz_label;
+
+	if (can_haz_label) {
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Hide label");
+	} else {
+		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Show label");
+	}
+
+	return;
+}
 
 static void
 activate_clicked_cb (GtkWidget *widget, gpointer data)
@@ -97,6 +112,22 @@ append_submenu (GtkWidget *item)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 }
 
+guint percentage = 0;
+
+static gboolean
+percent_change (gpointer user_data)
+{
+	percentage = (percentage + 1) % 100;
+	if (can_haz_label) {
+		gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
+		app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
+		g_free(percentstr);
+	} else {
+		app_indicator_set_label (APP_INDICATOR(user_data), NULL, NULL);
+	}
+	return TRUE;
+}
+
 int
 main (int argc, char ** argv)
 {
@@ -114,6 +145,9 @@ main (int argc, char ** argv)
 
 	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
 	app_indicator_set_attention_icon(ci, "indicator-messages-new");
+	app_indicator_set_label (ci, "1%", "100%");
+
+	g_timeout_add_seconds(1, percent_change, ci);
 
         menu = gtk_menu_new ();
         GtkWidget *item = gtk_check_menu_item_new_with_label ("1");
@@ -148,6 +182,13 @@ main (int argc, char ** argv)
         item = gtk_menu_item_new_with_label ("Get Attention");
         g_signal_connect (item, "activate",
                           G_CALLBACK (activate_clicked_cb), ci);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+
+        item = gtk_menu_item_new_with_label ("Show label");
+		label_toggle_cb(item, ci);
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (label_toggle_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 

@@ -37,6 +37,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
+#include "application-service-marshal.h"
 
 #include "notification-item-server.h"
 #include "notification-watcher-client.h"
@@ -72,6 +73,9 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	gchar *               label;
+	gchar *               label_guide;
+	guint                 label_change_idle;
 
 	GtkStatusIcon *       status_icon;
 	gint                  fallback_timer;
@@ -87,6 +91,7 @@ enum {
 	NEW_ICON,
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
+	NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
@@ -105,7 +110,9 @@ enum {
 	PROP_ATTENTION_ICON_NAME,
 	PROP_ICON_THEME_PATH,
 	PROP_MENU,
-	PROP_CONNECTED
+	PROP_CONNECTED,
+	PROP_LABEL,
+	PROP_LABEL_GUIDE
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -117,6 +124,8 @@ enum {
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
+#define PROP_LABEL_S                 "label"
+#define PROP_LABEL_GUIDE_S           "label-guide"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -137,6 +146,7 @@ static void app_indicator_finalize   (GObject *object);
 static void app_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
 static void app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
+static void signal_label_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
 static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
@@ -285,6 +295,41 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                                "Pretty simple, true if we have a reasonable expectation of being displayed through this object.  You should hide your TrayIcon if so.",
                                                                FALSE,
                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:label:
+		
+		A label that can be shown next to the string in the application
+		indicator.  The label will not be shown unless there is an icon
+		as well.  The label is useful for numerical and other frequently
+		updated information.  In general, it shouldn't be shown unless a
+		user requests it as it can take up a significant amount of space
+		on the user's panel.  This may not be shown in all visualizations.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_LABEL,
+	                                g_param_spec_string (PROP_LABEL_S,
+	                                                     "A label next to the icon",
+	                                                     "A label to provide dynamic information.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:label-guide:
+		
+		An optional string to provide guidance to the panel on how big
+		the #AppIndicator:label string could get.  If this is set correctly
+		then the panel should never 'jiggle' as the string adjusts through
+		out the range of options.  For instance, if you were providing a
+		percentage like "54% thrust" in #AppIndicator:label you'd want to
+		set this string to "100% thrust" to ensure space when Scotty can
+		get you enough power.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_LABEL_GUIDE,
+	                                g_param_spec_string (PROP_LABEL_GUIDE_S,
+	                                                     "A string to size the space available for the label.",
+	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 
 	/* Signals */
@@ -332,6 +377,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    g_cclosure_marshal_VOID__STRING,
 	                                    G_TYPE_NONE, 1,
                                             G_TYPE_STRING);
+
+	/**
+		AppIndicator::new-label:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the label
+		@arg1: The string for the guide
+
+		Emitted when either #AppIndicator:label or #AppIndicator:label-guide are
+		changed.
+	*/
+	signals[NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_LABEL,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
+	                                    NULL, NULL,
+	                                    _application_service_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
 		AppIndicator::connection-changed:
@@ -384,6 +446,9 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_theme_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
+	priv->label = NULL;
+	priv->label_guide = NULL;
+	priv->label_change_idle = 0;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -433,6 +498,11 @@ app_indicator_dispose (GObject *object)
 	if (priv->fallback_timer != 0) {
 		g_source_remove(priv->fallback_timer);
 		priv->fallback_timer = 0;
+	}
+
+	if (priv->label_change_idle != 0) {
+		g_source_remove(priv->label_change_idle);
+		priv->label_change_idle = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -507,6 +577,16 @@ app_indicator_finalize (GObject *object)
 		g_free(priv->icon_theme_path);
 		priv->icon_theme_path = NULL;
 	}
+	
+	if (priv->label != NULL) {
+		g_free(priv->label);
+		priv->label = NULL;
+	}
+
+	if (priv->label_guide != NULL) {
+		g_free(priv->label_guide);
+		priv->label_guide = NULL;
+	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
 	return;
@@ -578,6 +658,43 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           check_connect (self);
           break;
 
+		case PROP_LABEL: {
+		  gchar * oldlabel = priv->label;
+		  priv->label = g_value_dup_string(value);
+
+		  if (g_strcmp0(oldlabel, priv->label) != 0) {
+		    signal_label_change(APP_INDICATOR(object));
+		  }
+
+		  if (priv->label != NULL && priv->label[0] == '\0') {
+		  	g_free(priv->label);
+			priv->label = NULL;
+		  }
+
+		  if (oldlabel != NULL) {
+		  	g_free(oldlabel);
+		  }
+		  break;
+		}
+		case PROP_LABEL_GUIDE: {
+		  gchar * oldguide = priv->label_guide;
+		  priv->label_guide = g_value_dup_string(value);
+
+		  if (g_strcmp0(oldguide, priv->label_guide) != 0) {
+		    signal_label_change(APP_INDICATOR(object));
+		  }
+
+		  if (priv->label_guide != NULL && priv->label_guide[0] == '\0') {
+		  	g_free(priv->label_guide);
+			priv->label_guide = NULL;
+		  }
+
+		  if (oldguide != NULL) {
+		  	g_free(oldguide);
+		  }
+		  break;
+		}
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -635,11 +752,52 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
           break;
 
+        case PROP_LABEL:
+          g_value_set_string (value, priv->label);
+          break;
+
+        case PROP_LABEL_GUIDE:
+          g_value_set_string (value, priv->label_guide);
+          break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
         }
 
+	return;
+}
+
+/* Sends the label changed signal and resets the source ID */
+static gboolean
+signal_label_change_idle (gpointer user_data)
+{
+	AppIndicator * self = (AppIndicator *)user_data;
+	AppIndicatorPrivate *priv = self->priv;
+
+	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
+	              priv->label != NULL ? priv->label : "",
+	              priv->label_guide != NULL ? priv->label_guide : "",
+	              TRUE);
+
+	priv->label_change_idle = 0;
+
+	return FALSE;
+}
+
+/* Sets up an idle function to send the label changed signal
+   so that we don't send it too many times. */
+static void
+signal_label_change (AppIndicator * self)
+{
+	AppIndicatorPrivate *priv = self->priv;
+
+	/* don't set it twice */
+	if (priv->label_change_idle != 0) {
+		return;
+	}
+
+	priv->label_change_idle = g_idle_add(signal_label_change_idle, self);
 	return;
 }
 
@@ -1147,6 +1305,31 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
     }
 
   return;
+}
+
+/**
+	app_indicator_set_label:
+	@self: The #AppIndicator object to use
+	@label: The label to show next to the icon.
+	@guide: A guide to size the label correctly.
+
+	This is a wrapper function for the #AppIndicator:label and
+	#AppIndicator:guide properties.  This function can take #NULL
+	as either @label or @guide and will clear the entries.
+*/
+void
+app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * guide)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	/* Note: The label can be NULL, it's okay */
+	/* Note: The guide can be NULL, it's okay */
+
+	g_object_set(G_OBJECT(self),
+	             PROP_LABEL_S,       label == NULL ? "" : label,
+	             PROP_LABEL_GUIDE_S, guide == NULL ? "" : guide,
+	             NULL);
+
+	return;
 }
 
 /**
@@ -1717,3 +1900,36 @@ app_indicator_get_menu (AppIndicator *self)
 
 	return GTK_MENU(priv->menu);
 }
+
+/**
+	app_indicator_get_label:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:label.
+
+	Return value: The current label.
+*/
+const gchar *
+app_indicator_get_label (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->label;
+}
+
+/**
+	app_indicator_get_label_guide:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:label-guide.
+
+	Return value: The current label guide.
+*/
+const gchar *
+app_indicator_get_label_guide (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->label_guide;
+}
+

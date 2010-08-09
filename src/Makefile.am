@@ -94,10 +94,11 @@ BUILT_SOURCES += \
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
-	app-indicator.c
+	app-indicator.c \
+	application-service-marshal.c
 
 libappindicator_la_LDFLAGS = \
-	-version-info 0:0:0 \
+	-version-info 1:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
