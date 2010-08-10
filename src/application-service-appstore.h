@@ -45,8 +45,9 @@ struct _ApplicationServiceAppstoreClass {
 
 	void (*application_added) (ApplicationServiceAppstore * appstore, gchar *, gint, gchar *, gchar *, gpointer);
 	void (*application_removed) (ApplicationServiceAppstore * appstore, gint, gpointer);
-	void (*application_icon_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);	
+	void (*application_icon_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);
 	void (*application_icon_theme_path_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);
+	void (*application_label_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, const gchar *, gpointer);
 };
 
 struct _ApplicationServiceAppstore {

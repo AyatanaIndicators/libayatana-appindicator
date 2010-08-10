@@ -1,9 +1,25 @@
+indicator-application (0.2.3-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding label support into the library
+    * Adding label support into the indicator
+  * Autogen
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 10 Aug 2010 09:24:08 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa1) lucid; urgency=low
 
   * Upstream Merge
     * Allow the icon theme path to be changed dynamically (LP: #607831)
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 05 Aug 2010 16:12:10 -0500
+
+indicator-application (0.2.3-0ubuntu2~ppa1~label2) lucid; urgency=low
+
+  * Upstream Merge
+    * Fixing the check of the function signature
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 04 Aug 2010 15:27:43 -0500
 
 indicator-application (0.2.3-0ubuntu1) maverick; urgency=low
 

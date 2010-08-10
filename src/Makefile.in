@@ -80,8 +80,11 @@ libexec_PROGRAMS = indicator-application-service$(EXEEXT)
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -120,7 +123,8 @@ libappindicator_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__objects_1 =
 am_libappindicator_la_OBJECTS = $(am__objects_1) \
 	libappindicator_la-app-indicator-enum-types.lo \
-	libappindicator_la-app-indicator.lo
+	libappindicator_la-app-indicator.lo \
+	libappindicator_la-application-service-marshal.lo
 libappindicator_la_OBJECTS = $(am_libappindicator_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -440,7 +444,8 @@ libappindicatorinclude_HEADERS = \
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
-	app-indicator.c
+	app-indicator.c \
+	application-service-marshal.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 0:0:0 \
@@ -657,6 +662,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-application-service-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libapplication_la-application-service-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libapplication_la-indicator-application.Plo@am__quote@
 
@@ -699,6 +705,14 @@ libappindicator_la-app-indicator.lo: app-indicator.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator.c' object='libappindicator_la-app-indicator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
+
+libappindicator_la-application-service-marshal.lo: application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-application-service-marshal.Tpo -c -o libappindicator_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator_la-application-service-marshal.Tpo $(DEPDIR)/libappindicator_la-application-service-marshal.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='application-service-marshal.c' object='libappindicator_la-application-service-marshal.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
 
 libapplication_la-application-service-marshal.lo: application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libapplication_la_CFLAGS) $(CFLAGS) -MT libapplication_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libapplication_la-application-service-marshal.Tpo -c -o libapplication_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c

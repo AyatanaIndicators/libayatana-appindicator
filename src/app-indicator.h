@@ -93,6 +93,11 @@ G_BEGIN_DECLS
 	String identifier for the #AppIndicator::new-status signal.
 */
 /**
+	APP_INDICATOR_SIGNAL_NEW_LABEL:
+
+	String identifier for the #AppIndicator::new-label signal.
+*/
+/**
 	APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
 
 	String identifier for the #AppIndicator::connection-changed signal.
@@ -105,6 +110,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
+#define APP_INDICATOR_SIGNAL_NEW_LABEL           "new-label"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 
@@ -160,7 +166,7 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 		there is no Application Indicator area available.
 	@unfallback: The function that gets called if an Application
 		Indicator area appears after the fallback has been created.
-	@app_indicator_reserved_2: Reserved for future use.
+	@new_label: Slot for #AppIndicator::new-label.
 
 	The signals and external functions that make up the #AppIndicator
 	class object.
@@ -188,12 +194,16 @@ struct _AppIndicatorClass {
 	void (*unfallback)              (AppIndicator * indicator,
 	                                 GtkStatusIcon * status_icon);
 
+	/* Another DBus Signal */
+	void (* new_label)              (AppIndicator       *indicator,
+	                                 const gchar        *label,
+	                                 const gchar        *guide,
+	                                 gpointer            user_data);
     void (* new_icon_theme_path)    (AppIndicator      *indicator,
                                      const gchar       *icon_theme_path,
 	                                 gpointer            user_data);
 
 	/* Reserved */
-	void (*app_indicator_reserved_2)(void);
 };
 
 /**
@@ -236,6 +246,9 @@ void                            app_indicator_set_menu           (AppIndicator  
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_label          (AppIndicator       *self,
+                                                                  const gchar        *label,
+                                                                  const gchar        *guide);
 void                            app_indicator_set_icon_theme_path(AppIndicator       *self,
                                                                   const gchar        *icon_theme_path);
 
@@ -247,6 +260,8 @@ const gchar *                   app_indicator_get_icon           (AppIndicator *
 const gchar *                   app_indicator_get_icon_theme_path(AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
 GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
+const gchar *                   app_indicator_get_label          (AppIndicator *self);
+const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
 
 G_END_DECLS
 
