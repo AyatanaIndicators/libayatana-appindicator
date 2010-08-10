@@ -57,6 +57,7 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
 #define OVERRIDE_GROUP_NAME                          "Ordering Index Overrides"
+#define OVERRIDE_FILE_NAME                           "ordering-override.keyfile"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
@@ -112,6 +113,7 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static void load_override_file (GHashTable * hash, const gchar * filename);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
 static void approver_free (gpointer papprover, gpointer user_data);
@@ -188,6 +190,11 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 	priv->approvers = NULL;
 
 	priv->ordering_overrides = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+
+	load_override_file(priv->ordering_overrides, DATADIR "/" OVERRIDE_FILE_NAME);
+	gchar * userfile = g_build_filename(g_get_user_data_dir(), "indicators", "application", OVERRIDE_FILE_NAME, NULL);
+	load_override_file(priv->ordering_overrides, userfile);
+	g_free(userfile);
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -239,6 +246,15 @@ application_service_appstore_finalize (GObject *object)
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->finalize (object);
 	return;
+}
+
+/* Loads the file and adds the override entries to the table
+   of overrides */
+static void
+load_override_file (GHashTable * hash, const gchar * filename)
+{
+
+
 }
 
 /* Return from getting the properties from the item.  We're looking at those

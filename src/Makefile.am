@@ -54,6 +54,7 @@ indicator_application_service_SOURCES = \
 
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
+	-DDATADIR="\"$(pkgdatadir)\"" \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"indicator-application-service\"
 
