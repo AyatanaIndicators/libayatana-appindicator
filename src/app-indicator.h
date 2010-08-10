@@ -265,6 +265,8 @@ void                            app_indicator_set_label          (AppIndicator  
                                                                   const gchar        *guide);
 void                            app_indicator_set_icon_theme_path(AppIndicator       *self,
                                                                   const gchar        *icon_theme_path);
+void                            app_indicator_set_ordering_id    (AppIndicator       *self,
+                                                                  guint32             ordering_id);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id             (AppIndicator *self);
@@ -276,6 +278,7 @@ const gchar *                   app_indicator_get_attention_icon (AppIndicator *
 GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
 const gchar *                   app_indicator_get_label          (AppIndicator *self);
 const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
+guint32                         app_indicator_get_ordering_id    (AppIndicator *self);
 
 G_END_DECLS
 

@@ -1820,6 +1820,27 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 }
 
 /**
+	app_indicator_set_ordering_id:
+	@self: The #AppIndicator
+	@ordering_id: A value for the ordering of this app indicator
+
+	Sets the ordering ID for the app indicator which effects the
+	placement of it on the panel.  For almost all app indicator
+	this is not the function you're looking for.
+
+	Wrapper function for property #AppIndicator:ordering-id.
+**/
+void
+app_indicator_set_ordering_id (AppIndicator *self, guint32 ordering_id)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	self->priv->ordering_id = ordering_id;
+
+	return;
+}
+
+/**
 	app_indicator_get_id:
 	@self: The #AppIndicator object to use
 
@@ -1966,5 +1987,27 @@ app_indicator_get_label_guide (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->label_guide;
+}
+
+/**
+	app_indicator_get_ordering_id:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:ordering-id.
+
+	Return value: The current ordering ID.
+*/
+guint32
+app_indicator_get_ordering_id (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
+
+	guint ordering_id = 0;
+
+	g_object_get(G_OBJECT(self),
+	             PROP_ORDERING_ID_S, &ordering_id,
+	             NULL);
+
+	return ordering_id;
 }
 
