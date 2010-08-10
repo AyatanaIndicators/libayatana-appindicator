@@ -32,21 +32,23 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
 #include "notification-approver-client.h"
+#include "generate-id.h"
 
 /* DBus Prototypes */
 static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
 
 #include "application-service-server.h"
 
-#define NOTIFICATION_ITEM_PROP_ID               "Id"
-#define NOTIFICATION_ITEM_PROP_CATEGORY         "Category"
-#define NOTIFICATION_ITEM_PROP_STATUS           "Status"
-#define NOTIFICATION_ITEM_PROP_ICON_NAME        "IconName"
-#define NOTIFICATION_ITEM_PROP_AICON_NAME       "AttentionIconName"
-#define NOTIFICATION_ITEM_PROP_ICON_THEME_PATH  "IconThemePath"
-#define NOTIFICATION_ITEM_PROP_MENU             "Menu"
-#define NOTIFICATION_ITEM_PROP_LABEL            "Label"
-#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE      "LabelGuide"
+#define NOTIFICATION_ITEM_PROP_ID                    "Id"
+#define NOTIFICATION_ITEM_PROP_CATEGORY              "Category"
+#define NOTIFICATION_ITEM_PROP_STATUS                "Status"
+#define NOTIFICATION_ITEM_PROP_ICON_NAME             "IconName"
+#define NOTIFICATION_ITEM_PROP_AICON_NAME            "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_ICON_THEME_PATH       "IconThemePath"
+#define NOTIFICATION_ITEM_PROP_MENU                  "Menu"
+#define NOTIFICATION_ITEM_PROP_LABEL                 "Label"
+#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE            "LabelGuide"
+#define NOTIFICATION_ITEM_PROP_ORDERING_INDEX        "OrderingIndex"
 
 #define NOTIFICATION_ITEM_SIG_NEW_ICON               "NewIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_AICON              "NewAttentionIcon"
@@ -59,7 +61,6 @@ struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
 	GList * approvers;
-	AppLruFile * lrufile;
 };
 
 typedef struct _Approver Approver;
@@ -85,6 +86,7 @@ struct _Application {
 	gchar * label;
 	gchar * guide;
 	gboolean currently_free;
+	guint ordering_index;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -181,7 +183,6 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 
 	priv->applications = NULL;
 	priv->approvers = NULL;
-	priv->lrufile = NULL;
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -257,7 +258,6 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
 	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
-	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 
@@ -279,6 +279,13 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_theme_path = g_value_dup_string((GValue *)icon_theme_path_data);
 	} else {
 		app->icon_theme_path = g_strdup("");
+	}
+
+	gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
+	if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
+		app->ordering_index = generate_id(string_to_status(app->category), app->id);
+	} else {
+		app->ordering_index = g_value_get_uint(ordering_index_data);
 	}
 
 	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
@@ -440,15 +447,13 @@ can_add_application (GList *applications, Application *app)
 }
 
 /* This function takes two Application structure
-   pointers and uses the lrufile to compare them. */
+   pointers and uses their ordering index to compare them. */
 static gint
 app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
 {
 	Application * appa = (Application *)a;
 	Application * appb = (Application *)b;
-	AppLruFile * lrufile = (AppLruFile *)userdata;
-
-	return app_lru_file_sort(lrufile, appa->id, appb->id);
+	return appa->ordering_index - appb->ordering_index;
 }
 
 /* Change the status of the application.  If we're going passive
@@ -485,7 +490,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 		if (app->status == APP_INDICATOR_STATUS_PASSIVE) {
                         if (can_add_application (priv->applications, app)) {
                                 /* Put on panel */
-                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
+                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, NULL);
 
                                 g_signal_emit(G_OBJECT(app->appstore),
                                               signals[APPLICATION_ADDED], 0,
@@ -734,6 +739,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->label = NULL;
 	app->guide = NULL;
 	app->currently_free = FALSE;
+	app->ordering_index = 0;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
@@ -853,12 +859,9 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 /* Creates a basic appstore object and attaches the
    LRU file object to it. */
 ApplicationServiceAppstore *
-application_service_appstore_new (AppLruFile * lrufile)
+application_service_appstore_new (void)
 {
-	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
-	ApplicationServiceAppstorePrivate * priv = appstore->priv;
-	priv->lrufile = lrufile;
 	return appstore;
 }
 

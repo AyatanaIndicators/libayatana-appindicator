@@ -43,6 +43,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "notification-watcher-client.h"
 
 #include "dbus-shared.h"
+#include "generate-id.h"
 
 #define PANEL_ICON_SUFFIX  "panel"
 
@@ -73,6 +74,7 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	guint32               ordering_index;
 	gchar *               label;
 	gchar *               label_guide;
 	guint                 label_change_idle;
@@ -112,7 +114,8 @@ enum {
 	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
-	PROP_LABEL_GUIDE
+	PROP_LABEL_GUIDE,
+	PROP_ORDERING_INDEX
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -126,6 +129,7 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
+#define PROP_ORDERING_INDEX_S        "ordering-index"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -330,6 +334,25 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:ordering-index:
+
+		The ordering index is an odd parameter, and if you think you don't need
+		it you're probably right.  In general, the application indicator try
+		to place the applications in a recreatable place taking into account
+		which category they're in to try and group them.  But, there are some
+		cases where you'd want to ensure indicators are next to each other.
+		To do that you can override the generated ordering index and replace it
+		with a new one.  Again, you probably don't want to be doing this, but
+		in case you do, this is the way.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_ORDERING_INDEX,
+	                                g_param_spec_uint (PROP_ORDERING_INDEX_S,
+	                                                   "The location that this app indicator should be in the list.",
+	                                                   "A way to override the default ordering of the applications by providing a very specific idea of where this entry should be placed.",
+	                                                   0, G_MAXUINT32, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 
 	/* Signals */
@@ -446,6 +469,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_theme_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
+	priv->ordering_index = 0;
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
@@ -694,6 +718,9 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_ORDERING_INDEX:
+		  priv->ordering_index = g_value_get_uint(value);
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -759,6 +786,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
+
+		case PROP_ORDERING_INDEX:
+		  if (priv->ordering_index == 0) {
+		    g_value_set_uint(value, generate_id(priv->category, priv->id));
+		  } else {
+		    g_value_set_uint(value, priv->ordering_index);
+		  }
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1785,6 +1820,27 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 }
 
 /**
+	app_indicator_set_ordering_index:
+	@self: The #AppIndicator
+	@ordering_index: A value for the ordering of this app indicator
+
+	Sets the ordering index for the app indicator which effects the
+	placement of it on the panel.  For almost all app indicator
+	this is not the function you're looking for.
+
+	Wrapper function for property #AppIndicator:ordering-index.
+**/
+void
+app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	self->priv->ordering_index = ordering_index;
+
+	return;
+}
+
+/**
 	app_indicator_get_id:
 	@self: The #AppIndicator object to use
 
@@ -1931,5 +1987,27 @@ app_indicator_get_label_guide (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->label_guide;
+}
+
+/**
+	app_indicator_get_ordering_index:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:ordering-index.
+
+	Return value: The current ordering index.
+*/
+guint32
+app_indicator_get_ordering_index (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
+
+	guint ordering_index = 0;
+
+	g_object_get(G_OBJECT(self),
+	             PROP_ORDERING_INDEX_S, &ordering_index,
+	             NULL);
+
+	return ordering_index;
 }
 

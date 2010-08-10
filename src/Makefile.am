@@ -44,17 +44,19 @@ indicator_application_service_SOURCES = \
 	application-service.c \
 	application-service-appstore.h \
 	application-service-appstore.c \
-	application-service-lru-file.h \
-	application-service-lru-file.c \
 	application-service-marshal.c \
 	application-service-watcher.h \
 	application-service-watcher.c \
 	app-indicator-enum-types.c \
-	dbus-shared.h
+	dbus-shared.h \
+	generate-id.h \
+	generate-id.c
+
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"indicator-application-service\"
+
 indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS) \
 	libappindicator.la
@@ -95,7 +97,9 @@ libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
 	app-indicator.c \
-	application-service-marshal.c
+	application-service-marshal.c \
+	generate-id.h \
+	generate-id.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 1:0:0 \
