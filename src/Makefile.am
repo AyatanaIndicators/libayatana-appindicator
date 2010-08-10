@@ -44,8 +44,6 @@ indicator_application_service_SOURCES = \
 	application-service.c \
 	application-service-appstore.h \
 	application-service-appstore.c \
-	application-service-lru-file.h \
-	application-service-lru-file.c \
 	application-service-marshal.c \
 	application-service-watcher.h \
 	application-service-watcher.c \
