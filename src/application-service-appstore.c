@@ -81,6 +81,7 @@ struct _Application {
 	gchar * menu;
 	gchar * icon_theme_path;
 	gboolean currently_free;
+	guint ordering_index;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -650,6 +651,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->menu = NULL;
 	app->icon_theme_path = NULL;
 	app->currently_free = FALSE;
+	app->ordering_index = 0;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
