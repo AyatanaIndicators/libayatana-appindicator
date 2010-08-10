@@ -15,6 +15,8 @@ applicationlib_LTLIBRARIES = libapplication.la
 libapplication_la_SOURCES = \
 	application-service-marshal.c \
 	dbus-shared.h \
+	generate-id.h \
+	generate-id.c \
 	indicator-application.c
 libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \

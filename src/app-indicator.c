@@ -43,6 +43,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "notification-watcher-client.h"
 
 #include "dbus-shared.h"
+#include "generate-id.h"
 
 #define PANEL_ICON_SUFFIX  "panel"
 
