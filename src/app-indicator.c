@@ -112,7 +112,8 @@ enum {
 	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
-	PROP_LABEL_GUIDE
+	PROP_LABEL_GUIDE,
+	PROP_ORDERING_ID
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -126,6 +127,7 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
+#define PROP_ORDERING_ID_S           "ordering-id"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -330,6 +332,25 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:ordering-id:
+
+		The ordering ID is an odd parameter, and if you think you don't need
+		it you're probably right.  In general, the application indicator try
+		to place the applications in a recreatable place taking into account
+		which category they're in to try and group them.  But, there are some
+		cases where you'd want to ensure indicators are next to each other.
+		To do that you can override the generated ordering ID and replace it
+		with a new one.  Again, you probably don't want to be doing this, but
+		in case you do, this is the way.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_ORDERING_ID,
+	                                g_param_spec_uint (PROP_ORDERING_ID_S,
+	                                                   "The location that this app indicator should be in the list.",
+	                                                   "A way to override the default ordering of the applications by providing a very specific idea of where this entry should be placed.",
+	                                                   0, G_MAXUINT32, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 
 	/* Signals */
