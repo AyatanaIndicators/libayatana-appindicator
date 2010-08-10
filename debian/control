@@ -41,7 +41,7 @@ XB-Python-Version: ${python:Versions}
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${python:Depends},
-         libappindicator0 (= ${binary:Version}),
+         libappindicator1 (= ${binary:Version}),
          python-gobject
 Provides: ${python:Provides}
 Description: Python bindings for libappindicator
@@ -55,7 +55,7 @@ Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
 
-Package: libappindicator0
+Package: libappindicator1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -74,7 +74,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libdbusmenu-glib-dev (>= 0.1.8),
          libdbus-glib-1-dev (>= 0.76),
-         libappindicator0 (= ${binary:Version})
+         libappindicator1 (= ${binary:Version})
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -129,7 +129,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${gir:Depends}
-Description: Typelib files for libappindicator0.
+Description: Typelib files for libappindicator1.
  .
  This package can be used by other packages using the GIRepository format
  to generate dynamic bindings.
