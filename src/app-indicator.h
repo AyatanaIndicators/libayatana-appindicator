@@ -161,12 +161,20 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_attention_icon: Slot for #AppIndicator::new-attention-icon.
 	@new_status: Slot for #AppIndicator::new-status.
 	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
+	@new_label: Slot for #AppIndicator::new-label.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
+	@app_indicator_reserved_sw: Reserved for future use.
+	@app_indicator_reserved_ats: Reserved for future use.
 	@fallback: Function that gets called to make a #GtkStatusIcon when
 		there is no Application Indicator area available.
 	@unfallback: The function that gets called if an Application
 		Indicator area appears after the fallback has been created.
-	@new_label: Slot for #AppIndicator::new-label.
+	@app_indicator_reserved_1: Reserved for future use.
+	@app_indicator_reserved_2: Reserved for future use.
+	@app_indicator_reserved_3: Reserved for future use.
+	@app_indicator_reserved_4: Reserved for future use.
+	@app_indicator_reserved_5: Reserved for future use.
+	@app_indicator_reserved_6: Reserved for future use.
 
 	The signals and external functions that make up the #AppIndicator
 	class object.
@@ -183,27 +191,33 @@ struct _AppIndicatorClass {
 	void (* new_status)             (AppIndicator      *indicator,
 	                                 const gchar       *status,
 	                                 gpointer            user_data);
+	void (* new_icon_theme_path)    (AppIndicator      *indicator,
+	                                 const gchar       *icon_theme_path,
+	                                 gpointer            user_data);
+	void (* new_label)              (AppIndicator       *indicator,
+	                                 const gchar        *label,
+	                                 const gchar        *guide,
+	                                 gpointer            user_data);
 
 	/* Local Signals */
 	void (* connection_changed)     (AppIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
+	void (*app_indicator_reserved_sw)(void);
+	void (*app_indicator_reserved_ats)(void);
 
 	/* Overridable Functions */
 	GtkStatusIcon * (*fallback)     (AppIndicator * indicator);
 	void (*unfallback)              (AppIndicator * indicator,
 	                                 GtkStatusIcon * status_icon);
 
-	/* Another DBus Signal */
-	void (* new_label)              (AppIndicator       *indicator,
-	                                 const gchar        *label,
-	                                 const gchar        *guide,
-	                                 gpointer            user_data);
-    void (* new_icon_theme_path)    (AppIndicator      *indicator,
-                                     const gchar       *icon_theme_path,
-	                                 gpointer            user_data);
-
 	/* Reserved */
+	void (*app_indicator_reserved_1)(void);
+	void (*app_indicator_reserved_2)(void);
+	void (*app_indicator_reserved_3)(void);
+	void (*app_indicator_reserved_4)(void);
+	void (*app_indicator_reserved_5)(void);
+	void (*app_indicator_reserved_6)(void);
 };
 
 /**
