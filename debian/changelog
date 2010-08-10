@@ -1,4 +1,4 @@
-indicator-application (0.2.3-0ubuntu2~ppa4) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu2~ppa4) maverick; urgency=low
 
   * Upstream Merge
     * Breaking the ABI in order to get more space in the class
@@ -6,7 +6,7 @@ indicator-application (0.2.3-0ubuntu2~ppa4) UNRELEASED; urgency=low
   * debian/control: Moving libappindicator0 to libappindicator1
   * debian/rules: Moving libappindicator0 to libappindicator1
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 10 Aug 2010 10:05:31 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 10 Aug 2010 10:08:27 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa3) maverick; urgency=low
 
