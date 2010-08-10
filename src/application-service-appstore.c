@@ -56,11 +56,14 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_LABEL              "NewLabel"
 #define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
+#define OVERRIDE_GROUP_NAME                          "Ordering Index Overrides"
+
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
 	GList * approvers;
+	GHashTable * ordering_overrides;
 };
 
 typedef struct _Approver Approver;
@@ -183,6 +186,8 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 
 	priv->applications = NULL;
 	priv->approvers = NULL;
+
+	priv->ordering_overrides = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -225,6 +230,12 @@ application_service_appstore_dispose (GObject *object)
 static void
 application_service_appstore_finalize (GObject *object)
 {
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE(object)->priv;
+
+	if (priv->ordering_overrides != NULL) {
+		g_hash_table_destroy(priv->ordering_overrides);
+		priv->ordering_overrides = NULL;
+	}
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->finalize (object);
 	return;
