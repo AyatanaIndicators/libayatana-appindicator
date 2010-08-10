@@ -74,6 +74,7 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	guint32               ordering_id;
 	gchar *               label;
 	gchar *               label_guide;
 	guint                 label_change_idle;
@@ -468,6 +469,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_theme_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
+	priv->ordering_id = 0;
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
@@ -716,6 +718,9 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_ORDERING_ID:
+		  priv->ordering_id = g_value_get_uint(value);
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -781,6 +786,14 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
+
+		case PROP_ORDERING_ID:
+		  if (priv->ordering_id == 0) {
+		    g_value_set_uint(value, generate_id(priv->category, priv->id));
+		  } else {
+		    g_value_set_uint(value, priv->ordering_id);
+		  }
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
