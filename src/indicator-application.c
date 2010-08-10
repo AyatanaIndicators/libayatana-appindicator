@@ -85,10 +85,11 @@ typedef struct _ApplicationEntry ApplicationEntry;
 struct _ApplicationEntry {
 	IndicatorObjectEntry entry;
 	gchar * icon_theme_path;
-	gchar * icon_name;
 	gboolean old_service;
 	gchar * dbusobject;
 	gchar * dbusaddress;
+	gchar * guide;
+	gchar * longname;
 };
 
 #define INDICATOR_APPLICATION_GET_PRIVATE(o) \
@@ -106,8 +107,9 @@ static void disconnected (IndicatorApplication * application);
 static void disconnected_helper (gpointer data, gpointer user_data);
 static gboolean disconnected_kill (gpointer user_data);
 static void disconnected_kill_helper (gpointer data, gpointer user_data);
-static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, IndicatorApplication * application);
+static void application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_removed (DBusGProxy * proxy, gint position , IndicatorApplication * application);
+static void application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application);
 static void application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconname, IndicatorApplication * application);
 static void application_icon_theme_path_changed (DBusGProxy * proxy, gint position, const gchar * icon_theme_path, IndicatorApplication * application);
 static void get_applications (DBusGProxy *proxy, GPtrArray *OUT_applications, GError *error, gpointer userdata);
@@ -132,10 +134,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	io_class->get_entries = get_entries;
 	io_class->get_location = get_location;
 
-	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING_STRING_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
@@ -143,6 +147,12 @@ indicator_application_class_init (IndicatorApplicationClass *klass)
 	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING,
 	                                  G_TYPE_NONE,
 	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__INT_STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_INT,
+	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
 
@@ -272,6 +282,8 @@ connected (IndicatorApplication * application)
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
 		dbus_g_proxy_add_signal(priv->service_proxy,
 	                        	"ApplicationRemoved",
@@ -285,6 +297,12 @@ connected (IndicatorApplication * application)
 		dbus_g_proxy_add_signal(priv->service_proxy,
 	                        	"ApplicationIconThemePathChanged",
 	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
+	                        	G_TYPE_INVALID);
+		dbus_g_proxy_add_signal(priv->service_proxy,
+	                        	"ApplicationLabelChanged",
+	                        	G_TYPE_INT,
+	                        	G_TYPE_STRING,
 	                        	G_TYPE_STRING,
 	                        	G_TYPE_INVALID);
 
@@ -308,6 +326,11 @@ connected (IndicatorApplication * application)
 		dbus_g_proxy_connect_signal(priv->service_proxy,
 	                            	"ApplicationIconThemePathChanged",
 	                            	G_CALLBACK(application_icon_theme_path_changed),
+	                            	application,
+	                            	NULL /* Disconnection Signal */);
+		dbus_g_proxy_connect_signal(priv->service_proxy,
+	                            	"ApplicationLabelChanged",
+	                            	G_CALLBACK(application_label_changed),
 	                            	application,
 	                            	NULL /* Disconnection Signal */);
 	}
@@ -421,11 +444,51 @@ application_added_search (gconstpointer a, gconstpointer b)
 	return -1;
 }
 
+/* Does a quick meausre of how big the string is in
+   pixels with a Pango layout */
+static gint
+measure_string (GtkStyle * style, PangoContext * context, const gchar * string)
+{
+	PangoLayout * layout = pango_layout_new(context);
+	pango_layout_set_text(layout, string, -1);
+	pango_layout_set_font_description(layout, style->font_desc);
+
+	gint width;
+	pango_layout_get_pixel_size(layout, &width, NULL);
+	g_object_unref(layout);
+	return width;
+}
+
+/* Try to get a good guess at what a maximum width of the entire
+   string would be. */
+static void
+guess_label_size (ApplicationEntry * app)
+{
+	/* This is during startup. */
+	if (app->entry.label == NULL) return;
+
+	GtkStyle * style = gtk_widget_get_style(GTK_WIDGET(app->entry.label));
+	PangoContext * context = gtk_widget_get_pango_context(GTK_WIDGET(app->entry.label));
+
+	gint length = measure_string(style, context, gtk_label_get_text(app->entry.label));
+
+	if (app->guide != NULL) {
+		gint guidelen = measure_string(style, context, app->guide);
+		if (guidelen > length) {
+			length = guidelen;
+		}
+	}
+
+	gtk_widget_set_size_request(GTK_WIDGET(app->entry.label), length, -1);
+
+	return;
+}
+
 /* Here we respond to new applications by building up the
    ApplicationEntry and signaling the indicator host that
    we've got a new indicator. */
 static void
-application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, IndicatorApplication * application)
+application_added (DBusGProxy * proxy, const gchar * iconname, gint position, const gchar * dbusaddress, const gchar * dbusobject, const gchar * icon_theme_path, const gchar * label, const gchar * guide, IndicatorApplication * application)
 {
 	g_return_if_fail(IS_INDICATOR_APPLICATION(application));
 	g_debug("Building new application entry: %s  with icon: %s", dbusaddress, iconname);
@@ -455,21 +518,38 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 
 	app->dbusaddress = g_strdup(dbusaddress);
 	app->dbusobject = g_strdup(dbusobject);
+	app->guide = NULL;
 
-    app->icon_name = g_strdup(iconname);
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
-	gchar * longname = NULL;
+	app->longname = NULL;
 	if (!g_str_has_suffix(iconname, PANEL_ICON_SUFFIX)) {
-		longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+		app->longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
 	} else {
-		longname = g_strdup(iconname);
+		app->longname = g_strdup(iconname);
 	}
-	app->entry.image = indicator_image_helper(longname);
-	g_free(longname);
+	app->entry.image = indicator_image_helper(app->longname);
 
-	app->entry.label = NULL;
+	if (label == NULL || label[0] == '\0') {
+		app->entry.label = NULL;
+	} else {
+		app->entry.label = GTK_LABEL(gtk_label_new(label));
+		g_object_ref(G_OBJECT(app->entry.label));
+		gtk_widget_show(GTK_WIDGET(app->entry.label));
+
+		if (app->guide != NULL) {
+			g_free(app->guide);
+			app->guide = NULL;
+		}
+
+		if (guide != NULL) {
+			app->guide = g_strdup(guide);
+		}
+
+		guess_label_size(app);
+	}
+
 	app->entry.menu = GTK_MENU(dbusmenu_gtkmenu_new((gchar *)dbusaddress, (gchar *)dbusobject));
 
 	/* Keep copies of these for ourself, just in case. */
@@ -480,7 +560,6 @@ application_added (DBusGProxy * proxy, const gchar * iconname, gint position, co
 
 	priv->applications = g_list_insert(priv->applications, app, position);
 
-	/* TODO: Need to deal with position here somehow */
 	g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
 	return;
 }
@@ -512,20 +591,103 @@ application_removed (DBusGProxy * proxy, gint position, IndicatorApplication * a
 	if (app->dbusobject != NULL) {
 		g_free(app->dbusobject);
 	}
-	if (app->icon_name != NULL) {
-	    g_free(app->icon_name);
-    }
+	if (app->guide != NULL) {
+		g_free(app->guide);
+	}
+	if (app->longname != NULL) {
+		g_free(app->longname);
+	}
 	if (app->entry.image != NULL) {
 		g_object_unref(G_OBJECT(app->entry.image));
 	}
 	if (app->entry.label != NULL) {
-		g_warning("Odd, an application indicator with a label?");
 		g_object_unref(G_OBJECT(app->entry.label));
 	}
 	if (app->entry.menu != NULL) {
 		g_object_unref(G_OBJECT(app->entry.menu));
 	}
 	g_free(app);
+
+	return;
+}
+
+/* The callback for the signal that the label for an application
+   has changed. */
+static void
+application_label_changed (DBusGProxy * proxy, gint position, const gchar * label, const gchar * guide, IndicatorApplication * application)
+{
+	IndicatorApplicationPrivate * priv = INDICATOR_APPLICATION_GET_PRIVATE(application);
+	ApplicationEntry * app = (ApplicationEntry *)g_list_nth_data(priv->applications, position);
+	gboolean signal_reload = FALSE;
+
+	if (app == NULL) {
+		g_warning("Unable to find application at position: %d", position);
+		return;
+	}
+	
+	if (label == NULL || label[0] == '\0') {
+		/* No label, let's see if we need to delete the old one */
+		if (app->entry.label != NULL) {
+			g_object_unref(G_OBJECT(app->entry.label));
+			app->entry.label = NULL;
+
+			signal_reload = TRUE;
+		}
+	} else {
+		/* We've got a label, is this just an update or is
+		   it a new thing. */
+		if (app->entry.label != NULL) {
+			gtk_label_set_text(app->entry.label, label);
+		} else {
+			app->entry.label = GTK_LABEL(gtk_label_new(label));
+			g_object_ref(G_OBJECT(app->entry.label));
+			gtk_widget_show(GTK_WIDGET(app->entry.label));
+
+			signal_reload = TRUE;
+		}
+	}
+
+	/* Copy the guide if we have one */
+	if (app->guide != NULL) {
+		g_free(app->guide);
+		app->guide = NULL;
+	}
+
+	if (guide != NULL && guide[0] != '\0') {
+		app->guide = g_strdup(guide);
+	}
+
+	/* Protected against not having a label */
+	guess_label_size(app);
+
+	if (signal_reload) {
+		/* Telling the listener that this has been removed, and then
+		   readded to make it reparse the entry. */
+		if (app->entry.label != NULL) {
+			gtk_widget_hide(GTK_WIDGET(app->entry.label));
+		}
+
+		if (app->entry.image != NULL) {
+			gtk_widget_hide(GTK_WIDGET(app->entry.image));
+		}
+
+		if (app->entry.menu != NULL) {
+			gtk_menu_detach(app->entry.menu);
+		}
+
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_REMOVED_ID, 0, &(app->entry), TRUE);
+
+		if (app->entry.label != NULL) {
+			gtk_widget_show(GTK_WIDGET(app->entry.label));
+		}
+
+		if (app->entry.image != NULL) {
+			indicator_image_helper_update(app->entry.image, app->longname);
+			gtk_widget_show(GTK_WIDGET(app->entry.image));
+		}
+
+		g_signal_emit(G_OBJECT(application), INDICATOR_OBJECT_SIGNAL_ENTRY_ADDED_ID, 0, &(app->entry), TRUE);
+	}
 
 	return;
 }
@@ -546,11 +708,16 @@ application_icon_changed (DBusGProxy * proxy, gint position, const gchar * iconn
 	/* We make a long name using the suffix, and if that
 	   icon is available we want to use it.  Otherwise we'll
 	   just use the name we were given. */
-	gchar * longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
-	indicator_image_helper_update(app->entry.image, longname);
-	g_free(longname);
-	
-	app->icon_name = g_strdup(iconname);
+	if (app->longname != NULL) {
+		g_free(app->longname);
+		app->longname = NULL;
+	}
+	if (!g_str_has_suffix(iconname, PANEL_ICON_SUFFIX)) {
+		app->longname = g_strdup_printf("%s-%s", iconname, PANEL_ICON_SUFFIX);
+	} else {
+		app->longname = g_strdup(iconname);
+	}
+	indicator_image_helper_update(app->entry.image, app->longname);
 
 	return;
 }
@@ -578,7 +745,7 @@ application_icon_theme_path_changed (DBusGProxy * proxy, gint position, const gc
 		    app->icon_theme_path = g_strdup(icon_theme_path);
 		    theme_dir_ref(application, app->icon_theme_path);
 	    }
-	   indicator_image_helper_update(app->entry.image, app->icon_name);
+	   indicator_image_helper_update(app->entry.image, app->longname);
 	}
 
 	return;
@@ -605,15 +772,17 @@ get_applications_helper (gpointer data, gpointer user_data)
 {
 	GValueArray * array = (GValueArray *)data;
 
-	g_return_if_fail(array->n_values == 5);
+	g_return_if_fail(array->n_values == 7);
 
 	const gchar * icon_name = g_value_get_string(g_value_array_get_nth(array, 0));
 	gint position = g_value_get_int(g_value_array_get_nth(array, 1));
 	const gchar * dbus_address = g_value_get_string(g_value_array_get_nth(array, 2));
 	const gchar * dbus_object = g_value_get_boxed(g_value_array_get_nth(array, 3));
 	const gchar * icon_theme_path = g_value_get_string(g_value_array_get_nth(array, 4));
+	const gchar * label = g_value_get_string(g_value_array_get_nth(array, 5));
+	const gchar * guide = g_value_get_string(g_value_array_get_nth(array, 6));
 
-	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_theme_path, user_data);
+	return application_added(NULL, icon_name, position, dbus_address, dbus_object, icon_theme_path, label, guide, user_data);
 }
 
 /* Unrefs a theme directory.  This may involve removing it from
