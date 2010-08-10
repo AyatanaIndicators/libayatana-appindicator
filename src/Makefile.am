@@ -15,8 +15,6 @@ applicationlib_LTLIBRARIES = libapplication.la
 libapplication_la_SOURCES = \
 	application-service-marshal.c \
 	dbus-shared.h \
-	generate-id.h \
-	generate-id.c \
 	indicator-application.c
 libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
 	-Wall \
@@ -97,7 +95,9 @@ libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
 	app-indicator.c \
-	application-service-marshal.c
+	application-service-marshal.c \
+	generate-id.h \
+	generate-id.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 1:0:0 \
