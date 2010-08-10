@@ -111,3 +111,5 @@ src/notification-approver-client.h
 src/notification-approver-server.h
 tests/test-approver
 tests/test-approver-tester
+bindings/mono/policy.0.0.appindicator-sharp.config
+bindings/mono/policy.0.0.appindicator-sharp.dll
