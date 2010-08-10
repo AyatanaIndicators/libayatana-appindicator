@@ -253,8 +253,46 @@ application_service_appstore_finalize (GObject *object)
 static void
 load_override_file (GHashTable * hash, const gchar * filename)
 {
+	g_return_if_fail(hash != NULL);
+	g_return_if_fail(filename != NULL);
 
+	if (!g_file_test(filename, G_FILE_TEST_EXISTS)) {
+		return;
+	}
 
+	g_debug("Loading overrides from: '%s'", filename);
+
+	GError * error = NULL;
+	GKeyFile * keyfile = g_key_file_new();
+	g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to load keyfile '%s' because: %s", filename, error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
+	}
+
+	gchar ** keys = g_key_file_get_keys(keyfile, OVERRIDE_GROUP_NAME, NULL, NULL);
+	gchar * key = keys[0];
+	gint i;
+
+	for (i = 0; (key = keys[i]) != NULL; i++) {
+		GError * valerror = NULL;
+		gint val = g_key_file_get_integer(keyfile, OVERRIDE_GROUP_NAME, key, &valerror);
+
+		if (valerror != NULL) {
+			g_warning("Unable to get key '%s' out of file '%s' because: %s", key, filename, valerror->message);
+			g_error_free(valerror);
+			continue;
+		}
+		g_debug("%s: override '%s' with value '%d'", filename, key, val);
+
+		g_hash_table_insert(hash, g_strdup(key), GINT_TO_POINTER(val));
+	}
+	g_key_file_free(keyfile);
+
+	return;
 }
 
 /* Return from getting the properties from the item.  We're looking at those
