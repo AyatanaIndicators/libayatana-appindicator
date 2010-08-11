@@ -33,12 +33,34 @@ union ordering_id_union_t {
 	struct ordering_id_struct str;
 };
 
+#define MULTIPLIER 32
+
 guint32
 generate_id (const AppIndicatorCategory category, const gchar * id)
 {
 	union ordering_id_union_t u;
 
-	u.str.category = category;
+	switch (category) {
+	case APP_INDICATOR_CATEGORY_OTHER:
+		u.str.category = MULTIPLIER * 5;
+		break;
+	case APP_INDICATOR_CATEGORY_APPLICATION_STATUS:
+		u.str.category = MULTIPLIER * 4;
+		break;
+	case APP_INDICATOR_CATEGORY_COMMUNICATIONS:
+		u.str.category = MULTIPLIER * 3;
+		break;
+	case APP_INDICATOR_CATEGORY_SYSTEM_SERVICES:
+		u.str.category = MULTIPLIER * 2;
+		break;
+	case APP_INDICATOR_CATEGORY_HARDWARE:
+		u.str.category = MULTIPLIER * 1;
+		break;
+	default:
+		g_warning("Got an undefined category: %d", category);
+		u.str.category = 0;
+		break;
+	}
 	
 	u.str.first = 0;
 	u.str.second = 0;
