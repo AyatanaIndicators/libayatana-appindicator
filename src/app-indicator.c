@@ -788,11 +788,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           break;
 
 		case PROP_ORDERING_INDEX:
-		  if (priv->ordering_index == 0) {
-		    g_value_set_uint(value, generate_id(priv->category, priv->id));
-		  } else {
-		    g_value_set_uint(value, priv->ordering_index);
-		  }
+		  g_value_set_uint(value, priv->ordering_index);
 		  break;
 
         default:
@@ -2002,12 +1998,10 @@ app_indicator_get_ordering_index (AppIndicator *self)
 {
 	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
 
-	guint ordering_index = 0;
-
-	g_object_get(G_OBJECT(self),
-	             PROP_ORDERING_INDEX_S, &ordering_index,
-	             NULL);
-
-	return ordering_index;
+	if (self->priv->ordering_index == 0) {
+		return generate_id(self->priv->category, self->priv->id);
+	} else {
+		return self->priv->ordering_index;
+	}
 }
 
