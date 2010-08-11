@@ -1,3 +1,9 @@
+indicator-application (0.2.3-0ubuntu2~ppa5) UNRELEASED; urgency=low
+
+  * Autogen
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 09:18:13 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa4) maverick; urgency=low
 
   * Upstream Merge
