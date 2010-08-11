@@ -115,6 +115,7 @@ static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
 static void load_override_file (GHashTable * hash, const gchar * filename);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
+static AppIndicatorCategory string_to_cat(const gchar * cat_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
@@ -357,13 +358,14 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	if (ordering_index_over == NULL) {
 		gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
 		if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
-			app->ordering_index = generate_id(string_to_status(app->category), app->id);
+			app->ordering_index = generate_id(string_to_cat(app->category), app->id);
 		} else {
 			app->ordering_index = g_value_get_uint(ordering_index_data);
 		}
 	} else {
 		app->ordering_index = GPOINTER_TO_UINT(ordering_index_over);
 	}
+	g_debug("'%s' ordering index is '%d'", app->id, app->ordering_index);
 
 	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
 	if (label_data != NULL) {
@@ -416,6 +418,28 @@ string_to_status(const gchar * status_string)
 
 	return retval;
 }
+
+/* Simple translation function -- could be optimized */
+static AppIndicatorCategory
+string_to_cat(const gchar * cat_string)
+{
+	GEnumClass * klass = G_ENUM_CLASS(g_type_class_ref(APP_INDICATOR_TYPE_INDICATOR_CATEGORY));
+	g_return_val_if_fail(klass != NULL, APP_INDICATOR_CATEGORY_OTHER);
+
+	AppIndicatorCategory retval = APP_INDICATOR_CATEGORY_OTHER;
+
+	GEnumValue * val = g_enum_get_value_by_nick(klass, cat_string);
+	if (val == NULL) {
+		g_warning("Unrecognized status '%s' assuming other.", cat_string);
+	} else {
+		retval = (AppIndicatorCategory)val->value;
+	}
+
+	g_type_class_unref(klass);
+
+	return retval;
+}
+
 
 /* A small helper function to get the position of an application
    in the app list. */
