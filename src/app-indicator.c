@@ -92,6 +92,7 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	NEW_LABEL,
+	X_NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
@@ -134,6 +135,9 @@ enum {
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
+
+/* Signal wrapper */
+#define APP_INDICATOR_SIGNAL_X_NEW_LABEL ("x-ayatana-" APP_INDICATOR_SIGNAL_NEW_LABEL)
 
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
@@ -418,6 +422,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		changed.
 	*/
 	signals[NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_LABEL,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
+	                                    NULL, NULL,
+	                                    _application_service_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+
+	/**
+		AppIndicator::x-ayatana-new-label:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the label
+		@arg1: The string for the guide
+
+		Wrapper for #AppIndicator::new-label, please don't use this signal
+		use the other one.
+	*/
+	signals[X_NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_X_NEW_LABEL,
 	                                    G_TYPE_FROM_CLASS(klass),
 	                                    G_SIGNAL_RUN_LAST,
 	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
@@ -808,6 +829,10 @@ signal_label_change_idle (gpointer user_data)
 	AppIndicatorPrivate *priv = self->priv;
 
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
+	              priv->label != NULL ? priv->label : "",
+	              priv->label_guide != NULL ? priv->label_guide : "",
+	              TRUE);
+	g_signal_emit(G_OBJECT(self), signals[X_NEW_LABEL], 0,
 	              priv->label != NULL ? priv->label : "",
 	              priv->label_guide != NULL ? priv->label_guide : "",
 	              TRUE);
