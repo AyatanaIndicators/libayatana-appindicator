@@ -1,11 +1,11 @@
-indicator-application (0.2.3-0ubuntu2~ppa5~order3) UNRELEASED; urgency=low
+indicator-application (0.2.3-0ubuntu2~ppa5~order3) maverick; urgency=low
 
   * Upstream Merge
     * Checking to make sure we get a list of keys before using
       them.
     * Fixing typo for group name in overrides file.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 09:06:58 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 09:10:34 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa5~order2) maverick; urgency=low
 
