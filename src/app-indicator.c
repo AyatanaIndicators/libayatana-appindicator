@@ -805,10 +805,12 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
           break;
 
+		case PROP_X_LABEL:
         case PROP_LABEL:
           g_value_set_string (value, priv->label);
           break;
 
+        case PROP_X_LABEL_GUIDE:
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
