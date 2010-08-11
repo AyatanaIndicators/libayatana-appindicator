@@ -94,6 +94,7 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	NEW_LABEL,
+	X_NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
@@ -115,6 +116,8 @@ enum {
 	PROP_CONNECTED,
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
+	PROP_X_LABEL,
+	PROP_X_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
 	PROP_X_ORDERING_INDEX
 };
@@ -130,12 +133,17 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
+#define PROP_X_LABEL_S               ("x-ayatana-" PROP_LABEL_S)
+#define PROP_X_LABEL_GUIDE_S         ("x-ayatana-" PROP_LABEL_GUIDE_S)
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_X_ORDERING_INDEX_S      ("x-ayatana-" PROP_ORDERING_INDEX_S)
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
+
+/* Signal wrapper */
+#define APP_INDICATOR_SIGNAL_X_NEW_LABEL ("x-ayatana-" APP_INDICATOR_SIGNAL_NEW_LABEL)
 
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
@@ -370,6 +378,32 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                   0, G_MAXUINT32, 0,
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+		AppIndicator:x-ayatana-label:
+
+		Wrapper for #AppIndicator:label.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL,
+	                                g_param_spec_string (PROP_X_LABEL_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:x-ayatana-label-guide:
+
+		Wrapper for #AppIndicator:label-guide.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL_GUIDE,
+	                                g_param_spec_string (PROP_X_LABEL_GUIDE_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
 
@@ -427,6 +461,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		changed.
 	*/
 	signals[NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_LABEL,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
+	                                    NULL, NULL,
+	                                    _application_service_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+
+	/**
+		AppIndicator::x-ayatana-new-label:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the label
+		@arg1: The string for the guide
+
+		Wrapper for #AppIndicator::new-label, please don't use this signal
+		use the other one.
+	*/
+	signals[X_NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_X_NEW_LABEL,
 	                                    G_TYPE_FROM_CLASS(klass),
 	                                    G_SIGNAL_RUN_LAST,
 	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
@@ -698,6 +749,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           check_connect (self);
           break;
 
+		case PROP_X_LABEL:
 		case PROP_LABEL: {
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
@@ -716,6 +768,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_X_LABEL_GUIDE:
 		case PROP_LABEL_GUIDE: {
 		  gchar * oldguide = priv->label_guide;
 		  priv->label_guide = g_value_dup_string(value);
@@ -796,10 +849,12 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
           break;
 
+		case PROP_X_LABEL:
         case PROP_LABEL:
           g_value_set_string (value, priv->label);
           break;
 
+        case PROP_X_LABEL_GUIDE:
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
@@ -825,6 +880,10 @@ signal_label_change_idle (gpointer user_data)
 	AppIndicatorPrivate *priv = self->priv;
 
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
+	              priv->label != NULL ? priv->label : "",
+	              priv->label_guide != NULL ? priv->label_guide : "",
+	              TRUE);
+	g_signal_emit(G_OBJECT(self), signals[X_NEW_LABEL], 0,
 	              priv->label != NULL ? priv->label : "",
 	              priv->label_guide != NULL ? priv->label_guide : "",
 	              TRUE);
