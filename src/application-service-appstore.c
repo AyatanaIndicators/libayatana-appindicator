@@ -273,7 +273,14 @@ load_override_file (GHashTable * hash, const gchar * filename)
 		return;
 	}
 
-	gchar ** keys = g_key_file_get_keys(keyfile, OVERRIDE_GROUP_NAME, NULL, NULL);
+	gchar ** keys = g_key_file_get_keys(keyfile, OVERRIDE_GROUP_NAME, NULL, &error);
+	if (error != NULL) {
+		g_warning("Unable to get keys from keyfile '%s' because: %s", filename, error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
+	}
+
 	gchar * key = keys[0];
 	gint i;
 
