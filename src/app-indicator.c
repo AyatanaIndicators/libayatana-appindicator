@@ -112,7 +112,9 @@ enum {
 	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
-	PROP_LABEL_GUIDE
+	PROP_LABEL_GUIDE,
+	PROP_X_LABEL,
+	PROP_X_LABEL_GUIDE
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -126,6 +128,8 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
+#define PROP_X_LABEL_S               "x-ayatana-label"
+#define PROP_X_LABEL_GUIDE_S         "x-ayatana-label-guide"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -331,6 +335,32 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+		AppIndicator:x-ayatana-label:
+
+		Wrapper for #AppIndicator:label.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL,
+	                                g_param_spec_string (PROP_X_LABEL_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:x-ayatana-label-guide:
+
+		Wrapper for #AppIndicator:label-guide.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL_GUIDE,
+	                                g_param_spec_string (PROP_X_LABEL_GUIDE_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
 
@@ -658,6 +688,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           check_connect (self);
           break;
 
+		case PROP_X_LABEL:
 		case PROP_LABEL: {
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
@@ -676,6 +707,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_X_LABEL_GUIDE:
 		case PROP_LABEL_GUIDE: {
 		  gchar * oldguide = priv->label_guide;
 		  priv->label_guide = g_value_dup_string(value);
