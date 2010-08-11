@@ -1,3 +1,10 @@
+indicator-application (0.2.3-0ubuntu2~ppa5~order2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Adding in override files for the ordering IDs
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 10 Aug 2010 21:23:31 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa5~order1) maverick; urgency=low
 
   * Upstream Merge

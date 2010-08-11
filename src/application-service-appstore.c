@@ -56,11 +56,15 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_SIG_NEW_LABEL              "NewLabel"
 #define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
+#define OVERRIDE_GROUP_NAME                          "Ordering Index Overrides"
+#define OVERRIDE_FILE_NAME                           "ordering-override.keyfile"
+
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
 	GList * approvers;
+	GHashTable * ordering_overrides;
 };
 
 typedef struct _Approver Approver;
@@ -109,6 +113,7 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static void load_override_file (GHashTable * hash, const gchar * filename);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
 static void approver_free (gpointer papprover, gpointer user_data);
@@ -183,6 +188,13 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 
 	priv->applications = NULL;
 	priv->approvers = NULL;
+
+	priv->ordering_overrides = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+
+	load_override_file(priv->ordering_overrides, DATADIR "/" OVERRIDE_FILE_NAME);
+	gchar * userfile = g_build_filename(g_get_user_data_dir(), "indicators", "application", OVERRIDE_FILE_NAME, NULL);
+	load_override_file(priv->ordering_overrides, userfile);
+	g_free(userfile);
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -225,8 +237,61 @@ application_service_appstore_dispose (GObject *object)
 static void
 application_service_appstore_finalize (GObject *object)
 {
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE(object)->priv;
+
+	if (priv->ordering_overrides != NULL) {
+		g_hash_table_destroy(priv->ordering_overrides);
+		priv->ordering_overrides = NULL;
+	}
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->finalize (object);
+	return;
+}
+
+/* Loads the file and adds the override entries to the table
+   of overrides */
+static void
+load_override_file (GHashTable * hash, const gchar * filename)
+{
+	g_return_if_fail(hash != NULL);
+	g_return_if_fail(filename != NULL);
+
+	if (!g_file_test(filename, G_FILE_TEST_EXISTS)) {
+		return;
+	}
+
+	g_debug("Loading overrides from: '%s'", filename);
+
+	GError * error = NULL;
+	GKeyFile * keyfile = g_key_file_new();
+	g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to load keyfile '%s' because: %s", filename, error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
+	}
+
+	gchar ** keys = g_key_file_get_keys(keyfile, OVERRIDE_GROUP_NAME, NULL, NULL);
+	gchar * key = keys[0];
+	gint i;
+
+	for (i = 0; (key = keys[i]) != NULL; i++) {
+		GError * valerror = NULL;
+		gint val = g_key_file_get_integer(keyfile, OVERRIDE_GROUP_NAME, key, &valerror);
+
+		if (valerror != NULL) {
+			g_warning("Unable to get key '%s' out of file '%s' because: %s", key, filename, valerror->message);
+			g_error_free(valerror);
+			continue;
+		}
+		g_debug("%s: override '%s' with value '%d'", filename, key, val);
+
+		g_hash_table_insert(hash, g_strdup(key), GINT_TO_POINTER(val));
+	}
+	g_key_file_free(keyfile);
+
 	return;
 }
 
@@ -281,11 +346,16 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_theme_path = g_strdup("");
 	}
 
-	gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
-	if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
-		app->ordering_index = generate_id(string_to_status(app->category), app->id);
+	gpointer ordering_index_over = g_hash_table_lookup(priv->ordering_overrides, app->id);
+	if (ordering_index_over == NULL) {
+		gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
+		if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
+			app->ordering_index = generate_id(string_to_status(app->category), app->id);
+		} else {
+			app->ordering_index = g_value_get_uint(ordering_index_data);
+		}
 	} else {
-		app->ordering_index = g_value_get_uint(ordering_index_data);
+		app->ordering_index = GPOINTER_TO_UINT(ordering_index_over);
 	}
 
 	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
