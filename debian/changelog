@@ -1,3 +1,11 @@
+indicator-application (0.2.3-0ubuntu2~ppa5~order5) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Various fixes to the ordering index calculation
+    * Putting ordering indexes in the X namespace
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 15:45:47 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa5~order4) maverick; urgency=low
 
   * Upstream Merge

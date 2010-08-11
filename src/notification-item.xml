@@ -14,7 +14,7 @@
 		<property name="Menu" type="o" access="read" />
 		<property name="Label" type="s" access="read" />
 		<property name="LabelGuide" type="s" access="read" />
-		<property name="OrderingIndex" type="u" access="read" />
+		<property name="XAyatanaOrderingIndex" type="u" access="read" />
 
 <!-- Methods -->
 		<!-- None currently -->
