@@ -1,3 +1,9 @@
+indicator-application (0.2.3-0ubuntu2) maverick; urgency=low
+
+  * Rebuild with the new gobject introspection
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 11 Aug 2010 11:07:51 +0200
+
 indicator-application (0.2.3-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
