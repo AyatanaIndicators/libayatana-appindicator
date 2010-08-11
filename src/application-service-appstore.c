@@ -554,7 +554,7 @@ app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
 {
 	Application * appa = (Application *)a;
 	Application * appb = (Application *)b;
-	return appb->ordering_index - appa->ordering_index;
+	return (appb->ordering_index/2) - (appa->ordering_index/2);
 }
 
 /* Change the status of the application.  If we're going passive
