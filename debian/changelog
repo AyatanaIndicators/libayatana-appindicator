@@ -1,3 +1,11 @@
+indicator-application (0.2.3-0ubuntu2~ppa5~order4) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Cleaning up the ID creation and ordering to put low numbers to
+      the right.
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 12:11:00 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa5~order3) maverick; urgency=low
 
   * Upstream Merge

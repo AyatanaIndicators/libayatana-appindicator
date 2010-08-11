@@ -23,7 +23,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __GENERATE_ID_H__
 
 #include <glib.h>
+#include "app-indicator.h"
 
-guint32 generate_id (const gchar category, const gchar * id);
+guint32 generate_id (const AppIndicatorCategory category, const gchar * id);
 
 #endif /* __GENERATE_ID_H__ */
