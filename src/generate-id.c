@@ -34,7 +34,7 @@ union ordering_id_union_t {
 };
 
 guint32
-generate_id (const gchar category, const gchar * id)
+generate_id (const AppIndicatorCategory category, const gchar * id)
 {
 	union ordering_id_union_t u;
 
