@@ -365,7 +365,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	} else {
 		app->ordering_index = GPOINTER_TO_UINT(ordering_index_over);
 	}
-	g_debug("'%s' ordering index is '%d'", app->id, app->ordering_index);
+	g_debug("'%s' ordering index is '%X'", app->id, app->ordering_index);
 
 	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
 	if (label_data != NULL) {
