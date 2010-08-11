@@ -346,11 +346,16 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->icon_theme_path = g_strdup("");
 	}
 
-	gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
-	if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
-		app->ordering_index = generate_id(string_to_status(app->category), app->id);
+	gpointer ordering_index_over = g_hash_table_lookup(priv->ordering_overrides, app->id);
+	if (ordering_index_over == NULL) {
+		gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
+		if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
+			app->ordering_index = generate_id(string_to_status(app->category), app->id);
+		} else {
+			app->ordering_index = g_value_get_uint(ordering_index_data);
+		}
 	} else {
-		app->ordering_index = g_value_get_uint(ordering_index_data);
+		app->ordering_index = GPOINTER_TO_UINT(ordering_index_over);
 	}
 
 	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
