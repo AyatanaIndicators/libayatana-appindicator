@@ -21,62 +21,49 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "generate-id.h"
 
-struct ordering_id_struct {
-	gchar category;
-	gchar first;
-	gchar second;
-	gchar third;
-};
-
-union ordering_id_union_t {
-	guint32 id;
-	struct ordering_id_struct str;
-};
-
 #define MULTIPLIER 32
 
 guint32
-generate_id (const AppIndicatorCategory category, const gchar * id)
+generate_id (const AppIndicatorCategory catenum, const gchar * id)
 {
-	union ordering_id_union_t u;
+	gchar category = 0;
+	gchar first = 0;
+	gchar second = 0;
+	gchar third = 0;
 
-	switch (category) {
+	switch (catenum) {
 	case APP_INDICATOR_CATEGORY_OTHER:
-		u.str.category = MULTIPLIER * 5;
+		category = MULTIPLIER * 5;
 		break;
 	case APP_INDICATOR_CATEGORY_APPLICATION_STATUS:
-		u.str.category = MULTIPLIER * 4;
+		category = MULTIPLIER * 4;
 		break;
 	case APP_INDICATOR_CATEGORY_COMMUNICATIONS:
-		u.str.category = MULTIPLIER * 3;
+		category = MULTIPLIER * 3;
 		break;
 	case APP_INDICATOR_CATEGORY_SYSTEM_SERVICES:
-		u.str.category = MULTIPLIER * 2;
+		category = MULTIPLIER * 2;
 		break;
 	case APP_INDICATOR_CATEGORY_HARDWARE:
-		u.str.category = MULTIPLIER * 1;
+		category = MULTIPLIER * 1;
 		break;
 	default:
 		g_warning("Got an undefined category: %d", category);
-		u.str.category = 0;
+		category = 0;
 		break;
 	}
 	
-	u.str.first = 0;
-	u.str.second = 0;
-	u.str.third = 0;
-
 	if (id != NULL) {
 		if (id[0] != '\0') {
-			u.str.first = id[0];
+			first = id[0];
 			if (id[1] != '\0') {
-				u.str.second = id[1];
+				second = id[1];
 				if (id[2] != '\0') {
-					u.str.third = id[2];
+					third = id[2];
 				}
 			}
 		}
 	}
 
-	return u.id;
+	return (((((category * 256) + first) * 256) + second) * 256) + third;
 }
