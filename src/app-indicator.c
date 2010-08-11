@@ -129,7 +129,7 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
-#define PROP_ORDERING_INDEX_S        "ordering-index"
+#define PROP_ORDERING_INDEX_S        "x-ayatana-ordering-index"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
