@@ -115,7 +115,8 @@ enum {
 	PROP_CONNECTED,
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
-	PROP_ORDERING_INDEX
+	PROP_ORDERING_INDEX,
+	PROP_X_ORDERING_INDEX
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -129,7 +130,8 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
-#define PROP_ORDERING_INDEX_S        "x-ayatana-ordering-index"
+#define PROP_ORDERING_INDEX_S        "ordering-index"
+#define PROP_X_ORDERING_INDEX_S      ("x-ayatana-" PROP_ORDERING_INDEX_S)
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -351,6 +353,20 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                g_param_spec_uint (PROP_ORDERING_INDEX_S,
 	                                                   "The location that this app indicator should be in the list.",
 	                                                   "A way to override the default ordering of the applications by providing a very specific idea of where this entry should be placed.",
+	                                                   0, G_MAXUINT32, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:x-ayatana-ordering-index:
+
+		A wrapper for #AppIndicator:ordering-index so that it can match the
+		dbus interface currently.  It will hopefully be retired, please don't
+		use it anywhere.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_ORDERING_INDEX,
+	                                g_param_spec_uint (PROP_X_ORDERING_INDEX_S,
+	                                                   "A wrapper, please don't use.",
+	                                                   "A wrapper, please don't use.",
 	                                                   0, G_MAXUINT32, 0,
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -718,6 +734,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_X_ORDERING_INDEX:
 		case PROP_ORDERING_INDEX:
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
@@ -787,6 +804,7 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->label_guide);
           break;
 
+		case PROP_X_ORDERING_INDEX:
 		case PROP_ORDERING_INDEX:
 		  g_value_set_uint(value, priv->ordering_index);
 		  break;
