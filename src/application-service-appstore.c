@@ -114,6 +114,7 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static gint app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
 static void apply_status (Application * app);
 static void approver_free (gpointer papprover, gpointer user_data);
@@ -244,6 +245,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 {
 	if (error != NULL) {
 		g_warning("Unable to get properties: %s", error->message);
+		/* TODO: We need to free all the application data here */
 		return;
 	}
 
@@ -304,6 +306,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->guide = g_strdup("");
 	}
 
+	priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
 	apply_status(app);
@@ -445,30 +448,6 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	return;
 }
 
-/* Look and see if an application exists in the application
-   list already */
-static gboolean
-can_add_application (GList *applications, Application *app)
-{
-  if (applications)
-    {
-      GList *l = NULL;
-
-      for (l = applications; l != NULL; l = g_list_next (l))
-        {
-          Application *tmp_app = (Application *)l->data;
-
-          if (g_strcmp0 (tmp_app->dbus_name, app->dbus_name) == 0 &&
-              g_strcmp0 (tmp_app->dbus_object, app->dbus_object) == 0)
-            {
-              return FALSE;
-            }
-        }
-    }
-
-  return TRUE;
-}
-
 /* This function takes two Application structure
    pointers and uses the lrufile to compare them. */
 static gint
@@ -510,7 +489,6 @@ apply_status (Application * app)
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
-		priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
@@ -520,21 +498,17 @@ apply_status (Application * app)
 
 		/* Determine whether we're already shown or not */
 		if (app->visible_state == VISIBLE_STATE_HIDDEN) {
-			if (can_add_application (priv->applications, app)) {
-				/* Put on panel */
-				priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
-
-				g_signal_emit(G_OBJECT(app->appstore),
-				              signals[APPLICATION_ADDED], 0,
-				              newicon,
-				              g_list_index(priv->applications, app), /* Position */
-				              app->dbus_name,
-				              app->menu,
-				              app->icon_theme_path,
-				              app->label,
-				              app->guide,
-				              TRUE);
-			}
+			/* Put on panel */
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ADDED], 0,
+			              newicon,
+			              g_list_index(priv->applications, app), /* Position */
+			              app->dbus_name,
+			              app->menu,
+			              app->icon_theme_path,
+			              app->label,
+			              app->guide,
+			              TRUE);
 		} else {
 			/* Icon update */
 			gint position = get_position(app);
@@ -867,7 +841,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 }
 
 /* Removes an application.  Currently only works for the apps
-   that are shown.  /TODO Need to fix that. */
+   that are shown. */
 void
 application_service_appstore_application_remove (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
