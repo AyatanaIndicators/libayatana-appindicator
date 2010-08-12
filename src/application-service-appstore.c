@@ -64,8 +64,7 @@ struct _ApplicationServiceAppstorePrivate {
 
 typedef enum {
 	VISIBLE_STATE_HIDDEN,
-	VISIBLE_STATE_NORMAL,
-	VISIBLE_STATE_ATTENTION
+	VISIBLE_STATE_SHOWN
 } visible_state_t;
 
 typedef struct _Approver Approver;
@@ -479,11 +478,7 @@ apply_status (Application * app)
 
 	if (app->status != APP_INDICATOR_STATUS_PASSIVE && 
 			g_list_length(app->approved_by) == g_list_length(priv->approvers)) {
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
-			goal_state = VISIBLE_STATE_NORMAL;
-		} else if (app->status == APP_INDICATOR_STATUS_ATTENTION) {
-			goal_state = VISIBLE_STATE_ATTENTION;
-		}
+		goal_state = VISIBLE_STATE_SHOWN;
 	}
 
 	/* Nothing needs to change, we're good */
@@ -503,7 +498,7 @@ apply_status (Application * app)
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
-		if (goal_state == VISIBLE_STATE_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
+		if (app->status == APP_INDICATOR_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
 			newicon = app->aicon;
 		}
 
@@ -565,7 +560,7 @@ new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata
 		if (app->icon != NULL) g_free(app->icon);
 		app->icon = g_strdup(newicon);
 
-		if (app->visible_state == VISIBLE_STATE_NORMAL) {
+		if (app->visible_state == VISIBLE_STATE_SHOWN && app->status == APP_INDICATOR_STATUS_ACTIVE) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -603,7 +598,7 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 		if (app->aicon != NULL) g_free(app->aicon);
 		app->aicon = g_strdup(newicon);
 
-		if (app->visible_state == VISIBLE_STATE_ATTENTION) {
+		if (app->visible_state == VISIBLE_STATE_SHOWN && app->status == APP_INDICATOR_STATUS_ATTENTION) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
