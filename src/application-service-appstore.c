@@ -949,6 +949,15 @@ static void
 approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gpointer userdata)
 {
 	g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	Application * app = (Application *)userdata;
+
+	if (OUT_approved) {
+		app->approved_by = g_list_prepend(app->approved_by, proxy);
+	} else {
+		app->approved_by = g_list_remove(app->approved_by, proxy);
+	}
+
+	/* TODO: Apply status */
 	return;
 }
 
