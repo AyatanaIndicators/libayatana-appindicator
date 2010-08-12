@@ -1,3 +1,17 @@
+indicator-application (0.2.4-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Add in ordering IDs
+    * Adding label support into the library
+    * Adding label support into the indicator
+    * Breaking the ABI in order to get more space in the class
+      structure.
+    * Allow the icon theme path to be changed dynamically (LP: #607831)
+  * debian/control: Moving libappindicator0 to libappindicator1
+  * debian/rules: Moving libappindicator0 to libappindicator1
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 13:57:17 -0500
+
 indicator-application (0.2.3-0ubuntu2) maverick; urgency=low
 
   * Rebuild with the new gobject introspection

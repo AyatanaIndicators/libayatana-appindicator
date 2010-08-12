@@ -49,7 +49,7 @@
     '("const-gchar*" "id")
     '("const-gchar*" "icon_name")
     '("AppIndicatorCategory" "category")
-    '("const-gchar*" "icon_path" (null-ok) (default "NULL"))
+    '("const-gchar*" "icon_theme_path" (null-ok) (default "NULL"))
   )
 )
 
@@ -89,6 +89,15 @@
   )
 )
 
+(define-method set_icon_theme_path
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_icon_theme_path")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_theme_path" (null-ok))
+  )
+)
+
 (define-method get_id
   (of-object "AppIndicator")
   (c-name "app_indicator_get_id")
@@ -110,6 +119,12 @@
 (define-method get_icon
   (of-object "AppIndicator")
   (c-name "app_indicator_get_icon")
+  (return-type "const-gchar*")
+)
+
+(define-method get_icon_theme_path
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_icon_theme_path")
   (return-type "const-gchar*")
 )
 

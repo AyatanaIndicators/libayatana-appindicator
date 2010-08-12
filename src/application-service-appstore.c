@@ -32,30 +32,39 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dbus-properties-client.h"
 #include "dbus-shared.h"
 #include "notification-approver-client.h"
+#include "generate-id.h"
 
 /* DBus Prototypes */
 static gboolean _application_service_server_get_applications (ApplicationServiceAppstore * appstore, GPtrArray ** apps, GError ** error);
 
 #include "application-service-server.h"
 
-#define NOTIFICATION_ITEM_PROP_ID         "Id"
-#define NOTIFICATION_ITEM_PROP_CATEGORY   "Category"
-#define NOTIFICATION_ITEM_PROP_STATUS     "Status"
-#define NOTIFICATION_ITEM_PROP_ICON_NAME  "IconName"
-#define NOTIFICATION_ITEM_PROP_AICON_NAME "AttentionIconName"
-#define NOTIFICATION_ITEM_PROP_ICON_PATH  "IconThemePath"
-#define NOTIFICATION_ITEM_PROP_MENU       "Menu"
+#define NOTIFICATION_ITEM_PROP_ID                    "Id"
+#define NOTIFICATION_ITEM_PROP_CATEGORY              "Category"
+#define NOTIFICATION_ITEM_PROP_STATUS                "Status"
+#define NOTIFICATION_ITEM_PROP_ICON_NAME             "IconName"
+#define NOTIFICATION_ITEM_PROP_AICON_NAME            "AttentionIconName"
+#define NOTIFICATION_ITEM_PROP_ICON_THEME_PATH       "IconThemePath"
+#define NOTIFICATION_ITEM_PROP_MENU                  "Menu"
+#define NOTIFICATION_ITEM_PROP_LABEL                 "XAyatanaLabel"
+#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE           "XAyatanaLabelGuide"
+#define NOTIFICATION_ITEM_PROP_ORDERING_INDEX        "XAyatanaOrderingIndex"
 
-#define NOTIFICATION_ITEM_SIG_NEW_ICON    "NewIcon"
-#define NOTIFICATION_ITEM_SIG_NEW_AICON   "NewAttentionIcon"
-#define NOTIFICATION_ITEM_SIG_NEW_STATUS  "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON               "NewIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_AICON              "NewAttentionIcon"
+#define NOTIFICATION_ITEM_SIG_NEW_STATUS             "NewStatus"
+#define NOTIFICATION_ITEM_SIG_NEW_LABEL              "XAyatanaNewLabel"
+#define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
+
+#define OVERRIDE_GROUP_NAME                          "Ordering Index Overrides"
+#define OVERRIDE_FILE_NAME                           "ordering-override.keyfile"
 
 /* Private Stuff */
 struct _ApplicationServiceAppstorePrivate {
 	DBusGConnection * bus;
 	GList * applications;
 	GList * approvers;
-	AppLruFile * lrufile;
+	GHashTable * ordering_overrides;
 };
 
 typedef struct _Approver Approver;
@@ -77,8 +86,11 @@ struct _Application {
 	gchar * icon;
 	gchar * aicon;
 	gchar * menu;
-	gchar * icon_path;
+	gchar * icon_theme_path;
+	gchar * label;
+	gchar * guide;
 	gboolean currently_free;
+	guint ordering_index;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -89,6 +101,8 @@ enum {
 	APPLICATION_ADDED,
 	APPLICATION_REMOVED,
 	APPLICATION_ICON_CHANGED,
+	APPLICATION_LABEL_CHANGED,
+	APPLICATION_ICON_THEME_PATH_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -99,7 +113,9 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static void load_override_file (GHashTable * hash, const gchar * filename);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
+static AppIndicatorCategory string_to_cat(const gchar * cat_string);
 static void apply_status (Application * app, AppIndicatorStatus status);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
@@ -122,8 +138,8 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           G_SIGNAL_RUN_LAST,
 	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_added),
 	                                           NULL, NULL,
-	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING,
-	                                           G_TYPE_NONE, 5, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+	                                           _application_service_marshal_VOID__STRING_INT_STRING_STRING_STRING_STRING_STRING,
+	                                           G_TYPE_NONE, 7, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
 	signals[APPLICATION_REMOVED] = g_signal_new ("application-removed",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
@@ -138,6 +154,26 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                           NULL, NULL,
 	                                           _application_service_marshal_VOID__INT_STRING,
 	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_ICON_THEME_PATH_CHANGED] = g_signal_new ("application-icon-theme-path-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_icon_theme_path_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING,
+	                                           G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING, G_TYPE_NONE);
+	signals[APPLICATION_LABEL_CHANGED] = g_signal_new ("application-label-changed",
+	                                           G_TYPE_FROM_CLASS(klass),
+	                                           G_SIGNAL_RUN_LAST,
+	                                           G_STRUCT_OFFSET (ApplicationServiceAppstoreClass, application_label_changed),
+	                                           NULL, NULL,
+	                                           _application_service_marshal_VOID__INT_STRING_STRING,
+	                                           G_TYPE_NONE, 3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_NONE);
+
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__STRING_STRING,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_INVALID);
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
@@ -153,7 +189,13 @@ application_service_appstore_init (ApplicationServiceAppstore *self)
 
 	priv->applications = NULL;
 	priv->approvers = NULL;
-	priv->lrufile = NULL;
+
+	priv->ordering_overrides = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
+
+	load_override_file(priv->ordering_overrides, DATADIR "/" OVERRIDE_FILE_NAME);
+	gchar * userfile = g_build_filename(g_get_user_data_dir(), "indicators", "application", OVERRIDE_FILE_NAME, NULL);
+	load_override_file(priv->ordering_overrides, userfile);
+	g_free(userfile);
 	
 	GError * error = NULL;
 	priv->bus = dbus_g_bus_get(DBUS_BUS_STARTER, &error);
@@ -196,8 +238,68 @@ application_service_appstore_dispose (GObject *object)
 static void
 application_service_appstore_finalize (GObject *object)
 {
+	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE(object)->priv;
+
+	if (priv->ordering_overrides != NULL) {
+		g_hash_table_destroy(priv->ordering_overrides);
+		priv->ordering_overrides = NULL;
+	}
 
 	G_OBJECT_CLASS (application_service_appstore_parent_class)->finalize (object);
+	return;
+}
+
+/* Loads the file and adds the override entries to the table
+   of overrides */
+static void
+load_override_file (GHashTable * hash, const gchar * filename)
+{
+	g_return_if_fail(hash != NULL);
+	g_return_if_fail(filename != NULL);
+
+	if (!g_file_test(filename, G_FILE_TEST_EXISTS)) {
+		return;
+	}
+
+	g_debug("Loading overrides from: '%s'", filename);
+
+	GError * error = NULL;
+	GKeyFile * keyfile = g_key_file_new();
+	g_key_file_load_from_file(keyfile, filename, G_KEY_FILE_NONE, &error);
+
+	if (error != NULL) {
+		g_warning("Unable to load keyfile '%s' because: %s", filename, error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
+	}
+
+	gchar ** keys = g_key_file_get_keys(keyfile, OVERRIDE_GROUP_NAME, NULL, &error);
+	if (error != NULL) {
+		g_warning("Unable to get keys from keyfile '%s' because: %s", filename, error->message);
+		g_error_free(error);
+		g_key_file_free(keyfile);
+		return;
+	}
+
+	gchar * key = keys[0];
+	gint i;
+
+	for (i = 0; (key = keys[i]) != NULL; i++) {
+		GError * valerror = NULL;
+		gint val = g_key_file_get_integer(keyfile, OVERRIDE_GROUP_NAME, key, &valerror);
+
+		if (valerror != NULL) {
+			g_warning("Unable to get key '%s' out of file '%s' because: %s", key, filename, valerror->message);
+			g_error_free(valerror);
+			continue;
+		}
+		g_debug("%s: override '%s' with value '%d'", filename, key, val);
+
+		g_hash_table_insert(hash, g_strdup(key), GINT_TO_POINTER(val));
+	}
+	g_key_file_free(keyfile);
+
 	return;
 }
 
@@ -229,7 +331,6 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
 	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
-	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
 	app->icon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_NAME));
 
@@ -246,11 +347,38 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->aicon = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_AICON_NAME));
 	}
 
-	gpointer icon_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_PATH);
-	if (icon_path_data != NULL) {
-		app->icon_path = g_value_dup_string((GValue *)icon_path_data);
+	gpointer icon_theme_path_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ICON_THEME_PATH);
+	if (icon_theme_path_data != NULL) {
+		app->icon_theme_path = g_value_dup_string((GValue *)icon_theme_path_data);
 	} else {
-		app->icon_path = g_strdup("");
+		app->icon_theme_path = g_strdup("");
+	}
+
+	gpointer ordering_index_over = g_hash_table_lookup(priv->ordering_overrides, app->id);
+	if (ordering_index_over == NULL) {
+		gpointer ordering_index_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ORDERING_INDEX);
+		if (ordering_index_data == NULL || g_value_get_uint(ordering_index_data) == 0) {
+			app->ordering_index = generate_id(string_to_cat(app->category), app->id);
+		} else {
+			app->ordering_index = g_value_get_uint(ordering_index_data);
+		}
+	} else {
+		app->ordering_index = GPOINTER_TO_UINT(ordering_index_over);
+	}
+	g_debug("'%s' ordering index is '%X'", app->id, app->ordering_index);
+
+	gpointer label_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL);
+	if (label_data != NULL) {
+		app->label = g_value_dup_string((GValue *)label_data);
+	} else {
+		app->label = g_strdup("");
+	}
+
+	gpointer guide_data = g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_LABEL_GUIDE);
+	if (guide_data != NULL) {
+		app->guide = g_value_dup_string((GValue *)guide_data);
+	} else {
+		app->guide = g_strdup("");
 	}
 
 	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
@@ -290,6 +418,28 @@ string_to_status(const gchar * status_string)
 
 	return retval;
 }
+
+/* Simple translation function -- could be optimized */
+static AppIndicatorCategory
+string_to_cat(const gchar * cat_string)
+{
+	GEnumClass * klass = G_ENUM_CLASS(g_type_class_ref(APP_INDICATOR_TYPE_INDICATOR_CATEGORY));
+	g_return_val_if_fail(klass != NULL, APP_INDICATOR_CATEGORY_OTHER);
+
+	AppIndicatorCategory retval = APP_INDICATOR_CATEGORY_OTHER;
+
+	GEnumValue * val = g_enum_get_value_by_nick(klass, cat_string);
+	if (val == NULL) {
+		g_warning("Unrecognized status '%s' assuming other.", cat_string);
+	} else {
+		retval = (AppIndicatorCategory)val->value;
+	}
+
+	g_type_class_unref(klass);
+
+	return retval;
+}
+
 
 /* A small helper function to get the position of an application
    in the app list. */
@@ -346,8 +496,14 @@ application_free (Application * app)
 	if (app->menu != NULL) {
 		g_free(app->menu);
 	}
-	if (app->icon_path != NULL) {
-		g_free(app->icon_path);
+	if (app->icon_theme_path != NULL) {
+		g_free(app->icon_theme_path);
+	}
+	if (app->label != NULL) {
+		g_free(app->label);
+	}
+	if (app->guide != NULL) {
+		g_free(app->guide);
 	}
 
 	g_free(app);
@@ -392,15 +548,13 @@ can_add_application (GList *applications, Application *app)
 }
 
 /* This function takes two Application structure
-   pointers and uses the lrufile to compare them. */
+   pointers and uses their ordering index to compare them. */
 static gint
 app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
 {
 	Application * appa = (Application *)a;
 	Application * appb = (Application *)b;
-	AppLruFile * lrufile = (AppLruFile *)userdata;
-
-	return app_lru_file_sort(lrufile, appa->id, appb->id);
+	return (appb->ordering_index/2) - (appa->ordering_index/2);
 }
 
 /* Change the status of the application.  If we're going passive
@@ -437,7 +591,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 		if (app->status == APP_INDICATOR_STATUS_PASSIVE) {
                         if (can_add_application (priv->applications, app)) {
                                 /* Put on panel */
-                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
+                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, NULL);
 
                                 g_signal_emit(G_OBJECT(app->appstore),
                                               signals[APPLICATION_ADDED], 0,
@@ -445,7 +599,9 @@ apply_status (Application * app, AppIndicatorStatus status)
                                               g_list_index(priv->applications, app), /* Position */
                                               app->dbus_name,
                                               app->menu,
-                                              app->icon_path,
+                                              app->icon_theme_path,
+                                              app->label,
+                                              app->guide,
                                               TRUE);
                         }
 		} else {
@@ -586,6 +742,74 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	return;
 }
 
+/* Called when the Notification Item signals that it
+   has a new icon theme path. */
+static void
+new_icon_theme_path (DBusGProxy * proxy, const gchar * icon_theme_path, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	if (g_strcmp0(icon_theme_path, app->icon_theme_path)) {
+		/* If the new icon theme path is actually a new icon theme path */
+		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
+		app->icon_theme_path = g_strdup(icon_theme_path);
+
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+			gint position = get_position(app);
+			if (position == -1) return;
+
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ICON_THEME_PATH_CHANGED], 0, 
+			              position, app->icon_theme_path, TRUE);
+		}
+	}
+
+	return;
+}
+
+/* Called when the Notification Item signals that it
+   has a new label. */
+static void
+new_label (DBusGProxy * proxy, const gchar * label, const gchar * guide, gpointer data)
+{
+	Application * app = (Application *)data;
+	if (!app->validated) return;
+
+	gboolean changed = FALSE;
+
+	if (g_strcmp0(app->label, label) != 0) {
+		changed = TRUE;
+		if (app->label != NULL) {
+			g_free(app->label);
+			app->label = NULL;
+		}
+		app->label = g_strdup(label);
+	}
+
+	if (g_strcmp0(app->guide, guide) != 0) {
+		changed = TRUE;
+		if (app->guide != NULL) {
+			g_free(app->guide);
+			app->guide = NULL;
+		}
+		app->guide = g_strdup(guide);
+	}
+
+	if (changed) {
+		gint position = get_position(app);
+		if (position == -1) return;
+
+		g_signal_emit(app->appstore, signals[APPLICATION_LABEL_CHANGED], 0,
+					  position,
+		              app->label != NULL ? app->label : "", 
+		              app->guide != NULL ? app->guide : "",
+		              TRUE);
+	}
+
+	return;
+}
+
 /* Adding a new NotificationItem object from DBus in to the
    appstore.  First, we need to get the information on it
    though. */
@@ -612,8 +836,11 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->icon = NULL;
 	app->aicon = NULL;
 	app->menu = NULL;
-	app->icon_path = NULL;
+	app->icon_theme_path = NULL;
+	app->label = NULL;
+	app->guide = NULL;
 	app->currently_free = FALSE;
+	app->ordering_index = 0;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
@@ -659,6 +886,15 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	                        NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                        G_TYPE_STRING,
 	                        G_TYPE_INVALID);
+    dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_add_signal(app->dbus_proxy,
+	                        NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                        G_TYPE_STRING,
+	                        G_TYPE_STRING,
+	                        G_TYPE_INVALID);
 
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_ICON,
@@ -673,6 +909,16 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	dbus_g_proxy_connect_signal(app->dbus_proxy,
 	                            NOTIFICATION_ITEM_SIG_NEW_STATUS,
 	                            G_CALLBACK(new_status),
+	                            app,
+	                            NULL);
+    dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH,
+	                            G_CALLBACK(new_icon_theme_path),
+	                            app,
+	                            NULL);
+	dbus_g_proxy_connect_signal(app->dbus_proxy,
+	                            NOTIFICATION_ITEM_SIG_NEW_LABEL,
+	                            G_CALLBACK(new_label),
 	                            app,
 	                            NULL);
 
@@ -714,12 +960,9 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 /* Creates a basic appstore object and attaches the
    LRU file object to it. */
 ApplicationServiceAppstore *
-application_service_appstore_new (AppLruFile * lrufile)
+application_service_appstore_new (void)
 {
-	g_return_val_if_fail(IS_APP_LRU_FILE(lrufile), NULL);
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(g_object_new(APPLICATION_SERVICE_APPSTORE_TYPE, NULL));
-	ApplicationServiceAppstorePrivate * priv = appstore->priv;
-	priv->lrufile = lrufile;
 	return appstore;
 }
 
@@ -734,13 +977,14 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	gint position = 0;
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
 		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
 
 		/* Icon name */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon);
+		g_value_set_string(&value, app->icon);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
@@ -752,19 +996,31 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 		/* DBus Address */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->dbus_name);
+		g_value_set_string(&value, app->dbus_name);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* DBus Object */
 		g_value_init(&value, DBUS_TYPE_G_OBJECT_PATH);
-		g_value_set_static_boxed(&value, ((Application *)listpntr->data)->menu);
+		g_value_set_static_boxed(&value, app->menu);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 
 		/* Icon path */
 		g_value_init(&value, G_TYPE_STRING);
-		g_value_set_string(&value, ((Application *)listpntr->data)->icon_path);
+		g_value_set_string(&value, app->icon_theme_path);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Label */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, app->label);
+		g_value_array_append(values, &value);
+		g_value_unset(&value);
+
+		/* Guide */
+		g_value_init(&value, G_TYPE_STRING);
+		g_value_set_string(&value, app->guide);
 		g_value_array_append(values, &value);
 		g_value_unset(&value);
 

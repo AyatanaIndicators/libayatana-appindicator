@@ -25,7 +25,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <glib.h>
 #include <glib-object.h>
-#include "application-service-lru-file.h"
 
 G_BEGIN_DECLS
 
@@ -46,6 +45,8 @@ struct _ApplicationServiceAppstoreClass {
 	void (*application_added) (ApplicationServiceAppstore * appstore, gchar *, gint, gchar *, gchar *, gpointer);
 	void (*application_removed) (ApplicationServiceAppstore * appstore, gint, gpointer);
 	void (*application_icon_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);
+	void (*application_icon_theme_path_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, gpointer);
+	void (*application_label_changed)(ApplicationServiceAppstore * appstore, gint, const gchar *, const gchar *, gpointer);
 };
 
 struct _ApplicationServiceAppstore {
@@ -54,7 +55,7 @@ struct _ApplicationServiceAppstore {
 	ApplicationServiceAppstorePrivate * priv;
 };
 
-ApplicationServiceAppstore * application_service_appstore_new (AppLruFile * lrufile);
+ApplicationServiceAppstore * application_service_appstore_new (void);
 GType application_service_appstore_get_type               (void);
 void  application_service_appstore_application_add        (ApplicationServiceAppstore *   appstore,
                                                            const gchar *             dbus_name,
