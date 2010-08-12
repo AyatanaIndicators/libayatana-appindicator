@@ -46,14 +46,14 @@ static gboolean _application_service_server_get_applications (ApplicationService
 #define NOTIFICATION_ITEM_PROP_AICON_NAME            "AttentionIconName"
 #define NOTIFICATION_ITEM_PROP_ICON_THEME_PATH       "IconThemePath"
 #define NOTIFICATION_ITEM_PROP_MENU                  "Menu"
-#define NOTIFICATION_ITEM_PROP_LABEL                 "Label"
-#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE           "LabelGuide"
+#define NOTIFICATION_ITEM_PROP_LABEL                 "XAyatanaLabel"
+#define NOTIFICATION_ITEM_PROP_LABEL_GUIDE           "XAyatanaLabelGuide"
 #define NOTIFICATION_ITEM_PROP_ORDERING_INDEX        "XAyatanaOrderingIndex"
 
 #define NOTIFICATION_ITEM_SIG_NEW_ICON               "NewIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_AICON              "NewAttentionIcon"
 #define NOTIFICATION_ITEM_SIG_NEW_STATUS             "NewStatus"
-#define NOTIFICATION_ITEM_SIG_NEW_LABEL              "NewLabel"
+#define NOTIFICATION_ITEM_SIG_NEW_LABEL              "XAyatanaNewLabel"
 #define NOTIFICATION_ITEM_SIG_NEW_ICON_THEME_PATH    "NewIconThemePath"
 
 #define OVERRIDE_GROUP_NAME                          "Ordering Index Overrides"
