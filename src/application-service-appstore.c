@@ -1017,6 +1017,42 @@ check_with_new_approver (gpointer papp, gpointer papprove)
 	return;
 }
 
+/* Look through all the approvers and find the one with a given
+   proxy. */
+static gint
+approver_find_by_proxy (gconstpointer papprover, gconstpointer pproxy)
+{
+	Approver * approver = (Approver *)papprover;
+
+	if (approver->proxy == pproxy) {
+		return 0;
+	}
+
+	return -1;
+}
+
+/* Tracks when a proxy gets destroyed so that we know that the
+   approver has dropped off the bus. */
+static void
+approver_destroyed (gpointer pproxy, gpointer pappstore)
+{
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(pappstore);
+
+	GList * lapprover = g_list_find_custom(appstore->priv->approvers, pproxy, approver_find_by_proxy);
+	if (lapprover == NULL) {
+		g_warning("Approver proxy died, but we don't seem to have that approver.");
+		return;
+	}
+
+	Approver * approver = (Approver *)lapprover->data;
+	approver->proxy = NULL;
+
+	appstore->priv->approvers = g_list_remove(appstore->priv->approvers, approver);
+	approver_free(approver, appstore);
+
+	return;
+}
+
 /* Adds a new approver to the app store */
 void
 application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
@@ -1040,6 +1076,8 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 		g_free(approver);
 		return;
 	}
+
+	g_signal_connect(G_OBJECT(approver->proxy), "destroy", G_CALLBACK(approver_destroyed), appstore);
 
 	priv->approvers = g_list_prepend(priv->approvers, approver);
 
