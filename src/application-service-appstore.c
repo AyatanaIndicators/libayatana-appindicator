@@ -405,6 +405,9 @@ application_free (Application * app)
 	if (app->guide != NULL) {
 		g_free(app->guide);
 	}
+	if (app->approved_by != NULL) {
+		g_list_free(app->approved_by);
+	}
 
 	g_free(app);
 	return;
