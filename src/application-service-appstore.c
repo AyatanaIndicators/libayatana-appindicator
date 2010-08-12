@@ -220,7 +220,7 @@ application_service_appstore_dispose (GObject *object)
 	}
 
 	if (priv->approvers != NULL) {
-		g_list_foreach(priv->approvers, approver_free, NULL);
+		g_list_foreach(priv->approvers, approver_free, object);
 		g_list_free(priv->approvers);
 		priv->approvers = NULL;
 	}
@@ -955,12 +955,27 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	return TRUE;
 }
 
+/* Removes and approver from our list of approvers and
+   then sees if that changes our status.  Most likely this
+   could make us visible if this approver rejected us. */
+static void
+remove_approver (gpointer papp, gpointer pproxy)
+{
+	Application * app = (Application *)papp;
+	app->approved_by = g_list_remove(app->approved_by, pproxy);
+	apply_status(app);
+	return;
+}
+
 /* Frees the data associated with an approver */
 static void
 approver_free (gpointer papprover, gpointer user_data)
 {
 	Approver * approver = (Approver *)papprover;
 	g_return_if_fail(approver != NULL);
+
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(user_data);
+	g_list_foreach(appstore->priv->applications, remove_approver, approver->proxy);
 	
 	if (approver->proxy != NULL) {
 		g_object_unref(approver->proxy);
