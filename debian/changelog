@@ -3,7 +3,7 @@ indicator-application (0.2.3-0ubuntu2~ppa6) maverick; urgency=low
   * Upstream Merge
     * Add in ordering IDs
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 09:30:51 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 09:36:12 -0500
 
 indicator-application (0.2.3-0ubuntu2~ppa5) maverick; urgency=low
 
