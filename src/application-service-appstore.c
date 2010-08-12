@@ -62,6 +62,12 @@ struct _ApplicationServiceAppstorePrivate {
 	AppLruFile * lrufile;
 };
 
+typedef enum {
+	VISIBLE_STATE_HIDDEN,
+	VISIBLE_STATE_NORMAL,
+	VISIBLE_STATE_ATTENTION
+} visible_state_t;
+
 typedef struct _Approver Approver;
 struct _Approver {
 	DBusGProxy * proxy;
@@ -86,6 +92,7 @@ struct _Application {
 	gchar * guide;
 	gboolean currently_free;
 	GList * approved_by;
+	visible_state_t visible_state;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -736,6 +743,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->guide = NULL;
 	app->currently_free = FALSE;
 	app->approved_by = NULL;
+	app->visible_state = VISIBLE_STATE_HIDDEN;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
