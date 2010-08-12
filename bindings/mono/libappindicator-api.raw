@@ -24,9 +24,9 @@
       <property name="PROP_ID_S" cname="PROP_ID_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
       <property name="PROP_CATEGORY_S" cname="PROP_CATEGORY_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
       <property name="PROP_STATUS_S" cname="PROP_STATUS_S" type="gchar*" readable="true" writeable="true" />
-      <property name="PROP_ICON_NAME_S" cname="PROP_ICON_NAME_S" type="gchar*" readable="true" writeable="true" />
+      <property name="PROP_ICON_NAME_S" cname="PROP_ICON_NAME_S" type="gchar*" readable="true" writeable="true" construct="true" />
       <property name="PROP_ATTENTION_ICON_NAME_S" cname="PROP_ATTENTION_ICON_NAME_S" type="gchar*" readable="true" writeable="true" />
-      <property name="PROP_ICON_THEME_PATH_S" cname="PROP_ICON_THEME_PATH_S" type="gchar*" readable="true" writeable="true" construct-only="true" />
+      <property name="PROP_ICON_THEME_PATH_S" cname="PROP_ICON_THEME_PATH_S" type="gchar*" readable="true" writeable="true" construct="true" />
       <property name="PROP_MENU_S" cname="PROP_MENU_S" type="DbusGObjectPath" readable="true" />
       <property name="PROP_CONNECTED_S" cname="PROP_CONNECTED_S" type="gboolean" readable="true" />
       <signal when="LAST" field_name="new_icon">
@@ -72,6 +72,14 @@
           <parameter type="GtkStatusIcon*" name="status_icon" />
         </parameters>
       </virtual_method>
+      <signal when="LAST" field_name="new_icon_theme_path">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="AppIndicator*" name="indicator" />
+          <parameter type="const-gchar*" name="icon_theme_path" />
+          <parameter type="gpointer" name="user_data" />
+        </parameters>
+      </signal>
       <method name="GetAttentionIcon" cname="app_indicator_get_attention_icon">
         <return-type type="const-gchar*" />
       </method>
@@ -79,6 +87,9 @@
         <return-type type="AppIndicatorCategory" />
       </method>
       <method name="GetIcon" cname="app_indicator_get_icon">
+        <return-type type="const-gchar*" />
+      </method>
+      <method name="GetIconThemePath" cname="app_indicator_get_icon_theme_path">
         <return-type type="const-gchar*" />
       </method>
       <method name="GetId" cname="app_indicator_get_id">
@@ -105,7 +116,7 @@
           <parameter type="const-gchar*" name="id" />
           <parameter type="const-gchar*" name="icon_name" />
           <parameter type="AppIndicatorCategory" name="category" />
-          <parameter type="const-gchar*" name="icon_path" />
+          <parameter type="const-gchar*" name="icon_theme_path" />
         </parameters>
       </constructor>
       <method name="SetAttentionIcon" cname="app_indicator_set_attention_icon">
@@ -118,6 +129,12 @@
         <return-type type="void" />
         <parameters>
           <parameter type="const-gchar*" name="icon_name" />
+        </parameters>
+      </method>
+      <method name="SetIconThemePath" cname="app_indicator_set_icon_theme_path">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="const-gchar*" name="icon_theme_path" />
         </parameters>
       </method>
       <method name="SetMenu" cname="app_indicator_set_menu">

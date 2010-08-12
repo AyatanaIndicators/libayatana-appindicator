@@ -75,8 +75,11 @@ $(REPORT_FILES): sgml-build.stamp
 scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB)
 	@echo 'gtk-doc: Scanning header files'
 	@-chmod -R u+w $(srcdir)
-	@cd $(srcdir) && \
-	  gtkdoc-scan --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="$(IGNORE_HFILES)" $(SCAN_OPTIONS) $(EXTRA_HFILES)
+	@_source_dir='' ; for i in $(DOC_SOURCE_DIR) ; do \
+	    _source_dir="$${_source_dir} --source-dir=$$i" ; \
+	  done ; \
+	  cd $(srcdir) && \
+	  gtkdoc-scan --module=$(DOC_MODULE) --ignore-headers="$(IGNORE_HFILES)" $${_source_dir} $(SCAN_OPTIONS) $(EXTRA_HFILES)
 	@if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null 2>&1 ; then \
 	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" RUN="$(GTKDOC_RUN)" CFLAGS="$(GTKDOC_CFLAGS) $(CFLAGS)" LDFLAGS="$(GTKDOC_LIBS) $(LDFLAGS)" gtkdoc-scangobj $(SCANGOBJ_OPTIONS) --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
@@ -109,8 +112,11 @@ $(srcdir)/tmpl/*.sgml:
 sgml-build.stamp: tmpl.stamp $(DOC_MODULE)-sections.txt $(srcdir)/tmpl/*.sgml $(expand_content_files)
 	@echo 'gtk-doc: Building XML'
 	@-chmod -R u+w $(srcdir)
-	@cd $(srcdir) && \
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --output-format=xml --expand-content-files="$(expand_content_files)" --main-sgml-file=$(DOC_MAIN_SGML_FILE) $(MKDB_OPTIONS)
+	@_source_dir='' ; for i in $(DOC_SOURCE_DIR) ; do \
+	    _source_dir="$${_source_dir} --source-dir=$$i" ; \
+	  done ; \
+	  cd $(srcdir) && \
+	  gtkdoc-mkdb --module=$(DOC_MODULE) --output-format=xml --expand-content-files="$(expand_content_files)" --main-sgml-file=$(DOC_MAIN_SGML_FILE) $${_source_dir} $(MKDB_OPTIONS)
 	@touch sgml-build.stamp
 
 sgml.stamp: sgml-build.stamp

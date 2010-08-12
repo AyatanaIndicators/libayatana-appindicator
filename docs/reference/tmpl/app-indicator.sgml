@@ -88,6 +88,13 @@ AppIndicator
 
 
 
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO APP_INDICATOR_SIGNAL_CONNECTION_CHANGED ##### -->
 <para>
 
@@ -149,6 +156,14 @@ AppIndicator
 
 @appindicator: the object which received the signal.
 
+<!-- ##### SIGNAL AppIndicator::new-icon-theme-path ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+
 <!-- ##### SIGNAL AppIndicator::new-status ##### -->
 <para>
 
@@ -209,7 +224,7 @@ AppIndicator
 @connection_changed: 
 @fallback: 
 @unfallback: 
-@app_indicator_reserved_1: 
+@new_icon_theme_path: 
 @app_indicator_reserved_2: 
 
 <!-- ##### FUNCTION app_indicator_get_type ##### -->
@@ -240,7 +255,7 @@ AppIndicator
 @id: 
 @icon_name: 
 @category: 
-@icon_path: 
+@icon_theme_path: 
 @Returns: 
 
 
@@ -280,6 +295,15 @@ AppIndicator
 @icon_name: 
 
 
+<!-- ##### FUNCTION app_indicator_set_icon_theme_path ##### -->
+<para>
+
+</para>
+
+@self: 
+@icon_theme_path: 
+
+
 <!-- ##### FUNCTION app_indicator_get_id ##### -->
 <para>
 
@@ -308,6 +332,15 @@ AppIndicator
 
 
 <!-- ##### FUNCTION app_indicator_get_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_icon_theme_path ##### -->
 <para>
 
 </para>
