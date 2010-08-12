@@ -305,7 +305,6 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->guide = g_strdup("");
 	}
 
-	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
 	apply_status(app);
@@ -985,7 +984,7 @@ approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gp
 		app->approved_by = g_list_remove(app->approved_by, proxy);
 	}
 
-	/* TODO: Apply status */
+	apply_status(app);
 	return;
 }
 
