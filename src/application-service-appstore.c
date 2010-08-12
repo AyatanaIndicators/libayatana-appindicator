@@ -116,7 +116,7 @@ static void application_service_appstore_init       (ApplicationServiceAppstore 
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
-static void apply_status (Application * app, AppIndicatorStatus status);
+static void apply_status (Application * app);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
 static void check_with_old_approver (gpointer papprove, gpointer papp);
@@ -264,6 +264,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
+	app->status = string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS)));
+
 	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
 	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
@@ -306,7 +308,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
-	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
+	apply_status(app);
 
 	return;
 }
@@ -421,13 +423,16 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	Application * app = (Application *)userdata;
 
 	/* Remove from the panel */
-	apply_status(app, APP_INDICATOR_STATUS_PASSIVE);
+	app->status = APP_INDICATOR_STATUS_PASSIVE;
+	apply_status(app);
 
 	/* Destroy the data */
 	application_free(app);
 	return;
 }
 
+/* Look and see if an application exists in the application
+   list already */
 static gboolean
 can_add_application (GList *applications, Application *app)
 {
@@ -466,49 +471,60 @@ app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
 static void
-apply_status (Application * app, AppIndicatorStatus status)
+apply_status (Application * app)
 {
-	if (app->status == status) {
-		return;
-	}
-	g_debug("Changing app status to: %d", status);
-
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
+	visible_state_t goal_state = VISIBLE_STATE_HIDDEN;
+
+	if (app->status != APP_INDICATOR_STATUS_PASSIVE && 
+			g_list_length(app->approved_by) == g_list_length(priv->approvers)) {
+		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+			goal_state = VISIBLE_STATE_NORMAL;
+		} else if (app->status == APP_INDICATOR_STATUS_ATTENTION) {
+			goal_state = VISIBLE_STATE_ATTENTION;
+		}
+	}
+
+	/* Nothing needs to change, we're good */
+	if (app->visible_state == goal_state) {
+		return;
+	}
+
 	/* This means we're going off line */
-	if (status == APP_INDICATOR_STATUS_PASSIVE) {
+	if (goal_state == VISIBLE_STATE_HIDDEN) {
 		gint position = get_position(app);
 		if (position == -1) return;
 
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
-                priv->applications = g_list_remove(priv->applications, app);
+		priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
-		if (status == APP_INDICATOR_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
+		if (goal_state == VISIBLE_STATE_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
 			newicon = app->aicon;
 		}
 
 		/* Determine whether we're already shown or not */
-		if (app->status == APP_INDICATOR_STATUS_PASSIVE) {
-                        if (can_add_application (priv->applications, app)) {
-                                /* Put on panel */
-                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
+		if (app->visible_state == VISIBLE_STATE_HIDDEN) {
+			if (can_add_application (priv->applications, app)) {
+				/* Put on panel */
+				priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 
-                                g_signal_emit(G_OBJECT(app->appstore),
-                                              signals[APPLICATION_ADDED], 0,
-                                              newicon,
-                                              g_list_index(priv->applications, app), /* Position */
-                                              app->dbus_name,
-                                              app->menu,
-                                              app->icon_theme_path,
-                                              app->label,
-                                              app->guide,
-                                              TRUE);
-                        }
+				g_signal_emit(G_OBJECT(app->appstore),
+				              signals[APPLICATION_ADDED], 0,
+				              newicon,
+				              g_list_index(priv->applications, app), /* Position */
+				              app->dbus_name,
+				              app->menu,
+				              app->icon_theme_path,
+				              app->label,
+				              app->guide,
+				              TRUE);
+			}
 		} else {
 			/* Icon update */
 			gint position = get_position(app);
@@ -520,7 +536,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 		}
 	}
 
-	app->status = status;
+	app->visible_state = goal_state;
 
 	return;
 }
@@ -642,7 +658,8 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	Application * app = (Application *)data;
 	if (!app->validated) return;
 
-	apply_status(app, string_to_status(status));
+	app->status = string_to_status(status);
+	apply_status(app);
 
 	return;
 }
