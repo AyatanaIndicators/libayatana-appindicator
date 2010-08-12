@@ -914,6 +914,10 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
 		Application * app = (Application *)listpntr->data;
+		if (app->visible_state == VISIBLE_STATE_HIDDEN) {
+			continue;
+		}
+
 		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
