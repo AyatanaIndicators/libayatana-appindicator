@@ -342,18 +342,34 @@ string_to_status(const gchar * status_string)
 }
 
 /* A small helper function to get the position of an application
-   in the app list. */
+   in the app list of the applications that are visible. */
 static gint 
 get_position (Application * app) {
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
-	GList * applistitem = g_list_find(priv->applications, app);
-	if (applistitem == NULL) {
-		return -1;
+	GList * lapp;
+	gint count;
+
+	/* Go through the list and try to find ours */
+	for (lapp = priv->applications, count = 0; lapp != NULL; lapp = g_list_next(lapp), count++) {
+		if (lapp->data == app) {
+			break;
+		}
+
+		/* If the selected app isn't visible let's not
+		   count it's position */
+		Application * thisapp = (Application *)(lapp->data);
+		if (thisapp->visible_state == VISIBLE_STATE_HIDDEN) {
+			count--;
+		}
 	}
 
-	return g_list_position(priv->applications, applistitem);
+	if (lapp == NULL) {
+		return -1;
+	}
+	
+	return count;
 }
 
 /* A simple global function for dealing with freeing the information
