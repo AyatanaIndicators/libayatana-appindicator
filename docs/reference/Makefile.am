@@ -66,6 +66,7 @@ IGNORE_HFILES= \
 	dbus-properties-client.h \
 	dbus-properties-server.h \
 	dbus-shared.h \
+	generate-id.h \
 	notification-item-client.h \
 	notification-item-server.h \
 	notification-watcher-client.h \

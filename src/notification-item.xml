@@ -12,6 +12,9 @@
 		     to find the icons specified above. -->
 		<property name="IconThemePath" type="s" access="read" />
 		<property name="Menu" type="o" access="read" />
+		<property name="XAyatanaLabel" type="s" access="read" />
+		<property name="XAyatanaLabelGuide" type="s" access="read" />
+		<property name="XAyatanaOrderingIndex" type="u" access="read" />
 
 <!-- Methods -->
 		<!-- None currently -->
@@ -19,10 +22,17 @@
 <!-- Signals -->
 		<signal name="NewIcon">
 		</signal>
+		<signal name="NewIconThemePath">
+		    <arg type="s" name="icon_theme_path" direction="out" />
+	    </signal>
 		<signal name="NewAttentionIcon">
 		</signal>
 		<signal name="NewStatus">
 			<arg type="s" name="status" direction="out" />
+		</signal>
+		<signal name="XAyatanaNewLabel">
+			<arg type="s" name="label" direction="out" />
+			<arg type="s" name="guide" direction="out" />
 		</signal>
 
 	</interface>

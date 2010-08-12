@@ -16,6 +16,7 @@
 <ANCHOR id="APP-INDICATOR-SIGNAL-NEW-ICON:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON:CAPS">
 <ANCHOR id="APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS">
 <ANCHOR id="APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS">
+<ANCHOR id="APP-INDICATOR-SIGNAL-NEW-ICON-THEME-PATH:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON-THEME-PATH:CAPS">
 <ANCHOR id="APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS">
 <ANCHOR id="AppIndicatorCategory" href="libappindicator/libappindicator-app-indicator.html#AppIndicatorCategory">
 <ANCHOR id="APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS" href="libappindicator/libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS">
@@ -37,10 +38,12 @@
 <ANCHOR id="app-indicator-set-attention-icon" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-attention-icon">
 <ANCHOR id="app-indicator-set-menu" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-menu">
 <ANCHOR id="app-indicator-set-icon" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-icon">
+<ANCHOR id="app-indicator-set-icon-theme-path" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-icon-theme-path">
 <ANCHOR id="app-indicator-get-id" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-id">
 <ANCHOR id="app-indicator-get-category" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-category">
 <ANCHOR id="app-indicator-get-status" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-status">
 <ANCHOR id="app-indicator-get-icon" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-icon">
+<ANCHOR id="app-indicator-get-icon-theme-path" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-icon-theme-path">
 <ANCHOR id="app-indicator-get-attention-icon" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-attention-icon">
 <ANCHOR id="app-indicator-get-menu" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-menu">
 <ANCHOR id="libappindicator-app-indicator.property-details" href="libappindicator/libappindicator-app-indicator.html#libappindicator-app-indicator.property-details">
@@ -56,4 +59,5 @@
 <ANCHOR id="AppIndicator-connection-changed" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-connection-changed">
 <ANCHOR id="AppIndicator-new-attention-icon" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-new-attention-icon">
 <ANCHOR id="AppIndicator-new-icon" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-new-icon">
+<ANCHOR id="AppIndicator-new-icon-theme-path" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path">
 <ANCHOR id="AppIndicator-new-status" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-new-status">

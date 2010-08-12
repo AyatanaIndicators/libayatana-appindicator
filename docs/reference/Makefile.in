@@ -157,6 +157,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYGTK_CODEGEN = @PYGTK_CODEGEN@
 PYGTK_DEFSDIR = @PYGTK_DEFSDIR@
 PYTHON = @PYTHON@
@@ -295,6 +297,7 @@ IGNORE_HFILES = \
 	dbus-properties-client.h \
 	dbus-properties-server.h \
 	dbus-shared.h \
+	generate-id.h \
 	notification-item-client.h \
 	notification-item-server.h \
 	notification-watcher-client.h \

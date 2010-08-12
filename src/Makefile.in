@@ -120,7 +120,9 @@ libappindicator_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__objects_1 =
 am_libappindicator_la_OBJECTS = $(am__objects_1) \
 	libappindicator_la-app-indicator-enum-types.lo \
-	libappindicator_la-app-indicator.lo
+	libappindicator_la-app-indicator.lo \
+	libappindicator_la-application-service-marshal.lo \
+	libappindicator_la-generate-id.lo
 libappindicator_la_OBJECTS = $(am_libappindicator_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -142,10 +144,10 @@ PROGRAMS = $(libexec_PROGRAMS)
 am_indicator_application_service_OBJECTS =  \
 	indicator_application_service-application-service.$(OBJEXT) \
 	indicator_application_service-application-service-appstore.$(OBJEXT) \
-	indicator_application_service-application-service-lru-file.$(OBJEXT) \
 	indicator_application_service-application-service-marshal.$(OBJEXT) \
 	indicator_application_service-application-service-watcher.$(OBJEXT) \
-	indicator_application_service-app-indicator-enum-types.$(OBJEXT)
+	indicator_application_service-app-indicator-enum-types.$(OBJEXT) \
+	indicator_application_service-generate-id.$(OBJEXT)
 indicator_application_service_OBJECTS =  \
 	$(am_indicator_application_service_OBJECTS)
 indicator_application_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -284,6 +286,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYGTK_CODEGEN = @PYGTK_CODEGEN@
 PYGTK_DEFSDIR = @PYGTK_DEFSDIR@
 PYTHON = @PYTHON@
@@ -398,16 +402,17 @@ indicator_application_service_SOURCES = \
 	application-service.c \
 	application-service-appstore.h \
 	application-service-appstore.c \
-	application-service-lru-file.h \
-	application-service-lru-file.c \
 	application-service-marshal.c \
 	application-service-watcher.h \
 	application-service-watcher.c \
 	app-indicator-enum-types.c \
-	dbus-shared.h
+	dbus-shared.h \
+	generate-id.h \
+	generate-id.c
 
 indicator_application_service_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
+	-DDATADIR="\"$(pkgdatadir)\"" \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"indicator-application-service\"
 
@@ -440,10 +445,13 @@ libappindicatorinclude_HEADERS = \
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
-	app-indicator.c
+	app-indicator.c \
+	application-service-marshal.c \
+	generate-id.h \
+	generate-id.c
 
 libappindicator_la_LDFLAGS = \
-	-version-info 0:0:0 \
+	-version-info 1:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
@@ -651,12 +659,14 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-app-indicator-enum-types.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-appstore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-lru-file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-marshal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-generate-id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-application-service-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-generate-id.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libapplication_la-application-service-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libapplication_la-indicator-application.Plo@am__quote@
 
@@ -699,6 +709,22 @@ libappindicator_la-app-indicator.lo: app-indicator.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator.c' object='libappindicator_la-app-indicator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
+
+libappindicator_la-application-service-marshal.lo: application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-application-service-marshal.Tpo -c -o libappindicator_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator_la-application-service-marshal.Tpo $(DEPDIR)/libappindicator_la-application-service-marshal.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='application-service-marshal.c' object='libappindicator_la-application-service-marshal.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
+
+libappindicator_la-generate-id.lo: generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -MT libappindicator_la-generate-id.lo -MD -MP -MF $(DEPDIR)/libappindicator_la-generate-id.Tpo -c -o libappindicator_la-generate-id.lo `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator_la-generate-id.Tpo $(DEPDIR)/libappindicator_la-generate-id.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generate-id.c' object='libappindicator_la-generate-id.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-generate-id.lo `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
 
 libapplication_la-application-service-marshal.lo: application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libapplication_la_CFLAGS) $(CFLAGS) -MT libapplication_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libapplication_la-application-service-marshal.Tpo -c -o libapplication_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
@@ -748,22 +774,6 @@ indicator_application_service-application-service-appstore.obj: application-serv
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-application-service-appstore.obj `if test -f 'application-service-appstore.c'; then $(CYGPATH_W) 'application-service-appstore.c'; else $(CYGPATH_W) '$(srcdir)/application-service-appstore.c'; fi`
 
-indicator_application_service-application-service-lru-file.o: application-service-lru-file.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-application-service-lru-file.o -MD -MP -MF $(DEPDIR)/indicator_application_service-application-service-lru-file.Tpo -c -o indicator_application_service-application-service-lru-file.o `test -f 'application-service-lru-file.c' || echo '$(srcdir)/'`application-service-lru-file.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-application-service-lru-file.Tpo $(DEPDIR)/indicator_application_service-application-service-lru-file.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='application-service-lru-file.c' object='indicator_application_service-application-service-lru-file.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-application-service-lru-file.o `test -f 'application-service-lru-file.c' || echo '$(srcdir)/'`application-service-lru-file.c
-
-indicator_application_service-application-service-lru-file.obj: application-service-lru-file.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-application-service-lru-file.obj -MD -MP -MF $(DEPDIR)/indicator_application_service-application-service-lru-file.Tpo -c -o indicator_application_service-application-service-lru-file.obj `if test -f 'application-service-lru-file.c'; then $(CYGPATH_W) 'application-service-lru-file.c'; else $(CYGPATH_W) '$(srcdir)/application-service-lru-file.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-application-service-lru-file.Tpo $(DEPDIR)/indicator_application_service-application-service-lru-file.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='application-service-lru-file.c' object='indicator_application_service-application-service-lru-file.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-application-service-lru-file.obj `if test -f 'application-service-lru-file.c'; then $(CYGPATH_W) 'application-service-lru-file.c'; else $(CYGPATH_W) '$(srcdir)/application-service-lru-file.c'; fi`
-
 indicator_application_service-application-service-marshal.o: application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-application-service-marshal.o -MD -MP -MF $(DEPDIR)/indicator_application_service-application-service-marshal.Tpo -c -o indicator_application_service-application-service-marshal.o `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-application-service-marshal.Tpo $(DEPDIR)/indicator_application_service-application-service-marshal.Po
@@ -811,6 +821,22 @@ indicator_application_service-app-indicator-enum-types.obj: app-indicator-enum-t
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator-enum-types.c' object='indicator_application_service-app-indicator-enum-types.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-app-indicator-enum-types.obj `if test -f 'app-indicator-enum-types.c'; then $(CYGPATH_W) 'app-indicator-enum-types.c'; else $(CYGPATH_W) '$(srcdir)/app-indicator-enum-types.c'; fi`
+
+indicator_application_service-generate-id.o: generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-generate-id.o -MD -MP -MF $(DEPDIR)/indicator_application_service-generate-id.Tpo -c -o indicator_application_service-generate-id.o `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-generate-id.Tpo $(DEPDIR)/indicator_application_service-generate-id.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generate-id.c' object='indicator_application_service-generate-id.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-generate-id.o `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
+
+indicator_application_service-generate-id.obj: generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -MT indicator_application_service-generate-id.obj -MD -MP -MF $(DEPDIR)/indicator_application_service-generate-id.Tpo -c -o indicator_application_service-generate-id.obj `if test -f 'generate-id.c'; then $(CYGPATH_W) 'generate-id.c'; else $(CYGPATH_W) '$(srcdir)/generate-id.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/indicator_application_service-generate-id.Tpo $(DEPDIR)/indicator_application_service-generate-id.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generate-id.c' object='indicator_application_service-generate-id.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(indicator_application_service_CFLAGS) $(CFLAGS) -c -o indicator_application_service-generate-id.obj `if test -f 'generate-id.c'; then $(CYGPATH_W) 'generate-id.c'; else $(CYGPATH_W) '$(srcdir)/generate-id.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

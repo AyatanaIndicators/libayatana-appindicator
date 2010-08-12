@@ -18,6 +18,7 @@
     <function name="APP_INDICATOR_SIGNAL_NEW_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON:CAPS"/>
     <function name="APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS"/>
     <function name="APP_INDICATOR_SIGNAL_NEW_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS"/>
+    <function name="APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON-THEME-PATH:CAPS"/>
     <function name="APP_INDICATOR_SIGNAL_CONNECTION_CHANGED" link="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS"/>
     <function name="enum AppIndicatorCategory" link="libappindicator-app-indicator.html#AppIndicatorCategory"/>
     <function name="enum AppIndicatorStatus" link="libappindicator-app-indicator.html#AppIndicatorStatus"/>
@@ -31,10 +32,12 @@
     <function name="app_indicator_set_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-attention-icon"/>
     <function name="app_indicator_set_menu ()" link="libappindicator-app-indicator.html#app-indicator-set-menu"/>
     <function name="app_indicator_set_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-icon"/>
+    <function name="app_indicator_set_icon_theme_path ()" link="libappindicator-app-indicator.html#app-indicator-set-icon-theme-path"/>
     <function name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
     <function name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
     <function name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
     <function name="app_indicator_get_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-icon"/>
+    <function name="app_indicator_get_icon_theme_path ()" link="libappindicator-app-indicator.html#app-indicator-get-icon-theme-path"/>
     <function name="app_indicator_get_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-attention-icon"/>
     <function name="app_indicator_get_menu ()" link="libappindicator-app-indicator.html#app-indicator-get-menu"/>
     <function name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
@@ -48,6 +51,7 @@
     <function name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
     <function name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
     <function name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>
+    <function name="The &quot;new-icon-theme-path&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path"/>
     <function name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
   </functions>
 </book>
