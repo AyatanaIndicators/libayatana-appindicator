@@ -1,3 +1,10 @@
+indicator-application (0.2.3-0ubuntu2~ppa6~approver1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Making it so the approver actually approves indicators
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 22:32:04 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa5) maverick; urgency=low
 
   * Autogen

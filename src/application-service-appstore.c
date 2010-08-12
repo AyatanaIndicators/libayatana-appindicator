@@ -62,6 +62,11 @@ struct _ApplicationServiceAppstorePrivate {
 	AppLruFile * lrufile;
 };
 
+typedef enum {
+	VISIBLE_STATE_HIDDEN,
+	VISIBLE_STATE_SHOWN
+} visible_state_t;
+
 typedef struct _Approver Approver;
 struct _Approver {
 	DBusGProxy * proxy;
@@ -85,6 +90,8 @@ struct _Application {
 	gchar * label;
 	gchar * guide;
 	gboolean currently_free;
+	GList * approved_by;
+	visible_state_t visible_state;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -107,8 +114,9 @@ static void application_service_appstore_class_init (ApplicationServiceAppstoreC
 static void application_service_appstore_init       (ApplicationServiceAppstore *self);
 static void application_service_appstore_dispose    (GObject *object);
 static void application_service_appstore_finalize   (GObject *object);
+static gint app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata);
 static AppIndicatorStatus string_to_status(const gchar * status_string);
-static void apply_status (Application * app, AppIndicatorStatus status);
+static void apply_status (Application * app);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
 static void check_with_old_approver (gpointer papprove, gpointer papp);
@@ -212,7 +220,7 @@ application_service_appstore_dispose (GObject *object)
 	}
 
 	if (priv->approvers != NULL) {
-		g_list_foreach(priv->approvers, approver_free, NULL);
+		g_list_foreach(priv->approvers, approver_free, object);
 		g_list_free(priv->approvers);
 		priv->approvers = NULL;
 	}
@@ -237,6 +245,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 {
 	if (error != NULL) {
 		g_warning("Unable to get properties: %s", error->message);
+		/* TODO: We need to free all the application data here */
 		return;
 	}
 
@@ -256,6 +265,8 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 
 	app->id = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_ID));
 	app->category = g_value_dup_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_CATEGORY));
+	app->status = string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS)));
+
 	ApplicationServiceAppstorePrivate * priv = app->appstore->priv;
 	app_lru_file_touch(priv->lrufile, app->id, app->category);
 
@@ -295,10 +306,10 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->guide = g_strdup("");
 	}
 
-	/* TODO: Calling approvers, but we're ignoring the results.  So, eh. */
+	priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
-	apply_status(app, string_to_status(g_value_get_string(g_hash_table_lookup(properties, NOTIFICATION_ITEM_PROP_STATUS))));
+	apply_status(app);
 
 	return;
 }
@@ -334,18 +345,34 @@ string_to_status(const gchar * status_string)
 }
 
 /* A small helper function to get the position of an application
-   in the app list. */
+   in the app list of the applications that are visible. */
 static gint 
 get_position (Application * app) {
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
-	GList * applistitem = g_list_find(priv->applications, app);
-	if (applistitem == NULL) {
-		return -1;
+	GList * lapp;
+	gint count;
+
+	/* Go through the list and try to find ours */
+	for (lapp = priv->applications, count = 0; lapp != NULL; lapp = g_list_next(lapp), count++) {
+		if (lapp->data == app) {
+			break;
+		}
+
+		/* If the selected app isn't visible let's not
+		   count it's position */
+		Application * thisapp = (Application *)(lapp->data);
+		if (thisapp->visible_state == VISIBLE_STATE_HIDDEN) {
+			count--;
+		}
 	}
 
-	return g_list_position(priv->applications, applistitem);
+	if (lapp == NULL) {
+		return -1;
+	}
+	
+	return count;
 }
 
 /* A simple global function for dealing with freeing the information
@@ -397,6 +424,9 @@ application_free (Application * app)
 	if (app->guide != NULL) {
 		g_free(app->guide);
 	}
+	if (app->approved_by != NULL) {
+		g_list_free(app->approved_by);
+	}
 
 	g_free(app);
 	return;
@@ -410,33 +440,12 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	Application * app = (Application *)userdata;
 
 	/* Remove from the panel */
-	apply_status(app, APP_INDICATOR_STATUS_PASSIVE);
+	app->status = APP_INDICATOR_STATUS_PASSIVE;
+	apply_status(app);
 
 	/* Destroy the data */
 	application_free(app);
 	return;
-}
-
-static gboolean
-can_add_application (GList *applications, Application *app)
-{
-  if (applications)
-    {
-      GList *l = NULL;
-
-      for (l = applications; l != NULL; l = g_list_next (l))
-        {
-          Application *tmp_app = (Application *)l->data;
-
-          if (g_strcmp0 (tmp_app->dbus_name, app->dbus_name) == 0 &&
-              g_strcmp0 (tmp_app->dbus_object, app->dbus_object) == 0)
-            {
-              return FALSE;
-            }
-        }
-    }
-
-  return TRUE;
 }
 
 /* This function takes two Application structure
@@ -455,49 +464,51 @@ app_sort_func (gconstpointer a, gconstpointer b, gpointer userdata)
    it removes it from the panel.  If we're coming online, then
    it add it to the panel.  Otherwise it changes the icon. */
 static void
-apply_status (Application * app, AppIndicatorStatus status)
+apply_status (Application * app)
 {
-	if (app->status == status) {
-		return;
-	}
-	g_debug("Changing app status to: %d", status);
-
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
+	visible_state_t goal_state = VISIBLE_STATE_HIDDEN;
+
+	if (app->status != APP_INDICATOR_STATUS_PASSIVE && 
+			g_list_length(app->approved_by) == g_list_length(priv->approvers)) {
+		goal_state = VISIBLE_STATE_SHOWN;
+	}
+
+	/* Nothing needs to change, we're good */
+	if (app->visible_state == goal_state) {
+		return;
+	}
+
 	/* This means we're going off line */
-	if (status == APP_INDICATOR_STATUS_PASSIVE) {
+	if (goal_state == VISIBLE_STATE_HIDDEN) {
 		gint position = get_position(app);
 		if (position == -1) return;
 
 		g_signal_emit(G_OBJECT(appstore),
 					  signals[APPLICATION_REMOVED], 0, 
 					  position, TRUE);
-                priv->applications = g_list_remove(priv->applications, app);
 	} else {
 		/* Figure out which icon we should be using */
 		gchar * newicon = app->icon;
-		if (status == APP_INDICATOR_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
+		if (app->status == APP_INDICATOR_STATUS_ATTENTION && app->aicon != NULL && app->aicon[0] != '\0') {
 			newicon = app->aicon;
 		}
 
 		/* Determine whether we're already shown or not */
-		if (app->status == APP_INDICATOR_STATUS_PASSIVE) {
-                        if (can_add_application (priv->applications, app)) {
-                                /* Put on panel */
-                                priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
-
-                                g_signal_emit(G_OBJECT(app->appstore),
-                                              signals[APPLICATION_ADDED], 0,
-                                              newicon,
-                                              g_list_index(priv->applications, app), /* Position */
-                                              app->dbus_name,
-                                              app->menu,
-                                              app->icon_theme_path,
-                                              app->label,
-                                              app->guide,
-                                              TRUE);
-                        }
+		if (app->visible_state == VISIBLE_STATE_HIDDEN) {
+			/* Put on panel */
+			g_signal_emit(G_OBJECT(app->appstore),
+			              signals[APPLICATION_ADDED], 0,
+			              newicon,
+			              g_list_index(priv->applications, app), /* Position */
+			              app->dbus_name,
+			              app->menu,
+			              app->icon_theme_path,
+			              app->label,
+			              app->guide,
+			              TRUE);
 		} else {
 			/* Icon update */
 			gint position = get_position(app);
@@ -509,7 +520,7 @@ apply_status (Application * app, AppIndicatorStatus status)
 		}
 	}
 
-	app->status = status;
+	app->visible_state = goal_state;
 
 	return;
 }
@@ -539,7 +550,7 @@ new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata
 		if (app->icon != NULL) g_free(app->icon);
 		app->icon = g_strdup(newicon);
 
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+		if (app->visible_state == VISIBLE_STATE_SHOWN && app->status == APP_INDICATOR_STATUS_ACTIVE) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -577,7 +588,7 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 		if (app->aicon != NULL) g_free(app->aicon);
 		app->aicon = g_strdup(newicon);
 
-		if (app->status == APP_INDICATOR_STATUS_ATTENTION) {
+		if (app->visible_state == VISIBLE_STATE_SHOWN && app->status == APP_INDICATOR_STATUS_ATTENTION) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -631,7 +642,8 @@ new_status (DBusGProxy * proxy, const gchar * status, gpointer data)
 	Application * app = (Application *)data;
 	if (!app->validated) return;
 
-	apply_status(app, string_to_status(status));
+	app->status = string_to_status(status);
+	apply_status(app);
 
 	return;
 }
@@ -649,7 +661,7 @@ new_icon_theme_path (DBusGProxy * proxy, const gchar * icon_theme_path, gpointer
 		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
 		app->icon_theme_path = g_strdup(icon_theme_path);
 
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+		if (app->visible_state != VISIBLE_STATE_HIDDEN) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -734,6 +746,8 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->label = NULL;
 	app->guide = NULL;
 	app->currently_free = FALSE;
+	app->approved_by = NULL;
+	app->visible_state = VISIBLE_STATE_HIDDEN;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
@@ -827,7 +841,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 }
 
 /* Removes an application.  Currently only works for the apps
-   that are shown.  /TODO Need to fix that. */
+   that are shown. */
 void
 application_service_appstore_application_remove (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
 {
@@ -874,6 +888,10 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 
 	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
 		Application * app = (Application *)listpntr->data;
+		if (app->visible_state == VISIBLE_STATE_HIDDEN) {
+			continue;
+		}
+
 		GValueArray * values = g_value_array_new(5);
 
 		GValue value = {0};
@@ -926,12 +944,27 @@ _application_service_server_get_applications (ApplicationServiceAppstore * appst
 	return TRUE;
 }
 
+/* Removes and approver from our list of approvers and
+   then sees if that changes our status.  Most likely this
+   could make us visible if this approver rejected us. */
+static void
+remove_approver (gpointer papp, gpointer pproxy)
+{
+	Application * app = (Application *)papp;
+	app->approved_by = g_list_remove(app->approved_by, pproxy);
+	apply_status(app);
+	return;
+}
+
 /* Frees the data associated with an approver */
 static void
 approver_free (gpointer papprover, gpointer user_data)
 {
 	Approver * approver = (Approver *)papprover;
 	g_return_if_fail(approver != NULL);
+
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(user_data);
+	g_list_foreach(appstore->priv->applications, remove_approver, approver->proxy);
 	
 	if (approver->proxy != NULL) {
 		g_object_unref(approver->proxy);
@@ -947,6 +980,15 @@ static void
 approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gpointer userdata)
 {
 	g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	Application * app = (Application *)userdata;
+
+	if (OUT_approved) {
+		app->approved_by = g_list_prepend(app->approved_by, proxy);
+	} else {
+		app->approved_by = g_list_remove(app->approved_by, proxy);
+	}
+
+	apply_status(app);
 	return;
 }
 
@@ -965,6 +1007,42 @@ check_with_new_approver (gpointer papp, gpointer papprove)
 	                                                      app->dbus_object,
 	                                                      approver_request_cb,
 	                                                      app);
+
+	return;
+}
+
+/* Look through all the approvers and find the one with a given
+   proxy. */
+static gint
+approver_find_by_proxy (gconstpointer papprover, gconstpointer pproxy)
+{
+	Approver * approver = (Approver *)papprover;
+
+	if (approver->proxy == pproxy) {
+		return 0;
+	}
+
+	return -1;
+}
+
+/* Tracks when a proxy gets destroyed so that we know that the
+   approver has dropped off the bus. */
+static void
+approver_destroyed (gpointer pproxy, gpointer pappstore)
+{
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(pappstore);
+
+	GList * lapprover = g_list_find_custom(appstore->priv->approvers, pproxy, approver_find_by_proxy);
+	if (lapprover == NULL) {
+		g_warning("Approver proxy died, but we don't seem to have that approver.");
+		return;
+	}
+
+	Approver * approver = (Approver *)lapprover->data;
+	approver->proxy = NULL;
+
+	appstore->priv->approvers = g_list_remove(appstore->priv->approvers, approver);
+	approver_free(approver, appstore);
 
 	return;
 }
@@ -992,6 +1070,8 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 		g_free(approver);
 		return;
 	}
+
+	g_signal_connect(G_OBJECT(approver->proxy), "destroy", G_CALLBACK(approver_destroyed), appstore);
 
 	priv->approvers = g_list_prepend(priv->approvers, approver);
 
