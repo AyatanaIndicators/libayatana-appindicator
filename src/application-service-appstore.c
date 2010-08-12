@@ -85,7 +85,7 @@ struct _Application {
 	gchar * label;
 	gchar * guide;
 	gboolean currently_free;
-	gint approved_by;
+	GList * approved_by;
 };
 
 #define APPLICATION_SERVICE_APPSTORE_GET_PRIVATE(o) \
@@ -735,7 +735,7 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	app->label = NULL;
 	app->guide = NULL;
 	app->currently_free = FALSE;
-	app->approved_by = 0;
+	app->approved_by = NULL;
 
 	/* Get the DBus proxy for the NotificationItem interface */
 	GError * error = NULL;
