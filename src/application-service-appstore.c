@@ -565,7 +565,7 @@ new_icon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdata
 		if (app->icon != NULL) g_free(app->icon);
 		app->icon = g_strdup(newicon);
 
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+		if (app->visible_state == VISIBLE_STATE_NORMAL) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -603,7 +603,7 @@ new_aicon_cb (DBusGProxy * proxy, GValue value, GError * error, gpointer userdat
 		if (app->aicon != NULL) g_free(app->aicon);
 		app->aicon = g_strdup(newicon);
 
-		if (app->status == APP_INDICATOR_STATUS_ATTENTION) {
+		if (app->visible_state == VISIBLE_STATE_ATTENTION) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
@@ -676,7 +676,7 @@ new_icon_theme_path (DBusGProxy * proxy, const gchar * icon_theme_path, gpointer
 		if (app->icon_theme_path != NULL) g_free(app->icon_theme_path);
 		app->icon_theme_path = g_strdup(icon_theme_path);
 
-		if (app->status == APP_INDICATOR_STATUS_ACTIVE) {
+		if (app->visible_state != VISIBLE_STATE_HIDDEN) {
 			gint position = get_position(app);
 			if (position == -1) return;
 
