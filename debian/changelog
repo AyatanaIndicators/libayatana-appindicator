@@ -1,11 +1,11 @@
-indicator-application (0.2.4-0ubuntu2~ppa1~approver2) UNRELEASED; urgency=low
+indicator-application (0.2.4-0ubuntu2~ppa1~approver2) maverick; urgency=low
 
   * Upstream Merge
     * Making it so the approver actually approves indicators
     * Updating to trunk
     * Fixing application list
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:38:12 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:41:33 -0500
 
 indicator-application (0.2.4-0ubuntu1~ppa1) maverick; urgency=low
 
