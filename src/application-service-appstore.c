@@ -551,6 +551,9 @@ application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 	app->status = APP_INDICATOR_STATUS_PASSIVE;
 	apply_status(app);
 
+	/* Remove from the application list */
+	app->appstore->priv->applications = g_list_remove(app->appstore->priv->applications, app);
+
 	/* Destroy the data */
 	application_free(app);
 	return;
