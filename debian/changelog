@@ -1,3 +1,11 @@
+indicator-application (0.2.3-0ubuntu2~ppa6~approver2) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Updating to trunk
+    * Fixing application list
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:38:12 -0500
+
 indicator-application (0.2.3-0ubuntu2~ppa6~approver1) maverick; urgency=low
 
   * Upstream Merge

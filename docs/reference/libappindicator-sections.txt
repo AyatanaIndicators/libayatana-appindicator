@@ -27,6 +27,7 @@ app_indicator_set_menu
 app_indicator_set_icon
 app_indicator_set_icon_theme_path
 app_indicator_set_label
+app_indicator_set_ordering_index
 app_indicator_get_id
 app_indicator_get_category
 app_indicator_get_status
@@ -36,5 +37,6 @@ app_indicator_get_attention_icon
 app_indicator_get_menu
 app_indicator_get_label
 app_indicator_get_label_guide
+app_indicator_get_ordering_index
 </SECTION>
 
