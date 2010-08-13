@@ -392,7 +392,7 @@ get_all_properties_cb (DBusGProxy * proxy, GHashTable * properties, GError * err
 		app->guide = g_strdup("");
 	}
 
-	priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, priv->lrufile);
+	priv->applications = g_list_insert_sorted_with_data (priv->applications, app, app_sort_func, NULL);
 	g_list_foreach(priv->approvers, check_with_old_approver, app);
 
 	apply_status(app);
