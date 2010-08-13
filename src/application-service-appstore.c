@@ -1083,10 +1083,15 @@ approver_free (gpointer papprover, gpointer user_data)
 static void
 approver_request_cb (DBusGProxy *proxy, gboolean OUT_approved, GError *error, gpointer userdata)
 {
-	g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	if (error == NULL) {
+		g_debug("Approver responded: %s", OUT_approved ? "approve" : "rejected");
+	} else {
+		g_debug("Approver responded error: %s", error->message);
+	}
+
 	Application * app = (Application *)userdata;
 
-	if (OUT_approved) {
+	if (OUT_approved || error != NULL) {
 		app->approved_by = g_list_prepend(app->approved_by, proxy);
 	} else {
 		app->approved_by = g_list_remove(app->approved_by, proxy);
