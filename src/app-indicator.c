@@ -43,6 +43,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "notification-watcher-client.h"
 
 #include "dbus-shared.h"
+#include "generate-id.h"
 
 #define PANEL_ICON_SUFFIX  "panel"
 
@@ -73,6 +74,7 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	guint32               ordering_index;
 	gchar *               label;
 	gchar *               label_guide;
 	guint                 label_change_idle;
@@ -92,6 +94,7 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	NEW_LABEL,
+	X_NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
@@ -112,7 +115,11 @@ enum {
 	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
-	PROP_LABEL_GUIDE
+	PROP_LABEL_GUIDE,
+	PROP_X_LABEL,
+	PROP_X_LABEL_GUIDE,
+	PROP_ORDERING_INDEX,
+	PROP_X_ORDERING_INDEX
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -126,10 +133,17 @@ enum {
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
+#define PROP_X_LABEL_S               ("x-ayatana-" PROP_LABEL_S)
+#define PROP_X_LABEL_GUIDE_S         ("x-ayatana-" PROP_LABEL_GUIDE_S)
+#define PROP_ORDERING_INDEX_S        "ordering-index"
+#define PROP_X_ORDERING_INDEX_S      ("x-ayatana-" PROP_ORDERING_INDEX_S)
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
+
+/* Signal wrapper */
+#define APP_INDICATOR_SIGNAL_X_NEW_LABEL ("x-ayatana-" APP_INDICATOR_SIGNAL_NEW_LABEL)
 
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
@@ -330,7 +344,66 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:ordering-index:
 
+		The ordering index is an odd parameter, and if you think you don't need
+		it you're probably right.  In general, the application indicator try
+		to place the applications in a recreatable place taking into account
+		which category they're in to try and group them.  But, there are some
+		cases where you'd want to ensure indicators are next to each other.
+		To do that you can override the generated ordering index and replace it
+		with a new one.  Again, you probably don't want to be doing this, but
+		in case you do, this is the way.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_ORDERING_INDEX,
+	                                g_param_spec_uint (PROP_ORDERING_INDEX_S,
+	                                                   "The location that this app indicator should be in the list.",
+	                                                   "A way to override the default ordering of the applications by providing a very specific idea of where this entry should be placed.",
+	                                                   0, G_MAXUINT32, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:x-ayatana-ordering-index:
+
+		A wrapper for #AppIndicator:ordering-index so that it can match the
+		dbus interface currently.  It will hopefully be retired, please don't
+		use it anywhere.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_ORDERING_INDEX,
+	                                g_param_spec_uint (PROP_X_ORDERING_INDEX_S,
+	                                                   "A wrapper, please don't use.",
+	                                                   "A wrapper, please don't use.",
+	                                                   0, G_MAXUINT32, 0,
+	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+		AppIndicator:x-ayatana-label:
+
+		Wrapper for #AppIndicator:label.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL,
+	                                g_param_spec_string (PROP_X_LABEL_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:x-ayatana-label-guide:
+
+		Wrapper for #AppIndicator:label-guide.  Please use that in all of your
+		code.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_X_LABEL_GUIDE,
+	                                g_param_spec_string (PROP_X_LABEL_GUIDE_S,
+	                                                     "A wrapper, please don't use.",
+	                                                     "A wrapper, please don't use.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
 
@@ -396,6 +469,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
+		AppIndicator::x-ayatana-new-label:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the label
+		@arg1: The string for the guide
+
+		Wrapper for #AppIndicator::new-label, please don't use this signal
+		use the other one.
+	*/
+	signals[X_NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_X_NEW_LABEL,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
+	                                    NULL, NULL,
+	                                    _application_service_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+
+	/**
 		AppIndicator::connection-changed:
 		@arg0: The #AppIndicator object
 		@arg1: Whether we're connected or not
@@ -446,6 +536,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_theme_path = NULL;
 	priv->menu = NULL;
 	priv->menuservice = NULL;
+	priv->ordering_index = 0;
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
@@ -658,6 +749,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           check_connect (self);
           break;
 
+		case PROP_X_LABEL:
 		case PROP_LABEL: {
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
@@ -676,6 +768,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_X_LABEL_GUIDE:
 		case PROP_LABEL_GUIDE: {
 		  gchar * oldguide = priv->label_guide;
 		  priv->label_guide = g_value_dup_string(value);
@@ -694,6 +787,10 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_X_ORDERING_INDEX:
+		case PROP_ORDERING_INDEX:
+		  priv->ordering_index = g_value_get_uint(value);
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -752,13 +849,20 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
           break;
 
+		case PROP_X_LABEL:
         case PROP_LABEL:
           g_value_set_string (value, priv->label);
           break;
 
+        case PROP_X_LABEL_GUIDE:
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
+
+		case PROP_X_ORDERING_INDEX:
+		case PROP_ORDERING_INDEX:
+		  g_value_set_uint(value, priv->ordering_index);
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -776,6 +880,10 @@ signal_label_change_idle (gpointer user_data)
 	AppIndicatorPrivate *priv = self->priv;
 
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
+	              priv->label != NULL ? priv->label : "",
+	              priv->label_guide != NULL ? priv->label_guide : "",
+	              TRUE);
+	g_signal_emit(G_OBJECT(self), signals[X_NEW_LABEL], 0,
 	              priv->label != NULL ? priv->label : "",
 	              priv->label_guide != NULL ? priv->label_guide : "",
 	              TRUE);
@@ -1785,6 +1893,27 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 }
 
 /**
+	app_indicator_set_ordering_index:
+	@self: The #AppIndicator
+	@ordering_index: A value for the ordering of this app indicator
+
+	Sets the ordering index for the app indicator which effects the
+	placement of it on the panel.  For almost all app indicator
+	this is not the function you're looking for.
+
+	Wrapper function for property #AppIndicator:ordering-index.
+**/
+void
+app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	self->priv->ordering_index = ordering_index;
+
+	return;
+}
+
+/**
 	app_indicator_get_id:
 	@self: The #AppIndicator object to use
 
@@ -1931,5 +2060,25 @@ app_indicator_get_label_guide (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->label_guide;
+}
+
+/**
+	app_indicator_get_ordering_index:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:ordering-index.
+
+	Return value: The current ordering index.
+*/
+guint32
+app_indicator_get_ordering_index (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
+
+	if (self->priv->ordering_index == 0) {
+		return generate_id(self->priv->category, self->priv->id);
+	} else {
+		return self->priv->ordering_index;
+	}
 }
 
