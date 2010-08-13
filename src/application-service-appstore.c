@@ -298,6 +298,7 @@ load_override_file (GHashTable * hash, const gchar * filename)
 
 		g_hash_table_insert(hash, g_strdup(key), GINT_TO_POINTER(val));
 	}
+	g_strfreev(keys);
 	g_key_file_free(keyfile);
 
 	return;
