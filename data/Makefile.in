@@ -74,8 +74,9 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(dbus_servicesdir)"
-DATA = $(dbus_services_DATA)
+am__installdirs = "$(DESTDIR)$(dbus_servicesdir)" \
+	"$(DESTDIR)$(overridedir)"
+DATA = $(dbus_services_DATA) $(override_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AL = @AL@
@@ -171,6 +172,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 PYGTK_CODEGEN = @PYGTK_CODEGEN@
 PYGTK_DEFSDIR = @PYGTK_DEFSDIR@
 PYTHON = @PYTHON@
@@ -245,8 +248,15 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 dbus_servicesdir = $(DBUSSERVICEDIR)
 dbus_services_DATA = indicator-application.service
-EXTRA_DIST = indicator-application.service.in
-CLEANFILES = indicator-application.service
+overridedir = $(pkgdatadir)
+override_DATA = ordering-override.keyfile
+EXTRA_DIST = \
+	indicator-application.service.in \
+	ordering-override.keyfile
+
+CLEANFILES = \
+	indicator-application.service
+
 all: all-am
 
 .SUFFIXES:
@@ -306,6 +316,26 @@ uninstall-dbus_servicesDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(dbus_servicesdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(dbus_servicesdir)" && rm -f $$files
+install-overrideDATA: $(override_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(overridedir)" || $(MKDIR_P) "$(DESTDIR)$(overridedir)"
+	@list='$(override_DATA)'; test -n "$(overridedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(overridedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(overridedir)" || exit $$?; \
+	done
+
+uninstall-overrideDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(override_DATA)'; test -n "$(overridedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(overridedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(overridedir)" && rm -f $$files
 tags: TAGS
 TAGS:
 
@@ -347,7 +377,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(dbus_servicesdir)"; do \
+	for dir in "$(DESTDIR)$(dbus_servicesdir)" "$(DESTDIR)$(overridedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -396,7 +426,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dbus_servicesDATA
+install-data-am: install-dbus_servicesDATA install-overrideDATA
 
 install-dvi: install-dvi-am
 
@@ -440,7 +470,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dbus_servicesDATA
+uninstall-am: uninstall-dbus_servicesDATA uninstall-overrideDATA
 
 .MAKE: install-am install-strip
 
@@ -450,11 +480,12 @@ uninstall-am: uninstall-dbus_servicesDATA
 	install-data install-data-am install-dbus_servicesDATA \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-dbus_servicesDATA
+	install-man install-overrideDATA install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-dbus_servicesDATA uninstall-overrideDATA
 
 
 %.service: %.service.in

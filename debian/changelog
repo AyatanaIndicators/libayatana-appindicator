@@ -1,17 +1,31 @@
-indicator-application (0.2.3-0ubuntu2~ppa6~approver2) UNRELEASED; urgency=low
+indicator-application (0.2.4-0ubuntu2~ppa1~approver2) UNRELEASED; urgency=low
 
   * Upstream Merge
+    * Making it so the approver actually approves indicators
     * Updating to trunk
     * Fixing application list
 
  -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:38:12 -0500
 
-indicator-application (0.2.3-0ubuntu2~ppa6~approver1) maverick; urgency=low
+indicator-application (0.2.4-0ubuntu1~ppa1) maverick; urgency=low
 
-  * Upstream Merge
-    * Making it so the approver actually approves indicators
+  * New upstream release.
+    * Add in ordering IDs
+    * Adding label support into the library
+    * Adding label support into the indicator
+    * Breaking the ABI in order to get more space in the class
+      structure.
+    * Allow the icon theme path to be changed dynamically (LP: #607831)
+  * debian/control: Moving libappindicator0 to libappindicator1
+  * debian/rules: Moving libappindicator0 to libappindicator1
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 11 Aug 2010 22:33:47 -0500
+ -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:39:27 -0500
+
+indicator-application (0.2.3-0ubuntu2) maverick; urgency=low
+
+  * Rebuild with the new gobject introspection
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 11 Aug 2010 11:07:51 +0200
 
 indicator-application (0.2.3-0ubuntu2~ppa5) maverick; urgency=low
 
