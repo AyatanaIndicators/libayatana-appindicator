@@ -579,7 +579,7 @@ apply_status (Application * app)
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
-	g_debug("Applying status.  Status: %d  Approved by: %d  Approvers: %d  Visible: %d", app->status, g_list_length(app->approved_by), g_list_length(priv->approvers), app->visible_state);
+	/* g_debug("Applying status.  Status: %d  Approved by: %d  Approvers: %d  Visible: %d", app->status, g_list_length(app->approved_by), g_list_length(priv->approvers), app->visible_state); */
 
 	visible_state_t goal_state = VISIBLE_STATE_HIDDEN;
 
