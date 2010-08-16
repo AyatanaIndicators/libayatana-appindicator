@@ -75,6 +75,7 @@ typedef enum {
 typedef struct _Approver Approver;
 struct _Approver {
 	DBusGProxy * proxy;
+	gboolean destroy_by_proxy;
 };
 
 typedef struct _Application Application;
@@ -578,10 +579,12 @@ apply_status (Application * app)
 	ApplicationServiceAppstore * appstore = app->appstore;
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
 
+	/* g_debug("Applying status.  Status: %d  Approved by: %d  Approvers: %d  Visible: %d", app->status, g_list_length(app->approved_by), g_list_length(priv->approvers), app->visible_state); */
+
 	visible_state_t goal_state = VISIBLE_STATE_HIDDEN;
 
 	if (app->status != APP_INDICATOR_STATUS_PASSIVE && 
-			g_list_length(app->approved_by) == g_list_length(priv->approvers)) {
+			g_list_length(app->approved_by) >= g_list_length(priv->approvers)) {
 		goal_state = VISIBLE_STATE_SHOWN;
 	}
 
@@ -1074,7 +1077,9 @@ approver_free (gpointer papprover, gpointer user_data)
 	g_list_foreach(appstore->priv->applications, remove_approver, approver->proxy);
 	
 	if (approver->proxy != NULL) {
-		g_object_unref(approver->proxy);
+		if (!approver->destroy_by_proxy) {
+			g_object_unref(approver->proxy);
+		}
 		approver->proxy = NULL;
 	}
 
@@ -1151,7 +1156,7 @@ approver_destroyed (gpointer pproxy, gpointer pappstore)
 	}
 
 	Approver * approver = (Approver *)lapprover->data;
-	approver->proxy = NULL;
+	approver->destroy_by_proxy = TRUE;
 
 	appstore->priv->approvers = g_list_remove(appstore->priv->approvers, approver);
 	approver_free(approver, appstore);
@@ -1169,6 +1174,7 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 	ApplicationServiceAppstorePrivate * priv = APPLICATION_SERVICE_APPSTORE_GET_PRIVATE (appstore);
 
 	Approver * approver = g_new0(Approver, 1);
+	approver->destroy_by_proxy = FALSE;
 
 	GError * error = NULL;
 	approver->proxy = dbus_g_proxy_new_for_name_owner(priv->bus,

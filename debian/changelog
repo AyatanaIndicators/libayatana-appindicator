@@ -1,3 +1,10 @@
+indicator-application (0.2.4-0ubuntu2~ppa1~approver3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Fixing approvers retiring off the bus
+
+ -- Ted Gould <ted@ubuntu.com>  Mon, 16 Aug 2010 12:47:25 -0500
+
 indicator-application (0.2.4-0ubuntu2~ppa1~approver2) maverick; urgency=low
 
   * Upstream Merge
