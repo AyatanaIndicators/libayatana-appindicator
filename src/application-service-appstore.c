@@ -1188,8 +1188,27 @@ approver_destroyed (gpointer pproxy, gpointer pappstore)
 void
 approver_revise_judgement (DBusGProxy * proxy, gboolean new_status, gchar * address, DBusGProxy * get_path, gpointer user_data)
 {
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(user_data));
+	g_return_if_fail(address != NULL && address[0] != '\0');
+	g_return_if_fail(get_path != NULL);
+	const gchar * path = dbus_g_proxy_get_path(get_path);
+	g_return_if_fail(path != NULL && path[0] != '\0');
+
 	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(user_data);
-	appstore = NULL;
+
+	Application * app = find_application(appstore, address, path);
+
+	if (app == NULL) {
+		g_warning("Unable to update approver status of application (%s:%s) as it was not found", address, path);
+		return;
+	}
+
+	if (new_status) {
+		app->approved_by = g_list_prepend(app->approved_by, proxy);
+	} else {
+		app->approved_by = g_list_remove(app->approved_by, proxy);
+	}
+	apply_status(app);
 
 	return;
 }
