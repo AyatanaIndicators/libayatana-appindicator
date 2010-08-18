@@ -959,6 +959,24 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	return;
 }
 
+/* Looks for an application in the list of applications */
+static Application *
+find_application (ApplicationServiceAppstore * appstore, const gchar * address, const gchar * object)
+{
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
+	GList * listpntr;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
+
+		if (!g_strcmp0(app->dbus_name, address) && !g_strcmp0(app->dbus_object, object)) {
+			return app;
+		}
+	}
+
+	return NULL;
+}
+
 /* Removes an application.  Currently only works for the apps
    that are shown. */
 void
@@ -968,16 +986,11 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
-	ApplicationServiceAppstorePrivate * priv = appstore->priv;
-	GList * listpntr;
-
-	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
-		Application * app = (Application *)listpntr->data;
-
-		if (!g_strcmp0(app->dbus_name, dbus_name) && !g_strcmp0(app->dbus_object, dbus_object)) {
-			application_removed_cb(NULL, app);
-			break; /* NOTE: Must break as the list will become inconsistent */
-		}
+	Application * app = find_application(appstore, dbus_name, dbus_object);
+	if (app != NULL) {
+		application_removed_cb(NULL, app);
+	} else {
+		g_warning("Unable to find application %s:%s", dbus_name, dbus_object);
 	}
 
 	return;
