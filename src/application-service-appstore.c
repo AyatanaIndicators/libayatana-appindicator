@@ -183,6 +183,12 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__BOOLEAN_STRING_OBJECT,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_BOOLEAN,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_OBJECT,
+	                                  G_TYPE_INVALID);
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
@@ -1164,6 +1170,17 @@ approver_destroyed (gpointer pproxy, gpointer pappstore)
 	return;
 }
 
+/* A signal when an approver changes the why that it thinks about
+   a particular indicator. */
+void
+approver_revise_judgement (DBusGProxy * proxy, gboolean new_status, gchar * address, DBusGProxy * get_path, gpointer user_data)
+{
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(user_data);
+	appstore = NULL;
+
+	return;
+}
+
 /* Adds a new approver to the app store */
 void
 application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
@@ -1190,6 +1207,18 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 	}
 
 	g_signal_connect(G_OBJECT(approver->proxy), "destroy", G_CALLBACK(approver_destroyed), appstore);
+
+	dbus_g_proxy_add_signal(approver->proxy,
+	                        "ReviseJudgement",
+	                        G_TYPE_BOOLEAN,
+	                        G_TYPE_STRING,
+	                        DBUS_TYPE_G_OBJECT_PATH,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(approver->proxy,
+	                            "ReviseJudgement",
+	                            G_CALLBACK(approver_revise_judgement),
+	                            appstore,
+	                            NULL);
 
 	priv->approvers = g_list_prepend(priv->approvers, approver);
 
