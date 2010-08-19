@@ -183,6 +183,12 @@ application_service_appstore_class_init (ApplicationServiceAppstoreClass *klass)
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_STRING,
 	                                  G_TYPE_INVALID);
+	dbus_g_object_register_marshaller(_application_service_marshal_VOID__BOOLEAN_STRING_OBJECT,
+	                                  G_TYPE_NONE,
+	                                  G_TYPE_BOOLEAN,
+	                                  G_TYPE_STRING,
+	                                  G_TYPE_OBJECT,
+	                                  G_TYPE_INVALID);
 
 	dbus_g_object_type_install_info(APPLICATION_SERVICE_APPSTORE_TYPE,
 	                                &dbus_glib__application_service_server_object_info);
@@ -954,6 +960,24 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	return;
 }
 
+/* Looks for an application in the list of applications */
+static Application *
+find_application (ApplicationServiceAppstore * appstore, const gchar * address, const gchar * object)
+{
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
+	GList * listpntr;
+
+	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
+		Application * app = (Application *)listpntr->data;
+
+		if (!g_strcmp0(app->dbus_name, address) && !g_strcmp0(app->dbus_object, object)) {
+			return app;
+		}
+	}
+
+	return NULL;
+}
+
 /* Removes an application.  Currently only works for the apps
    that are shown. */
 void
@@ -963,16 +987,11 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 
-	ApplicationServiceAppstorePrivate * priv = appstore->priv;
-	GList * listpntr;
-
-	for (listpntr = priv->applications; listpntr != NULL; listpntr = g_list_next(listpntr)) {
-		Application * app = (Application *)listpntr->data;
-
-		if (!g_strcmp0(app->dbus_name, dbus_name) && !g_strcmp0(app->dbus_object, dbus_object)) {
-			application_removed_cb(NULL, app);
-			break; /* NOTE: Must break as the list will become inconsistent */
-		}
+	Application * app = find_application(appstore, dbus_name, dbus_object);
+	if (app != NULL) {
+		application_removed_cb(NULL, app);
+	} else {
+		g_warning("Unable to find application %s:%s", dbus_name, dbus_object);
 	}
 
 	return;
@@ -1165,6 +1184,36 @@ approver_destroyed (gpointer pproxy, gpointer pappstore)
 	return;
 }
 
+/* A signal when an approver changes the why that it thinks about
+   a particular indicator. */
+void
+approver_revise_judgement (DBusGProxy * proxy, gboolean new_status, gchar * address, DBusGProxy * get_path, gpointer user_data)
+{
+	g_return_if_fail(IS_APPLICATION_SERVICE_APPSTORE(user_data));
+	g_return_if_fail(address != NULL && address[0] != '\0');
+	g_return_if_fail(get_path != NULL);
+	const gchar * path = dbus_g_proxy_get_path(get_path);
+	g_return_if_fail(path != NULL && path[0] != '\0');
+
+	ApplicationServiceAppstore * appstore = APPLICATION_SERVICE_APPSTORE(user_data);
+
+	Application * app = find_application(appstore, address, path);
+
+	if (app == NULL) {
+		g_warning("Unable to update approver status of application (%s:%s) as it was not found", address, path);
+		return;
+	}
+
+	if (new_status) {
+		app->approved_by = g_list_prepend(app->approved_by, proxy);
+	} else {
+		app->approved_by = g_list_remove(app->approved_by, proxy);
+	}
+	apply_status(app);
+
+	return;
+}
+
 /* Adds a new approver to the app store */
 void
 application_service_appstore_approver_add (ApplicationServiceAppstore * appstore, const gchar * dbus_name, const gchar * dbus_object)
@@ -1191,6 +1240,18 @@ application_service_appstore_approver_add (ApplicationServiceAppstore * appstore
 	}
 
 	g_signal_connect(G_OBJECT(approver->proxy), "destroy", G_CALLBACK(approver_destroyed), appstore);
+
+	dbus_g_proxy_add_signal(approver->proxy,
+	                        "ReviseJudgement",
+	                        G_TYPE_BOOLEAN,
+	                        G_TYPE_STRING,
+	                        DBUS_TYPE_G_OBJECT_PATH,
+	                        G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal(approver->proxy,
+	                            "ReviseJudgement",
+	                            G_CALLBACK(approver_revise_judgement),
+	                            appstore,
+	                            NULL);
 
 	priv->approvers = g_list_prepend(priv->approvers, approver);
 
