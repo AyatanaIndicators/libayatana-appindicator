@@ -1,3 +1,10 @@
+indicator-application (0.2.4-0ubuntu2~ppa3) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Allowing approvers to change thier mind
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 19 Aug 2010 09:58:47 -0500
+
 indicator-application (0.2.4-0ubuntu2~ppa2) maverick; urgency=low
 
   * Upstream Merge
