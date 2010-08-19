@@ -128,7 +128,7 @@ check_for_service (gpointer user_data)
 		                                               NOTIFICATION_WATCHER_DBUS_IFACE);
 
 		g_debug("Registering Approver");
-		org_kde_StatusNotifierWatcher_register_notification_approver_async (proxy, APPROVER_PATH, &cats, register_cb, NULL);
+		org_kde_StatusNotifierWatcher_x_ayatana_register_notification_approver_async (proxy, APPROVER_PATH, &cats, register_cb, NULL);
 
 		return FALSE;
 	}

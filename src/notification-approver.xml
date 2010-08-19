@@ -18,5 +18,12 @@
 			<arg type="b" name="approved" direction="out" />
 		</method>
 
+<!-- Signals -->
+		<signal name="ReviseJudgement">
+			<arg type="b" name="approved" direction="out" />
+			<arg type="s" name="address" direction="out" />
+			<arg type="o" name="path" direction="out" />
+		</signal>
+
 	</interface>
 </node>

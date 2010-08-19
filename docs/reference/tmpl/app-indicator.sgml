@@ -88,6 +88,13 @@ AppIndicator
 
 
 
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_LABEL ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH ##### -->
 <para>
 
@@ -164,6 +171,15 @@ AppIndicator
 @appindicator: the object which received the signal.
 @arg1: 
 
+<!-- ##### SIGNAL AppIndicator::new-label ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+@arg2: 
+
 <!-- ##### SIGNAL AppIndicator::new-status ##### -->
 <para>
 
@@ -171,6 +187,15 @@ AppIndicator
 
 @appindicator: the object which received the signal.
 @arg1: 
+
+<!-- ##### SIGNAL AppIndicator::x-ayatana-new-label ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+@arg2: 
 
 <!-- ##### ARG AppIndicator:attention-icon-name ##### -->
 <para>
@@ -202,12 +227,42 @@ AppIndicator
 
 </para>
 
+<!-- ##### ARG AppIndicator:label ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:label-guide ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG AppIndicator:menu ##### -->
 <para>
 
 </para>
 
+<!-- ##### ARG AppIndicator:ordering-index ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG AppIndicator:status ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:x-ayatana-label ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:x-ayatana-label-guide ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:x-ayatana-ordering-index ##### -->
 <para>
 
 </para>
@@ -221,11 +276,19 @@ AppIndicator
 @new_icon: 
 @new_attention_icon: 
 @new_status: 
+@new_icon_theme_path: 
+@new_label: 
 @connection_changed: 
+@app_indicator_reserved_sw: 
+@app_indicator_reserved_ats: 
 @fallback: 
 @unfallback: 
-@new_icon_theme_path: 
+@app_indicator_reserved_1: 
 @app_indicator_reserved_2: 
+@app_indicator_reserved_3: 
+@app_indicator_reserved_4: 
+@app_indicator_reserved_5: 
+@app_indicator_reserved_6: 
 
 <!-- ##### FUNCTION app_indicator_get_type ##### -->
 <para>
@@ -304,6 +367,25 @@ AppIndicator
 @icon_theme_path: 
 
 
+<!-- ##### FUNCTION app_indicator_set_label ##### -->
+<para>
+
+</para>
+
+@self: 
+@label: 
+@guide: 
+
+
+<!-- ##### FUNCTION app_indicator_set_ordering_index ##### -->
+<para>
+
+</para>
+
+@self: 
+@ordering_index: 
+
+
 <!-- ##### FUNCTION app_indicator_get_id ##### -->
 <para>
 
@@ -359,6 +441,33 @@ AppIndicator
 
 
 <!-- ##### FUNCTION app_indicator_get_menu ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_label ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_label_guide ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_ordering_index ##### -->
 <para>
 
 </para>
