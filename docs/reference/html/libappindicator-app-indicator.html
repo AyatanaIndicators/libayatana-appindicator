@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="Base Classes for Applications">
 <link rel="prev" href="ch01.html" title="Base Classes for Applications">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.14 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.15 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -60,6 +60,7 @@ Unstable, unless otherwise indicated
 #define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON:CAPS" title="APP_INDICATOR_SIGNAL_NEW_ICON">APP_INDICATOR_SIGNAL_NEW_ICON</a>
 #define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ATTENTION-ICON:CAPS" title="APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON">APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON</a>
 #define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-STATUS:CAPS" title="APP_INDICATOR_SIGNAL_NEW_STATUS">APP_INDICATOR_SIGNAL_NEW_STATUS</a>
+#define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-LABEL:CAPS" title="APP_INDICATOR_SIGNAL_NEW_LABEL">APP_INDICATOR_SIGNAL_NEW_LABEL</a>
 #define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-NEW-ICON-THEME-PATH:CAPS" title="APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH">APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH</a>
 #define             <a class="link" href="libappindicator-app-indicator.html#APP-INDICATOR-SIGNAL-CONNECTION-CHANGED:CAPS" title="APP_INDICATOR_SIGNAL_CONNECTION_CHANGED">APP_INDICATOR_SIGNAL_CONNECTION_CHANGED</a>
 enum                <a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory">AppIndicatorCategory</a>;
@@ -85,6 +86,11 @@ enum                <a class="link" href="libappindicator-app-indicator.html#App
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_name</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-icon-theme-path" title="app_indicator_set_icon_theme_path ()">app_indicator_set_icon_theme_path</a>   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_theme_path</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-label" title="app_indicator_set_label ()">app_indicator_set_label</a>             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *label</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *guide</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-ordering-index" title="app_indicator_set_ordering_index ()">app_indicator_set_ordering_index</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> ordering_index</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-id" title="app_indicator_get_id ()">app_indicator_get_id</a>                (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory"><span class="returnvalue">AppIndicatorCategory</span></a>  <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-category" title="app_indicator_get_category ()">app_indicator_get_category</a>        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <a class="link" href="libappindicator-app-indicator.html#AppIndicatorStatus" title="enum AppIndicatorStatus"><span class="returnvalue">AppIndicatorStatus</span></a>  <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-status" title="app_indicator_get_status ()">app_indicator_get_status</a>            (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
@@ -92,6 +98,9 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon-theme-path" title="app_indicator_get_icon_theme_path ()">app_indicator_get_icon_theme_path</a>   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon" title="app_indicator_get_attention_icon ()">app_indicator_get_attention_icon</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label" title="app_indicator_get_label ()">app_indicator_get_label</a>             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label-guide" title="app_indicator_get_label_guide ()">app_indicator_get_label_guide</a>       (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>             <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-ordering-index" title="app_indicator_get_ordering_index ()">app_indicator_get_ordering_index</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 </pre>
 </div>
 <div class="refsect1" title="Object Hierarchy">
@@ -110,8 +119,14 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-name" title='The "icon-name" property'>icon-name</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-theme-path" title='The "icon-theme-path" property'>icon-theme-path</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--id" title='The "id" property'>id</a>"                       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write / Construct Only
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'>label</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--label-guide" title='The "label-guide" property'>label-guide</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--menu" title='The "menu" property'>menu</a>"                     <span class="type">DBusGObjectPath</span>*      : Read
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--ordering-index" title='The "ordering-index" property'>ordering-index</a>"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--status" title='The "status" property'>status</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label" title='The "x-ayatana-label" property'>x-ayatana-label</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label-guide" title='The "x-ayatana-label-guide" property'>x-ayatana-label-guide</a>"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator--x-ayatana-ordering-index" title='The "x-ayatana-ordering-index" property'>x-ayatana-ordering-index</a>" <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
 </pre>
 </div>
 <div class="refsect1" title="Signals">
@@ -121,7 +136,9 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-attention-icon" title='The "new-attention-icon" signal'>new-attention-icon</a>"                             : Run Last
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-icon" title='The "new-icon" signal'>new-icon</a>"                                       : Run Last
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path" title='The "new-icon-theme-path" signal'>new-icon-theme-path</a>"                            : Run Last
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-label" title='The "new-label" signal'>new-label</a>"                                      : Run Last
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-status" title='The "new-status" signal'>new-status</a>"                                     : Run Last
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-x-ayatana-new-label" title='The "x-ayatana-new-label" signal'>x-ayatana-new-label</a>"                            : Run Last
 </pre>
 </div>
 <div class="refsect1" title="Description">
@@ -261,6 +278,15 @@ String identifier for the <a class="link" href="libappindicator-app-indicator.ht
 </p>
 </div>
 <hr>
+<div class="refsect2" title="APP_INDICATOR_SIGNAL_NEW_LABEL">
+<a name="APP-INDICATOR-SIGNAL-NEW-LABEL:CAPS"></a><h3>APP_INDICATOR_SIGNAL_NEW_LABEL</h3>
+<pre class="programlisting">#define APP_INDICATOR_SIGNAL_NEW_LABEL           "new-label"
+</pre>
+<p>
+String identifier for the <a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-label" title='The "new-label" signal'><span class="type">"new-label"</span></a> signal.
+</p>
+</div>
+<hr>
 <div class="refsect2" title="APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH">
 <a name="APP-INDICATOR-SIGNAL-NEW-ICON-THEME-PATH:CAPS"></a><h3>APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH</h3>
 <pre class="programlisting">#define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
@@ -395,23 +421,33 @@ A application indicator represents the values that are needed to show a
 	void (* new_status)             (AppIndicator      *indicator,
 	                                 const gchar       *status,
 	                                 gpointer            user_data);
+	void (* new_icon_theme_path)    (AppIndicator      *indicator,
+	                                 const gchar       *icon_theme_path,
+	                                 gpointer            user_data);
+	void (* new_label)              (AppIndicator       *indicator,
+	                                 const gchar        *label,
+	                                 const gchar        *guide,
+	                                 gpointer            user_data);
 
 	/* Local Signals */
 	void (* connection_changed)     (AppIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
+	void (*app_indicator_reserved_sw)(void);
+	void (*app_indicator_reserved_ats)(void);
 
 	/* Overridable Functions */
 	GtkStatusIcon * (*fallback)     (AppIndicator * indicator);
 	void (*unfallback)              (AppIndicator * indicator,
 	                                 GtkStatusIcon * status_icon);
 
-    void (* new_icon_theme_path)    (AppIndicator      *indicator,
-                                     const gchar       *icon_theme_path,
-	                                 gpointer            user_data);
-
 	/* Reserved */
+	void (*app_indicator_reserved_1)(void);
 	void (*app_indicator_reserved_2)(void);
+	void (*app_indicator_reserved_3)(void);
+	void (*app_indicator_reserved_4)(void);
+	void (*app_indicator_reserved_5)(void);
+	void (*app_indicator_reserved_6)(void);
 } AppIndicatorClass;
 </pre>
 <p>
@@ -442,8 +478,28 @@ The signals and external functions that make up the <a class="link" href="libapp
 </td>
 </tr>
 <tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.new-icon-theme-path"></a>new_icon_theme_path</code></em> ()</span></p></td>
+<td>Slot for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path" title='The "new-icon-theme-path" signal'><span class="type">"new-icon-theme-path"</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.new-label"></a>new_label</code></em> ()</span></p></td>
+<td>Slot for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-label" title='The "new-label" signal'><span class="type">"new-label"</span></a>.
+</td>
+</tr>
+<tr>
 <td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.connection-changed"></a>connection_changed</code></em> ()</span></p></td>
 <td>Slot for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-connection-changed" title='The "connection-changed" signal'><span class="type">"connection-changed"</span></a>.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-sw"></a>app_indicator_reserved_sw</code></em> ()</span></p></td>
+<td>Reserved for future use.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-ats"></a>app_indicator_reserved_ats</code></em> ()</span></p></td>
+<td>Reserved for future use.
 </td>
 </tr>
 <tr>
@@ -459,12 +515,32 @@ The signals and external functions that make up the <a class="link" href="libapp
 </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.new-icon-theme-path"></a>new_icon_theme_path</code></em> ()</span></p></td>
-<td>Slot for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path" title='The "new-icon-theme-path" signal'><span class="type">"new-icon-theme-path"</span></a>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-1"></a>app_indicator_reserved_1</code></em> ()</span></p></td>
+<td>Reserved for future use.
 </td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-2"></a>app_indicator_reserved_2</code></em> ()</span></p></td>
+<td>Reserved for future use.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-3"></a>app_indicator_reserved_3</code></em> ()</span></p></td>
+<td>Reserved for future use.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-4"></a>app_indicator_reserved_4</code></em> ()</span></p></td>
+<td>Reserved for future use.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-5"></a>app_indicator_reserved_5</code></em> ()</span></p></td>
+<td>Reserved for future use.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-6"></a>app_indicator_reserved_6</code></em> ()</span></p></td>
 <td>Reserved for future use.
 </td>
 </tr>
@@ -697,6 +773,67 @@ Sets the path to use when searching for icons.
 </table></div>
 </div>
 <hr>
+<div class="refsect2" title="app_indicator_set_label ()">
+<a name="app-indicator-set-label"></a><h3>app_indicator_set_label ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                app_indicator_set_label             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *label</code></em>,
+                                                         <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *guide</code></em>);</pre>
+<p>
+This is a wrapper function for the <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a> and
+	<span class="type">"guide"</span> properties.  This function can take <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><span class="type">NULL</span></a>
+	as either <em class="parameter"><code>label</code></em> or <em class="parameter"><code>guide</code></em> and will clear the entries.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object to use
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>label</code></em> :</span></p></td>
+<td>The label to show next to the icon.
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>guide</code></em> :</span></p></td>
+<td>A guide to size the label correctly.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="app_indicator_set_ordering_index ()">
+<a name="app-indicator-set-ordering-index"></a><h3>app_indicator_set_ordering_index ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                app_indicator_set_ordering_index    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> ordering_index</code></em>);</pre>
+<p>
+Sets the ordering index for the app indicator which effects the
+	placement of it on the panel.  For almost all app indicator
+	this is not the function you're looking for.
+</p>
+<p>
+	Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--ordering-index" title='The "ordering-index" property'><span class="type">"ordering-index"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>ordering_index</code></em> :</span></p></td>
+<td>A value for the ordering of this app indicator
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2" title="app_indicator_get_id ()">
 <a name="app-indicator-get-id"></a><h3>app_indicator_get_id ()</h3>
 <pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_id                (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
@@ -858,6 +995,75 @@ Gets the menu being used for this application indicator.
 </tbody>
 </table></div>
 </div>
+<hr>
+<div class="refsect2" title="app_indicator_get_label ()">
+<a name="app-indicator-get-label"></a><h3>app_indicator_get_label ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_label             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<p>
+Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object to use
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The current label.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="app_indicator_get_label_guide ()">
+<a name="app-indicator-get-label-guide"></a><h3>app_indicator_get_label_guide ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_label_guide       (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<p>
+Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label-guide" title='The "label-guide" property'><span class="type">"label-guide"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object to use
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The current label guide.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" title="app_indicator_get_ordering_index ()">
+<a name="app-indicator-get-ordering-index"></a><h3>app_indicator_get_ordering_index ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>             app_indicator_get_ordering_index    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<p>
+Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--ordering-index" title='The "ordering-index" property'><span class="type">"ordering-index"</span></a>.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>self</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object to use
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td> The current ordering index.
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
 </div>
 <div class="refsect1" title="Property Details">
 <a name="libappindicator-app-indicator.property-details"></a><h2>Property Details</h2>
@@ -920,12 +1126,57 @@ The ID for this indicator, which should be unique, but used consistently
 <p>Default value: NULL</p>
 </div>
 <hr>
+<div class="refsect2" title='The "label" property'>
+<a name="AppIndicator--label"></a><h3>The <code class="literal">"label"</code> property</h3>
+<pre class="programlisting">  "label"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<p>
+A label that can be shown next to the string in the application
+		indicator.  The label will not be shown unless there is an icon
+		as well.  The label is useful for numerical and other frequently
+		updated information.  In general, it shouldn't be shown unless a
+		user requests it as it can take up a significant amount of space
+		on the user's panel.  This may not be shown in all visualizations.
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "label-guide" property'>
+<a name="AppIndicator--label-guide"></a><h3>The <code class="literal">"label-guide"</code> property</h3>
+<pre class="programlisting">  "label-guide"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<p>
+An optional string to provide guidance to the panel on how big
+		the <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a> string could get.  If this is set correctly
+		then the panel should never 'jiggle' as the string adjusts through
+		out the range of options.  For instance, if you were providing a
+		percentage like "54% thrust" in <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a> you'd want to
+		set this string to "100% thrust" to ensure space when Scotty can
+		get you enough power.
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
 <div class="refsect2" title='The "menu" property'>
 <a name="AppIndicator--menu"></a><h3>The <code class="literal">"menu"</code> property</h3>
 <pre class="programlisting">  "menu"                     <span class="type">DBusGObjectPath</span>*      : Read</pre>
 <p>
 A method for getting the menu path as a string for DBus.
 </p>
+</div>
+<hr>
+<div class="refsect2" title='The "ordering-index" property'>
+<a name="AppIndicator--ordering-index"></a><h3>The <code class="literal">"ordering-index"</code> property</h3>
+<pre class="programlisting">  "ordering-index"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<p>
+The ordering index is an odd parameter, and if you think you don't need
+		it you're probably right.  In general, the application indicator try
+		to place the applications in a recreatable place taking into account
+		which category they're in to try and group them.  But, there are some
+		cases where you'd want to ensure indicators are next to each other.
+		To do that you can override the generated ordering index and replace it
+		with a new one.  Again, you probably don't want to be doing this, but
+		in case you do, this is the way.
+</p>
+<p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2" title='The "status" property'>
@@ -936,6 +1187,37 @@ Whether the indicator is shown or requests attention. Defaults to
 		'Passive'.
 </p>
 <p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "x-ayatana-label" property'>
+<a name="AppIndicator--x-ayatana-label"></a><h3>The <code class="literal">"x-ayatana-label"</code> property</h3>
+<pre class="programlisting">  "x-ayatana-label"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<p>
+Wrapper for <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a>.  Please use that in all of your
+		code.
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "x-ayatana-label-guide" property'>
+<a name="AppIndicator--x-ayatana-label-guide"></a><h3>The <code class="literal">"x-ayatana-label-guide"</code> property</h3>
+<pre class="programlisting">  "x-ayatana-label-guide"    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<p>
+Wrapper for <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label-guide" title='The "label-guide" property'><span class="type">"label-guide"</span></a>.  Please use that in all of your
+		code.
+</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2" title='The "x-ayatana-ordering-index" property'>
+<a name="AppIndicator--x-ayatana-ordering-index"></a><h3>The <code class="literal">"x-ayatana-ordering-index"</code> property</h3>
+<pre class="programlisting">  "x-ayatana-ordering-index" <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<p>
+A wrapper for <a class="link" href="libappindicator-app-indicator.html#AppIndicator--ordering-index" title='The "ordering-index" property'><span class="type">"ordering-index"</span></a> so that it can match the
+		dbus interface currently.  It will hopefully be retired, please don't
+		use it anywhere.
+</p>
+<p>Default value: 0</p>
 </div>
 </div>
 <div class="refsect1" title="Signal Details">
@@ -1040,6 +1322,42 @@ Signaled when there is a new icon set for the
 </table></div>
 </div>
 <hr>
+<div class="refsect2" title='The "new-label" signal'>
+<a name="AppIndicator-new-label"></a><h3>The <code class="literal">"new-label"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *arg0,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>        *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>        *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>      user_data)      : Run Last</pre>
+<p>
+Emitted when either <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a> or <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label-guide" title='The "label-guide" property'><span class="type">"label-guide"</span></a> are
+		changed.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg0</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>The string for the label
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>The string for the guide
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
 <div class="refsect2" title='The "new-status" signal'>
 <a name="AppIndicator-new-status"></a><h3>The <code class="literal">"new-status"</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *arg0,
@@ -1068,10 +1386,46 @@ Emitted when <a class="link" href="libappindicator-app-indicator.html#AppIndicat
 </tbody>
 </table></div>
 </div>
+<hr>
+<div class="refsect2" title='The "x-ayatana-new-label" signal'>
+<a name="AppIndicator-x-ayatana-new-label"></a><h3>The <code class="literal">"x-ayatana-new-label"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *arg0,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>        *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>        *arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>      user_data)      : Run Last</pre>
+<p>
+Wrapper for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-label" title='The "new-label" signal'><span class="type">"new-label"</span></a>, please don't use this signal
+		use the other one.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg0</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>The string for the label
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>The string for the guide
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.14</div>
+          Generated by GTK-Doc V1.15</div>
 </body>
 </html>

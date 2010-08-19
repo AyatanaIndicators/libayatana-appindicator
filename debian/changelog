@@ -1,3 +1,12 @@
+indicator-application (0.2.5-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Making it so the approver actually approves indicators
+    * Fixing a small memory leak
+    * Allowing approvers to change thier mind
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 19 Aug 2010 14:00:03 -0500
+
 indicator-application (0.2.4-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
