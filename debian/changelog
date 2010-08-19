@@ -6,7 +6,7 @@ indicator-application (0.2.4-0ubuntu2~ppa2) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 19 Aug 2010 09:50:20 -0500
 
-indicator-application (0.2.4-0ubuntu1~ppa1) maverick; urgency=low
+indicator-application (0.2.4-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Add in ordering IDs
@@ -18,7 +18,7 @@ indicator-application (0.2.4-0ubuntu1~ppa1) maverick; urgency=low
   * debian/control: Moving libappindicator0 to libappindicator1
   * debian/rules: Moving libappindicator0 to libappindicator1
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 13 Aug 2010 14:39:27 -0500
+ -- Ted Gould <ted@ubuntu.com>  Thu, 12 Aug 2010 13:57:17 -0500
 
 indicator-application (0.2.3-0ubuntu2) maverick; urgency=low
 
