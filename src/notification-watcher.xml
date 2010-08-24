@@ -22,7 +22,7 @@
 		<method name="IsNotificationHostRegistered">
 			<arg type="b" name="hasHost" direction="out" />
 		</method>
-		<method name="RegisterNotificationApprover">
+		<method name="XAyatanaRegisterNotificationApprover">
 		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<!-- The path where to find the approver interface -->
 			<arg type="o" name="path" direction="in" />

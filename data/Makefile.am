@@ -5,7 +5,13 @@ dbus_services_DATA = indicator-application.service
 %.service: %.service.in
 	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
 
-EXTRA_DIST = indicator-application.service.in
+overridedir = $(pkgdatadir)
+override_DATA = ordering-override.keyfile
 
-CLEANFILES = indicator-application.service
+EXTRA_DIST = \
+	indicator-application.service.in \
+	ordering-override.keyfile
+
+CLEANFILES = \
+	indicator-application.service
 

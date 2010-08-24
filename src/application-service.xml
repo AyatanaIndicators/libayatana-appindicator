@@ -26,7 +26,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <!-- Methods -->
 		<method name="GetApplications">
-			<arg type="a(sisos)" name="applications" direction="out" />
+			<arg type="a(sisosss)" name="applications" direction="out" />
 		</method>
 
 <!-- Signals -->
@@ -36,6 +36,8 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<arg type="s" name="dbusaddress" direction="out" />
 			<arg type="o" name="dbusobject" direction="out" />
 			<arg type="s" name="iconpath" direction="out" />
+			<arg type="s" name="label" direction="out" />
+			<arg type="s" name="labelguide" direction="out" />
 		</signal>
 		<signal name="ApplicationRemoved">
 			<arg type="i" name="position" direction="out" />
@@ -44,6 +46,14 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<arg type="i" name="position" direction="out" />
 			<arg type="s" name="icon_name" direction="out" />
 		</signal>
-
+		<signal name="ApplicationIconThemePathChanged">
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="icon_theme_path" direction="out" />
+		</signal>
+		<signal name="ApplicationLabelChanged">
+			<arg type="i" name="position" direction="out" />
+			<arg type="s" name="label" direction="out" />
+			<arg type="s" name="guide" direction="out" />
+		</signal>
 	</interface>
 </node>
