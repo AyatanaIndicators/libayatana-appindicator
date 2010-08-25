@@ -621,7 +621,7 @@ apply_status (Application * app)
 			g_signal_emit(G_OBJECT(app->appstore),
 			              signals[APPLICATION_ADDED], 0,
 			              newicon,
-			              g_list_index(priv->applications, app), /* Position */
+			              get_position(app), /* Position */
 			              app->dbus_name,
 			              app->menu,
 			              app->icon_theme_path,
