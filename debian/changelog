@@ -1,10 +1,10 @@
-indicator-application (0.2.5-0ubuntu1~ppa2) UNRELEASED; urgency=low
+indicator-application (0.2.5-0ubuntu1~ppa2) maverick; urgency=low
 
   * Upstream Merge
     * Fixing the position of new indicators (LP: #623205)
     * Position the ibus and keyboard layout indicators correctly.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 25 Aug 2010 13:30:25 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 25 Aug 2010 13:33:41 -0500
 
 indicator-application (0.2.5-0ubuntu1~ppa1) maverick; urgency=low
 
