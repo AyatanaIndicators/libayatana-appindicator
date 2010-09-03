@@ -1,3 +1,11 @@
+indicator-application (0.2.6-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Fixing the position of new indicators (LP: #623205)
+    * Position the ibus and keyboard layout indicators correctly.
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 26 Aug 2010 14:56:27 -0500
+
 indicator-application (0.2.5-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
