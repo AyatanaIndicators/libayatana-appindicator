@@ -72,6 +72,8 @@ typedef enum {
 	VISIBLE_STATE_SHOWN
 } visible_state_t;
 
+#define STATE2STRING(x)  ((x) == VISIBLE_STATE_HIDDEN ? "hidden" : "visible")
+
 typedef struct _Approver Approver;
 struct _Approver {
 	DBusGProxy * proxy;
@@ -599,6 +601,8 @@ apply_status (Application * app)
 	if (app->visible_state == goal_state) {
 		return;
 	}
+
+	g_debug("Changing app state '%s' to %s", app->id, STATE2STRING(goal_state));
 
 	/* This means we're going off line */
 	if (goal_state == VISIBLE_STATE_HIDDEN) {
