@@ -487,6 +487,7 @@ get_position (Application * app) {
 	}
 
 	if (lapp == NULL) {
+		g_warning("Unable to find position for app '%s'", app->id);
 		return -1;
 	}
 	
@@ -499,6 +500,7 @@ static void
 application_free (Application * app)
 {
 	if (app == NULL) return;
+	g_debug("Application free '%s'", app->id);
 	
 	/* Handle the case where this could be called by unref'ing one of
 	   the proxy objects. */
@@ -556,6 +558,7 @@ static void
 application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 {
 	Application * app = (Application *)userdata;
+	g_debug("Application proxy destroyed '%s'", app->id);
 
 	/* Remove from the panel */
 	app->status = APP_INDICATOR_STATUS_PASSIVE;
@@ -602,7 +605,7 @@ apply_status (Application * app)
 		return;
 	}
 
-	g_debug("Changing app state '%s' to %s", app->id, STATE2STRING(goal_state));
+	g_debug("Changing app '%s' state from %s to %s", app->id, STATE2STRING(app->visible_state), STATE2STRING(goal_state));
 
 	/* This means we're going off line */
 	if (goal_state == VISIBLE_STATE_HIDDEN) {
