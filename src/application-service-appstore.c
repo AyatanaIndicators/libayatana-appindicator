@@ -131,6 +131,7 @@ static AppIndicatorCategory string_to_cat(const gchar * cat_string);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
 static void check_with_old_approver (gpointer papprove, gpointer papp);
+static Application * find_application (ApplicationServiceAppstore * appstore, const gchar * address, const gchar * object);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -855,10 +856,20 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
+	Application * app = find_application(appstore, dbus_name, dbus_object);
+
+	if (app != NULL) {
+		g_warning("Application already exists! Rerequesting properties.");
+		org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
+		                                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                                              get_all_properties_cb,
+		                                              app);
+		return;
+	}
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
-	Application * app = g_new0(Application, 1);
+	app = g_new0(Application, 1);
 
 	app->validated = FALSE;
 	app->dbus_name = g_strdup(dbus_name);
