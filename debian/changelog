@@ -5,7 +5,7 @@ indicator-application (0.2.7-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
  -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 12:54:13 -0500
 
-indicator-application (0.2.6-0ubuntu1~ppa1) maverick; urgency=low
+indicator-application (0.2.6-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Fixing the position of new indicators (LP: #623205)
