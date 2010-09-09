@@ -1,3 +1,10 @@
+indicator-application (0.2.7-0ubuntu1) maverick; urgency=low
+
+  * New upstream release.
+    * Handle double registration of indicators (LP: #621838)
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 09 Sep 2010 13:00:37 -0500
+
 indicator-application (0.2.6-0ubuntu1) maverick; urgency=low
 
   * New upstream release.

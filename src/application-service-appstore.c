@@ -72,6 +72,8 @@ typedef enum {
 	VISIBLE_STATE_SHOWN
 } visible_state_t;
 
+#define STATE2STRING(x)  ((x) == VISIBLE_STATE_HIDDEN ? "hidden" : "visible")
+
 typedef struct _Approver Approver;
 struct _Approver {
 	DBusGProxy * proxy;
@@ -129,6 +131,7 @@ static AppIndicatorCategory string_to_cat(const gchar * cat_string);
 static void approver_free (gpointer papprover, gpointer user_data);
 static void check_with_new_approver (gpointer papp, gpointer papprove);
 static void check_with_old_approver (gpointer papprove, gpointer papp);
+static Application * find_application (ApplicationServiceAppstore * appstore, const gchar * address, const gchar * object);
 
 G_DEFINE_TYPE (ApplicationServiceAppstore, application_service_appstore, G_TYPE_OBJECT);
 
@@ -485,6 +488,7 @@ get_position (Application * app) {
 	}
 
 	if (lapp == NULL) {
+		g_warning("Unable to find position for app '%s'", app->id);
 		return -1;
 	}
 	
@@ -497,6 +501,7 @@ static void
 application_free (Application * app)
 {
 	if (app == NULL) return;
+	g_debug("Application free '%s'", app->id);
 	
 	/* Handle the case where this could be called by unref'ing one of
 	   the proxy objects. */
@@ -554,6 +559,7 @@ static void
 application_removed_cb (DBusGProxy * proxy, gpointer userdata)
 {
 	Application * app = (Application *)userdata;
+	g_debug("Application proxy destroyed '%s'", app->id);
 
 	/* Remove from the panel */
 	app->status = APP_INDICATOR_STATUS_PASSIVE;
@@ -599,6 +605,8 @@ apply_status (Application * app)
 	if (app->visible_state == goal_state) {
 		return;
 	}
+
+	g_debug("Changing app '%s' state from %s to %s", app->id, STATE2STRING(app->visible_state), STATE2STRING(goal_state));
 
 	/* This means we're going off line */
 	if (goal_state == VISIBLE_STATE_HIDDEN) {
@@ -848,10 +856,20 @@ application_service_appstore_application_add (ApplicationServiceAppstore * appst
 	g_return_if_fail(dbus_name != NULL && dbus_name[0] != '\0');
 	g_return_if_fail(dbus_object != NULL && dbus_object[0] != '\0');
 	ApplicationServiceAppstorePrivate * priv = appstore->priv;
+	Application * app = find_application(appstore, dbus_name, dbus_object);
+
+	if (app != NULL) {
+		g_warning("Application already exists! Rerequesting properties.");
+		org_freedesktop_DBus_Properties_get_all_async(app->prop_proxy,
+		                                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                                              get_all_properties_cb,
+		                                              app);
+		return;
+	}
 
 	/* Build the application entry.  This will be carried
 	   along until we're sure we've got everything. */
-	Application * app = g_new0(Application, 1);
+	app = g_new0(Application, 1);
 
 	app->validated = FALSE;
 	app->dbus_name = g_strdup(dbus_name);
