@@ -1,9 +1,9 @@
-indicator-application (0.2.7-0ubuntu1~ppa2~attention1) UNRELEASED; urgency=low
+indicator-application (0.2.7-0ubuntu1~ppa2~attention1) maverick; urgency=low
 
   * Upstream Merge
     * Update the icon if the item is visible
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 15 Sep 2010 11:12:52 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 15 Sep 2010 11:14:43 -0500
 
 indicator-application (0.2.7-0ubuntu1~ppa1) maverick; urgency=low
 
