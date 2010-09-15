@@ -602,7 +602,14 @@ apply_status (Application * app)
 	}
 
 	/* Nothing needs to change, we're good */
-	if (app->visible_state == goal_state) {
+	if (app->visible_state == goal_state /* ) { */
+		&& goal_state == VISIBLE_STATE_HIDDEN) {
+		/* TODO: Uhg, this is a little wrong in that we're going to
+		   send an icon every time the status changes and the indicator
+		   is visible even though it might not be updating.  But, at
+		   this point we need a small patch that is harmless.  In the
+		   future we need to track which icon is shown and remove the
+		   duplicate message. */
 		return;
 	}
 
