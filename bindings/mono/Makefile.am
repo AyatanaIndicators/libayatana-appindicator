@@ -77,6 +77,9 @@ $(API): $(MIDDLE_API) Makefile.am
 		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
 		-e "s|PROP_MENU_S|menu|" \
 		-e "s|PROP_CONNECTED_S|connected|" \
+		-e "s|PROP_LABEL_S|label|" \
+		-e "s|PROP_LABEL_GUIDE_S|label-guide|" \
+		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
 		$< > $@
 
 api_includes = $(GTK_SHARP_CFLAGS)
