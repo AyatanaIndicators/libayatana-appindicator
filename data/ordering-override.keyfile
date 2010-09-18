@@ -1,2 +1,5 @@
 [Ordering Index Overrides]
 gnome-power-manager=1
+gst-keyboard-xkb=2
+gsd-keyboard-xkb=3
+ibus=4
