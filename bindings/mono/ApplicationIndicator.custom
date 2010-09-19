@@ -1,10 +1,10 @@
-[DllImport ("libappindicator.so.0")]
+[DllImport ("appindicator.dll")]
 static extern int app_indicator_get_status (IntPtr i);
 
-[DllImport ("libappindicator.so.0")]
+[DllImport ("appindicator.dll")]
 static extern int app_indicator_get_category (IntPtr i);
 
-[DllImport ("libappindicator.so.0")]
+[DllImport ("appindicator.dll")]
 static extern void app_indicator_set_status (IntPtr i, int s);
 
         [GLib.Property ("status")]
