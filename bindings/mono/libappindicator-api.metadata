@@ -47,10 +47,12 @@
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_attention_icon']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label_guide']" />
+    <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_ordering_index']" />
 
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_status']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon_theme_path']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_label']" />
+    <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_ordering_index']" />
 </metadata>
