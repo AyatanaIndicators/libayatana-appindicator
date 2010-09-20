@@ -35,7 +35,6 @@
     <attr path="/api/namespace/object[@cname='AppIndicator']/constructor[@cname='app_indicator_new_with_path']/*/*[@name='category']" name="property_name">category</attr>
     <attr path="/api/namespace/object[@cname='AppIndicator']/constructor[@cname='app_indicator_new_with_path']/*/*[@name='icon_theme_path']" name="property_name">icon-theme-path</attr>
 
-    <remove-node path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='x_ayatana_new_label']" />
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_LABEL_S']" />
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_LABEL_GUIDE_S']" />
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_ORDERING_INDEX_S']" />
@@ -49,7 +48,6 @@
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label_guide']" />
 
-	<remove-node path="/api/namespace/object/method[@cname='app_indicator_set_id']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_status']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon_theme_path']" />

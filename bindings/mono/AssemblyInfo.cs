@@ -27,4 +27,4 @@ using System.Reflection;
 [assembly: AssemblyCopyright ("© 2010 Canonical, Ltd.")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
-[assembly: AssemblyVersion ("0.1")]
+[assembly: AssemblyVersion ("0.2")]
