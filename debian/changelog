@@ -2,8 +2,9 @@ indicator-application (0.2.8-0ubuntu2~ppa1) UNRELEASED; urgency=low
 
   * Upstream Merge
     * Fix Mono binding versioning and build (LP: #636132)
+  * Autogen.sh
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 21 Sep 2010 10:45:08 -0500
+ -- Ted Gould <ted@ubuntu.com>  Tue, 21 Sep 2010 10:48:25 -0500
 
 indicator-application (0.2.8-0ubuntu1) maverick; urgency=low
 
