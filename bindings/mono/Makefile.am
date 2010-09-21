@@ -15,6 +15,9 @@ ASSEMBLY = $(ASSEMBLY_NAME).dll
 POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
 POLICY_VERSION = 0.0
 DLLPOLICY = $(POLICY).dll
+POLICY1 = policy.$(POLICY1_VERSION).$(ASSEMBLY_NAME)
+POLICY1_VERSION = 0.1
+DLLPOLICY1 = $(POLICY1).dll
 WRAPPER_FREE_BINDING_SRC = ../../src/app-indicator.c
 WRAPPER_FREE_BINDING = app-indicator.c
 
@@ -22,7 +25,9 @@ TARGET = \
 	$(ASSEMBLY) \
 	$(ASSEMBLY).config \
 	$(DLLPOLICY) \
-	$(POLICY).config
+	$(POLICY).config \
+	$(DLLPOLICY1) \
+	$(POLICY1).config
 
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
@@ -37,8 +42,10 @@ CLEANFILES = \
 	$(RAW_API) \
 	$(TEST) \
 	$(DLLPOLICY) \
+	$(DLLPOLICY1) \
 	$(WRAPPER_FREE_BINDING) \
-	$(POLICY).config
+	$(POLICY).config \
+	$(POLICY1).config
 
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
@@ -52,6 +59,7 @@ EXTRA_DIST =					\
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
+	$(POLICY1).config.in \
 	$(customs)				\
 	$(TEST_SOURCES)
 
@@ -128,3 +136,11 @@ $(POLICY).config: $(POLICY).config.in Makefile
 $(DLLPOLICY): $(POLICY).config $(ASSEMBLY_NAME).snk Makefile
 	$(AL) -link:$(POLICY).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
 
+
+$(POLICY1).config: $(POLICY1).config.in Makefile
+	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
+		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
+		$< > $@
+
+$(DLLPOLICY1): $(POLICY1).config $(ASSEMBLY_NAME).snk Makefile
+	$(AL) -link:$(POLICY1).config -out:$(DLLPOLICY1) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
