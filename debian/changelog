@@ -1,4 +1,4 @@
-indicator-application (0.2.8-0ubuntu1~ppa1) maverick; urgency=low
+indicator-application (0.2.8-0ubuntu1) maverick; urgency=low
 
   * New upstream release.
     * Update the icon if the item is visible (LP: #639643)
