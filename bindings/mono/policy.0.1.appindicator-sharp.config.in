@@ -3,7 +3,7 @@
 		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
 			<dependentAssembly>
 				<assemblyIdentity name="@ASSEMBLY_NAME@" publicKeyToken="bcae265d1c7ab4c2" />
-				<bindingRedirect oldVersion="0.0.0.0-0.1.0.0" newVersion="@ASSEMBLY_VERSION@"/>
+				<bindingRedirect oldVersion="0.1.0.0-@ASSEMBLY_VERSION@" newVersion="@ASSEMBLY_VERSION@"/>
 			</dependentAssembly>
 		</assemblyBinding>
 	</runtime>
