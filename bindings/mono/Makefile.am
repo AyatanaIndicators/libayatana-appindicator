@@ -18,7 +18,7 @@ DLLPOLICY = $(POLICY).dll
 POLICY1 = policy.$(POLICY1_VERSION).$(ASSEMBLY_NAME)
 POLICY1_VERSION = 0.1
 DLLPOLICY1 = $(POLICY1).dll
-WRAPPER_FREE_BINDING_SRC = ../../src/app-indicator.c
+WRAPPER_FREE_BINDING_SRC = $(top_srcdir)/src/app-indicator.c
 WRAPPER_FREE_BINDING = app-indicator.c
 
 TARGET = \
@@ -69,7 +69,7 @@ references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
 
 $(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
-	$(GAPI_PARSER) app-indicator.sources.xml
+	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
 
 $(WRAPPER_FREE_BINDING): $(WRAPPER_FREE_BINDING_SRC)
 	sed '/signals\[X_NEW_LABEL\] /,+6d' $(WRAPPER_FREE_BINDING_SRC) > $(WRAPPER_FREE_BINDING)
