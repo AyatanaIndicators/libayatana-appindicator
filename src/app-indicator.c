@@ -174,7 +174,6 @@ static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
-static void submenu_added (GtkWidget *widget, GtkWidget *submenu, gpointer data);
 
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 
@@ -1750,14 +1749,6 @@ container_iterate (GtkWidget *widget,
                                    child,
                                    0);
         }
-      g_signal_connect (GTK_MENU_ITEM(widget),
-                       "submenu-added",
-                       G_CALLBACK (submenu_added),
-                       child);
-      g_signal_connect (GTK_MENU_ITEM(widget),
-                       "submenu-removed",
-                       G_CALLBACK (submenu_changed),
-                       child);
     }
 
   dbusmenu_menuitem_property_set_bool (child,
@@ -1819,28 +1810,6 @@ submenu_changed (GtkWidget *widget,
   gtk_container_foreach (GTK_CONTAINER (widget),
                         container_iterate,
                         root);
-}
-
-static void
-submenu_added (GtkWidget *widget,
-               GtkWidget *submenu,
-               gpointer   data)
-{
-    DbusmenuMenuitem *root = (DbusmenuMenuitem *)data;
-    
-    gtk_container_foreach (GTK_CONTAINER (submenu),
-                        container_iterate,
-                        root);
-    g_signal_connect_object (GTK_MENU(submenu),
-                           "child-added",
-                           G_CALLBACK (submenu_changed),
-                           root,
-                           0);
-    g_signal_connect_object (GTK_MENU(submenu),
-                           "child-removed",
-                           G_CALLBACK (submenu_changed),
-                           root,
-                           0);
 }
 
 static void
