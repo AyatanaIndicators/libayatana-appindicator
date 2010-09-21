@@ -15,6 +15,8 @@ ASSEMBLY = $(ASSEMBLY_NAME).dll
 POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
 POLICY_VERSION = 0.0
 DLLPOLICY = $(POLICY).dll
+WRAPPER_FREE_BINDING_SRC = $(top_srcdir)/src/app-indicator.c
+WRAPPER_FREE_BINDING = app-indicator.c
 
 TARGET = \
 	$(ASSEMBLY) \
@@ -35,6 +37,7 @@ CLEANFILES = \
 	$(RAW_API) \
 	$(TEST) \
 	$(DLLPOLICY) \
+	$(WRAPPER_FREE_BINDING) \
 	$(POLICY).config
 
 DISTCLEANFILES = $(ASSEMBLY).config
@@ -57,8 +60,11 @@ GACUTIL_FLAGS=-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
 references = $(GTK_SHARP_LIBS)
 test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
 
-$(RAW_API): app-indicator.sources.xml
-	$(GAPI_PARSER) app-indicator.sources.xml
+$(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
+	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
+
+$(WRAPPER_FREE_BINDING): $(WRAPPER_FREE_BINDING_SRC)
+	sed '/signals\[X_NEW_LABEL\] /,+6d' $(WRAPPER_FREE_BINDING_SRC) > $(WRAPPER_FREE_BINDING)
 
 $(MIDDLE_API): $(METADATA) $(RAW_API)
 	cp $(srcdir)/$(RAW_API) $(MIDDLE_API)
