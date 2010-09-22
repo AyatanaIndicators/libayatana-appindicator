@@ -1,18 +1,18 @@
-indicator-application (0.2.9-0ubuntu1~ppa2) maverick; urgency=low
+indicator-application (0.2.9-0ubuntu1) maverick; urgency=low
 
-  * debian/libappindicator0.1-cil.installcligac: Add the 0.1
-    policy file.
-
- -- Ted Gould <ted@ubuntu.com>  Wed, 22 Sep 2010 11:55:08 -0500
-
-indicator-application (0.2.9-0ubuntu1~ppa1) maverick; urgency=low
-
+  [ Ted Gould ]
   * New upstream release.
     * Fix Mono binding versioning and build (LP: #636132)
     * Fix submenus with Glade applications (LP: #608219)
     * Add new functions to Mono and Python bindings
+  * debian/libappindicator0.1-cil.installcligac: Add the 0.1
+    policy file.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 22 Sep 2010 11:18:37 -0500
+  [ Didier Roche ]
+  * debian/control:
+    - build with latest libindicator-dev for ABI breakage (LP: #637692)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 19:57:57 +0200
 
 indicator-application (0.2.8-0ubuntu1) maverick; urgency=low
 
