@@ -298,16 +298,23 @@ MIDDLE_API = libappindicator-api.middle
 RAW_API = libappindicator-api.raw
 METADATA = libappindicator-api.metadata
 ASSEMBLY_NAME = appindicator-sharp
-ASSEMBLY_VERSION = 0.1.0.0
+ASSEMBLY_VERSION = 0.2.0.0
 ASSEMBLY = $(ASSEMBLY_NAME).dll
 POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
 POLICY_VERSION = 0.0
 DLLPOLICY = $(POLICY).dll
+POLICY1 = policy.$(POLICY1_VERSION).$(ASSEMBLY_NAME)
+POLICY1_VERSION = 0.1
+DLLPOLICY1 = $(POLICY1).dll
+WRAPPER_FREE_BINDING_SRC = $(top_srcdir)/src/app-indicator.c
+WRAPPER_FREE_BINDING = app-indicator.c
 TARGET = \
 	$(ASSEMBLY) \
 	$(ASSEMBLY).config \
 	$(DLLPOLICY) \
-	$(POLICY).config
+	$(POLICY).config \
+	$(DLLPOLICY1) \
+	$(POLICY1).config
 
 assemblydir = $(libdir)/cli/appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
@@ -321,7 +328,10 @@ CLEANFILES = \
 	$(RAW_API) \
 	$(TEST) \
 	$(DLLPOLICY) \
-	$(POLICY).config
+	$(DLLPOLICY1) \
+	$(WRAPPER_FREE_BINDING) \
+	$(POLICY).config \
+	$(POLICY1).config
 
 DISTCLEANFILES = $(ASSEMBLY).config
 TEST_SOURCES = TestIndicator.cs
@@ -335,6 +345,7 @@ EXTRA_DIST = \
 	app-indicator.sources.xml		\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
+	$(POLICY1).config.in \
 	$(customs)				\
 	$(TEST_SOURCES)
 
@@ -743,8 +754,11 @@ uninstall-am: uninstall-assemblyDATA uninstall-local \
 	uninstall-pkgconfigDATA
 
 
-$(RAW_API): app-indicator.sources.xml
-	$(GAPI_PARSER) app-indicator.sources.xml
+$(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
+	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
+
+$(WRAPPER_FREE_BINDING): $(WRAPPER_FREE_BINDING_SRC)
+	sed '/signals\[X_NEW_LABEL\] /,+6d' $(WRAPPER_FREE_BINDING_SRC) > $(WRAPPER_FREE_BINDING)
 
 $(MIDDLE_API): $(METADATA) $(RAW_API)
 	cp $(srcdir)/$(RAW_API) $(MIDDLE_API)
@@ -763,6 +777,9 @@ $(API): $(MIDDLE_API) Makefile.am
 		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
 		-e "s|PROP_MENU_S|menu|" \
 		-e "s|PROP_CONNECTED_S|connected|" \
+		-e "s|PROP_LABEL_S|label|" \
+		-e "s|PROP_LABEL_GUIDE_S|label-guide|" \
+		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
 		$< > $@
 
 generated-stamp: $(API) $(build_customs)
@@ -800,6 +817,14 @@ $(POLICY).config: $(POLICY).config.in Makefile
 
 $(DLLPOLICY): $(POLICY).config $(ASSEMBLY_NAME).snk Makefile
 	$(AL) -link:$(POLICY).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
+
+$(POLICY1).config: $(POLICY1).config.in Makefile
+	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
+		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
+		$< > $@
+
+$(DLLPOLICY1): $(POLICY1).config $(ASSEMBLY_NAME).snk Makefile
+	$(AL) -link:$(POLICY1).config -out:$(DLLPOLICY1) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

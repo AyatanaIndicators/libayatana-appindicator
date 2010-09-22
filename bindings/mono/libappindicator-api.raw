@@ -6,7 +6,7 @@
         Please DO NOT MODIFY THIS FILE, modify .metadata files instead.
 
 -->
-  <namespace name="AppIndicator" library="libappindicator.so.0">
+  <namespace name="AppIndicator" library="appindicator.dll">
     <enum name="Category" cname="AppIndicatorCategory" gtype="app_indicator_category_get_type" type="enum">
       <member cname="APP_INDICATOR_CATEGORY_APPLICATION_STATUS" name="ApplicationStatus" />
       <member cname="APP_INDICATOR_CATEGORY_COMMUNICATIONS" name="Communications" />
@@ -29,6 +29,12 @@
       <property name="PROP_ICON_THEME_PATH_S" cname="PROP_ICON_THEME_PATH_S" type="gchar*" readable="true" writeable="true" construct="true" />
       <property name="PROP_MENU_S" cname="PROP_MENU_S" type="DbusGObjectPath" readable="true" />
       <property name="PROP_CONNECTED_S" cname="PROP_CONNECTED_S" type="gboolean" readable="true" />
+      <property name="PROP_LABEL_S" cname="PROP_LABEL_S" type="gchar*" readable="true" writeable="true" />
+      <property name="PROP_LABEL_GUIDE_S" cname="PROP_LABEL_GUIDE_S" type="gchar*" readable="true" writeable="true" />
+      <property name="PROP_ORDERING_INDEX_S" cname="PROP_ORDERING_INDEX_S" type="guint" readable="true" writeable="true" />
+      <property name="PROP_X_ORDERING_INDEX_S" cname="PROP_X_ORDERING_INDEX_S" type="guint" readable="true" writeable="true" />
+      <property name="PROP_X_LABEL_S" cname="PROP_X_LABEL_S" type="gchar*" readable="true" writeable="true" />
+      <property name="PROP_X_LABEL_GUIDE_S" cname="PROP_X_LABEL_GUIDE_S" type="gchar*" readable="true" writeable="true" />
       <signal when="LAST" field_name="new_icon">
         <return-type type="void" />
         <parameters>
@@ -51,11 +57,28 @@
           <parameter type="gpointer" name="user_data" />
         </parameters>
       </signal>
+      <signal when="LAST" field_name="new_label">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="AppIndicator*" name="indicator" />
+          <parameter type="const-gchar*" name="label" />
+          <parameter type="const-gchar*" name="guide" />
+          <parameter type="gpointer" name="user_data" />
+        </parameters>
+      </signal>
       <signal when="LAST" field_name="connection_changed">
         <return-type type="void" />
         <parameters>
           <parameter type="AppIndicator*" name="indicator" />
           <parameter type="gboolean" name="connected" />
+          <parameter type="gpointer" name="user_data" />
+        </parameters>
+      </signal>
+      <signal when="LAST" field_name="new_icon_theme_path">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="AppIndicator*" name="indicator" />
+          <parameter type="const-gchar*" name="icon_theme_path" />
           <parameter type="gpointer" name="user_data" />
         </parameters>
       </signal>
@@ -72,14 +95,6 @@
           <parameter type="GtkStatusIcon*" name="status_icon" />
         </parameters>
       </virtual_method>
-      <signal when="LAST" field_name="new_icon_theme_path">
-        <return-type type="void" />
-        <parameters>
-          <parameter type="AppIndicator*" name="indicator" />
-          <parameter type="const-gchar*" name="icon_theme_path" />
-          <parameter type="gpointer" name="user_data" />
-        </parameters>
-      </signal>
       <method name="GetAttentionIcon" cname="app_indicator_get_attention_icon">
         <return-type type="const-gchar*" />
       </method>
@@ -95,8 +110,17 @@
       <method name="GetId" cname="app_indicator_get_id">
         <return-type type="const-gchar*" />
       </method>
+      <method name="GetLabel" cname="app_indicator_get_label">
+        <return-type type="const-gchar*" />
+      </method>
+      <method name="GetLabelGuide" cname="app_indicator_get_label_guide">
+        <return-type type="const-gchar*" />
+      </method>
       <method name="GetMenu" cname="app_indicator_get_menu">
         <return-type type="GtkMenu*" />
+      </method>
+      <method name="GetOrderingIndex" cname="app_indicator_get_ordering_index">
+        <return-type type="guint32" />
       </method>
       <method name="GetStatus" cname="app_indicator_get_status">
         <return-type type="AppIndicatorStatus" />
@@ -137,10 +161,23 @@
           <parameter type="const-gchar*" name="icon_theme_path" />
         </parameters>
       </method>
+      <method name="SetLabel" cname="app_indicator_set_label">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="const-gchar*" name="label" />
+          <parameter type="const-gchar*" name="guide" />
+        </parameters>
+      </method>
       <method name="SetMenu" cname="app_indicator_set_menu">
         <return-type type="void" />
         <parameters>
           <parameter type="GtkMenu*" name="menu" />
+        </parameters>
+      </method>
+      <method name="SetOrderingIndex" cname="app_indicator_set_ordering_index">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="guint32" name="ordering_index" />
         </parameters>
       </method>
       <method name="SetStatus" cname="app_indicator_set_status">

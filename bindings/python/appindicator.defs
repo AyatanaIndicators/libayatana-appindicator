@@ -62,6 +62,24 @@
   )
 )
 
+(define-method set_label
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_label")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "label" (null-ok))
+    '("const-gchar*" "guide" (null-ok) (default "NULL"))
+  )
+)
+
+(define-method set_ordering_index
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_ordering_index")
+  (parameters
+    '("guint32" "ordering_index")
+  )
+)
+
 (define-method set_attention_icon
   (of-object "AppIndicator")
   (c-name "app_indicator_set_attention_icon")
@@ -114,6 +132,24 @@
   (of-object "AppIndicator")
   (c-name "app_indicator_get_status")
   (return-type "AppIndicatorStatus")
+)
+
+(define-method get_label
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_label")
+  (return-type "const-gchar*")
+)
+
+(define-method get_label_guide
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_label_guide")
+  (return-type "const-gchar*")
+)
+
+(define-method get_ordering_index
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_ordering_index")
+  (return-type "guint32")
 )
 
 (define-method get_icon
