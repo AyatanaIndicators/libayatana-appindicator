@@ -108,12 +108,12 @@ libappindicator_la_LDFLAGS = \
 	-export-symbols-regex "^[^_d].*"
 
 libappindicator_la_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"libappindicator\"
 
 libappindicator_la_LIBADD = \
-	$(INDICATOR_LIBS)
+	$(LIBRARY_LIBS)
 
 ##################################
 # DBus Specs
