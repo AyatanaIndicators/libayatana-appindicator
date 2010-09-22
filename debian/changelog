@@ -1,10 +1,11 @@
-indicator-application (0.2.8-0ubuntu2~ppa1) maverick; urgency=low
+indicator-application (0.2.9-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * Fix Mono binding versioning and build (LP: #636132)
-  * Autogen.sh
+    * Fix submenus with Glade applications (LP: #608219)
+    * Add new functions to Mono and Python bindings
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 21 Sep 2010 10:50:43 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 22 Sep 2010 11:15:19 -0500
 
 indicator-application (0.2.8-0ubuntu1) maverick; urgency=low
 
