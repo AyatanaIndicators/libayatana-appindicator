@@ -12,7 +12,7 @@ indicator-application (0.2.9-0ubuntu1) maverick; urgency=low
   * debian/control:
     - build with latest libindicator-dev for ABI breakage (LP: #637692)
 
- -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 19:57:57 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 22 Sep 2010 20:01:04 +0200
 
 indicator-application (0.2.8-0ubuntu1) maverick; urgency=low
 
