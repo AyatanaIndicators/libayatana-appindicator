@@ -30,12 +30,25 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "application-service-watcher.h"
 #include "dbus-shared.h"
 
+/* Enum for the properties so that they can be quickly
+   found and looked up. */
+enum {
+	PROP_0,
+	PROP_PROTOCOL_VERSION,
+	PROP_IS_STATUS_NOTIFIER_HOST_REGISTERED,
+	PROP_REGISTERED_STATUS_NOTIFIER_ITEMS
+};
+
+/* The strings so that they can be slowly looked up. */
+#define PROP_PROTOCOL_VERSION_S                   "protocol-version"
+#define PROP_IS_STATUS_NOTIFIER_HOST_REGISTERED_S "is-status-notifier-host-registered"
+#define PROP_REGISTERED_STATUS_NOTIFIER_ITEMS_S   "registered-status-notifier-items"
+
+#define CURRENT_PROTOCOL_VERSION 0
+
 static gboolean _notification_watcher_server_register_status_notifier_item (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_registered_status_notifier_items (ApplicationServiceWatcher * appwatcher, GArray ** apps);
-static gboolean _notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version);
-static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
+static gboolean _notification_watcher_server_register_status_notifier_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
 static gboolean _notification_watcher_server_x_ayatana_register_notification_approver (ApplicationServiceWatcher * appwatcher, const gchar * path, const GArray * categories, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost);
 static void get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data);
 
 #include "notification-watcher-server.h"
@@ -52,10 +65,9 @@ struct _ApplicationServiceWatcherPrivate {
 
 /* Signals Stuff */
 enum {
-	SERVICE_REGISTERED,
-	SERVICE_UNREGISTERED,
-	NOTIFICATION_HOST_REGISTERED,
-	NOTIFICATION_HOST_UNREGISTERED,
+	STATUS_NOTIFIER_ITEM_REGISTERED,
+	STATUS_NOTIFIER_ITEM_UNREGISTERED,
+	STATUS_NOTIFIER_HOST_REGISTERED,
 	LAST_SIGNAL
 };
 
@@ -66,6 +78,8 @@ static void application_service_watcher_class_init (ApplicationServiceWatcherCla
 static void application_service_watcher_init       (ApplicationServiceWatcher *self);
 static void application_service_watcher_dispose    (GObject *object);
 static void application_service_watcher_finalize   (GObject *object);
+static void application_service_watcher_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec);
+static void application_service_watcher_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 
 G_DEFINE_TYPE (ApplicationServiceWatcher, application_service_watcher, G_TYPE_OBJECT);
 
@@ -79,31 +93,52 @@ application_service_watcher_class_init (ApplicationServiceWatcherClass *klass)
 	object_class->dispose = application_service_watcher_dispose;
 	object_class->finalize = application_service_watcher_finalize;
 
-	signals[SERVICE_REGISTERED] = g_signal_new ("service-registered",
+	/* Property funcs */
+	object_class->set_property = application_service_watcher_set_property;
+	object_class->get_property = application_service_watcher_get_property;
+
+	/* Properties */
+	g_object_class_install_property (object_class,
+	                                 PROP_PROTOCOL_VERSION,
+	                                 g_param_spec_int(PROP_PROTOCOL_VERSION_S,
+	                                                  "Protocol Version",
+	                                                  "Which version of the StatusNotifierProtocol this watcher implements",
+	                                                  0, G_MAXINT,
+	                                                  CURRENT_PROTOCOL_VERSION,
+	                                                  G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class,
+	                                 PROP_IS_STATUS_NOTIFIER_HOST_REGISTERED,
+	                                 g_param_spec_boolean(PROP_IS_STATUS_NOTIFIER_HOST_REGISTERED_S,
+	                                                      "Is StatusNotifierHost Registered",
+	                                                      "True if there is at least one StatusNotifierHost registered",
+	                                                      FALSE,
+	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property (object_class,
+	                                 PROP_REGISTERED_STATUS_NOTIFIER_ITEMS,
+	                                 g_param_spec_boxed(PROP_REGISTERED_STATUS_NOTIFIER_ITEMS_S,
+	                                                    "Registered StatusNotifierItems",
+	                                                    "The list of StatusNotifierItems registered to this watcher",
+	                                                    G_TYPE_STRV,
+	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	/* Signals */
+	signals[STATUS_NOTIFIER_ITEM_REGISTERED] = g_signal_new ("status-notifier-item-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_registered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_item_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
-	signals[SERVICE_UNREGISTERED] = g_signal_new ("service-unregistered",
+	signals[STATUS_NOTIFIER_ITEM_UNREGISTERED] = g_signal_new ("status-notifier-item-unregistered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_item_unregistered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
-	signals[NOTIFICATION_HOST_REGISTERED] = g_signal_new ("notification-host-registered",
+	signals[STATUS_NOTIFIER_HOST_REGISTERED] = g_signal_new ("status-notifier-host-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_registered),
-	                                           NULL, NULL,
-	                                           g_cclosure_marshal_VOID__VOID,
-	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
-	signals[NOTIFICATION_HOST_UNREGISTERED] = g_signal_new ("notification-host-unregistered",
-	                                           G_TYPE_FROM_CLASS(klass),
-	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_host_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__VOID,
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
@@ -175,6 +210,29 @@ application_service_watcher_finalize (GObject *object)
 	return;
 }
 
+static void
+application_service_watcher_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+{
+	/* There are no writable properties for now */
+}
+
+static void
+application_service_watcher_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
+{
+	ApplicationServiceWatcherPrivate * priv = APPLICATION_SERVICE_WATCHER_GET_PRIVATE(object);
+	switch (prop_id) {
+	case PROP_PROTOCOL_VERSION:
+		g_value_set_int (value, CURRENT_PROTOCOL_VERSION);
+		break;
+	case PROP_IS_STATUS_NOTIFIER_HOST_REGISTERED:
+		g_value_set_boolean (value, TRUE);
+		break;
+	case PROP_REGISTERED_STATUS_NOTIFIER_ITEMS:
+		g_value_set_boxed (value, application_service_appstore_application_get_list(priv->appstore));
+		break;
+	}
+}
+
 ApplicationServiceWatcher *
 application_service_watcher_new (ApplicationServiceAppstore * appstore)
 {
@@ -205,31 +263,10 @@ _notification_watcher_server_register_status_notifier_item (ApplicationServiceWa
 }
 
 static gboolean
-_notification_watcher_server_registered_status_notifier_items (ApplicationServiceWatcher * appwatcher, GArray ** apps)
+_notification_watcher_server_register_status_notifier_host (ApplicationServiceWatcher * appwatcher, const gchar * host)
 {
 
 	return FALSE;
-}
-
-static gboolean
-_notification_watcher_server_protocol_version (ApplicationServiceWatcher * appwatcher, char ** version)
-{
-	*version = g_strdup("Ayatana Version 1");
-	return TRUE;
-}
-
-static gboolean
-_notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host)
-{
-
-	return FALSE;
-}
-
-static gboolean
-_notification_watcher_server_is_notification_host_registered (ApplicationServiceWatcher * appwatcher, gboolean * haveHost)
-{
-	*haveHost = TRUE;
-	return TRUE;
 }
 
 /* Function to handle the return of the get name.  There isn't a whole
