@@ -47,7 +47,7 @@ enum {
 #define CURRENT_PROTOCOL_VERSION 0
 
 static gboolean _notification_watcher_server_register_status_notifier_item (ApplicationServiceWatcher * appwatcher, const gchar * service, DBusGMethodInvocation * method);
-static gboolean _notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
+static gboolean _notification_watcher_server_register_status_notifier_host (ApplicationServiceWatcher * appwatcher, const gchar * host);
 static gboolean _notification_watcher_server_x_ayatana_register_notification_approver (ApplicationServiceWatcher * appwatcher, const gchar * path, const GArray * categories, DBusGMethodInvocation * method);
 static void get_name_cb (DBusGProxy * proxy, guint status, GError * error, gpointer data);
 
@@ -65,10 +65,9 @@ struct _ApplicationServiceWatcherPrivate {
 
 /* Signals Stuff */
 enum {
-	SERVICE_REGISTERED,
-	SERVICE_UNREGISTERED,
-	NOTIFICATION_HOST_REGISTERED,
-	NOTIFICATION_HOST_UNREGISTERED,
+	STATUS_NOTIFIER_ITEM_REGISTERED,
+	STATUS_NOTIFIER_ITEM_UNREGISTERED,
+	STATUS_NOTIFIER_HOST_REGISTERED,
 	LAST_SIGNAL
 };
 
@@ -122,31 +121,24 @@ application_service_watcher_class_init (ApplicationServiceWatcherClass *klass)
 	                                                    G_TYPE_STRV,
 	                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 	/* Signals */
-	signals[SERVICE_REGISTERED] = g_signal_new ("service-registered",
+	signals[STATUS_NOTIFIER_ITEM_REGISTERED] = g_signal_new ("status-notifier-item-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_registered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_item_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
-	signals[SERVICE_UNREGISTERED] = g_signal_new ("service-unregistered",
+	signals[STATUS_NOTIFIER_ITEM_UNREGISTERED] = g_signal_new ("status-notifier-item-unregistered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, service_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_item_unregistered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__STRING,
 	                                           G_TYPE_NONE, 1, G_TYPE_STRING, G_TYPE_NONE);
-	signals[NOTIFICATION_HOST_REGISTERED] = g_signal_new ("notification-host-registered",
+	signals[STATUS_NOTIFIER_HOST_REGISTERED] = g_signal_new ("status-notifier-host-registered",
 	                                           G_TYPE_FROM_CLASS(klass),
 	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_registered),
-	                                           NULL, NULL,
-	                                           g_cclosure_marshal_VOID__VOID,
-	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
-	signals[NOTIFICATION_HOST_UNREGISTERED] = g_signal_new ("notification-host-unregistered",
-	                                           G_TYPE_FROM_CLASS(klass),
-	                                           G_SIGNAL_RUN_LAST,
-	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, notification_host_unregistered),
+	                                           G_STRUCT_OFFSET (ApplicationServiceWatcherClass, status_notifier_host_registered),
 	                                           NULL, NULL,
 	                                           g_cclosure_marshal_VOID__VOID,
 	                                           G_TYPE_NONE, 0, G_TYPE_NONE);
@@ -271,7 +263,7 @@ _notification_watcher_server_register_status_notifier_item (ApplicationServiceWa
 }
 
 static gboolean
-_notification_watcher_server_register_notification_host (ApplicationServiceWatcher * appwatcher, const gchar * host)
+_notification_watcher_server_register_status_notifier_host (ApplicationServiceWatcher * appwatcher, const gchar * host)
 {
 
 	return FALSE;
