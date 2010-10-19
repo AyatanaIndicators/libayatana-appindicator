@@ -1058,6 +1058,11 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 static void
 check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer userdata)
 {
+	if (error != NULL) {
+		g_warning("Unable to check for '" NOTIFICATION_WATCHER_DBUS_ADDR "' on DBus.  No worries, but concerning.");
+		return;
+	}
+
 	if (exists) {
 		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
 	}
