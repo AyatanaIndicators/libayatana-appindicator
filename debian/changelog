@@ -1,9 +1,9 @@
-indicator-application (0.2.9-0ubuntu2~ppa2~race1) UNRELEASED; urgency=low
+indicator-application (0.2.9-0ubuntu2~ppa2~race1) maverick; urgency=low
 
   * Upstream Merge
     * A race fix on the dbus name
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 19 Oct 2010 20:27:00 -0400
+ -- Ted Gould <ted@ubuntu.com>  Tue, 19 Oct 2010 20:29:12 -0400
 
 indicator-application (0.2.9-0ubuntu2~ppa1) maverick; urgency=low
 
