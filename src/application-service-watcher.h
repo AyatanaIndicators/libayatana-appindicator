@@ -44,10 +44,9 @@ struct _ApplicationServiceWatcherClass {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*service_registered) (ApplicationServiceWatcher * watcher, gchar * object, gpointer data);
-	void (*service_unregistered) (ApplicationServiceWatcher * watcher, gchar * object, gpointer data);
-	void (*notification_host_registered) (ApplicationServiceWatcher * watcher, gpointer data);
-	void (*notification_host_unregistered) (ApplicationServiceWatcher * watcher, gpointer data);
+	void (*status_notifier_item_registered) (ApplicationServiceWatcher * watcher, gchar * object, gpointer data);
+	void (*status_notifier_item_unregistered) (ApplicationServiceWatcher * watcher, gchar * object, gpointer data);
+	void (*status_notifier_host_registered) (ApplicationServiceWatcher * watcher, gpointer data);
 };
 
 struct _ApplicationServiceWatcher {

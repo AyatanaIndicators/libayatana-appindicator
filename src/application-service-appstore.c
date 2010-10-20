@@ -1022,6 +1022,24 @@ application_service_appstore_application_remove (ApplicationServiceAppstore * ap
 	return;
 }
 
+gchar**
+application_service_appstore_application_get_list (ApplicationServiceAppstore * appstore)
+{
+	ApplicationServiceAppstorePrivate * priv = appstore->priv;
+	gchar ** out;
+	gchar ** outpntr;
+	GList * listpntr;
+
+	out = g_new(gchar*, g_list_length(priv->applications) + 1);
+
+	for (listpntr = priv->applications, outpntr = out; listpntr != NULL; listpntr = g_list_next(listpntr), ++outpntr) {
+		Application * app = (Application *)listpntr->data;
+		*outpntr = g_strdup_printf("%s%s", app->dbus_name, app->dbus_object);
+	}
+	*outpntr = 0;
+	return out;
+}
+
 /* Creates a basic appstore object and attaches the
    LRU file object to it. */
 ApplicationServiceAppstore *
