@@ -1064,6 +1064,7 @@ check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer user
 	}
 
 	if (exists) {
+		g_debug("Woah, we actually has a race condition with dbus");
 		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
 	}
 
