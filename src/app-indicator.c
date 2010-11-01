@@ -32,6 +32,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
+
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
 
@@ -1052,6 +1054,23 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 	return;
 }
 
+/* Checking to see if someone already has the name we're looking for */
+static void
+check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer userdata)
+{
+	if (error != NULL) {
+		g_warning("Unable to check for '" NOTIFICATION_WATCHER_DBUS_ADDR "' on DBus.  No worries, but concerning.");
+		return;
+	}
+
+	if (exists) {
+		g_debug("Woah, we actually has a race condition with dbus");
+		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
+	}
+
+	return;
+}
+
 /* This is an idle function to create the proxy.  This is mostly
    because start_fallback_timer can get called in the distruction
    of a proxy and thus the proxy manager gets confused when creating
@@ -1074,6 +1093,11 @@ setup_name_owner_proxy (gpointer data)
 		                        G_TYPE_INVALID);
 		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
 		                            G_CALLBACK(dbus_owner_change), data, NULL);
+
+		/* Check to see if anyone has the name we're looking for
+		   just incase we missed it changing. */
+
+		org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, check_owner_cb, data);
 	}
 
 	return FALSE;
