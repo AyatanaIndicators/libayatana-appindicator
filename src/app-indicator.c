@@ -2106,3 +2106,18 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	}
 }
 
+/**
+	app_indicator_build_menu_from_desktop:
+	@self: The #AppIndicator object to use
+	@desktop_file: A path to the desktop file to build the menu from
+
+	This function allows for building the Application Indicator menu
+	from a static desktop file.
+*/
+void
+app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file)
+{
+
+
+
+}
