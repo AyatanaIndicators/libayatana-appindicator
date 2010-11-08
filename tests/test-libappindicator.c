@@ -294,6 +294,22 @@ test_libappindicator_label_signals (void)
 }
 
 void
+test_libappindicator_desktop_menu (void)
+{
+
+
+
+}
+
+void
+test_libappindicator_desktop_menu_bad (void)
+{
+
+
+
+}
+
+void
 test_libappindicator_props_suite (void)
 {
 	g_test_add_func ("/indicator-application/libappindicator/init",            test_libappindicator_init);
@@ -302,6 +318,8 @@ test_libappindicator_props_suite (void)
 	g_test_add_func ("/indicator-application/libappindicator/prop_signals",    test_libappindicator_prop_signals);
 	g_test_add_func ("/indicator-application/libappindicator/set_label",       test_libappindicator_set_label);
 	g_test_add_func ("/indicator-application/libappindicator/label_signals",   test_libappindicator_label_signals);
+	g_test_add_func ("/indicator-application/libappindicator/desktop_menu",    test_libappindicator_desktop_menu);
+	g_test_add_func ("/indicator-application/libappindicator/desktop_menu_bad",test_libappindicator_desktop_menu_bad);
 
 	return;
 }
