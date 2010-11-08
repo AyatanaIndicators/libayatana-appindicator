@@ -13,7 +13,9 @@ check_PROGRAMS = \
 TESTS =
 DISTCLEANFILES = $(TESTS)
 
-EXTRA_DIST = run-xvfb.sh
+EXTRA_DIST = \
+	run-xvfb.sh \
+	test-libappindicator.desktop
 
 #########################################
 ##  test-libappindicator
