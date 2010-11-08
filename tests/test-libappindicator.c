@@ -296,9 +296,26 @@ test_libappindicator_label_signals (void)
 void
 test_libappindicator_desktop_menu (void)
 {
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
 
+	app_indicator_build_menu_from_desktop(ci, SRCDIR "/test-libappindicator.desktop", "Test Program");
 
+	GtkMenu * menu = app_indicator_get_menu(ci);
+	g_assert(menu != NULL);
+
+	GList * children = gtk_container_get_children(GTK_CONTAINER(menu));
+	g_assert(children != NULL);
+	g_assert(g_list_length(children) == 3);
+
+	g_object_unref(G_OBJECT(ci));
+
+	return;
 }
 
 void
