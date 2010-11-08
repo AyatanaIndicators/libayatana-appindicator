@@ -26,6 +26,7 @@ test_libappindicator_SOURCES = \
 
 test_libappindicator_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
