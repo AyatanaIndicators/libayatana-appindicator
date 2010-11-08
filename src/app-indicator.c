@@ -2115,7 +2115,7 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	from a static desktop file.
 */
 void
-app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file)
+app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
 {
 
 

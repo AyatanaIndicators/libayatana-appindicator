@@ -282,7 +282,8 @@ guint32                         app_indicator_get_ordering_index (AppIndicator *
 
 /* Helpers */
 void                            app_indicator_build_menu_from_desktop (AppIndicator * self,
-                                                                  const gchar * desktop_file);
+                                                                  const gchar * desktop_file,
+                                                                  const gchar * desktop_profile);
 
 G_END_DECLS
 
