@@ -350,7 +350,7 @@ test_libappindicator_label_signals (void)
 void
 test_libappindicator_desktop_menu (void)
 {
-	AppIndicator * ci = app_indicator_new ("my-id",
+	AppIndicator * ci = app_indicator_new ("my-id-desktop-menu",
 	                                       "my-name",
 	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
