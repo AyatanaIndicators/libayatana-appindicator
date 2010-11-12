@@ -2171,6 +2171,7 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 	app_indicator_build_menu_from_desktop:
 	@self: The #AppIndicator object to use
 	@desktop_file: A path to the desktop file to build the menu from
+	@desktop_profile: Which entries should be used from the desktop file
 
 	This function allows for building the Application Indicator menu
 	from a static desktop file.
