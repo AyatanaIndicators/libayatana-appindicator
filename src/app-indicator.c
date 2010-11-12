@@ -2169,12 +2169,18 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 void
 app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
 {
+	g_return_if_fail(IS_APP_INDICATOR(self));
+	AppIndicatorPrivate *priv = self->priv;
 
 	/* Build a new shortcuts object */
-	IndicatorDesktopShortcuts * shorties = indicator_desktop_shortcuts_new(desktop_file, desktop_profile);
-	g_return_if_fail(shorties != NULL);
+	if (priv->shorties != NULL) {
+		g_object_unref(priv->shorties);
+		priv->shorties = NULL;
+	}
+	priv->shorties = indicator_desktop_shortcuts_new(desktop_file, desktop_profile);
+	g_return_if_fail(priv->shorties != NULL);
 
-	const gchar ** nicks = indicator_desktop_shortcuts_get_nicks(shorties);
+	const gchar ** nicks = indicator_desktop_shortcuts_get_nicks(priv->shorties);
 	int nick_num;
 
 	/* Place the items on a dbusmenu */
@@ -2184,7 +2190,7 @@ app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * deskto
 		DbusmenuMenuitem * item = dbusmenu_menuitem_new();
 		g_object_set_data(G_OBJECT(item), APP_INDICATOR_SHORTY_NICK, (gpointer)nicks[nick_num]);
 
-		gchar * name = indicator_desktop_shortcuts_nick_get_name(shorties, nicks[nick_num]);
+		gchar * name = indicator_desktop_shortcuts_nick_get_name(priv->shorties, nicks[nick_num]);
 		dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, name);
 		g_free(name);
 
