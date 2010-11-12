@@ -810,6 +810,14 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
 
+		case PROP_DBUS_MENU_SERVER:
+			if (priv->menuservice != NULL) {
+				g_object_unref (priv->menuservice);
+			}
+			gpointer val = g_value_dup_object(value);
+			priv->menuservice = DBUSMENU_SERVER(val);
+			break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -881,6 +889,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 		case PROP_ORDERING_INDEX:
 		  g_value_set_uint(value, priv->ordering_index);
 		  break;
+
+		case PROP_DBUS_MENU_SERVER:
+			g_value_set_object(value, priv->menuservice);
+			break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
