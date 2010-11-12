@@ -91,6 +91,9 @@ struct _AppIndicatorPrivate {
 	DBusGProxy           *watcher_proxy;
 	DBusGConnection      *connection;
 	DBusGProxy *          dbus_proxy;
+
+	/* Might be used */
+	IndicatorDesktopShortcuts * shorties;
 };
 
 /* Signals Stuff */
@@ -568,6 +571,8 @@ app_indicator_init (AppIndicator *self)
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
 
+	priv->shorties = NULL;
+
 	/* Put the object on DBus */
 	GError * error = NULL;
 	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -593,6 +598,11 @@ app_indicator_dispose (GObject *object)
 {
 	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->shorties != NULL) {
+		g_object_unref(G_OBJECT(priv->shorties));
+		priv->shorties = NULL;
+	}
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		app_indicator_set_status(self, APP_INDICATOR_STATUS_PASSIVE);
