@@ -353,15 +353,26 @@ test_libappindicator_desktop_menu (void)
 
 	app_indicator_build_menu_from_desktop(ci, SRCDIR "/test-libappindicator.desktop", "Test Program");
 
-	GtkMenu * menu = app_indicator_get_menu(ci);
-	g_assert(menu != NULL);
+	GValue serverval = {0};
+	g_value_init(&serverval, DBUSMENU_TYPE_SERVER);
+	g_object_get_property(G_OBJECT(ci), "dbus-menu-server", &serverval);
 
-	GList * children = gtk_container_get_children(GTK_CONTAINER(menu));
+	DbusmenuServer * server = DBUSMENU_SERVER(g_value_get_object(&serverval));
+	g_assert(server != NULL);
+
+	GValue rootval = {0};
+	g_value_init(&rootval, DBUSMENU_TYPE_MENUITEM);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootval);
+	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(g_value_get_object(&rootval));
+	g_assert(root != NULL);
+
+	GList * children = dbusmenu_menuitem_get_children(root);
 	g_assert(children != NULL);
 	g_assert(g_list_length(children) == 3);
 
-	g_object_unref(G_OBJECT(ci));
 
+
+	g_object_unref(G_OBJECT(ci));
 	return;
 }
 
