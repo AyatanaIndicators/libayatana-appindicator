@@ -2200,6 +2200,18 @@ app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * deskto
 	}
 
 	/* Swap it if needed */
+	if (priv->menuservice == NULL) {
+		gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
+		priv->menuservice = dbusmenu_server_new (path);
+		g_free(path);
+	}
+
+	dbusmenu_server_set_root (priv->menuservice, root);
+
+	if (priv->menu != NULL) {
+		g_object_unref(G_OBJECT(priv->menu));
+		priv->menu = NULL;
+	}
 
 	return;
 }
