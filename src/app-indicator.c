@@ -2153,7 +2153,16 @@ app_indicator_get_ordering_index (AppIndicator *self)
 static void
 shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 {
+	gchar * nick = g_object_get_data(G_OBJECT(mi), APP_INDICATOR_SHORTY_NICK);
+	g_return_if_fail(nick != NULL);
 
+	g_return_if_fail(IS_APP_INDICATOR(user_data));
+	AppIndicator * self = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = self->priv;
+
+	g_return_if_fail(priv->shorties != NULL);
+
+	indicator_desktop_shortcuts_nick_exec(priv->shorties, nick);
 
 	return;
 }
