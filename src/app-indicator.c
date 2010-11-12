@@ -34,6 +34,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
+#include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
 
@@ -121,7 +122,8 @@ enum {
 	PROP_X_LABEL,
 	PROP_X_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_X_ORDERING_INDEX
+	PROP_X_ORDERING_INDEX,
+	PROP_DBUS_MENU_SERVER
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -139,6 +141,7 @@ enum {
 #define PROP_X_LABEL_GUIDE_S         ("x-ayatana-" PROP_LABEL_GUIDE_S)
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_X_ORDERING_INDEX_S      ("x-ayatana-" PROP_ORDERING_INDEX_S)
+#define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -405,6 +408,19 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "A wrapper, please don't use.",
 	                                                     "A wrapper, please don't use.",
 	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:dbus-menu-server:
+
+		A way to get the internal dbusmenu server if it is available.
+		This should only be used for testing.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_DBUS_MENU_SERVER,
+	                                g_param_spec_object (PROP_DBUS_MENU_SERVER_S,
+	                                                     "The internal DBusmenu Server",
+	                                                     "DBusmenu server which is available for testing the application indicators.",
+	                                                     DBUSMENU_TYPE_MENUITEM,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
