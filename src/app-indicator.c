@@ -420,7 +420,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                g_param_spec_object (PROP_DBUS_MENU_SERVER_S,
 	                                                     "The internal DBusmenu Server",
 	                                                     "DBusmenu server which is available for testing the application indicators.",
-	                                                     DBUSMENU_TYPE_MENUITEM,
+	                                                     DBUSMENU_TYPE_SERVER,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
