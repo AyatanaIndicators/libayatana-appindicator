@@ -267,6 +267,13 @@ test_libappindicator_set_menu (void)
 	g_assert(label != NULL);
 	g_assert(g_strcmp0(label, "Test Label") == 0);
 
+	/* Interesting, eh?  We need this because we send out events on the bus
+	   but they don't come back until the idle is run.  So we need those
+	   events to clear before removing the object */
+	while (g_main_context_pending(NULL)) {
+		g_main_context_iteration(NULL, TRUE);
+	}
+
 	g_object_unref(G_OBJECT(ci));
 	return;
 }
