@@ -25,6 +25,9 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <app-indicator.h>
 
+#include <libdbusmenu-glib/menuitem.h>
+#include <libdbusmenu-glib/server.h>
+
 void
 test_libappindicator_prop_signals_status_helper (AppIndicator * ci, gchar * status, gboolean * signalactivated)
 {
@@ -225,6 +228,50 @@ test_libappindicator_set_label (void)
 }
 
 void
+test_libappindicator_set_menu (void)
+{
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+
+	GtkMenu * menu = GTK_MENU(gtk_menu_new());
+
+	GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Test Label"));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(item));
+	gtk_widget_show(GTK_WIDGET(item));
+
+	app_indicator_set_menu(ci, menu);
+
+	g_assert(app_indicator_get_menu(ci) != NULL);
+
+	GValue serverval = {0};
+	g_value_init(&serverval, DBUSMENU_TYPE_SERVER);
+	g_object_get_property(G_OBJECT(ci), "dbus-menu-server", &serverval);
+
+	DbusmenuServer * server = DBUSMENU_SERVER(g_value_get_object(&serverval));
+	g_assert(server != NULL);
+
+	GValue rootval = {0};
+	g_value_init(&rootval, DBUSMENU_TYPE_MENUITEM);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootval);
+	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(g_value_get_object(&rootval));
+	g_assert(root != NULL);
+
+	GList * children = dbusmenu_menuitem_get_children(root);
+	g_assert(children != NULL);
+	g_assert(g_list_length(children) == 1);
+
+	const gchar * label = dbusmenu_menuitem_property_get(DBUSMENU_MENUITEM(children->data), DBUSMENU_MENUITEM_PROP_LABEL);
+	g_assert(label != NULL);
+	g_assert(g_strcmp0(label, "Test Label") == 0);
+
+	g_object_unref(G_OBJECT(ci));
+	return;
+}
+
+void
 label_signals_cb (AppIndicator * appindicator, gchar * label, gchar * guide, gpointer user_data)
 {
 	gint * label_signals_count = (gint *)user_data;
@@ -334,6 +381,7 @@ test_libappindicator_props_suite (void)
 	g_test_add_func ("/indicator-application/libappindicator/init_set_props",  test_libappindicator_init_set_props);
 	g_test_add_func ("/indicator-application/libappindicator/prop_signals",    test_libappindicator_prop_signals);
 	g_test_add_func ("/indicator-application/libappindicator/set_label",       test_libappindicator_set_label);
+	g_test_add_func ("/indicator-application/libappindicator/set_menu",        test_libappindicator_set_menu);
 	g_test_add_func ("/indicator-application/libappindicator/label_signals",   test_libappindicator_label_signals);
 	g_test_add_func ("/indicator-application/libappindicator/desktop_menu",    test_libappindicator_desktop_menu);
 	g_test_add_func ("/indicator-application/libappindicator/desktop_menu_bad",test_libappindicator_desktop_menu_bad);
