@@ -51,6 +51,7 @@ libappindicator_la_SOURCES = \
 	app-indicator-enum-types.c \
 	app-indicator.c \
 	application-service-marshal.c \
+	dbus-shared.h \
 	generate-id.h \
 	generate-id.c
 
