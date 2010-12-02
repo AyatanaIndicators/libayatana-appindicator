@@ -52,6 +52,13 @@ PKG_CHECK_MODULES(INDICATOR, gtk+-2.0 >= $GTK_REQUIRED_VERSION
 AC_SUBST(INDICATOR_CFLAGS)
 AC_SUBST(INDICATOR_LIBS)
 
+PKG_CHECK_MODULES(LIBRARY, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                           dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+                           dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
+
+AC_SUBST(LIBRARY_CFLAGS)
+AC_SUBST(LIBRARY_LIBS)
+
 ###########################
 # GObject Introspection
 ###########################
