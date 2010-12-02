@@ -118,7 +118,7 @@ AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     Gtk-2.0
-AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
+AppIndicator_0_1_gir_CFLAGS = $(LIBRARY_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator.la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
