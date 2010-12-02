@@ -198,7 +198,6 @@ bindings/mono/appindicator-sharp-0.1.pc
 bindings/mono/examples/Makefile
 bindings/mono/examples/indicator-example
 bindings/python/Makefile
-data/Makefile
 tests/Makefile
 example/Makefile
 docs/Makefile
