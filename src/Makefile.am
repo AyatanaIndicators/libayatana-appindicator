@@ -7,6 +7,17 @@ include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
+# Marshallers 
+##################################
+
+BUILT_SOURCES += \
+	application-service-marshal.h \
+	application-service-marshal.c
+
+glib_marshal_list = application-service-marshal.list
+glib_marshal_prefix = _application_service_marshal
+
+##################################
 # Library
 ##################################
 
