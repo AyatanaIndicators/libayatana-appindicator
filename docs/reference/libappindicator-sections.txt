@@ -38,5 +38,6 @@ app_indicator_get_menu
 app_indicator_get_label
 app_indicator_get_label_guide
 app_indicator_get_ordering_index
+app_indicator_build_menu_from_desktop
 </SECTION>
 
