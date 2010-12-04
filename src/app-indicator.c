@@ -42,6 +42,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-gtk/client.h>
 #endif
 
+#include <libindicator/indicator-desktop-shortcuts.h>
+
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
 #include "application-service-marshal.h"
@@ -93,6 +95,9 @@ struct _AppIndicatorPrivate {
 	DBusGProxy           *watcher_proxy;
 	DBusGConnection      *connection;
 	DBusGProxy *          dbus_proxy;
+
+	/* Might be used */
+	IndicatorDesktopShortcuts * shorties;
 };
 
 /* Signals Stuff */
@@ -570,6 +575,8 @@ app_indicator_init (AppIndicator *self)
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
 
+	priv->shorties = NULL;
+
 	/* Put the object on DBus */
 	GError * error = NULL;
 	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -595,6 +602,11 @@ app_indicator_dispose (GObject *object)
 {
 	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->shorties != NULL) {
+		g_object_unref(G_OBJECT(priv->shorties));
+		priv->shorties = NULL;
+	}
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		app_indicator_set_status(self, APP_INDICATOR_STATUS_PASSIVE);
@@ -2144,3 +2156,82 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	}
 }
 
+#define APP_INDICATOR_SHORTY_NICK "app-indicator-shorty-nick"
+
+/* Callback when an item from the desktop shortcuts gets
+   called. */
+static void
+shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
+{
+	gchar * nick = g_object_get_data(G_OBJECT(mi), APP_INDICATOR_SHORTY_NICK);
+	g_return_if_fail(nick != NULL);
+
+	g_return_if_fail(IS_APP_INDICATOR(user_data));
+	AppIndicator * self = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = self->priv;
+
+	g_return_if_fail(priv->shorties != NULL);
+
+	indicator_desktop_shortcuts_nick_exec(priv->shorties, nick);
+
+	return;
+}
+
+/**
+	app_indicator_build_menu_from_desktop:
+	@self: The #AppIndicator object to use
+	@desktop_file: A path to the desktop file to build the menu from
+	@desktop_profile: Which entries should be used from the desktop file
+
+	This function allows for building the Application Indicator menu
+	from a static desktop file.
+*/
+void
+app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
+{
+	g_return_if_fail(IS_APP_INDICATOR(self));
+	AppIndicatorPrivate *priv = self->priv;
+
+	/* Build a new shortcuts object */
+	if (priv->shorties != NULL) {
+		g_object_unref(priv->shorties);
+		priv->shorties = NULL;
+	}
+	priv->shorties = indicator_desktop_shortcuts_new(desktop_file, desktop_profile);
+	g_return_if_fail(priv->shorties != NULL);
+
+	const gchar ** nicks = indicator_desktop_shortcuts_get_nicks(priv->shorties);
+	int nick_num;
+
+	/* Place the items on a dbusmenu */
+	DbusmenuMenuitem * root = dbusmenu_menuitem_new();
+
+	for (nick_num = 0; nicks[nick_num] != NULL; nick_num++) {
+		DbusmenuMenuitem * item = dbusmenu_menuitem_new();
+		g_object_set_data(G_OBJECT(item), APP_INDICATOR_SHORTY_NICK, (gpointer)nicks[nick_num]);
+
+		gchar * name = indicator_desktop_shortcuts_nick_get_name(priv->shorties, nicks[nick_num]);
+		dbusmenu_menuitem_property_set(item, DBUSMENU_MENUITEM_PROP_LABEL, name);
+		g_free(name);
+
+		g_signal_connect(G_OBJECT(item), DBUSMENU_MENUITEM_SIGNAL_ITEM_ACTIVATED, G_CALLBACK(shorty_activated_cb), self);
+
+		dbusmenu_menuitem_child_append(root, item);
+	}
+
+	/* Swap it if needed */
+	if (priv->menuservice == NULL) {
+		gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
+		priv->menuservice = dbusmenu_server_new (path);
+		g_free(path);
+	}
+
+	dbusmenu_server_set_root (priv->menuservice, root);
+
+	if (priv->menu != NULL) {
+		g_object_unref(G_OBJECT(priv->menu));
+		priv->menu = NULL;
+	}
+
+	return;
+}

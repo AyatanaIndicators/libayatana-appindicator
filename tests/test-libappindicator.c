@@ -348,6 +348,75 @@ test_libappindicator_label_signals (void)
 }
 
 void
+test_libappindicator_desktop_menu (void)
+{
+	AppIndicator * ci = app_indicator_new ("my-id-desktop-menu",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_build_menu_from_desktop(ci, SRCDIR "/test-libappindicator.desktop", "Test Program");
+
+	GValue serverval = {0};
+	g_value_init(&serverval, DBUSMENU_TYPE_SERVER);
+	g_object_get_property(G_OBJECT(ci), "dbus-menu-server", &serverval);
+
+	DbusmenuServer * server = DBUSMENU_SERVER(g_value_get_object(&serverval));
+	g_assert(server != NULL);
+
+	GValue rootval = {0};
+	g_value_init(&rootval, DBUSMENU_TYPE_MENUITEM);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootval);
+	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(g_value_get_object(&rootval));
+	g_assert(root != NULL);
+
+	GList * children = dbusmenu_menuitem_get_children(root);
+	g_assert(children != NULL);
+	g_assert(g_list_length(children) == 3);
+
+
+
+	g_object_unref(G_OBJECT(ci));
+	return;
+}
+
+void
+test_libappindicator_desktop_menu_bad (void)
+{
+	AppIndicator * ci = app_indicator_new ("my-id-desktop-menu-bad",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_label(ci) == NULL);
+	g_assert(app_indicator_get_label_guide(ci) == NULL);
+
+	app_indicator_build_menu_from_desktop(ci, SRCDIR "/test-libappindicator.desktop", "Not Test Program");
+
+	GValue serverval = {0};
+	g_value_init(&serverval, DBUSMENU_TYPE_SERVER);
+	g_object_get_property(G_OBJECT(ci), "dbus-menu-server", &serverval);
+
+	DbusmenuServer * server = DBUSMENU_SERVER(g_value_get_object(&serverval));
+	g_assert(server != NULL);
+
+	GValue rootval = {0};
+	g_value_init(&rootval, DBUSMENU_TYPE_MENUITEM);
+	g_object_get_property(G_OBJECT(server), DBUSMENU_SERVER_PROP_ROOT_NODE, &rootval);
+	DbusmenuMenuitem * root = DBUSMENU_MENUITEM(g_value_get_object(&rootval));
+	g_assert(root != NULL);
+
+	GList * children = dbusmenu_menuitem_get_children(root);
+	g_assert(g_list_length(children) == 0);
+
+	g_object_unref(G_OBJECT(ci));
+	return;
+}
+
+void
 test_libappindicator_props_suite (void)
 {
 	g_test_add_func ("/indicator-application/libappindicator/init",            test_libappindicator_init);
@@ -357,6 +426,8 @@ test_libappindicator_props_suite (void)
 	g_test_add_func ("/indicator-application/libappindicator/set_label",       test_libappindicator_set_label);
 	g_test_add_func ("/indicator-application/libappindicator/set_menu",        test_libappindicator_set_menu);
 	g_test_add_func ("/indicator-application/libappindicator/label_signals",   test_libappindicator_label_signals);
+	g_test_add_func ("/indicator-application/libappindicator/desktop_menu",    test_libappindicator_desktop_menu);
+	g_test_add_func ("/indicator-application/libappindicator/desktop_menu_bad",test_libappindicator_desktop_menu_bad);
 
 	return;
 }
