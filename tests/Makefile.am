@@ -13,7 +13,9 @@ check_PROGRAMS = \
 TESTS =
 DISTCLEANFILES = $(TESTS)
 
-EXTRA_DIST = run-xvfb.sh
+EXTRA_DIST = \
+	run-xvfb.sh \
+	test-libappindicator.desktop
 
 #########################################
 ##  test-libappindicator
@@ -24,6 +26,7 @@ test_libappindicator_SOURCES = \
 
 test_libappindicator_CFLAGS = \
 	$(INDICATOR_CFLAGS) \
+	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 

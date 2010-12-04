@@ -72,6 +72,14 @@ AS_IF([test "x$with_gtk" = x3],
 )
 AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
+PKG_CHECK_MODULES(LIBRARY, gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                           indicator >= $INDICATOR_REQUIRED_VERSION
+                           dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
+                           dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
+
+AC_SUBST(LIBRARY_CFLAGS)
+AC_SUBST(LIBRARY_LIBS)
+
 ###########################
 # GObject Introspection
 ###########################
