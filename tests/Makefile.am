@@ -1,6 +1,5 @@
 
 check_PROGRAMS = \
-	test-approver \
 	test-libappindicator \
 	test-libappindicator-dbus-client \
 	test-libappindicator-dbus-server \
@@ -23,12 +22,12 @@ test_libappindicator_SOURCES = \
 	test-libappindicator.c
 
 test_libappindicator_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -40,12 +39,12 @@ test_libappindicator_dbus_client_SOURCES = \
 	test-libappindicator-dbus-client.c
 
 test_libappindicator_dbus_client_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_client_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -57,12 +56,12 @@ test_libappindicator_dbus_server_SOURCES = \
 	test-libappindicator-dbus-server.c
 
 test_libappindicator_dbus_server_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_server_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -74,12 +73,12 @@ test_libappindicator_status_client_SOURCES = \
 	test-libappindicator-status-client.c
 
 test_libappindicator_status_client_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_client_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -91,40 +90,13 @@ test_libappindicator_status_server_SOURCES = \
 	test-libappindicator-status-server.c
 
 test_libappindicator_status_server_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_server_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
-
-#########################################
-##  test-approver
-#########################################
-
-test_approver_SOURCES = \
-	test-approver.c
-
-test_approver_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
-	-Wall -Werror \
-	-I$(top_srcdir)/src \
-	-I$(top_builddir)/src
-
-test_approver_LDADD = \
-	$(INDICATOR_LIBS) \
-	$(top_builddir)/src/libappindicator.la
-
-test-approver-tester: test-approver Makefile.am
-	@echo "#!/bin/bash" > $@
-	@echo export INDICATOR_SERVICE_SHUTDOWN_TIMEOUT=1000 >> $@
-	@echo . $(srcdir)/run-xvfb.sh >> $@
-	@echo $(DBUS_RUNNER) --task $(builddir)/test-approver --task-name Approver --task $(top_builddir)/src/indicator-application-service --task-name Service --ignore-return >> $@
-	@chmod +x $@
-
-TESTS += test-approver-tester
-
 
 #########################################
 ##  test-libappindicator-fallback
@@ -134,24 +106,24 @@ test_libappindicator_fallback_watcher_SOURCES = \
 	test-libappindicator-fallback-watcher.c
 
 test_libappindicator_fallback_watcher_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_watcher_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 test_libappindicator_fallback_item_SOURCES = \
 	test-libappindicator-fallback-item.c
 
 test_libappindicator_fallback_item_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_item_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
@@ -210,11 +182,11 @@ test_simple_app_SOURCES = \
 	test-simple-app.c
 
 test_simple_app_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_simple_app_LDADD = \
-	$(INDICATOR_LIBS) \
+	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
