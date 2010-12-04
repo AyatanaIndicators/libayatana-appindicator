@@ -35,7 +35,11 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <dbus/dbus-glib-bindings.h>
 
 #include <libdbusmenu-glib/server.h>
+#ifdef HAVE_GTK3
+#include <libdbusmenu-gtk3/client.h>
+#else
 #include <libdbusmenu-gtk/client.h>
+#endif
 
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
@@ -1549,13 +1553,17 @@ static void
 update_icon_name (DbusmenuMenuitem *menuitem,
                   GtkImage         *image)
 {
+  const gchar *icon_name = NULL;
+
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
     return;
+
+  gtk_image_get_icon_name (image, &icon_name, NULL);
 
   if (should_show_image (image))
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.name.icon_name);
+                                    icon_name);
   else
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
@@ -1567,16 +1575,18 @@ update_stock_item (DbusmenuMenuitem *menuitem,
                    GtkImage         *image)
 {
   GtkStockItem stock;
+  gchar *stock_id = NULL;
 
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
     return FALSE;
 
-  gtk_stock_lookup (image->data.stock.stock_id, &stock);
+  gtk_image_get_stock (image, &stock_id, NULL);
+  gtk_stock_lookup (stock_id, &stock);
 
   if (should_show_image (image))
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.stock.stock_id);
+                                    stock_id);
   else
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
@@ -1625,7 +1635,7 @@ widget_notify_cb (GtkWidget  *widget,
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
-                                           GTK_WIDGET_IS_SENSITIVE (widget));
+                                           gtk_widget_is_sensitive (widget));
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
@@ -1777,7 +1787,7 @@ container_iterate (GtkWidget *widget,
 
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_ENABLED,
-                                       GTK_WIDGET_IS_SENSITIVE (widget));
+                                       gtk_widget_is_sensitive (widget));
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        gtk_widget_get_visible (widget));
