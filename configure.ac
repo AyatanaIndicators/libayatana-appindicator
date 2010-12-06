@@ -39,6 +39,7 @@ AC_CONFIG_MACRO_DIR(m4)
 
 GTK_REQUIRED_VERSION=2.18
 GTK3_REQUIRED_VERSION=2.91
+GIO_REQUIRED_VERSION=2.26
 INDICATOR_REQUIRED_VERSION=0.3.5
 DBUSMENUGTK_REQUIRED_VERSION=0.2.2
 DBUS_GLIB_REQUIRED_VERSION=0.82
@@ -50,8 +51,8 @@ AC_ARG_WITH([gtk],
   [with_gtk=2])
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARAY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
+                                      gio-2.0 >= $GIO_REQUIRED_VERSION
                                       indicator3 >= $INDICATOR_REQUIRED_VERSION
-                                      dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
                                       dbusmenu-gtk3 >= $DBUSMENUGTK_REQUIRED_VERSION)
          AC_SUBST(LIBRARY_CFLAGS)
          AC_SUBST(LIBRARY_LIBS)
@@ -59,8 +60,8 @@ AS_IF([test "x$with_gtk" = x3],
         ],
       [test "x$with_gtk" = x2],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
+                                     gio-2.0 >= $GIO_REQUIRED_VERSION
                                      indicator >= $INDICATOR_REQUIRED_VERSION 
-                                     dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
                                      dbusmenu-gtk >= $DBUSMENUGTK_REQUIRED_VERSION)
          AC_SUBST(LIBRARY_CFLAGS)
          AC_SUBST(LIBRARY_LIBS)
