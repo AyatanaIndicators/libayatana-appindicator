@@ -93,7 +93,7 @@ struct _AppIndicatorPrivate {
 
 	/* Fun stuff */
 	DBusGProxy           *watcher_proxy;
-	DBusGConnection      *connection;
+	GDBusConnection      *connection;
 	DBusGProxy *          dbus_proxy;
 	guint                 dbus_registration;
 
@@ -197,6 +197,7 @@ static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicat
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
+static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static const GDBusInterfaceVTable item_interface_table = {
 	method_call:    NULL, /* No methods on this object */
@@ -624,15 +625,8 @@ app_indicator_init (AppIndicator *self)
 
 	priv->shorties = NULL;
 
-	/* Put the object on DBus */
-	GError * error = NULL;
-	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (error != NULL) {
-		g_error("Unable to connect to the session bus when creating application indicator: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-	dbus_g_connection_ref(priv->connection);
+	/* Start getting the session bus */
+	g_bus_get(G_BUS_TYPE_SESSION, NULL, bus_creation, self);
 
 	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
 		"changed", G_CALLBACK(theme_changed_cb), self);
@@ -763,6 +757,11 @@ app_indicator_finalize (GObject *object)
 	if (priv->label_guide != NULL) {
 		g_free(priv->label_guide);
 		priv->label_guide = NULL;
+	}
+
+	if (priv->connection != NULL) {
+		g_object_unref(G_OBJECT(priv->connection));
+		priv->connection = NULL;
 	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
@@ -970,6 +969,29 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 	return;
 }
 
+/* DBus bus has been created, well maybe, but we got a call
+   back about it so we need to check into it. */
+static void
+bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	GDBusConnection * connection = g_bus_get_finish(res, &error);
+	if (error != NULL) {
+		g_warning("Unable to get the session bus: %s", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	AppIndicator * app = APP_INDICATOR(user_data);
+	app->priv->connection = connection;
+
+	/* If the connection was blocking the exporting of the
+	   object this function will export everything. */
+	check_connect(app);
+	return;
+}
+
 /* Sends the label changed signal and resets the source ID */
 static gboolean
 signal_label_change_idle (gpointer user_data)
@@ -1014,6 +1036,9 @@ static void
 check_connect (AppIndicator *self)
 {
 	AppIndicatorPrivate *priv = self->priv;
+
+	/* Do we have a connection? */
+	if (priv->connection == NULL) return;
 
 	/* We're alreadying connecting or trying to connect. */
 	if (priv->watcher_proxy != NULL) return;
