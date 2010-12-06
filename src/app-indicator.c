@@ -95,6 +95,7 @@ struct _AppIndicatorPrivate {
 	DBusGProxy           *watcher_proxy;
 	DBusGConnection      *connection;
 	DBusGProxy *          dbus_proxy;
+	guint                 dbus_registration;
 
 	/* Might be used */
 	IndicatorDesktopShortcuts * shorties;
@@ -194,8 +195,14 @@ static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_proxy_destroyed (GObject * object, gpointer data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
-
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
+static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
+
+static const GDBusInterfaceVTable item_interface_table = {
+	method_call:    NULL, /* No methods on this object */
+	get_property:   bus_get_prop,
+	set_property:   NULL /* No properties that can be set */
+};
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -610,6 +617,7 @@ app_indicator_init (AppIndicator *self)
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
 	priv->dbus_proxy = NULL;
+	priv->dbus_registration = 0;
 
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
@@ -641,6 +649,11 @@ app_indicator_dispose (GObject *object)
 {
 	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->connection, priv->dbus_registration);
+		priv->dbus_registration = 0;
+	}
 
 	if (priv->shorties != NULL) {
 		g_object_unref(G_OBJECT(priv->shorties));
@@ -1012,11 +1025,21 @@ check_connect (AppIndicator *self)
 
 	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 
-	dbus_g_connection_register_g_object(priv->connection,
-	                                    path,
-	                                    G_OBJECT(self));
-
 	GError * error = NULL;
+	priv->dbus_registration = g_dbus_connection_register_object(priv->connection,
+	                                                            path,
+	                                                            item_interface_info,
+	                                                            &item_interface_table,
+	                                                            self,
+	                                                            NULL,
+	                                                            &error);
+	if (error != NULL) {
+		g_warning("Unable to register object on path '%s': %s", path, error->message);
+		g_error_free(error);
+		g_free(path);
+		return;
+	}
+
 	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
 	                                                      NOTIFICATION_WATCHER_DBUS_ADDR,
 	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
