@@ -100,12 +100,20 @@ DBUS_SPECS = \
 	notification-watcher.xml
 
 %.xml.h: %.xml
-	echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
+	@echo "Building $@ from $<"
+	@echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
 
 %.xml.c: %.xml
-	echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
-	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
-	echo ";" >> $@
+	@echo "Building $@ from $<"
+	@echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
+	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	@echo ";" >> $@
+
+BUILT_SOURCES += \
+	notification-item.xml.c \
+	notification-item.xml.h \
+	notification-watcher.xml.c \
+	notification-watcher.xml.h
 
 CLEANFILES += \
 	$(DBUS_SPECS:.xml=.xml.h) \
