@@ -94,7 +94,6 @@ struct _AppIndicatorPrivate {
 	/* Fun stuff */
 	GDBusProxy           *watcher_proxy;
 	GDBusConnection      *connection;
-	DBusGProxy *          dbus_proxy;
 	guint                 dbus_registration;
 	gchar *               path;
 
@@ -184,7 +183,7 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void signal_label_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
-static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
+static void register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
@@ -193,7 +192,7 @@ static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
-static void watcher_proxy_destroyed (GObject * object, gpointer data);
+static void watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
@@ -619,7 +618,6 @@ app_indicator_init (AppIndicator *self)
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
-	priv->dbus_proxy = NULL;
 	priv->dbus_registration = 0;
 	priv->path = NULL;
 
@@ -687,17 +685,12 @@ app_indicator_dispose (GObject *object)
 		priv->menu = NULL;
 	}
 
-        if (priv->menuservice != NULL) {
-                g_object_unref (priv->menuservice);
-        }
-
-	if (priv->dbus_proxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbus_proxy));
-		priv->dbus_proxy = NULL;
+	if (priv->menuservice != NULL) {
+		g_object_unref (priv->menuservice);
 	}
 
 	if (priv->watcher_proxy != NULL) {
-		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_owner_changed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 
@@ -1140,7 +1133,7 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 
 		/* Setting up a signal to watch when the unique name
 		   changes */
-		g_signal_connect(G_OBJECT(app->priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), user_data);
+		g_signal_connect(G_OBJECT(app->priv->watcher_proxy), "notify::g-name-owner", G_CALLBACK(watcher_owner_changed), user_data);
 	}
 
 	/* Let's insure that someone is on the other side, else we're
@@ -1163,51 +1156,67 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
-/* A function that gets called when the watcher dies.  Like
-   dies dies.  Not our friend anymore. */
+/* Watching for when the name owner changes on the interface
+   to know whether we should be connected or not. */
 static void
-watcher_proxy_destroyed (GObject * object, gpointer data)
+watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data)
 {
-	AppIndicator * self = APP_INDICATOR(data);
+	AppIndicator * self = APP_INDICATOR(user_data);
 	g_return_if_fail(self != NULL);
+	g_return_if_fail(self->priv->watcher_proxy != NULL);
 
-	dbus_g_connection_unregister_g_object(self->priv->connection,
-					      G_OBJECT(self));
-	self->priv->watcher_proxy = NULL;
+	gchar * name = g_dbus_proxy_get_name_owner(self->priv->watcher_proxy);
 
-    /* Emit the AppIndicator::connection-changed signal*/
-    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
-	
-	start_fallback_timer(self, FALSE);
+	if (name == NULL) {
+		/* Emit the AppIndicator::connection-changed signal*/
+		g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
+		
+		start_fallback_timer(self, FALSE);
+	} else {
+		if (self->priv->fallback_timer != 0) {
+			/* Stop the timer */
+			g_source_remove(self->priv->fallback_timer);
+			self->priv->fallback_timer = 0;
+		}
+
+		check_connect(self);
+	}
+
 	return;
 }
 
 /* Responce from the DBus command to register a service
    with a NotificationWatcher. */
 static void
-register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
+register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
-	g_return_if_fail(IS_APP_INDICATOR(data));
-	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+	GError * error = NULL;
+	GVariant * returns = g_dbus_proxy_call_finish(G_DBUS_PROXY(obj), res, &error);
+
+	/* We don't care about any return values */
+	if (returns != NULL) {
+		g_variant_unref(returns);
+	}
 
 	if (error != NULL) {
 		/* They didn't respond, ewww.  Not sure what they could
 		   be doing */
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
-		dbus_g_connection_unregister_g_object(priv->connection,
-						      G_OBJECT(data));
-		g_object_unref(G_OBJECT(priv->watcher_proxy));
-		priv->watcher_proxy = NULL;
-		start_fallback_timer(APP_INDICATOR(data), TRUE);
+		start_fallback_timer(APP_INDICATOR(user_data), TRUE);
+		return;
 	}
 
+	g_return_if_fail(IS_APP_INDICATOR(user_data));
+	AppIndicator * app = APP_INDICATOR(user_data);
+	AppIndicatorPrivate * priv = app->priv;
+
 	/* Emit the AppIndicator::connection-changed signal*/
-    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, TRUE);
+    g_signal_emit (app, signals[CONNECTION_CHANGED], 0, TRUE);
 
 	if (priv->status_icon) {
-		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(app);
 		if (class->unfallback != NULL) {
-			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			class->unfallback(app, priv->status_icon);
 			priv->status_icon = NULL;
 		} 
 	}
@@ -1224,89 +1233,6 @@ category_from_enum (AppIndicatorCategory category)
 
   value = g_enum_get_value ((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), category);
   return value->value_nick;
-}
-
-/* Watching the dbus owner change events to see if someone
-   we care about pops up! */
-static void
-dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, gpointer data)
-{
-	if (new == NULL || new[0] == '\0') {
-		/* We only care about folks coming on the bus.  Exit quickly otherwise. */
-		return;
-	}
-
-	if (g_strcmp0(name, NOTIFICATION_WATCHER_DBUS_ADDR)) {
-		/* We only care about this address, reject all others. */
-		return;
-	}
-
-	/* Woot, there's a new notification watcher in town. */
-
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
-
-	if (priv->fallback_timer != 0) {
-		/* Stop a timer */
-		g_source_remove(priv->fallback_timer);
-
-		/* Stop listening to bus events */
-		g_object_unref(G_OBJECT(priv->dbus_proxy));
-		priv->dbus_proxy = NULL;
-	}
-
-	/* Let's start from the very beginning */
-	check_connect(APP_INDICATOR(data));
-
-	return;
-}
-
-/* Checking to see if someone already has the name we're looking for */
-static void
-check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer userdata)
-{
-	if (error != NULL) {
-		g_warning("Unable to check for '" NOTIFICATION_WATCHER_DBUS_ADDR "' on DBus.  No worries, but concerning.");
-		return;
-	}
-
-	if (exists) {
-		g_debug("Woah, we actually has a race condition with dbus");
-		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
-	}
-
-	return;
-}
-
-/* This is an idle function to create the proxy.  This is mostly
-   because start_fallback_timer can get called in the distruction
-   of a proxy and thus the proxy manager gets confused when creating
-   a new proxy as part of destroying an old one.  This function being
-   on idle means that we'll just do it outside of the same stack where
-   the previous proxy is being destroyed. */
-static gboolean
-setup_name_owner_proxy (gpointer data)
-{
-	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
-	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
-
-	if (priv->dbus_proxy == NULL) {
-		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
-		                                             DBUS_SERVICE_DBUS,
-		                                             DBUS_PATH_DBUS,
-		                                             DBUS_INTERFACE_DBUS);
-		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-		                        G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                            G_CALLBACK(dbus_owner_change), data, NULL);
-
-		/* Check to see if anyone has the name we're looking for
-		   just incase we missed it changing. */
-
-		org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, check_owner_cb, data);
-	}
-
-	return FALSE;
 }
 
 /* A function that will start the fallback timer if it's not
@@ -1328,11 +1254,6 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 	if (priv->status_icon != NULL) {
 		/* We're already fallen back.  Let's not do it again. */
 		return;
-	}
-
-	if (priv->dbus_proxy == NULL) {
-		/* NOTE: Read the comment on setup_name_owner_proxy */
-		g_idle_add(setup_name_owner_proxy, self);
 	}
 
 	if (disable_timeout) {
