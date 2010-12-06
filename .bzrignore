@@ -115,3 +115,11 @@ bindings/mono/policy.0.0.appindicator-sharp.config
 bindings/mono/policy.0.0.appindicator-sharp.dll
 src/libapplication_la-generate-id.lo
 src/libappindicator_la-generate-id.lo
+bindings/mono/app-indicator.c
+bindings/mono/policy.0.1.appindicator-sharp.config
+bindings/mono/policy.0.1.appindicator-sharp.dll
+src/appindicator3-0.1.pc
+src/notification-item.xml.c
+src/notification-item.xml.h
+src/notification-watcher.xml.c
+src/notification-watcher.xml.h
