@@ -1003,8 +1003,29 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 static GVariant *
 bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
 {
+	if (g_strcmp0(property, "Id") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "Category") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "Status") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "IconName") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "IconThemePath") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "Menu") == 0) {
+		return g_variant_new("o", "/bob");
+	} else if (g_strcmp0(property, "XAyatanaLabel") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "XAyatanaLabelGuide") == 0) {
+		return g_variant_new("s", "bob");
+	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
+		return g_variant_new("u", 42);
+	}
 
-
+	*error = g_error_new(0, 0, "Unknown property: %s", property);
 	return NULL;
 }
 
