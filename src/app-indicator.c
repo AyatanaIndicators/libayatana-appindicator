@@ -998,6 +998,16 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
+/* DBus is asking for a property so we should figure out what it
+   wants and try and deliver. */
+static GVariant *
+bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
+{
+
+
+	return NULL;
+}
+
 /* Sends the label changed signal and resets the source ID */
 static gboolean
 signal_label_change_idle (gpointer user_data)
