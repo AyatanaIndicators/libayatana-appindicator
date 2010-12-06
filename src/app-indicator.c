@@ -92,10 +92,11 @@ struct _AppIndicatorPrivate {
 	gint                  fallback_timer;
 
 	/* Fun stuff */
-	DBusGProxy           *watcher_proxy;
+	GDBusProxy           *watcher_proxy;
 	GDBusConnection      *connection;
 	DBusGProxy *          dbus_proxy;
 	guint                 dbus_registration;
+	gchar *               path;
 
 	/* Might be used */
 	IndicatorDesktopShortcuts * shorties;
@@ -198,6 +199,7 @@ static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data)
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
 static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
+static void bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static const GDBusInterfaceVTable item_interface_table = {
 	method_call:    NULL, /* No methods on this object */
@@ -619,6 +621,7 @@ app_indicator_init (AppIndicator *self)
 	priv->connection = NULL;
 	priv->dbus_proxy = NULL;
 	priv->dbus_registration = 0;
+	priv->path = NULL;
 
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
@@ -694,7 +697,6 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->watcher_proxy != NULL) {
-		dbus_g_connection_flush(priv->connection);
 		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
@@ -704,7 +706,7 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->connection != NULL) {
-		dbus_g_connection_unref(priv->connection);
+		g_object_unref(G_OBJECT(priv->connection));
 		priv->connection = NULL;
 	}
 
@@ -717,8 +719,8 @@ app_indicator_dispose (GObject *object)
 static void
 app_indicator_finalize (GObject *object)
 {
-        AppIndicator * self = APP_INDICATOR(object);
-        AppIndicatorPrivate *priv = self->priv;
+	AppIndicator * self = APP_INDICATOR(object);
+	AppIndicatorPrivate *priv = self->priv;
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Application Status with the status set to: %d", priv->status);
@@ -759,9 +761,9 @@ app_indicator_finalize (GObject *object)
 		priv->label_guide = NULL;
 	}
 
-	if (priv->connection != NULL) {
-		g_object_unref(G_OBJECT(priv->connection));
-		priv->connection = NULL;
+	if (priv->path != NULL) {
+		g_free(priv->path);
+		priv->path = NULL;
 	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
@@ -938,9 +940,20 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           }
           break;
 
-        case PROP_CONNECTED:
-          g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
-          break;
+		case PROP_CONNECTED: {
+			gboolean connected = FALSE;
+
+			if (priv->watcher_proxy != NULL) {
+				gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
+				if (name != NULL) {
+					connected = TRUE;
+					g_free(name);
+				}
+			}
+
+			g_value_set_boolean (value, connected);
+			break;
+		}
 
 		case PROP_X_LABEL:
         case PROP_LABEL:
@@ -1043,50 +1056,109 @@ check_connect (AppIndicator *self)
 	/* We're alreadying connecting or trying to connect. */
 	if (priv->watcher_proxy != NULL) return;
 
+	gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
+	if (name == NULL) {
+		return;
+	}
+	g_free(name);
+
 	/* Do we have enough information? */
 	if (priv->menu == NULL) return;
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
 
-	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
-
-	GError * error = NULL;
-	priv->dbus_registration = g_dbus_connection_register_object(priv->connection,
-	                                                            path,
-	                                                            item_interface_info,
-	                                                            &item_interface_table,
-	                                                            self,
-	                                                            NULL,
-	                                                            &error);
-	if (error != NULL) {
-		g_warning("Unable to register object on path '%s': %s", path, error->message);
-		g_error_free(error);
-		g_free(path);
-		return;
+	if (priv->path == NULL) {
+		priv->path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 	}
 
-	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
-	                                                      NOTIFICATION_WATCHER_DBUS_ADDR,
-	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
-	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
-	                                                      &error);
+	if (priv->dbus_registration == 0) {
+		GError * error = NULL;
+		priv->dbus_registration = g_dbus_connection_register_object(priv->connection,
+		                                                            priv->path,
+		                                                            item_interface_info,
+		                                                            &item_interface_table,
+		                                                            self,
+		                                                            NULL,
+		                                                            &error);
+		if (error != NULL) {
+			g_warning("Unable to register object on path '%s': %s", priv->path, error->message);
+			g_error_free(error);
+			return;
+		}
+	}
+
+	/* NOTE: It's really important the order here.  We make sure to *publish*
+	   the object on the bus and *then* get the proxy.  The reason is that we
+	   want to ensure all the filters are setup before talking to the watcher
+	   and that's where the order is important. */
+
+	if (priv->watcher_proxy == NULL) {
+		/* Build Watcher Proxy */
+		g_dbus_proxy_new(priv->connection,
+		                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES | G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS, /* We don't use these, don't bother with them */
+		                 watcher_interface_info,
+		                 NOTIFICATION_WATCHER_DBUS_ADDR,
+		                 NOTIFICATION_WATCHER_DBUS_OBJ,
+		                 NOTIFICATION_WATCHER_DBUS_IFACE,
+		                 NULL, /* cancellable */
+		                 bus_watcher_ready,
+		                 self);
+	} else {
+		bus_watcher_ready(NULL, NULL, self);
+	}
+
+	return;
+}
+
+/* Callback for when the watcher proxy has been created, or not
+   but we got called none-the-less. */
+static void
+bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	GDBusProxy * proxy = NULL;
+	if (res != NULL) {
+		proxy = g_dbus_proxy_new_finish(res, &error);
+	}
+
 	if (error != NULL) {
 		/* Unable to get proxy, but we're handling that now so
 		   it's not a warning anymore. */
 		g_error_free(error);
-		dbus_g_connection_unregister_g_object(priv->connection,
-						      G_OBJECT(self));
-		start_fallback_timer(self, FALSE);
-		g_free(path);
+
+		if (IS_APP_INDICATOR(user_data)) {
+			start_fallback_timer(APP_INDICATOR(user_data), FALSE);
+		}
 		return;
 	}
 
-	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
-	org_kde_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
-	g_free(path);
+	AppIndicator * app = APP_INDICATOR(user_data);
 
-	/* Emit the AppIndicator::connection-changed signal*/
-    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, TRUE);
+	if (res != NULL) {
+		app->priv->watcher_proxy = proxy;
+
+		/* Setting up a signal to watch when the unique name
+		   changes */
+		g_signal_connect(G_OBJECT(app->priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), user_data);
+	}
+
+	/* Let's insure that someone is on the other side, else we're
+	   still in a fallback scenario. */
+	gchar * name = g_dbus_proxy_get_name_owner(app->priv->watcher_proxy);
+	if (name == NULL) {
+		start_fallback_timer(APP_INDICATOR(user_data), FALSE);
+		return;
+	}
+
+	g_dbus_proxy_call(app->priv->watcher_proxy,
+	                  "RegisterStatusNotifierItem",
+	                  g_variant_new("(s)", app->priv->path),
+	                  G_DBUS_CALL_FLAGS_NONE,
+					  -1,
+	                  NULL, /* cancelable */
+	                  register_service_cb,
+	                  user_data);
 
 	return;
 }
@@ -1128,6 +1200,9 @@ register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
 		priv->watcher_proxy = NULL;
 		start_fallback_timer(APP_INDICATOR(data), TRUE);
 	}
+
+	/* Emit the AppIndicator::connection-changed signal*/
+    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, TRUE);
 
 	if (priv->status_icon) {
 		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
