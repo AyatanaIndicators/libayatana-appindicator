@@ -22,60 +22,12 @@ include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
-# Indicator
+# Marshallers 
 ##################################
-
-applicationlibdir = $(INDICATORDIR)
-applicationlib_LTLIBRARIES = libapplication.la
-libapplication_la_SOURCES = \
-	application-service-marshal.c \
-	dbus-shared.h \
-	indicator-application.c
-libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
-	-Wall \
-	-Wl,-Bsymbolic-functions \
-	-Wl,-z,defs \
-	-Wl,--as-needed \
-	-Werror \
-	-DG_LOG_DOMAIN=\"Indicator-Application\"
-libapplication_la_LIBADD = $(INDICATOR_LIBS)
-libapplication_la_LDFLAGS = -module -avoid-version
-
-##################################
-# Service
-##################################
-
-libexec_PROGRAMS = indicator-application-service
 
 BUILT_SOURCES += \
-	application-service-server.h \
 	application-service-marshal.h \
-	application-service-marshal.c \
-	dbus-properties-client.h \
-	notification-item-client.h \
-	notification-watcher-server.h
-
-indicator_application_service_SOURCES = \
-	application-service.c \
-	application-service-appstore.h \
-	application-service-appstore.c \
-	application-service-marshal.c \
-	application-service-watcher.h \
-	application-service-watcher.c \
-	app-indicator-enum-types.c \
-	dbus-shared.h \
-	generate-id.h \
-	generate-id.c
-
-indicator_application_service_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
-	-DDATADIR="\"$(pkgdatadir)\"" \
-	-Wall -Werror \
-	-DG_LOG_DOMAIN=\"indicator-application-service\"
-
-indicator_application_service_LDADD = \
-	$(INDICATOR_LIBS) \
-	libappindicator$(VER).la
+	application-service-marshal.c
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -111,6 +63,7 @@ libappindicator_la_SOURCES = \
 	app-indicator-enum-types.c \
 	app-indicator.c \
 	application-service-marshal.c \
+	dbus-shared.h \
 	generate-id.h \
 	generate-id.c
 
@@ -143,9 +96,6 @@ libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
 ##################################
 
 DBUS_SPECS = \
-	dbus-properties.xml \
-	application-service.xml \
-	notification-approver.xml \
 	notification-item.xml \
 	notification-watcher.xml
 
@@ -202,7 +152,7 @@ AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     $(GTKGIR)
-AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
+AppIndicator_0_1_gir_CFLAGS = $(LIBRARY_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
