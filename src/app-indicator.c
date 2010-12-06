@@ -48,8 +48,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "app-indicator-enum-types.h"
 #include "application-service-marshal.h"
 
-#include "notification-item-server.h"
-#include "notification-watcher-client.h"
+#include "notification-watcher.xml.h"
+#include "notification-item.xml.h"
 
 #include "dbus-shared.h"
 #include "generate-id.h"
@@ -164,6 +164,12 @@ enum {
 
 /* More constants */
 #define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
+
+/* Globals */
+static GDBusNodeInfo *            item_node_info = NULL;
+static GDBusInterfaceInfo *       item_interface_info = NULL;
+static GDBusNodeInfo *            watcher_node_info = NULL;
+static GDBusInterfaceInfo *       watcher_interface_info = NULL;
 
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
@@ -541,6 +547,43 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  NULL, NULL,
 	                                  g_cclosure_marshal_VOID__STRING,
 	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/* DBus interfaces */
+	if (item_node_info == NULL) {
+		GError * error = NULL;
+
+		item_node_info = g_dbus_node_info_new_for_xml(notification_item_xml, &error);
+		if (error != NULL) {
+			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (item_interface_info == NULL && item_node_info != NULL) {
+		item_interface_info = g_dbus_node_info_lookup_interface(item_node_info, NOTIFICATION_ITEM_DBUS_IFACE);
+
+		if (item_interface_info == NULL) {
+			g_error("Unable to find interface '" NOTIFICATION_ITEM_DBUS_IFACE "'");
+		}
+	}
+
+	if (watcher_node_info == NULL) {
+		GError * error = NULL;
+
+		watcher_node_info = g_dbus_node_info_new_for_xml(notification_watcher_xml, &error);
+		if (error != NULL) {
+			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (watcher_interface_info == NULL && watcher_node_info != NULL) {
+		watcher_interface_info = g_dbus_node_info_lookup_interface(watcher_node_info, NOTIFICATION_WATCHER_DBUS_IFACE);
+
+		if (watcher_interface_info == NULL) {
+			g_error("Unable to find interface '" NOTIFICATION_WATCHER_DBUS_IFACE "'");
+		}
+	}
 
 	/* Initialize the object as a DBus type */
 	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
