@@ -585,10 +585,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		}
 	}
 
-	/* Initialize the object as a DBus type */
-	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
-	                                &dbus_glib__notification_item_server_object_info);
-
 	return;
 }
 
