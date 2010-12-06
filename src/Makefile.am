@@ -62,10 +62,10 @@ libappindicator_la_SOURCES = \
 	dbus-shared.h \
 	generate-id.h \
 	generate-id.c \
-	notification-item.xml.h \
-	notification-item.xml.c \
-	notification-watcher.xml.h \
-	notification-watcher.xml.c
+	gen-notification-item.xml.h \
+	gen-notification-item.xml.c \
+	gen-notification-watcher.xml.h \
+	gen-notification-watcher.xml.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 1:0:0 \
@@ -99,25 +99,27 @@ DBUS_SPECS = \
 	notification-item.xml \
 	notification-watcher.xml
 
-%.xml.h: %.xml
+gen-%.xml.h: %.xml
 	@echo "Building $@ from $<"
-	@echo "extern const char * $(subst -,_,$(subst .,_,$(basename $@)));" > $@
+	@echo "extern const char * $(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
-%.xml.c: %.xml
+gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
-	@echo "const char * $(subst -,_,$(subst .,_,$(basename $@))) = " > $@
+	@echo "const char * $(subst -,_,$(subst .,_,$(basename $<))) = " > $@
 	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
 	@echo ";" >> $@
 
 BUILT_SOURCES += \
-	notification-item.xml.c \
-	notification-item.xml.h \
-	notification-watcher.xml.c \
-	notification-watcher.xml.h
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
 CLEANFILES += \
-	$(DBUS_SPECS:.xml=.xml.h) \
-	$(DBUS_SPECS:.xml=.xml.c)
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
 EXTRA_DIST += $(DBUS_SPECS)
 

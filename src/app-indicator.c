@@ -48,8 +48,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "app-indicator-enum-types.h"
 #include "application-service-marshal.h"
 
-#include "notification-watcher.xml.h"
-#include "notification-item.xml.h"
+#include "gen-notification-watcher.xml.h"
+#include "gen-notification-item.xml.h"
 
 #include "dbus-shared.h"
 #include "generate-id.h"
@@ -561,7 +561,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	if (item_node_info == NULL) {
 		GError * error = NULL;
 
-		item_node_info = g_dbus_node_info_new_for_xml(notification_item_xml, &error);
+		item_node_info = g_dbus_node_info_new_for_xml(notification_item, &error);
 		if (error != NULL) {
 			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
 			g_error_free(error);
@@ -579,7 +579,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	if (watcher_node_info == NULL) {
 		GError * error = NULL;
 
-		watcher_node_info = g_dbus_node_info_new_for_xml(notification_watcher_xml, &error);
+		watcher_node_info = g_dbus_node_info_new_for_xml(notification_watcher, &error);
 		if (error != NULL) {
 			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
 			g_error_free(error);
