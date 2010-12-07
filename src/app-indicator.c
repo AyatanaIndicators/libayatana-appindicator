@@ -931,26 +931,43 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 static GVariant *
 bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
 {
+	g_return_val_if_fail(IS_APP_INDICATOR(user_data), NULL);
+	AppIndicator * app = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = app->priv;
+
 	if (g_strcmp0(property, "Id") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(app->priv->id);
 	} else if (g_strcmp0(property, "Category") == 0) {
-		return g_variant_new("s", "bob");
+        GEnumValue *enum_value;
+		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), priv->category);
+		return g_variant_new_string(enum_value->value_nick);
 	} else if (g_strcmp0(property, "Status") == 0) {
-		return g_variant_new("s", "bob");
+        GEnumValue *enum_value;
+		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), priv->status);
+		return g_variant_new_string(enum_value->value_nick);
 	} else if (g_strcmp0(property, "IconName") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(priv->icon_name);
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(priv->attention_icon_name);
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(priv->icon_theme_path);
 	} else if (g_strcmp0(property, "Menu") == 0) {
-		return g_variant_new("o", "/bob");
+		if (priv->menuservice != NULL) {
+			GValue strval = { 0 };
+			g_value_init(&strval, G_TYPE_STRING);
+			g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+			GVariant * var = g_variant_new("o", g_value_get_string(&strval));
+			g_value_unset(&strval);
+			return var;
+		} else {
+			return g_variant_new("o", "/");
+		}
 	} else if (g_strcmp0(property, "XAyatanaLabel") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(priv->label);
 	} else if (g_strcmp0(property, "XAyatanaLabelGuide") == 0) {
-		return g_variant_new("s", "bob");
+		return g_variant_new_string(priv->label_guide);
 	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
-		return g_variant_new("u", 42);
+		return g_variant_new_uint32(priv->ordering_index);
 	}
 
 	*error = g_error_new(0, 0, "Unknown property: %s", property);
