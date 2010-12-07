@@ -34,8 +34,8 @@ public class IndicatorExample
 
                 win.Add (label);
 
-                ApplicationIndicator indicator = new ApplicationIndicator ("my-id",
-                                                                           "my-name",
+                ApplicationIndicator indicator = new ApplicationIndicator ("Example",
+                                                                           "applications-microblogging-panel",
                                                                            Category.ApplicationStatus);
 
                 indicator.Status = Status.Attention;
@@ -45,6 +45,7 @@ public class IndicatorExample
                 menu.Append (new MenuItem ("Bar"));
 
                 indicator.Menu = menu;
+                indicator.Menu.ShowAll ();
 
                 win.ShowAll ();
 

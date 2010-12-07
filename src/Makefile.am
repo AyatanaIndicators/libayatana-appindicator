@@ -13,7 +13,10 @@ endif
 CLEANFILES =
 DISTCLEANFILES =
 BUILT_SOURCES =
-EXTRA_DIST = appindicator-0.1.pc.in appindicator3-0.1.pc.in
+EXTRA_DIST = \
+	appindicator-0.1.pc.in \
+	appindicator3-0.1.pc.in \
+	AppIndicator-0.1.metadata
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -176,16 +179,17 @@ EXTRA_DIST += $(DBUS_SPECS)
 INTROSPECTION_GIRS = 
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=libappindicator/, $(introspection_sources))
+	$(addprefix --c-include=src/, $(introspection_sources)) \
+	--symbol-prefix=app \
+	--identifier-prefix=App
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
 introspection_sources = \
-	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
-	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
+	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
-AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la $(glib_enum_h)
+AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     $(GTKGIR)
