@@ -1035,14 +1035,16 @@ check_connect (AppIndicator *self)
 	/* Do we have a connection? */
 	if (priv->connection == NULL) return;
 
-	/* We're alreadying connecting or trying to connect. */
-	if (priv->watcher_proxy != NULL) return;
-
-	gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
-	if (name == NULL) {
-		return;
+	/* If we already have a proxy, let's see if it has someone
+	   implementing it.  If not, we can't do much more than to
+	   do nothing. */
+	if (priv->watcher_proxy != NULL) {
+		gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
+		if (name == NULL) {
+			return;
+		}
+		g_free(name);
 	}
-	g_free(name);
 
 	/* Do we have enough information? */
 	if (priv->menu == NULL) return;
