@@ -981,10 +981,27 @@ signal_label_change_idle (gpointer user_data)
 	AppIndicator * self = (AppIndicator *)user_data;
 	AppIndicatorPrivate *priv = self->priv;
 
+	gchar * label = priv->label != NULL ? priv->label : "";
+	gchar * guide = priv->label_guide != NULL ? priv->label_guide : "";
+
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
-	              priv->label != NULL ? priv->label : "",
-	              priv->label_guide != NULL ? priv->label_guide : "",
-	              TRUE);
+	              label, guide, TRUE);
+	if (priv->dbus_registration != 0 && priv->connection != NULL) {
+		GError * error = NULL;
+
+		g_dbus_connection_emit_signal(priv->connection,
+		                              NULL,
+		                              priv->path,
+		                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                              "XAyatanaNewLabel",
+		                              g_variant_new("(ss)", label, guide),
+		                              &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send signal for NewIcon: %s", error->message);
+			g_error_free(error);
+		}
+	}
 
 	priv->label_change_idle = 0;
 
@@ -1269,6 +1286,28 @@ static void
 theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
 {
 	g_signal_emit (user_data, signals[NEW_ICON], 0, TRUE);
+
+	AppIndicator * self = (AppIndicator *)user_data;
+	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->dbus_registration != 0 && priv->connection != NULL) {
+		GError * error = NULL;
+
+		g_dbus_connection_emit_signal(priv->connection,
+		                              NULL,
+		                              priv->path,
+		                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                              "NewIcon",
+		                              NULL,
+		                              &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send signal for NewIcon: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	return;
 }
 
 /* Creates a StatusIcon that can be used when the application
@@ -1472,15 +1511,33 @@ app_indicator_new_with_path (const gchar          *id,
 void
 app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (IS_APP_INDICATOR (self));
 
-  if (self->priv->status != status)
-    {
-      GEnumValue *value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status);
+	if (self->priv->status != status) {
+		GEnumValue *value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status);
 
-      self->priv->status = status;
-      g_signal_emit (self, signals[NEW_STATUS], 0, value->value_nick);
-    }
+		self->priv->status = status;
+		g_signal_emit (self, signals[NEW_STATUS], 0, value->value_nick);
+
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewStatus",
+										  g_variant_new("(s)", value->value_nick),
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewStatus: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1493,20 +1550,36 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
-  g_return_if_fail (icon_name != NULL);
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (icon_name != NULL);
 
-  if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0)
-    {
-      if (self->priv->attention_icon_name)
-        g_free (self->priv->attention_icon_name);
+	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
+		if (self->priv->attention_icon_name)
+			g_free (self->priv->attention_icon_name);
 
-      self->priv->attention_icon_name = g_strdup(icon_name);
+		self->priv->attention_icon_name = g_strdup(icon_name);
 
-      g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
-    }
+		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewAttentionIcon",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewAttentionIcon: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1522,20 +1595,36 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
-  g_return_if_fail (icon_name != NULL);
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (icon_name != NULL);
 
-  if (g_strcmp0 (self->priv->icon_name, icon_name) != 0)
-    {
-      if (self->priv->icon_name)
-        g_free (self->priv->icon_name);
+	if (g_strcmp0 (self->priv->icon_name, icon_name) != 0) {
+		if (self->priv->icon_name)
+			g_free (self->priv->icon_name);
 
-      self->priv->icon_name = g_strdup(icon_name);
+		self->priv->icon_name = g_strdup(icon_name);
 
-      g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
-    }
+		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewIcon",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewIcon: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1573,19 +1662,35 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (IS_APP_INDICATOR (self));
 
-  if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0)
-    {
-      if (self->priv->icon_theme_path != NULL)
-            g_free(self->priv->icon_theme_path);
+	if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0) {
+		if (self->priv->icon_theme_path != NULL)
+			g_free(self->priv->icon_theme_path);
 
-      self->priv->icon_theme_path = g_strdup(icon_theme_path);
+		self->priv->icon_theme_path = g_strdup(icon_theme_path);
 
-      g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, g_strdup(self->priv->icon_theme_path));
-    }
+		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, self->priv->icon_theme_path, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewIconThemePath",
+										  g_variant_new("(s)", self->priv->icon_theme_path),
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewIconThemePath: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 static void
