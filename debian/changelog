@@ -3,8 +3,9 @@ indicator-application (0.2.90-0ubuntu4~ppa1) UNRELEASED; urgency=low
   * Upstream Merge
     * Removing service, lib only
     * Switching from dbus-glib to GDBus
+  * Autogen
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 15:29:45 -0600
+ -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 15:34:18 -0600
 
 indicator-application (0.2.90-0ubuntu3) UNRELEASED; urgency=low
 
