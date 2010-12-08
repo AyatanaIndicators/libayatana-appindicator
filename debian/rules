@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 
-DEB_PYTHON_SYSTEM=pycentral
+DEB_SRCDIR = .
+DEB_BUILDDIR = $(DEB_SRCDIR)/build
+
+DEB_PYTHON_SYSTEM=dh_python2
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 export MONO_SHARED_DIR=$(CURDIR)
 export CSC=/usr/bin/mono-csc
@@ -8,7 +11,6 @@ export CSC=/usr/bin/mono-csc
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools-vars.mk
 include /usr/share/cdbs/1/rules/utils.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
 API_VERSION = 0.1
@@ -24,19 +26,25 @@ configure-stamp-%:
 configure/python-appindicator:: $(addprefix configure-stamp-, $(PY_VERSIONS))
 
 build-stamp-%:
-	make -C build-$*/bindings/python
+	PYTHON=`which $*` \
+		$(MAKE) -C build-$*
 	touch $@
 
 build/python-appindicator:: $(addprefix build-stamp-, $(PY_VERSIONS))
 
 install-stamp-%:
-	make -C build-$*/bindings/python install DESTDIR=$(CURDIR)/debian/tmp
+	PYTHON=`which $*` \
+		$(MAKE) -C build-$*/bindings/python install DESTDIR=$(CURDIR)/debian/tmp
+	dh_installdirs -ppython-appindicator -s
+	dh_install -ppython-appindicator -s
 	touch $@
 
 install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
 
-binary-install/python-appindicator::
-	dh_pycentral
+binary-predeb/python-appindicator::
+	dh_python2 -ppython-appindicator
+	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
+	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
 
 binary-install/libappindicator0.1-cil::
 	dh_clistrip
@@ -51,28 +59,35 @@ binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_clideps -plibappindicator0.1-cil
 
 configure-stamp:
-	$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
+	cd $(DEB_BUILDDIR) && \
+		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
 	touch $@
 
 configure/indicator-application:: configure-stamp
 
 build-stamp:
-	make
+	$(MAKE) -C $(DEB_BUILDDIR)
 	touch $@
 
 build/indicator-application:: build-stamp
 
 install-stamp:
-	make install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C $(DEB_BUILDDIR) install DESTDIR=$(CURDIR)/debian/tmp
 	touch $@
 
 install/indicator-application:: install-stamp
+
+binary-predeb/libappindicator1:: install-stamp
+	dh_fixperms
+	dh_strip
 
 binary-post-install/indicator-application::
 	find debian/indicator-application/usr/lib -name \*.la -exec rm {} \;
 	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
 
 common-binary-predeb-arch:: list-missing
+	dh_fixperms
+	dh_strip
 
 clean::
 	-rm -rf $(addprefix build-, $(PY_VERSIONS))
@@ -80,4 +95,3 @@ clean::
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
 	rm -rf $(MONO_SHARED_DIR)/.wapi
-
