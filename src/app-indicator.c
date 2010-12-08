@@ -31,16 +31,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
-#ifdef HAVE_GTK3
-#include <libdbusmenu-gtk3/client.h>
-#else
 #include <libdbusmenu-gtk/client.h>
-#endif
 
 #include <libindicator/indicator-desktop-shortcuts.h>
 
@@ -48,8 +41,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "app-indicator-enum-types.h"
 #include "application-service-marshal.h"
 
-#include "notification-item-server.h"
-#include "notification-watcher-client.h"
+#include "gen-notification-watcher.xml.h"
+#include "gen-notification-item.xml.h"
 
 #include "dbus-shared.h"
 #include "generate-id.h"
@@ -92,9 +85,10 @@ struct _AppIndicatorPrivate {
 	gint                  fallback_timer;
 
 	/* Fun stuff */
-	DBusGProxy           *watcher_proxy;
-	DBusGConnection      *connection;
-	DBusGProxy *          dbus_proxy;
+	GDBusProxy           *watcher_proxy;
+	GDBusConnection      *connection;
+	guint                 dbus_registration;
+	gchar *               path;
 
 	/* Might be used */
 	IndicatorDesktopShortcuts * shorties;
@@ -106,7 +100,6 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	NEW_LABEL,
-	X_NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
 	LAST_SIGNAL
@@ -124,14 +117,10 @@ enum {
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
 	PROP_ICON_THEME_PATH,
-	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
-	PROP_X_LABEL,
-	PROP_X_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_X_ORDERING_INDEX,
 	PROP_DBUS_MENU_SERVER
 };
 
@@ -142,28 +131,27 @@ enum {
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
-#define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
-#define PROP_X_LABEL_S               ("x-ayatana-" PROP_LABEL_S)
-#define PROP_X_LABEL_GUIDE_S         ("x-ayatana-" PROP_LABEL_GUIDE_S)
 #define PROP_ORDERING_INDEX_S        "ordering-index"
-#define PROP_X_ORDERING_INDEX_S      ("x-ayatana-" PROP_ORDERING_INDEX_S)
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
                              (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
 
-/* Signal wrapper */
-#define APP_INDICATOR_SIGNAL_X_NEW_LABEL ("x-ayatana-" APP_INDICATOR_SIGNAL_NEW_LABEL)
-
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
 
 /* More constants */
 #define DEFAULT_FALLBACK_TIMER  100 /* in milliseconds */
+
+/* Globals */
+static GDBusNodeInfo *            item_node_info = NULL;
+static GDBusInterfaceInfo *       item_interface_info = NULL;
+static GDBusNodeInfo *            watcher_node_info = NULL;
+static GDBusInterfaceInfo *       watcher_interface_info = NULL;
 
 /* Boiler plate */
 static void app_indicator_class_init (AppIndicatorClass *klass);
@@ -176,7 +164,7 @@ static void app_indicator_get_property (GObject * object, guint prop_id, GValue 
 /* Other stuff */
 static void signal_label_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
-static void register_service_cb (DBusGProxy * proxy, GError * error, gpointer data);
+static void register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
@@ -185,11 +173,19 @@ static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
-static void watcher_proxy_destroyed (GObject * object, gpointer data);
+static void watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void submenu_changed (GtkWidget *widget, GtkWidget *child, gpointer data);
-
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
+static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
+static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
+static void bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data);
+
+static const GDBusInterfaceVTable item_interface_table = {
+	method_call:    NULL, /* No methods on this object */
+	get_property:   bus_get_prop,
+	set_property:   NULL /* No properties that can be set */
+};
 
 /* GObject type */
 G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
@@ -298,19 +294,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
 	
 	/**
-		AppIndicator:menu:
-		
-		A method for getting the menu path as a string for DBus.
-	*/
-    g_object_class_install_property(object_class,
-                                        PROP_MENU,
-                                        g_param_spec_boxed (PROP_MENU_S,
-                                                             "The object path of the menu on DBus.",
-                                                             "A method for getting the menu path as a string for DBus.",
-                                                             DBUS_TYPE_G_OBJECT_PATH,
-                                                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
 		AppIndicator:connected:
 		
 		Pretty simple, %TRUE if we have a reasonable expectation of being 
@@ -377,47 +360,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                   "A way to override the default ordering of the applications by providing a very specific idea of where this entry should be placed.",
 	                                                   0, G_MAXUINT32, 0,
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-	/**
-		AppIndicator:x-ayatana-ordering-index:
 
-		A wrapper for #AppIndicator:ordering-index so that it can match the
-		dbus interface currently.  It will hopefully be retired, please don't
-		use it anywhere.
-	*/
-	g_object_class_install_property(object_class,
-	                                PROP_X_ORDERING_INDEX,
-	                                g_param_spec_uint (PROP_X_ORDERING_INDEX_S,
-	                                                   "A wrapper, please don't use.",
-	                                                   "A wrapper, please don't use.",
-	                                                   0, G_MAXUINT32, 0,
-	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-		AppIndicator:x-ayatana-label:
-
-		Wrapper for #AppIndicator:label.  Please use that in all of your
-		code.
-	*/
-	g_object_class_install_property(object_class,
-	                                PROP_X_LABEL,
-	                                g_param_spec_string (PROP_X_LABEL_S,
-	                                                     "A wrapper, please don't use.",
-	                                                     "A wrapper, please don't use.",
-	                                                     NULL,
-	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-	/**
-		AppIndicator:x-ayatana-label-guide:
-
-		Wrapper for #AppIndicator:label-guide.  Please use that in all of your
-		code.
-	*/
-	g_object_class_install_property(object_class,
-	                                PROP_X_LABEL_GUIDE,
-	                                g_param_spec_string (PROP_X_LABEL_GUIDE_S,
-	                                                     "A wrapper, please don't use.",
-	                                                     "A wrapper, please don't use.",
-	                                                     NULL,
-	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
 		AppIndicator:dbus-menu-server:
 
@@ -495,22 +438,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
-	/**
-		AppIndicator::x-ayatana-new-label:
-		@arg0: The #AppIndicator object
-		@arg1: The string for the label
-		@arg1: The string for the guide
-
-		Wrapper for #AppIndicator::new-label, please don't use this signal
-		use the other one.
-	*/
-	signals[X_NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_X_NEW_LABEL,
-	                                    G_TYPE_FROM_CLASS(klass),
-	                                    G_SIGNAL_RUN_LAST,
-	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_label),
-	                                    NULL, NULL,
-	                                    _application_service_marshal_VOID__STRING_STRING,
-	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
 		AppIndicator::connection-changed:
@@ -542,9 +469,42 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  g_cclosure_marshal_VOID__STRING,
 	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
 
-	/* Initialize the object as a DBus type */
-	dbus_g_object_type_install_info(APP_INDICATOR_TYPE,
-	                                &dbus_glib__notification_item_server_object_info);
+	/* DBus interfaces */
+	if (item_node_info == NULL) {
+		GError * error = NULL;
+
+		item_node_info = g_dbus_node_info_new_for_xml(_notification_item, &error);
+		if (error != NULL) {
+			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (item_interface_info == NULL && item_node_info != NULL) {
+		item_interface_info = g_dbus_node_info_lookup_interface(item_node_info, NOTIFICATION_ITEM_DBUS_IFACE);
+
+		if (item_interface_info == NULL) {
+			g_error("Unable to find interface '" NOTIFICATION_ITEM_DBUS_IFACE "'");
+		}
+	}
+
+	if (watcher_node_info == NULL) {
+		GError * error = NULL;
+
+		watcher_node_info = g_dbus_node_info_new_for_xml(_notification_watcher, &error);
+		if (error != NULL) {
+			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	if (watcher_interface_info == NULL && watcher_node_info != NULL) {
+		watcher_interface_info = g_dbus_node_info_lookup_interface(watcher_node_info, NOTIFICATION_WATCHER_DBUS_IFACE);
+
+		if (watcher_interface_info == NULL) {
+			g_error("Unable to find interface '" NOTIFICATION_WATCHER_DBUS_IFACE "'");
+		}
+	}
 
 	return;
 }
@@ -570,22 +530,17 @@ app_indicator_init (AppIndicator *self)
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
-	priv->dbus_proxy = NULL;
+	priv->dbus_registration = 0;
+	priv->path = NULL;
 
 	priv->status_icon = NULL;
 	priv->fallback_timer = 0;
 
 	priv->shorties = NULL;
 
-	/* Put the object on DBus */
-	GError * error = NULL;
-	priv->connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (error != NULL) {
-		g_error("Unable to connect to the session bus when creating application indicator: %s", error->message);
-		g_error_free(error);
-		return;
-	}
-	dbus_g_connection_ref(priv->connection);
+	/* Start getting the session bus */
+	g_object_ref(self); /* ref for the bus creation callback */
+	g_bus_get(G_BUS_TYPE_SESSION, NULL, bus_creation, self);
 
 	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
 		"changed", G_CALLBACK(theme_changed_cb), self);
@@ -602,6 +557,11 @@ app_indicator_dispose (GObject *object)
 {
 	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->connection, priv->dbus_registration);
+		priv->dbus_registration = 0;
+	}
 
 	if (priv->shorties != NULL) {
 		g_object_unref(G_OBJECT(priv->shorties));
@@ -638,18 +598,12 @@ app_indicator_dispose (GObject *object)
 		priv->menu = NULL;
 	}
 
-        if (priv->menuservice != NULL) {
-                g_object_unref (priv->menuservice);
-        }
-
-	if (priv->dbus_proxy != NULL) {
-		g_object_unref(G_OBJECT(priv->dbus_proxy));
-		priv->dbus_proxy = NULL;
+	if (priv->menuservice != NULL) {
+		g_object_unref (priv->menuservice);
 	}
 
 	if (priv->watcher_proxy != NULL) {
-		dbus_g_connection_flush(priv->connection);
-		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_proxy_destroyed, self);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(priv->watcher_proxy), watcher_owner_changed, self);
 		g_object_unref(G_OBJECT(priv->watcher_proxy));
 		priv->watcher_proxy = NULL;
 
@@ -658,7 +612,7 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->connection != NULL) {
-		dbus_g_connection_unref(priv->connection);
+		g_object_unref(G_OBJECT(priv->connection));
 		priv->connection = NULL;
 	}
 
@@ -671,8 +625,8 @@ app_indicator_dispose (GObject *object)
 static void
 app_indicator_finalize (GObject *object)
 {
-        AppIndicator * self = APP_INDICATOR(object);
-        AppIndicatorPrivate *priv = self->priv;
+	AppIndicator * self = APP_INDICATOR(object);
+	AppIndicatorPrivate *priv = self->priv;
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Application Status with the status set to: %d", priv->status);
@@ -711,6 +665,11 @@ app_indicator_finalize (GObject *object)
 	if (priv->label_guide != NULL) {
 		g_free(priv->label_guide);
 		priv->label_guide = NULL;
+	}
+
+	if (priv->path != NULL) {
+		g_free(priv->path);
+		priv->path = NULL;
 	}
 
 	G_OBJECT_CLASS (app_indicator_parent_class)->finalize (object);
@@ -783,7 +742,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           check_connect (self);
           break;
 
-		case PROP_X_LABEL:
 		case PROP_LABEL: {
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
@@ -802,7 +760,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
-		case PROP_X_LABEL_GUIDE:
 		case PROP_LABEL_GUIDE: {
 		  gchar * oldguide = priv->label_guide;
 		  priv->label_guide = g_value_dup_string(value);
@@ -821,7 +778,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
-		case PROP_X_ORDERING_INDEX:
 		case PROP_ORDERING_INDEX:
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
@@ -877,31 +833,29 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->icon_theme_path);
           break;
 
-        case PROP_MENU:
-          if (priv->menuservice != NULL) {
-            GValue strval = { 0 };
-            g_value_init(&strval, G_TYPE_STRING);
-            g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
-            g_value_set_boxed(value, g_value_get_string(&strval));
-            g_value_unset(&strval);
-          }
-          break;
+		case PROP_CONNECTED: {
+			gboolean connected = FALSE;
 
-        case PROP_CONNECTED:
-          g_value_set_boolean (value, priv->watcher_proxy != NULL ? TRUE : FALSE);
-          break;
+			if (priv->watcher_proxy != NULL) {
+				gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
+				if (name != NULL) {
+					connected = TRUE;
+					g_free(name);
+				}
+			}
 
-		case PROP_X_LABEL:
+			g_value_set_boolean (value, connected);
+			break;
+		}
+
         case PROP_LABEL:
           g_value_set_string (value, priv->label);
           break;
 
-        case PROP_X_LABEL_GUIDE:
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
 
-		case PROP_X_ORDERING_INDEX:
 		case PROP_ORDERING_INDEX:
 		  g_value_set_uint(value, priv->ordering_index);
 		  break;
@@ -918,6 +872,81 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 	return;
 }
 
+/* DBus bus has been created, well maybe, but we got a call
+   back about it so we need to check into it. */
+static void
+bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
+{
+	GError * error = NULL;
+
+	GDBusConnection * connection = g_bus_get_finish(res, &error);
+	if (error != NULL) {
+		g_warning("Unable to get the session bus: %s", error->message);
+		g_error_free(error);
+		g_object_unref(G_OBJECT(user_data));
+		return;
+	}
+
+	AppIndicator * app = APP_INDICATOR(user_data);
+	app->priv->connection = connection;
+
+	/* If the connection was blocking the exporting of the
+	   object this function will export everything. */
+	check_connect(app);
+
+	g_object_unref(G_OBJECT(app));
+
+	return;
+}
+
+/* DBus is asking for a property so we should figure out what it
+   wants and try and deliver. */
+static GVariant *
+bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(user_data), NULL);
+	AppIndicator * app = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = app->priv;
+
+	if (g_strcmp0(property, "Id") == 0) {
+		return g_variant_new_string(app->priv->id);
+	} else if (g_strcmp0(property, "Category") == 0) {
+        GEnumValue *enum_value;
+		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), priv->category);
+		return g_variant_new_string(enum_value->value_nick);
+	} else if (g_strcmp0(property, "Status") == 0) {
+        GEnumValue *enum_value;
+		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), priv->status);
+		return g_variant_new_string(enum_value->value_nick);
+	} else if (g_strcmp0(property, "IconName") == 0) {
+		return g_variant_new_string(priv->icon_name);
+	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
+		return g_variant_new_string(priv->attention_icon_name);
+	} else if (g_strcmp0(property, "IconThemePath") == 0) {
+		return g_variant_new_string(priv->icon_theme_path);
+	} else if (g_strcmp0(property, "Menu") == 0) {
+		if (priv->menuservice != NULL) {
+			GValue strval = { 0 };
+			g_value_init(&strval, G_TYPE_STRING);
+			g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
+			GVariant * var = g_variant_new("o", g_value_get_string(&strval));
+			g_value_unset(&strval);
+			return var;
+		} else {
+			return g_variant_new("o", "/");
+		}
+	} else if (g_strcmp0(property, "XAyatanaLabel") == 0) {
+		return g_variant_new_string(priv->label);
+	} else if (g_strcmp0(property, "XAyatanaLabelGuide") == 0) {
+		return g_variant_new_string(priv->label_guide);
+	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
+		return g_variant_new_uint32(priv->ordering_index);
+	}
+
+	*error = g_error_new(0, 0, "Unknown property: %s", property);
+	return NULL;
+}
+
 /* Sends the label changed signal and resets the source ID */
 static gboolean
 signal_label_change_idle (gpointer user_data)
@@ -925,14 +954,27 @@ signal_label_change_idle (gpointer user_data)
 	AppIndicator * self = (AppIndicator *)user_data;
 	AppIndicatorPrivate *priv = self->priv;
 
+	gchar * label = priv->label != NULL ? priv->label : "";
+	gchar * guide = priv->label_guide != NULL ? priv->label_guide : "";
+
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
-	              priv->label != NULL ? priv->label : "",
-	              priv->label_guide != NULL ? priv->label_guide : "",
-	              TRUE);
-	g_signal_emit(G_OBJECT(self), signals[X_NEW_LABEL], 0,
-	              priv->label != NULL ? priv->label : "",
-	              priv->label_guide != NULL ? priv->label_guide : "",
-	              TRUE);
+	              label, guide, TRUE);
+	if (priv->dbus_registration != 0 && priv->connection != NULL) {
+		GError * error = NULL;
+
+		g_dbus_connection_emit_signal(priv->connection,
+		                              NULL,
+		                              priv->path,
+		                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                              "XAyatanaNewLabel",
+		                              g_variant_new("(ss)", label, guide),
+		                              &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send signal for NewIcon: %s", error->message);
+			g_error_free(error);
+		}
+	}
 
 	priv->label_change_idle = 0;
 
@@ -963,93 +1005,197 @@ check_connect (AppIndicator *self)
 {
 	AppIndicatorPrivate *priv = self->priv;
 
-	/* We're alreadying connecting or trying to connect. */
-	if (priv->watcher_proxy != NULL) return;
+	/* Do we have a connection? */
+	if (priv->connection == NULL) return;
+
+	/* If we already have a proxy, let's see if it has someone
+	   implementing it.  If not, we can't do much more than to
+	   do nothing. */
+	if (priv->watcher_proxy != NULL) {
+		gchar * name = g_dbus_proxy_get_name_owner(priv->watcher_proxy);
+		if (name == NULL) {
+			return;
+		}
+		g_free(name);
+	}
 
 	/* Do we have enough information? */
 	if (priv->menu == NULL) return;
 	if (priv->icon_name == NULL) return;
 	if (priv->id == NULL) return;
 
-	gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
-
-	dbus_g_connection_register_g_object(priv->connection,
-	                                    path,
-	                                    G_OBJECT(self));
-
-	GError * error = NULL;
-	priv->watcher_proxy = dbus_g_proxy_new_for_name_owner(priv->connection,
-	                                                      NOTIFICATION_WATCHER_DBUS_ADDR,
-	                                                      NOTIFICATION_WATCHER_DBUS_OBJ,
-	                                                      NOTIFICATION_WATCHER_DBUS_IFACE,
-	                                                      &error);
-	if (error != NULL) {
-		/* Unable to get proxy, but we're handling that now so
-		   it's not a warning anymore. */
-		g_error_free(error);
-		dbus_g_connection_unregister_g_object(priv->connection,
-						      G_OBJECT(self));
-		start_fallback_timer(self, FALSE);
-		g_free(path);
-		return;
+	if (priv->path == NULL) {
+		priv->path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s", priv->clean_id);
 	}
 
-	g_signal_connect(G_OBJECT(priv->watcher_proxy), "destroy", G_CALLBACK(watcher_proxy_destroyed), self);
-	org_kde_StatusNotifierWatcher_register_status_notifier_item_async(priv->watcher_proxy, path, register_service_cb, self);
-	g_free(path);
+	if (priv->dbus_registration == 0) {
+		GError * error = NULL;
+		priv->dbus_registration = g_dbus_connection_register_object(priv->connection,
+		                                                            priv->path,
+		                                                            item_interface_info,
+		                                                            &item_interface_table,
+		                                                            self,
+		                                                            NULL,
+		                                                            &error);
+		if (error != NULL) {
+			g_warning("Unable to register object on path '%s': %s", priv->path, error->message);
+			g_error_free(error);
+			return;
+		}
+	}
 
-	/* Emit the AppIndicator::connection-changed signal*/
-    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, TRUE);
+	/* NOTE: It's really important the order here.  We make sure to *publish*
+	   the object on the bus and *then* get the proxy.  The reason is that we
+	   want to ensure all the filters are setup before talking to the watcher
+	   and that's where the order is important. */
+
+	g_object_ref(G_OBJECT(self)); /* Unref in watcher_ready() */
+	if (priv->watcher_proxy == NULL) {
+		/* Build Watcher Proxy */
+		g_dbus_proxy_new(priv->connection,
+		                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES | G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS, /* We don't use these, don't bother with them */
+		                 watcher_interface_info,
+		                 NOTIFICATION_WATCHER_DBUS_ADDR,
+		                 NOTIFICATION_WATCHER_DBUS_OBJ,
+		                 NOTIFICATION_WATCHER_DBUS_IFACE,
+		                 NULL, /* cancellable */
+		                 bus_watcher_ready,
+		                 self);
+	} else {
+		bus_watcher_ready(NULL, NULL, self);
+	}
 
 	return;
 }
 
-/* A function that gets called when the watcher dies.  Like
-   dies dies.  Not our friend anymore. */
+/* Callback for when the watcher proxy has been created, or not
+   but we got called none-the-less. */
 static void
-watcher_proxy_destroyed (GObject * object, gpointer data)
+bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
-	AppIndicator * self = APP_INDICATOR(data);
+	GError * error = NULL;
+
+	GDBusProxy * proxy = NULL;
+	if (res != NULL) {
+		proxy = g_dbus_proxy_new_finish(res, &error);
+	}
+
+	if (error != NULL) {
+		/* Unable to get proxy, but we're handling that now so
+		   it's not a warning anymore. */
+		g_error_free(error);
+
+		if (IS_APP_INDICATOR(user_data)) {
+			start_fallback_timer(APP_INDICATOR(user_data), FALSE);
+		}
+
+		g_object_unref(G_OBJECT(user_data));
+		return;
+	}
+
+	AppIndicator * app = APP_INDICATOR(user_data);
+
+	if (res != NULL) {
+		app->priv->watcher_proxy = proxy;
+
+		/* Setting up a signal to watch when the unique name
+		   changes */
+		g_signal_connect(G_OBJECT(app->priv->watcher_proxy), "notify::g-name-owner", G_CALLBACK(watcher_owner_changed), user_data);
+	}
+
+	/* Let's insure that someone is on the other side, else we're
+	   still in a fallback scenario. */
+	gchar * name = g_dbus_proxy_get_name_owner(app->priv->watcher_proxy);
+	if (name == NULL) {
+		start_fallback_timer(APP_INDICATOR(user_data), FALSE);
+		g_object_unref(G_OBJECT(user_data));
+		return;
+	}
+
+	/* g_object_unref(G_OBJECT(user_data)); */
+	/* Why is this commented out?  Oh, wait, we don't want to
+	   unref in this case because we need to ref again to do the
+	   register callback.  Let's not unref to ref again. */
+
+	g_dbus_proxy_call(app->priv->watcher_proxy,
+	                  "RegisterStatusNotifierItem",
+	                  g_variant_new("(s)", app->priv->path),
+	                  G_DBUS_CALL_FLAGS_NONE,
+					  -1,
+	                  NULL, /* cancelable */
+	                  register_service_cb,
+	                  user_data);
+
+	return;
+}
+
+/* Watching for when the name owner changes on the interface
+   to know whether we should be connected or not. */
+static void
+watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data)
+{
+	AppIndicator * self = APP_INDICATOR(user_data);
 	g_return_if_fail(self != NULL);
+	g_return_if_fail(self->priv->watcher_proxy != NULL);
 
-	dbus_g_connection_unregister_g_object(self->priv->connection,
-					      G_OBJECT(self));
-	self->priv->watcher_proxy = NULL;
+	gchar * name = g_dbus_proxy_get_name_owner(self->priv->watcher_proxy);
 
-    /* Emit the AppIndicator::connection-changed signal*/
-    g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
-	
-	start_fallback_timer(self, FALSE);
+	if (name == NULL) {
+		/* Emit the AppIndicator::connection-changed signal*/
+		g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
+		
+		start_fallback_timer(self, FALSE);
+	} else {
+		if (self->priv->fallback_timer != 0) {
+			/* Stop the timer */
+			g_source_remove(self->priv->fallback_timer);
+			self->priv->fallback_timer = 0;
+		}
+
+		check_connect(self);
+	}
+
 	return;
 }
 
 /* Responce from the DBus command to register a service
    with a NotificationWatcher. */
 static void
-register_service_cb (DBusGProxy * proxy, GError * error, gpointer data)
+register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 {
-	g_return_if_fail(IS_APP_INDICATOR(data));
-	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+	GError * error = NULL;
+	GVariant * returns = g_dbus_proxy_call_finish(G_DBUS_PROXY(obj), res, &error);
+
+	/* We don't care about any return values */
+	if (returns != NULL) {
+		g_variant_unref(returns);
+	}
 
 	if (error != NULL) {
 		/* They didn't respond, ewww.  Not sure what they could
 		   be doing */
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
-		dbus_g_connection_unregister_g_object(priv->connection,
-						      G_OBJECT(data));
-		g_object_unref(G_OBJECT(priv->watcher_proxy));
-		priv->watcher_proxy = NULL;
-		start_fallback_timer(APP_INDICATOR(data), TRUE);
+		start_fallback_timer(APP_INDICATOR(user_data), TRUE);
+		g_object_unref(G_OBJECT(user_data));
+		return;
 	}
 
+	g_return_if_fail(IS_APP_INDICATOR(user_data));
+	AppIndicator * app = APP_INDICATOR(user_data);
+	AppIndicatorPrivate * priv = app->priv;
+
+	/* Emit the AppIndicator::connection-changed signal*/
+    g_signal_emit (app, signals[CONNECTION_CHANGED], 0, TRUE);
+
 	if (priv->status_icon) {
-		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
+		AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(app);
 		if (class->unfallback != NULL) {
-			class->unfallback(APP_INDICATOR(data), priv->status_icon);
+			class->unfallback(app, priv->status_icon);
 			priv->status_icon = NULL;
 		} 
 	}
 
+	g_object_unref(G_OBJECT(user_data));
 	return;
 }
 
@@ -1062,89 +1208,6 @@ category_from_enum (AppIndicatorCategory category)
 
   value = g_enum_get_value ((GEnumClass *)g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), category);
   return value->value_nick;
-}
-
-/* Watching the dbus owner change events to see if someone
-   we care about pops up! */
-static void
-dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, const gchar * new, gpointer data)
-{
-	if (new == NULL || new[0] == '\0') {
-		/* We only care about folks coming on the bus.  Exit quickly otherwise. */
-		return;
-	}
-
-	if (g_strcmp0(name, NOTIFICATION_WATCHER_DBUS_ADDR)) {
-		/* We only care about this address, reject all others. */
-		return;
-	}
-
-	/* Woot, there's a new notification watcher in town. */
-
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(data);
-
-	if (priv->fallback_timer != 0) {
-		/* Stop a timer */
-		g_source_remove(priv->fallback_timer);
-
-		/* Stop listening to bus events */
-		g_object_unref(G_OBJECT(priv->dbus_proxy));
-		priv->dbus_proxy = NULL;
-	}
-
-	/* Let's start from the very beginning */
-	check_connect(APP_INDICATOR(data));
-
-	return;
-}
-
-/* Checking to see if someone already has the name we're looking for */
-static void
-check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer userdata)
-{
-	if (error != NULL) {
-		g_warning("Unable to check for '" NOTIFICATION_WATCHER_DBUS_ADDR "' on DBus.  No worries, but concerning.");
-		return;
-	}
-
-	if (exists) {
-		g_debug("Woah, we actually has a race condition with dbus");
-		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
-	}
-
-	return;
-}
-
-/* This is an idle function to create the proxy.  This is mostly
-   because start_fallback_timer can get called in the distruction
-   of a proxy and thus the proxy manager gets confused when creating
-   a new proxy as part of destroying an old one.  This function being
-   on idle means that we'll just do it outside of the same stack where
-   the previous proxy is being destroyed. */
-static gboolean
-setup_name_owner_proxy (gpointer data)
-{
-	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
-	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
-
-	if (priv->dbus_proxy == NULL) {
-		priv->dbus_proxy = dbus_g_proxy_new_for_name(priv->connection,
-		                                             DBUS_SERVICE_DBUS,
-		                                             DBUS_PATH_DBUS,
-		                                             DBUS_INTERFACE_DBUS);
-		dbus_g_proxy_add_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                        G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-		                        G_TYPE_INVALID);
-		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
-		                            G_CALLBACK(dbus_owner_change), data, NULL);
-
-		/* Check to see if anyone has the name we're looking for
-		   just incase we missed it changing. */
-
-		org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, check_owner_cb, data);
-	}
-
-	return FALSE;
 }
 
 /* A function that will start the fallback timer if it's not
@@ -1166,11 +1229,6 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 	if (priv->status_icon != NULL) {
 		/* We're already fallen back.  Let's not do it again. */
 		return;
-	}
-
-	if (priv->dbus_proxy == NULL) {
-		/* NOTE: Read the comment on setup_name_owner_proxy */
-		g_idle_add(setup_name_owner_proxy, self);
 	}
 
 	if (disable_timeout) {
@@ -1214,6 +1272,28 @@ static void
 theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
 {
 	g_signal_emit (user_data, signals[NEW_ICON], 0, TRUE);
+
+	AppIndicator * self = (AppIndicator *)user_data;
+	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->dbus_registration != 0 && priv->connection != NULL) {
+		GError * error = NULL;
+
+		g_dbus_connection_emit_signal(priv->connection,
+		                              NULL,
+		                              priv->path,
+		                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                              "NewIcon",
+		                              NULL,
+		                              &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send signal for NewIcon: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	return;
 }
 
 /* Creates a StatusIcon that can be used when the application
@@ -1417,15 +1497,33 @@ app_indicator_new_with_path (const gchar          *id,
 void
 app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (IS_APP_INDICATOR (self));
 
-  if (self->priv->status != status)
-    {
-      GEnumValue *value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status);
+	if (self->priv->status != status) {
+		GEnumValue *value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status);
 
-      self->priv->status = status;
-      g_signal_emit (self, signals[NEW_STATUS], 0, value->value_nick);
-    }
+		self->priv->status = status;
+		g_signal_emit (self, signals[NEW_STATUS], 0, value->value_nick);
+
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewStatus",
+										  g_variant_new("(s)", value->value_nick),
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewStatus: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1438,20 +1536,36 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
-  g_return_if_fail (icon_name != NULL);
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (icon_name != NULL);
 
-  if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0)
-    {
-      if (self->priv->attention_icon_name)
-        g_free (self->priv->attention_icon_name);
+	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
+		if (self->priv->attention_icon_name)
+			g_free (self->priv->attention_icon_name);
 
-      self->priv->attention_icon_name = g_strdup(icon_name);
+		self->priv->attention_icon_name = g_strdup(icon_name);
 
-      g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
-    }
+		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewAttentionIcon",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewAttentionIcon: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1467,20 +1581,36 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
-  g_return_if_fail (icon_name != NULL);
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (icon_name != NULL);
 
-  if (g_strcmp0 (self->priv->icon_name, icon_name) != 0)
-    {
-      if (self->priv->icon_name)
-        g_free (self->priv->icon_name);
+	if (g_strcmp0 (self->priv->icon_name, icon_name) != 0) {
+		if (self->priv->icon_name)
+			g_free (self->priv->icon_name);
 
-      self->priv->icon_name = g_strdup(icon_name);
+		self->priv->icon_name = g_strdup(icon_name);
 
-      g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
-    }
+		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewIcon",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewIcon: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 /**
@@ -1518,19 +1648,35 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
+	g_return_if_fail (IS_APP_INDICATOR (self));
 
-  if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0)
-    {
-      if (self->priv->icon_theme_path != NULL)
-            g_free(self->priv->icon_theme_path);
+	if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0) {
+		if (self->priv->icon_theme_path != NULL)
+			g_free(self->priv->icon_theme_path);
 
-      self->priv->icon_theme_path = g_strdup(icon_theme_path);
+		self->priv->icon_theme_path = g_strdup(icon_theme_path);
 
-      g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, g_strdup(self->priv->icon_theme_path));
-    }
+		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, self->priv->icon_theme_path, TRUE);
 
-  return;
+		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewIconThemePath",
+										  g_variant_new("(s)", self->priv->icon_theme_path),
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewIconThemePath: %s", error->message);
+				g_error_free(error);
+			}
+		}
+	}
+
+	return;
 }
 
 static void
@@ -2150,7 +2296,7 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
 
 	if (self->priv->ordering_index == 0) {
-		return generate_id(self->priv->category, self->priv->id);
+		return _generate_id(self->priv->category, self->priv->id);
 	} else {
 		return self->priv->ordering_index;
 	}

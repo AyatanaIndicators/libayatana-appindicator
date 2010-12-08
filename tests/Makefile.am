@@ -24,13 +24,13 @@ test_libappindicator_SOURCES = \
 	test-libappindicator.c
 
 test_libappindicator_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-DSRCDIR="\"$(srcdir)\"" \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -42,12 +42,12 @@ test_libappindicator_dbus_client_SOURCES = \
 	test-libappindicator-dbus-client.c
 
 test_libappindicator_dbus_client_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_client_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -59,12 +59,12 @@ test_libappindicator_dbus_server_SOURCES = \
 	test-libappindicator-dbus-server.c
 
 test_libappindicator_dbus_server_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_server_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -76,12 +76,12 @@ test_libappindicator_status_client_SOURCES = \
 	test-libappindicator-status-client.c
 
 test_libappindicator_status_client_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_client_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -93,12 +93,12 @@ test_libappindicator_status_server_SOURCES = \
 	test-libappindicator-status-server.c
 
 test_libappindicator_status_server_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_server_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 #########################################
@@ -109,24 +109,24 @@ test_libappindicator_fallback_watcher_SOURCES = \
 	test-libappindicator-fallback-watcher.c
 
 test_libappindicator_fallback_watcher_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_watcher_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 test_libappindicator_fallback_item_SOURCES = \
 	test-libappindicator-fallback-item.c
 
 test_libappindicator_fallback_item_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_item_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 
 test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
@@ -185,11 +185,11 @@ test_simple_app_SOURCES = \
 	test-simple-app.c
 
 test_simple_app_CFLAGS = \
-	$(LIBRARY_CFLAGS) \
+	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 test_simple_app_LDADD = \
-	$(LIBRARY_LIBS) \
+	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
 

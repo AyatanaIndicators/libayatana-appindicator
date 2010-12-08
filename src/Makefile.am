@@ -54,10 +54,6 @@ libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
 	$(glib_enum_h)
 
-BUILT_SOURCES += \
-	notification-watcher-client.h \
-	notification-item-server.h
-
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
@@ -65,7 +61,11 @@ libappindicator_la_SOURCES = \
 	application-service-marshal.c \
 	dbus-shared.h \
 	generate-id.h \
-	generate-id.c
+	generate-id.c \
+	gen-notification-item.xml.h \
+	gen-notification-item.xml.c \
+	gen-notification-watcher.xml.h \
+	gen-notification-watcher.xml.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 1:0:0 \
@@ -99,25 +99,27 @@ DBUS_SPECS = \
 	notification-item.xml \
 	notification-watcher.xml
 
-%-client.h: %.xml
-	dbus-binding-tool \
-		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_client \
-		--mode=glib-client \
-		--output=$@ \
-		$<
+gen-%.xml.h: %.xml
+	@echo "Building $@ from $<"
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
-%-server.h: %.xml
-	dbus-binding-tool \
-		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_server \
-		--mode=glib-server \
-		--output=$@ \
-		$<
+gen-%.xml.c: %.xml
+	@echo "Building $@ from $<"
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	@echo ";" >> $@
 
 BUILT_SOURCES += \
-	$(DBUS_SPECS:.xml=-client.h) \
-	$(DBUS_SPECS:.xml=-server.h)
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
-CLEANFILES += $(BUILT_SOURCES)
+CLEANFILES += \
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
 EXTRA_DIST += $(DBUS_SPECS)
 
