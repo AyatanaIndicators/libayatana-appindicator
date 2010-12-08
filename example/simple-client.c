@@ -60,6 +60,20 @@ activate_clicked_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
+local_icon_toggle_cb (GtkWidget *widget, gpointer data)
+{
+	AppIndicator * ci = APP_INDICATOR(data);
+
+	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
+		app_indicator_set_icon(ci, LOCAL_ICON);
+	} else {
+		app_indicator_set_icon(ci, "indicator-messages");
+	}
+
+	return;
+}
+
+static void
 item_clicked_cb (GtkWidget *widget, gpointer data)
 {
   const gchar *text = (const gchar *)data;
@@ -189,6 +203,12 @@ main (int argc, char ** argv)
 		label_toggle_cb(item, ci);
         g_signal_connect (item, "activate",
                           G_CALLBACK (label_toggle_cb), ci);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		gtk_widget_show(item);
+
+        item = gtk_check_menu_item_new_with_label ("Set Local Icon");
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (local_icon_toggle_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		gtk_widget_show(item);
 

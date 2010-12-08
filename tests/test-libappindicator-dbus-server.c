@@ -21,8 +21,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 #include <gtk/gtk.h>
 #include <app-indicator.h>
 #include "test-defines.h"
@@ -40,8 +38,6 @@ gint
 main (gint argc, gchar * argv[])
 {
 	gtk_init(&argc, &argv);
-
-	g_debug("DBus ID: %s", dbus_connection_get_server_id(dbus_g_connection_get_connection(dbus_g_bus_get(DBUS_BUS_SESSION, NULL))));
 
 	AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
 
