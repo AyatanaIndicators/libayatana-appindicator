@@ -3,7 +3,7 @@
 DEB_SRCDIR = .
 DEB_BUILDDIR = $(DEB_SRCDIR)/build
 
-DEB_PYTHON_SYSTEM=pycentral
+DEB_PYTHON_SYSTEM=dh_python2
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 export MONO_SHARED_DIR=$(CURDIR)
 export CSC=/usr/bin/mono-csc
@@ -42,7 +42,9 @@ install-stamp-%:
 install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
 
 binary-predeb/python-appindicator::
-	DH_PYCENTRAL=include-links dh_pycentral -ppython-appindicator -s
+	dh_python2 -ppython-appindicator
+	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
+	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
 
 binary-install/libappindicator0.1-cil::
 	dh_clistrip
@@ -84,6 +86,8 @@ binary-post-install/indicator-application::
 	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
 
 common-binary-predeb-arch:: list-missing
+	dh_fixperms
+	dh_strip
 
 clean::
 	-rm -rf $(addprefix build-, $(PY_VERSIONS))
@@ -91,4 +95,3 @@ clean::
 	-rm -rf $(addprefix build-stamp-, $(PY_VERSIONS))
 	-rm -rf $(addprefix install-stamp-, $(PY_VERSIONS))
 	rm -rf $(MONO_SHARED_DIR)/.wapi
-
