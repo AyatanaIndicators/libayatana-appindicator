@@ -1052,6 +1052,7 @@ check_connect (AppIndicator *self)
 	   want to ensure all the filters are setup before talking to the watcher
 	   and that's where the order is important. */
 
+	g_object_ref(G_OBJECT(self)); /* Unref in watcher_ready() */
 	if (priv->watcher_proxy == NULL) {
 		/* Build Watcher Proxy */
 		g_dbus_proxy_new(priv->connection,
@@ -1119,6 +1120,8 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 	                  NULL, /* cancelable */
 	                  register_service_cb,
 	                  user_data);
+
+	g_object_unref(G_OBJECT(user_data));
 
 	return;
 }
