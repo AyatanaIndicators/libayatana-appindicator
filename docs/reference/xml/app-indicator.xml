@@ -78,6 +78,10 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label">app_indicator_get_label</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>       (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="guint32"><returnvalue>guint32</returnvalue></link>             <link linkend="app-indicator-get-ordering-index">app_indicator_get_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-build-menu-from-desktop">app_indicator_build_menu_from_desktop</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_file</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_profile</parameter>);
 </synopsis>
 </refsynopsisdiv>
 <refsect1 id="libappindicator-app-indicator.object-hierarchy" role="object_hierarchy">
@@ -93,17 +97,14 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
   &quot;<link linkend="AppIndicator--attention-icon-name">attention-icon-name</link>&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--category">category</link>&quot;                 <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--connected">connected</link>&quot;                <link linkend="gboolean"><type>gboolean</type></link>              : Read
+  &quot;<link linkend="AppIndicator--dbus-menu-server">dbus-menu-server</link>&quot;         <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>*       : Read / Write
   &quot;<link linkend="AppIndicator--icon-name">icon-name</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct
   &quot;<link linkend="AppIndicator--icon-theme-path">icon-theme-path</link>&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct
   &quot;<link linkend="AppIndicator--id">id</link>&quot;                       <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--label">label</link>&quot;                    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--label-guide">label-guide</link>&quot;              <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
-  &quot;<link linkend="AppIndicator--menu">menu</link>&quot;                     <link linkend="DBusGObjectPath"><type>DBusGObjectPath</type></link>*      : Read
   &quot;<link linkend="AppIndicator--ordering-index">ordering-index</link>&quot;           <link linkend="guint"><type>guint</type></link>                 : Read / Write
   &quot;<link linkend="AppIndicator--status">status</link>&quot;                   <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
-  &quot;<link linkend="AppIndicator--x-ayatana-label">x-ayatana-label</link>&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
-  &quot;<link linkend="AppIndicator--x-ayatana-label-guide">x-ayatana-label-guide</link>&quot;    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
-  &quot;<link linkend="AppIndicator--x-ayatana-ordering-index">x-ayatana-ordering-index</link>&quot; <link linkend="guint"><type>guint</type></link>                 : Read / Write
 </synopsis>
 </refsect1>
 <refsect1 id="libappindicator-app-indicator.signals" role="signal_proto">
@@ -115,7 +116,6 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
   &quot;<link linkend="AppIndicator-new-icon-theme-path">new-icon-theme-path</link>&quot;                            : Run Last
   &quot;<link linkend="AppIndicator-new-label">new-label</link>&quot;                                      : Run Last
   &quot;<link linkend="AppIndicator-new-status">new-status</link>&quot;                                     : Run Last
-  &quot;<link linkend="AppIndicator-x-ayatana-new-label">x-ayatana-new-label</link>&quot;                            : Run Last
 </synopsis>
 </refsect1>
 
@@ -775,6 +775,27 @@ Wrapper function for property <link linkend="AppIndicator--ordering-index"><type
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current ordering index.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-build-menu-from-desktop" role="function">
+<title>app_indicator_build_menu_from_desktop ()</title>
+<indexterm zone="app-indicator-build-menu-from-desktop"><primary>app_indicator_build_menu_from_desktop</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_build_menu_from_desktop
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_file</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_profile</parameter>);</programlisting>
+<para>
+This function allows for building the Application Indicator menu
+	from a static desktop file.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>desktop_file</parameter>&#160;:</term>
+<listitem><simpara>A path to the desktop file to build the menu from
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>desktop_profile</parameter>&#160;:</term>
+<listitem><simpara>Which entries should be used from the desktop file
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 <refsect1 id="libappindicator-app-indicator.property-details" role="property_details">
@@ -803,6 +824,13 @@ Pretty simple, <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if we ha
 		displayed through this object. You should hide your TrayIcon if so.
 </para><para>Default value: FALSE</para>
 </refsect2>
+<refsect2 id="AppIndicator--dbus-menu-server" role="property"><title>The <literal>&quot;dbus-menu-server&quot;</literal> property</title>
+<indexterm zone="AppIndicator--dbus-menu-server"><primary>AppIndicator:dbus-menu-server</primary></indexterm>
+<programlisting>  &quot;dbus-menu-server&quot;         <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>*       : Read / Write</programlisting>
+<para>
+A way to get the internal dbusmenu server if it is available.
+		This should only be used for testing.
+</para></refsect2>
 <refsect2 id="AppIndicator--icon-name" role="property"><title>The <literal>&quot;icon-name&quot;</literal> property</title>
 <indexterm zone="AppIndicator--icon-name"><primary>AppIndicator:icon-name</primary></indexterm>
 <programlisting>  &quot;icon-name&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct</programlisting>
@@ -851,12 +879,6 @@ An optional string to provide guidance to the panel on how big
 		get you enough power.
 </para><para>Default value: NULL</para>
 </refsect2>
-<refsect2 id="AppIndicator--menu" role="property"><title>The <literal>&quot;menu&quot;</literal> property</title>
-<indexterm zone="AppIndicator--menu"><primary>AppIndicator:menu</primary></indexterm>
-<programlisting>  &quot;menu&quot;                     <link linkend="DBusGObjectPath"><type>DBusGObjectPath</type></link>*      : Read</programlisting>
-<para>
-A method for getting the menu path as a string for DBus.
-</para></refsect2>
 <refsect2 id="AppIndicator--ordering-index" role="property"><title>The <literal>&quot;ordering-index&quot;</literal> property</title>
 <indexterm zone="AppIndicator--ordering-index"><primary>AppIndicator:ordering-index</primary></indexterm>
 <programlisting>  &quot;ordering-index&quot;           <link linkend="guint"><type>guint</type></link>                 : Read / Write</programlisting>
@@ -878,31 +900,6 @@ The ordering index is an odd parameter, and if you think you don't need
 Whether the indicator is shown or requests attention. Defaults to
 		'Passive'.
 </para><para>Default value: NULL</para>
-</refsect2>
-<refsect2 id="AppIndicator--x-ayatana-label" role="property"><title>The <literal>&quot;x-ayatana-label&quot;</literal> property</title>
-<indexterm zone="AppIndicator--x-ayatana-label"><primary>AppIndicator:x-ayatana-label</primary></indexterm>
-<programlisting>  &quot;x-ayatana-label&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
-<para>
-Wrapper for <link linkend="AppIndicator--label"><type>"label"</type></link>.  Please use that in all of your
-		code.
-</para><para>Default value: NULL</para>
-</refsect2>
-<refsect2 id="AppIndicator--x-ayatana-label-guide" role="property"><title>The <literal>&quot;x-ayatana-label-guide&quot;</literal> property</title>
-<indexterm zone="AppIndicator--x-ayatana-label-guide"><primary>AppIndicator:x-ayatana-label-guide</primary></indexterm>
-<programlisting>  &quot;x-ayatana-label-guide&quot;    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
-<para>
-Wrapper for <link linkend="AppIndicator--label-guide"><type>"label-guide"</type></link>.  Please use that in all of your
-		code.
-</para><para>Default value: NULL</para>
-</refsect2>
-<refsect2 id="AppIndicator--x-ayatana-ordering-index" role="property"><title>The <literal>&quot;x-ayatana-ordering-index&quot;</literal> property</title>
-<indexterm zone="AppIndicator--x-ayatana-ordering-index"><primary>AppIndicator:x-ayatana-ordering-index</primary></indexterm>
-<programlisting>  &quot;x-ayatana-ordering-index&quot; <link linkend="guint"><type>guint</type></link>                 : Read / Write</programlisting>
-<para>
-A wrapper for <link linkend="AppIndicator--ordering-index"><type>"ordering-index"</type></link> so that it can match the
-		dbus interface currently.  It will hopefully be retired, please don't
-		use it anywhere.
-</para><para>Default value: 0</para>
 </refsect2>
 
 </refsect1>
@@ -996,27 +993,6 @@ Emitted when <link linkend="AppIndicator--status"><type>"status"</type></link> i
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
 <listitem><simpara>The string value of the <link linkend="AppIndicatorStatus"><type>AppIndicatorStatus</type></link> enum.
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
-<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
-</variablelist></refsect2><refsect2 id="AppIndicator-x-ayatana-new-label" role="signal"><title>The <literal>&quot;x-ayatana-new-label&quot;</literal> signal</title>
-<indexterm zone="AppIndicator-x-ayatana-new-label"><primary>AppIndicator::x-ayatana-new-label</primary></indexterm>
-<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
-                                                        <link linkend="gchar"><type>gchar</type></link>        *arg1,
-                                                        <link linkend="gchar"><type>gchar</type></link>        *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
-<para>
-Wrapper for <link linkend="AppIndicator-new-label"><type>"new-label"</type></link>, please don't use this signal
-		use the other one.
-</para><variablelist role="params">
-<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The string for the label
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The string for the guide
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>

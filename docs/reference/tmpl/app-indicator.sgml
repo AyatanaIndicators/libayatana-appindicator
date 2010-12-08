@@ -190,15 +190,6 @@ AppIndicator
 @appindicator: the object which received the signal.
 @arg1: 
 
-<!-- ##### SIGNAL AppIndicator::x-ayatana-new-label ##### -->
-<para>
-
-</para>
-
-@appindicator: the object which received the signal.
-@arg1: 
-@arg2: 
-
 <!-- ##### ARG AppIndicator:attention-icon-name ##### -->
 <para>
 
@@ -210,6 +201,11 @@ AppIndicator
 </para>
 
 <!-- ##### ARG AppIndicator:connected ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:dbus-menu-server ##### -->
 <para>
 
 </para>
@@ -239,32 +235,12 @@ AppIndicator
 
 </para>
 
-<!-- ##### ARG AppIndicator:menu ##### -->
-<para>
-
-</para>
-
 <!-- ##### ARG AppIndicator:ordering-index ##### -->
 <para>
 
 </para>
 
 <!-- ##### ARG AppIndicator:status ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG AppIndicator:x-ayatana-label ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG AppIndicator:x-ayatana-label-guide ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG AppIndicator:x-ayatana-ordering-index ##### -->
 <para>
 
 </para>
@@ -476,5 +452,15 @@ AppIndicator
 
 @self: 
 @Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_build_menu_from_desktop ##### -->
+<para>
+
+</para>
+
+@self: 
+@desktop_file: 
+@desktop_profile: 
 
 

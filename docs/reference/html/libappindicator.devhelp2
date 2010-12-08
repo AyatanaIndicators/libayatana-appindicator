@@ -46,27 +46,24 @@
     <keyword type="function" name="app_indicator_get_label ()" link="libappindicator-app-indicator.html#app-indicator-get-label"/>
     <keyword type="function" name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <keyword type="function" name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
+    <keyword type="function" name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
     <keyword type="property" name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
     <keyword type="property" name="The &quot;category&quot; property" link="libappindicator-app-indicator.html#AppIndicator--category"/>
     <keyword type="property" name="The &quot;connected&quot; property" link="libappindicator-app-indicator.html#AppIndicator--connected"/>
+    <keyword type="property" name="The &quot;dbus-menu-server&quot; property" link="libappindicator-app-indicator.html#AppIndicator--dbus-menu-server"/>
     <keyword type="property" name="The &quot;icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-name"/>
     <keyword type="property" name="The &quot;icon-theme-path&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-theme-path"/>
     <keyword type="property" name="The &quot;id&quot; property" link="libappindicator-app-indicator.html#AppIndicator--id"/>
     <keyword type="property" name="The &quot;label&quot; property" link="libappindicator-app-indicator.html#AppIndicator--label"/>
     <keyword type="property" name="The &quot;label-guide&quot; property" link="libappindicator-app-indicator.html#AppIndicator--label-guide"/>
-    <keyword type="property" name="The &quot;menu&quot; property" link="libappindicator-app-indicator.html#AppIndicator--menu"/>
     <keyword type="property" name="The &quot;ordering-index&quot; property" link="libappindicator-app-indicator.html#AppIndicator--ordering-index"/>
     <keyword type="property" name="The &quot;status&quot; property" link="libappindicator-app-indicator.html#AppIndicator--status"/>
-    <keyword type="property" name="The &quot;x-ayatana-label&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label"/>
-    <keyword type="property" name="The &quot;x-ayatana-label-guide&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label-guide"/>
-    <keyword type="property" name="The &quot;x-ayatana-ordering-index&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-ordering-index"/>
     <keyword type="signal" name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
     <keyword type="signal" name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
     <keyword type="signal" name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>
     <keyword type="signal" name="The &quot;new-icon-theme-path&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path"/>
     <keyword type="signal" name="The &quot;new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-label"/>
     <keyword type="signal" name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
-    <keyword type="signal" name="The &quot;x-ayatana-new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-x-ayatana-new-label"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_APPLICATION_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_COMMUNICATIONS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-COMMUNICATIONS:CAPS"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_SYSTEM_SERVICES" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-SYSTEM-SERVICES:CAPS"/>

@@ -91,17 +91,6 @@ libappindicator3_la_LDFLAGS = $(libappindicator_la_LDFLAGS)
 libappindicator3_la_CFLAGS = $(libappindicator_la_CFLAGS)
 libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
 
-# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
-# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
-# Only one version of the library is every compiled at the same time, so it is safe to reuse
-# the right hand sides like this.
-libappindicator3includedir = $(libappindicatorincludedir)
-libappindicator3include_HEADERS = $(libappindicatorinclude_HEADERS)
-libappindicator3_la_SOURCES = $(libappindicator_la_SOURCES)
-libappindicator3_la_LDFLAGS = $(libappindicator_la_LDFLAGS)
-libappindicator3_la_CFLAGS = $(libappindicator_la_CFLAGS)
-libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
-
 ##################################
 # DBus Specs
 ##################################

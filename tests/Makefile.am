@@ -168,6 +168,7 @@ test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator
 	@chmod +x test-libappindicator-dbus
 
 TESTS += test-libappindicator-dbus
+XFAIL_TESTS = test-libappindicator-dbus
 
 test-libappindicator-status: test-libappindicator-status-client test-libappindicator-status-server Makefile.am
 	@echo "#!/bin/bash" > test-libappindicator-status

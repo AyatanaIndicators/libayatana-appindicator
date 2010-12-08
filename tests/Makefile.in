@@ -470,6 +470,7 @@ test_libappindicator_fallback_item_LDADD = \
 XML_REPORT = libappindicator-check-results.xml
 HTML_REPORT = libappindicator-check-results.html
 DBUS_RUNNER = dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.conf
+XFAIL_TESTS = test-libappindicator-dbus
 
 #########################################
 #########################################
