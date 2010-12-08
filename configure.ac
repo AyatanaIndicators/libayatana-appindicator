@@ -64,7 +64,7 @@ AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
-                                     indicator >= $INDICATOR_REQUIRED_VERSION 
+                                     indicator >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
          AC_SUBST(LIBRARY_CFLAGS)
          AC_SUBST(LIBRARY_LIBS)
@@ -220,5 +220,4 @@ Libappindicator Configuration:
 	Prefix:        $prefix
 	Indicator Dir: $INDICATORDIR
 	GTK+ Version:  $with_gtk
-	Library CFlags: $LIBRARY_CFLAGS
 ])
