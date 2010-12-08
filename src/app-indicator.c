@@ -477,7 +477,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	if (item_node_info == NULL) {
 		GError * error = NULL;
 
-		item_node_info = g_dbus_node_info_new_for_xml(notification_item, &error);
+		item_node_info = g_dbus_node_info_new_for_xml(_notification_item, &error);
 		if (error != NULL) {
 			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
 			g_error_free(error);
@@ -495,7 +495,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	if (watcher_node_info == NULL) {
 		GError * error = NULL;
 
-		watcher_node_info = g_dbus_node_info_new_for_xml(notification_watcher, &error);
+		watcher_node_info = g_dbus_node_info_new_for_xml(_notification_watcher, &error);
 		if (error != NULL) {
 			g_error("Unable to parse Notification Item DBus interface: %s", error->message);
 			g_error_free(error);
@@ -2300,7 +2300,7 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
 
 	if (self->priv->ordering_index == 0) {
-		return generate_id(self->priv->category, self->priv->id);
+		return _generate_id(self->priv->category, self->priv->id);
 	} else {
 		return self->priv->ordering_index;
 	}

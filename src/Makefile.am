@@ -101,11 +101,11 @@ DBUS_SPECS = \
 
 gen-%.xml.h: %.xml
 	@echo "Building $@ from $<"
-	@echo "extern const char * $(subst -,_,$(subst .,_,$(basename $<)));" > $@
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
 gen-%.xml.c: %.xml
 	@echo "Building $@ from $<"
-	@echo "const char * $(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
 	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
 	@echo ";" >> $@
 
