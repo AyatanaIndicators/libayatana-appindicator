@@ -31,9 +31,6 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 #ifdef HAVE_GTK3
@@ -124,7 +121,6 @@ enum {
 	PROP_ICON_NAME,
 	PROP_ATTENTION_ICON_NAME,
 	PROP_ICON_THEME_PATH,
-	PROP_MENU,
 	PROP_CONNECTED,
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
@@ -139,7 +135,6 @@ enum {
 #define PROP_ICON_NAME_S             "icon-name"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
-#define PROP_MENU_S                  "menu"
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
@@ -302,19 +297,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              NULL,
                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
 	
-	/**
-		AppIndicator:menu:
-		
-		A method for getting the menu path as a string for DBus.
-	*/
-    g_object_class_install_property(object_class,
-                                        PROP_MENU,
-                                        g_param_spec_boxed (PROP_MENU_S,
-                                                             "The object path of the menu on DBus.",
-                                                             "A method for getting the menu path as a string for DBus.",
-                                                             DBUS_TYPE_G_OBJECT_PATH,
-                                                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
 	/**
 		AppIndicator:connected:
 		
@@ -852,16 +834,6 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 
         case PROP_ICON_THEME_PATH:
           g_value_set_string (value, priv->icon_theme_path);
-          break;
-
-        case PROP_MENU:
-          if (priv->menuservice != NULL) {
-            GValue strval = { 0 };
-            g_value_init(&strval, G_TYPE_STRING);
-            g_object_get_property (G_OBJECT (priv->menuservice), DBUSMENU_SERVER_PROP_DBUS_OBJECT, &strval);
-            g_value_set_boxed(value, g_value_get_string(&strval));
-            g_value_unset(&strval);
-          }
           break;
 
 		case PROP_CONNECTED: {
