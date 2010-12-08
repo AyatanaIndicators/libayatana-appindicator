@@ -123,3 +123,9 @@ src/notification-item.xml.c
 src/notification-item.xml.h
 src/notification-watcher.xml.c
 src/notification-watcher.xml.h
+src/gen-notification-item.xml.c
+src/gen-notification-item.xml.h
+src/gen-notification-watcher.xml.c
+src/gen-notification-watcher.xml.h
+src/libappindicator_la-gen-notification-item.xml.lo
+src/libappindicator_la-gen-notification-watcher.xml.lo
