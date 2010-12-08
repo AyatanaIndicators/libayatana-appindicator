@@ -22,60 +22,12 @@ include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
 
 ##################################
-# Indicator
+# Marshallers 
 ##################################
-
-applicationlibdir = $(INDICATORDIR)
-applicationlib_LTLIBRARIES = libapplication.la
-libapplication_la_SOURCES = \
-	application-service-marshal.c \
-	dbus-shared.h \
-	indicator-application.c
-libapplication_la_CFLAGS = $(INDICATOR_CFLAGS) \
-	-Wall \
-	-Wl,-Bsymbolic-functions \
-	-Wl,-z,defs \
-	-Wl,--as-needed \
-	-Werror \
-	-DG_LOG_DOMAIN=\"Indicator-Application\"
-libapplication_la_LIBADD = $(INDICATOR_LIBS)
-libapplication_la_LDFLAGS = -module -avoid-version
-
-##################################
-# Service
-##################################
-
-libexec_PROGRAMS = indicator-application-service
 
 BUILT_SOURCES += \
-	application-service-server.h \
 	application-service-marshal.h \
-	application-service-marshal.c \
-	dbus-properties-client.h \
-	notification-item-client.h \
-	notification-watcher-server.h
-
-indicator_application_service_SOURCES = \
-	application-service.c \
-	application-service-appstore.h \
-	application-service-appstore.c \
-	application-service-marshal.c \
-	application-service-watcher.h \
-	application-service-watcher.c \
-	app-indicator-enum-types.c \
-	dbus-shared.h \
-	generate-id.h \
-	generate-id.c
-
-indicator_application_service_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
-	-DDATADIR="\"$(pkgdatadir)\"" \
-	-Wall -Werror \
-	-DG_LOG_DOMAIN=\"indicator-application-service\"
-
-indicator_application_service_LDADD = \
-	$(INDICATOR_LIBS) \
-	libappindicator$(VER).la
+	application-service-marshal.c
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -102,17 +54,18 @@ libappindicatorinclude_HEADERS = \
 	$(libappindicator_headers) \
 	$(glib_enum_h)
 
-BUILT_SOURCES += \
-	notification-watcher-client.h \
-	notification-item-server.h
-
 libappindicator_la_SOURCES = \
 	$(libappindicator_headers) \
 	app-indicator-enum-types.c \
 	app-indicator.c \
 	application-service-marshal.c \
+	dbus-shared.h \
 	generate-id.h \
-	generate-id.c
+	generate-id.c \
+	gen-notification-item.xml.h \
+	gen-notification-item.xml.c \
+	gen-notification-watcher.xml.h \
+	gen-notification-watcher.xml.c
 
 libappindicator_la_LDFLAGS = \
 	-version-info 1:0:0 \
@@ -120,12 +73,23 @@ libappindicator_la_LDFLAGS = \
 	-export-symbols-regex "^[^_d].*"
 
 libappindicator_la_CFLAGS = \
-	$(INDICATOR_CFLAGS) \
+	$(LIBRARY_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"libappindicator\"
 
 libappindicator_la_LIBADD = \
-	$(INDICATOR_LIBS)
+	$(LIBRARY_LIBS)
+
+# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
+# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
+# Only one version of the library is every compiled at the same time, so it is safe to reuse
+# the right hand sides like this.
+libappindicator3includedir = $(libappindicatorincludedir)
+libappindicator3include_HEADERS = $(libappindicatorinclude_HEADERS)
+libappindicator3_la_SOURCES = $(libappindicator_la_SOURCES)
+libappindicator3_la_LDFLAGS = $(libappindicator_la_LDFLAGS)
+libappindicator3_la_CFLAGS = $(libappindicator_la_CFLAGS)
+libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
 
 # We duplicate these here because Automake won't let us use $(VER) on the left hand side.
 # Since we carefully use $(VER) in the right hand side above, we can assign the same values.
@@ -143,31 +107,30 @@ libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
 ##################################
 
 DBUS_SPECS = \
-	dbus-properties.xml \
-	application-service.xml \
-	notification-approver.xml \
 	notification-item.xml \
 	notification-watcher.xml
 
-%-client.h: %.xml
-	dbus-binding-tool \
-		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_client \
-		--mode=glib-client \
-		--output=$@ \
-		$<
+gen-%.xml.h: %.xml
+	@echo "Building $@ from $<"
+	@echo "extern const char * _$(subst -,_,$(subst .,_,$(basename $<)));" > $@
 
-%-server.h: %.xml
-	dbus-binding-tool \
-		--prefix=_$(notdir $(subst -,_,$(<:.xml=)))_server \
-		--mode=glib-server \
-		--output=$@ \
-		$<
+gen-%.xml.c: %.xml
+	@echo "Building $@ from $<"
+	@echo "const char * _$(subst -,_,$(subst .,_,$(basename $<))) = " > $@
+	@sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	@echo ";" >> $@
 
 BUILT_SOURCES += \
-	$(DBUS_SPECS:.xml=-client.h) \
-	$(DBUS_SPECS:.xml=-server.h)
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
-CLEANFILES += $(BUILT_SOURCES)
+CLEANFILES += \
+	gen-notification-item.xml.c \
+	gen-notification-item.xml.h \
+	gen-notification-watcher.xml.c \
+	gen-notification-watcher.xml.h
 
 EXTRA_DIST += $(DBUS_SPECS)
 
@@ -177,11 +140,19 @@ EXTRA_DIST += $(DBUS_SPECS)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS = 
+
+if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
 	$(addprefix --c-include=src/, $(introspection_sources)) \
 	--symbol-prefix=app \
 	--identifier-prefix=App
+else
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(srcdir) \
+	$(addprefix --c-include=src/, $(introspection_sources))
+endif
+
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
@@ -190,10 +161,11 @@ introspection_sources = \
 	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
 AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
+
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
     $(GTKGIR)
-AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
+AppIndicator_0_1_gir_CFLAGS = $(LIBRARY_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
 

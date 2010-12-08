@@ -206,8 +206,6 @@ main (gint argc, gchar * argv[])
 {
 	g_type_init();
 
-	g_usleep(500000);
-
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (error != NULL) {
@@ -230,8 +228,10 @@ main (gint argc, gchar * argv[])
 
 	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
 
+	g_usleep(500000);
+
 	DBusGProxy * props = dbus_g_proxy_new_for_name_owner(session_bus,
-	                                                     ":1.0",
+	                                                     ":1.2",
 	                                                     "/org/ayatana/NotificationItem/my_id",
 	                                                     DBUS_INTERFACE_PROPERTIES,
 	                                                     &error);
@@ -244,35 +244,35 @@ main (gint argc, gchar * argv[])
 	                         "Get",
 	                         prop_id_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
+	                         G_TYPE_STRING, NOTIFICATION_ITEM_DBUS_IFACE,
 	                         G_TYPE_STRING, "Id",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_category_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
+	                         G_TYPE_STRING, NOTIFICATION_ITEM_DBUS_IFACE,
 	                         G_TYPE_STRING, "Category",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_status_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
+	                         G_TYPE_STRING, NOTIFICATION_ITEM_DBUS_IFACE,
 	                         G_TYPE_STRING, "Status",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_icon_name_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
+	                         G_TYPE_STRING, NOTIFICATION_ITEM_DBUS_IFACE,
 	                         G_TYPE_STRING, "IconName",
 	                         G_TYPE_INVALID);
 	dbus_g_proxy_begin_call (props,
 	                         "Get",
 	                         prop_attention_icon_name_cb,
 	                         NULL, NULL,
-	                         G_TYPE_STRING, "org.ayatana.indicator.application.NotificationItem",
+	                         G_TYPE_STRING, NOTIFICATION_ITEM_DBUS_IFACE,
 	                         G_TYPE_STRING, "AttentionIconName",
 	                         G_TYPE_INVALID);
 
