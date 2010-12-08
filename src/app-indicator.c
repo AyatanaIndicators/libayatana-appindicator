@@ -32,8 +32,14 @@ License version 3 and version 2.1 along with this program.  If not, see
 #endif
 
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
+
 #include <libdbusmenu-glib/server.h>
+#ifdef HAVE_GTK3
+#include <libdbusmenu-gtk3/client.h>
+#else
 #include <libdbusmenu-gtk/client.h>
+#endif
 
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
@@ -1052,6 +1058,23 @@ dbus_owner_change (DBusGProxy * proxy, const gchar * name, const gchar * prev, c
 	return;
 }
 
+/* Checking to see if someone already has the name we're looking for */
+static void
+check_owner_cb (DBusGProxy *proxy, gboolean exists, GError *error, gpointer userdata)
+{
+	if (error != NULL) {
+		g_warning("Unable to check for '" NOTIFICATION_WATCHER_DBUS_ADDR "' on DBus.  No worries, but concerning.");
+		return;
+	}
+
+	if (exists) {
+		g_debug("Woah, we actually has a race condition with dbus");
+		dbus_owner_change(proxy, NOTIFICATION_WATCHER_DBUS_ADDR, NULL, "Non NULL", userdata);
+	}
+
+	return;
+}
+
 /* This is an idle function to create the proxy.  This is mostly
    because start_fallback_timer can get called in the distruction
    of a proxy and thus the proxy manager gets confused when creating
@@ -1074,6 +1097,11 @@ setup_name_owner_proxy (gpointer data)
 		                        G_TYPE_INVALID);
 		dbus_g_proxy_connect_signal(priv->dbus_proxy, "NameOwnerChanged",
 		                            G_CALLBACK(dbus_owner_change), data, NULL);
+
+		/* Check to see if anyone has the name we're looking for
+		   just incase we missed it changing. */
+
+		org_freedesktop_DBus_name_has_owner_async(priv->dbus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, check_owner_cb, data);
 	}
 
 	return FALSE;
@@ -1525,13 +1553,17 @@ static void
 update_icon_name (DbusmenuMenuitem *menuitem,
                   GtkImage         *image)
 {
+  const gchar *icon_name = NULL;
+
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_ICON_NAME)
     return;
+
+  gtk_image_get_icon_name (image, &icon_name, NULL);
 
   if (should_show_image (image))
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.name.icon_name);
+                                    icon_name);
   else
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
@@ -1543,16 +1575,18 @@ update_stock_item (DbusmenuMenuitem *menuitem,
                    GtkImage         *image)
 {
   GtkStockItem stock;
+  gchar *stock_id = NULL;
 
   if (gtk_image_get_storage_type (image) != GTK_IMAGE_STOCK)
     return FALSE;
 
-  gtk_stock_lookup (image->data.stock.stock_id, &stock);
+  gtk_image_get_stock (image, &stock_id, NULL);
+  gtk_stock_lookup (stock_id, &stock);
 
   if (should_show_image (image))
     dbusmenu_menuitem_property_set (menuitem,
                                     DBUSMENU_MENUITEM_PROP_ICON_NAME,
-                                    image->data.stock.stock_id);
+                                    stock_id);
   else
     dbusmenu_menuitem_property_remove (menuitem,
                                        DBUSMENU_MENUITEM_PROP_ICON_NAME);
@@ -1601,7 +1635,7 @@ widget_notify_cb (GtkWidget  *widget,
     {
       dbusmenu_menuitem_property_set_bool (child,
                                            DBUSMENU_MENUITEM_PROP_ENABLED,
-                                           GTK_WIDGET_IS_SENSITIVE (widget));
+                                           gtk_widget_is_sensitive (widget));
     }
   else if (pspec->name == g_intern_static_string ("label"))
     {
@@ -1753,7 +1787,7 @@ container_iterate (GtkWidget *widget,
 
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_ENABLED,
-                                       GTK_WIDGET_IS_SENSITIVE (widget));
+                                       gtk_widget_is_sensitive (widget));
   dbusmenu_menuitem_property_set_bool (child,
                                        DBUSMENU_MENUITEM_PROP_VISIBLE,
                                        gtk_widget_get_visible (widget));
