@@ -543,6 +543,7 @@ app_indicator_init (AppIndicator *self)
 	priv->shorties = NULL;
 
 	/* Start getting the session bus */
+	g_object_ref(self); /* ref for the bus creation callback */
 	g_bus_get(G_BUS_TYPE_SESSION, NULL, bus_creation, self);
 
 	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
@@ -895,6 +896,9 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 	/* If the connection was blocking the exporting of the
 	   object this function will export everything. */
 	check_connect(app);
+
+	g_object_unref(G_OBJECT(app));
+
 	return;
 }
 
