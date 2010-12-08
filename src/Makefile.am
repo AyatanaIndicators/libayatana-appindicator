@@ -1,7 +1,22 @@
+if USE_GTK3
+VER=3
+lib_LTLIBRARIES = libappindicator3.la
+GTKGIR = Gtk-3.0
+GTKVAPI = gtk+-3.0
+else
+VER=
+lib_LTLIBRARIES = libappindicator.la
+GTKGIR = Gtk-2.0
+GTKVAPI = gtk+-2.0
+endif
+
 CLEANFILES =
 DISTCLEANFILES =
 BUILT_SOURCES =
-EXTRA_DIST = appindicator-0.1.pc.in
+EXTRA_DIST = \
+	appindicator-0.1.pc.in \
+	appindicator3-0.1.pc.in \
+	AppIndicator-0.1.metadata
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -60,7 +75,7 @@ indicator_application_service_CFLAGS = \
 
 indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS) \
-	libappindicator.la
+	libappindicator$(VER).la
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -69,7 +84,7 @@ glib_marshal_prefix = _application_service_marshal
 # Library
 ##################################
 
-pkgconfig_DATA = appindicator-0.1.pc
+pkgconfig_DATA = appindicator$(VER)-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 
 glib_enum_h = app-indicator-enum-types.h
@@ -78,10 +93,7 @@ glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 
 DISTCLEANFILES += app-indicator-enum-types.c
 
-lib_LTLIBRARIES = \
-	libappindicator.la
-
-libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
+libappindicatorincludedir=$(includedir)/libappindicator$(VER)-0.1/libappindicator
 
 libappindicator_headers = \
 	app-indicator.h
@@ -114,6 +126,17 @@ libappindicator_la_CFLAGS = \
 
 libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
+
+# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
+# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
+# Only one version of the library is every compiled at the same time, so it is safe to reuse
+# the right hand sides like this.
+libappindicator3includedir = $(libappindicatorincludedir)
+libappindicator3include_HEADERS = $(libappindicatorinclude_HEADERS)
+libappindicator3_la_SOURCES = $(libappindicator_la_SOURCES)
+libappindicator3_la_LDFLAGS = $(libappindicator_la_LDFLAGS)
+libappindicator3_la_CFLAGS = $(libappindicator_la_CFLAGS)
+libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
 
 ##################################
 # DBus Specs
@@ -156,24 +179,30 @@ EXTRA_DIST += $(DBUS_SPECS)
 INTROSPECTION_GIRS = 
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=libappindicator/, $(introspection_sources))
+	$(addprefix --c-include=src/, $(introspection_sources)) \
+	--symbol-prefix=app \
+	--identifier-prefix=App
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 
 if HAVE_INTROSPECTION
 
 introspection_sources = \
-	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
-	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
+	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
-AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
+AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
 AppIndicator_0_1_gir_INCLUDES = \
     GObject-2.0 \
-    Gtk-2.0
+    $(GTKGIR)
 AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
-AppIndicator_0_1_gir_LIBS = libappindicator.la
+AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
 
-INTROSPECTION_GIRS += AppIndicator-0.1.gir
+AppIndicator3_0_1_gir_INCLUDES = $(AppIndicator_0_1_gir_INCLUDES)
+AppIndicator3_0_1_gir_CFLAGS = $(AppIndicator_0_1_gir_CFLAGS)
+AppIndicator3_0_1_gir_LIBS = $(AppIndicator_0_1_gir_LIBS)
+AppIndicator3_0_1_gir_FILES = $(AppIndicator_0_1_gir_FILES)
+
+INTROSPECTION_GIRS += AppIndicator$(VER)-0.1.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
@@ -192,11 +221,11 @@ endif
 if HAVE_INTROSPECTION
 
 vapidir = $(datadir)/vala/vapi
-vapi_DATA = AppIndicator-0.1.vapi
+vapi_DATA = AppIndicator$(VER)-0.1.vapi
 
-AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
-	$(VALA_API_GEN) --library=AppIndicator-0.1 \
-		--pkg gtk+-2.0 \
+AppIndicator$(VER)-0.1.vapi: AppIndicator$(VER)-0.1.gir Makefile.am
+	$(VALA_API_GEN) --library=AppIndicator$(VER)-0.1 \
+		--pkg $(GTKVAPI) \
 		--vapidir=$(top_builddir)/src \
 		$<
 

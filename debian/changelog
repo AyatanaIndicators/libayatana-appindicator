@@ -1,16 +1,12 @@
-indicator-application (0.2.9-0ubuntu2~ppa2) maverick; urgency=low
+indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
 
-  * Upstream Merge
+  * New upstream release.
     * A race fix on the dbus name (LP: #526499)
-
- -- Ted Gould <ted@ubuntu.com>  Mon, 01 Nov 2010 11:12:17 -0500
-
-indicator-application (0.2.9-0ubuntu2~ppa1) maverick; urgency=low
-
-  * Upstream Merge
     * Fixing the Watcher Interface
+    * Fixes to build with GTK 2/3
+    * Fixes to build with valac-0.12
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 19 Oct 2010 20:26:38 -0400
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 20:48:03 -0600
 
 indicator-application (0.2.9-0ubuntu1) maverick; urgency=low
 
