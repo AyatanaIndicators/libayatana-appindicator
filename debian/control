@@ -1,4 +1,4 @@
-Source: indicator-application
+Source: libappindicator
 Section: gnome
 Priority: optional
 XS-Python-Version: all
