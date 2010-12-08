@@ -222,6 +222,5 @@ AC_MSG_NOTICE([
 Libappindicator Configuration:
 
 	Prefix:        $prefix
-	Indicator Dir: $INDICATORDIR
 	GTK+ Version:  $with_gtk
 ])

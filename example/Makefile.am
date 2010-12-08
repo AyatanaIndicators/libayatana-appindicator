@@ -11,9 +11,13 @@ simple_client_SOURCES = \
 
 simple_client_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
+	-DLOCAL_ICON="\"$(abs_srcdir)/simple-client-test-icon.png\"" \
 	-Wall -Werror \
 	-I$(top_srcdir)/src
 
 simple_client_LDADD = \
 	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator.la
+
+EXTRA_DIST = \
+	simple-client-test-icon.png
