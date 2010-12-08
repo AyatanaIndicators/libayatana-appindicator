@@ -33,20 +33,6 @@ Standards-Version: 3.8.4
 Homepage: https://launchpad.net/indicator-application
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-application/ubuntu
 
-Package: python-appindicator
-Section: python
-Architecture: any
-XB-Python-Version: ${python:Versions}
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         ${python:Depends},
-         libappindicator1 (= ${binary:Version}),
-         python-gobject
-Provides: ${python:Provides}
-Description: Python bindings for libappindicator
- This package provides Python bindings so that you can use libappindicator from 
- a Python program.
-
 Package: libappindicator1
 Section: libs
 Architecture: any
@@ -125,3 +111,17 @@ Description: Typelib files for libappindicator1.
  .
  This package can be used by other packages using the GIRepository format
  to generate dynamic bindings.
+
+Package: python-appindicator
+Section: python
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         ${python:Depends},
+         libappindicator1 (= ${binary:Version}),
+         python-gobject
+Provides: ${python:Provides}
+Description: Python bindings for libappindicator
+ This package provides Python bindings so that you can use libappindicator from 
+ a Python program.
