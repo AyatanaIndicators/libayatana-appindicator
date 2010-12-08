@@ -1,4 +1,4 @@
-indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.2.90-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]
   * New upstream release.
@@ -14,7 +14,6 @@ indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
     - Make sure python2.6 and python2.7 files get included
   * debian/rules
     - Fix builds for multiple python versions
-    - disable parallel builds, it breaks the mono binding generation
 
  -- Ken VanDine <ken.vandine@canonical.com>  Wed, 08 Dec 2010 00:42:58 -0500
 
