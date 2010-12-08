@@ -33,11 +33,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
-#ifdef HAVE_GTK3
-#include <libdbusmenu-gtk3/client.h>
-#else
 #include <libdbusmenu-gtk/client.h>
-#endif
 
 #include <libindicator/indicator-desktop-shortcuts.h>
 
