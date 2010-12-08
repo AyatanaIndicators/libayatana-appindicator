@@ -887,6 +887,7 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 	if (error != NULL) {
 		g_warning("Unable to get the session bus: %s", error->message);
 		g_error_free(error);
+		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
 
@@ -1091,6 +1092,8 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 		if (IS_APP_INDICATOR(user_data)) {
 			start_fallback_timer(APP_INDICATOR(user_data), FALSE);
 		}
+
+		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
 
@@ -1109,8 +1112,14 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 	gchar * name = g_dbus_proxy_get_name_owner(app->priv->watcher_proxy);
 	if (name == NULL) {
 		start_fallback_timer(APP_INDICATOR(user_data), FALSE);
+		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
+
+	/* g_object_unref(G_OBJECT(user_data)); */
+	/* Why is this commented out?  Oh, wait, we don't want to
+	   unref in this case because we need to ref again to do the
+	   register callback.  Let's not unref to ref again. */
 
 	g_dbus_proxy_call(app->priv->watcher_proxy,
 	                  "RegisterStatusNotifierItem",
@@ -1120,8 +1129,6 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 	                  NULL, /* cancelable */
 	                  register_service_cb,
 	                  user_data);
-
-	g_object_unref(G_OBJECT(user_data));
 
 	return;
 }
@@ -1173,6 +1180,7 @@ register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 		   be doing */
 		g_warning("Unable to connect to the Notification Watcher: %s", error->message);
 		start_fallback_timer(APP_INDICATOR(user_data), TRUE);
+		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
 
@@ -1191,6 +1199,7 @@ register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 		} 
 	}
 
+	g_object_unref(G_OBJECT(user_data));
 	return;
 }
 
