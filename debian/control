@@ -47,13 +47,6 @@ Description: Python bindings for libappindicator
  This package provides Python bindings so that you can use libappindicator from 
  a Python program.
 
-Package: indicator-application
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Application Indicators
- A library and indicator to take menus from applications and place them in
- the panel.
-
 Package: libappindicator1
 Section: libs
 Architecture: any

@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/indicators/*
-debian/tmp/usr/lib/indicator-application/indicator-application-service
-debian/tmp/usr/share/dbus-1/services/indicator-application.service
-debian/tmp/usr/share/indicator-application/ordering-override.keyfile
