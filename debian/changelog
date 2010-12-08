@@ -1,4 +1,4 @@
-indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
+indicator-application (0.2.90-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * A race fix on the dbus name (LP: #526499)
@@ -6,7 +6,7 @@ indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
     * Fixes to build with GTK 2/3
     * Fixes to build with valac-0.12
 
- -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 20:48:03 -0600
+ -- Ted Gould <ted@ubuntu.com>  Tue, 07 Dec 2010 20:50:15 -0600
 
 indicator-application (0.2.9-0ubuntu1) maverick; urgency=low
 
