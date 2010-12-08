@@ -1,3 +1,23 @@
+indicator-application (0.2.90-0ubuntu1) UNRELEASED; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release.
+    * A race fix on the dbus name (LP: #526499)
+    * Fixing the Watcher Interface
+    * Fixes to build with GTK 2/3
+    * Fixes to build with valac-0.12
+
+  [ Ken VanDine ]
+  * debian/control
+    - Changed the valac build depends to valac-0.12 
+  * debian/python-appindicator.install
+    - Make sure python2.6 and python2.7 files get included
+  * debian/rules
+    - Fix builds for multiple python versions
+    - disable parallel builds, it breaks the mono binding generation
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 08 Dec 2010 00:42:58 -0500
+
 indicator-application (0.2.9-0ubuntu1) maverick; urgency=low
 
   [ Ted Gould ]

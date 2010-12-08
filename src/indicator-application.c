@@ -21,6 +21,9 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /* G Stuff */
 #include <glib.h>
@@ -29,7 +32,11 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* DBus Stuff */
 #include <dbus/dbus-glib.h>
+#ifdef HAVE_GTK3
+#include <libdbusmenu-gtk3/menu.h>
+#else
 #include <libdbusmenu-gtk/menu.h>
+#endif
 
 /* Indicator Stuff */
 #include <libindicator/indicator.h>

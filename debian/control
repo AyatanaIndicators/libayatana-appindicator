@@ -29,7 +29,7 @@ Build-Depends: debhelper (>= 5.0),
                libgirepository1.0-dev,
                gir1.0-glib-2.0,
                gir1.0-gtk-2.0,
-               valac
+               valac-0.12
 Standards-Version: 3.8.4
 Homepage: https://launchpad.net/indicator-application
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-application/ubuntu

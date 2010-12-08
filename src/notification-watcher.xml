@@ -3,24 +3,17 @@
 	<interface name="org.kde.StatusNotifierWatcher">
 
 <!-- Properties -->
-		<!-- None currently -->
+		<property name="ProtocolVersion" type="i" access="read" />
+		<property name="IsStatusNotifierHostRegistered" type="b" access="read" />
+		<property name="RegisteredStatusNotifierItems" type="as" access="read" />
 
 <!-- Methods -->
 		<method name="RegisterStatusNotifierItem">
 		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
 			<arg type="s" name="service" direction="in" />
 		</method>
-		<method name="RegisteredStatusNotifierItems">
-			<arg type="as" name="services" direction="out" />
-		</method>
-		<method name="ProtocolVersion">
-			<arg type="s" name="version" direction="out" />
-		</method>
-		<method name="RegisterNotificationHost">
+		<method name="RegisterStatusNotifierHost">
 			<arg type="s" name="service" direction="in" />
-		</method>
-		<method name="IsNotificationHostRegistered">
-			<arg type="b" name="hasHost" direction="out" />
 		</method>
 		<method name="XAyatanaRegisterNotificationApprover">
 		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
@@ -31,15 +24,13 @@
 		</method>
 
 <!-- Signals -->
-		<signal name="ServiceRegistered">
+		<signal name="StatusNotifierItemRegistered">
 			<arg type="s" name="service" direction="out" />
 		</signal>
-		<signal name="ServiceUnregistered">
+		<signal name="StatusNotifierItemUnregistered">
 			<arg type="s" name="service" direction="out" />
 		</signal>
-		<signal name="NotificationHostRegistered">
-		</signal>
-		<signal name="NotificationHostUnregistered">
+		<signal name="StatusNotifierHostRegistered">
 		</signal>
 
 	</interface>

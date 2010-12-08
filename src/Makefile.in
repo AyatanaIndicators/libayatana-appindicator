@@ -70,12 +70,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = $(libappindicatorinclude_HEADERS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(libappindicator3include_HEADERS) \
+	$(libappindicatorinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/appindicator-0.1.pc.in \
+	$(srcdir)/appindicator3-0.1.pc.in \
 	$(top_srcdir)/Makefile.am.enum \
 	$(top_srcdir)/Makefile.am.marshal
 libexec_PROGRAMS = indicator-application-service$(EXEEXT)
-@HAVE_INTROSPECTION_TRUE@am__append_1 = AppIndicator-0.1.gir
+@HAVE_INTROSPECTION_TRUE@am__append_1 = AppIndicator$(VER)-0.1.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
 @HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
 subdir = src
@@ -89,7 +91,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = appindicator-0.1.pc
+CONFIG_CLEAN_FILES = appindicator-0.1.pc appindicator3-0.1.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -116,6 +118,7 @@ am__installdirs = "$(DESTDIR)$(applicationlibdir)" \
 	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" \
 	"$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" \
+	"$(DESTDIR)$(libappindicator3includedir)" \
 	"$(DESTDIR)$(libappindicatorincludedir)"
 LTLIBRARIES = $(applicationlib_LTLIBRARIES) $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
@@ -134,6 +137,21 @@ libappindicator_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libappindicator_la_CFLAGS) $(CFLAGS) \
 	$(libappindicator_la_LDFLAGS) $(LDFLAGS) -o $@
+@USE_GTK3_FALSE@am_libappindicator_la_rpath = -rpath $(libdir)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+libappindicator3_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am__objects_2 = $(am__objects_1) \
+	libappindicator3_la-app-indicator-enum-types.lo \
+	libappindicator3_la-app-indicator.lo \
+	libappindicator3_la-application-service-marshal.lo \
+	libappindicator3_la-generate-id.lo
+am_libappindicator3_la_OBJECTS = $(am__objects_2)
+libappindicator3_la_OBJECTS = $(am_libappindicator3_la_OBJECTS)
+libappindicator3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libappindicator3_la_CFLAGS) $(CFLAGS) \
+	$(libappindicator3_la_LDFLAGS) $(LDFLAGS) -o $@
+@USE_GTK3_TRUE@am_libappindicator3_la_rpath = -rpath $(libdir)
 libapplication_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libapplication_la_OBJECTS =  \
 	libapplication_la-application-service-marshal.lo \
@@ -154,7 +172,7 @@ am_indicator_application_service_OBJECTS =  \
 indicator_application_service_OBJECTS =  \
 	$(am_indicator_application_service_OBJECTS)
 indicator_application_service_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	libappindicator.la
+	libappindicator$(VER).la
 indicator_application_service_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(indicator_application_service_CFLAGS) $(CFLAGS) \
@@ -185,13 +203,15 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libappindicator_la_SOURCES) $(libapplication_la_SOURCES) \
-	$(indicator_application_service_SOURCES)
-DIST_SOURCES = $(libappindicator_la_SOURCES) \
+SOURCES = $(libappindicator_la_SOURCES) $(libappindicator3_la_SOURCES) \
 	$(libapplication_la_SOURCES) \
 	$(indicator_application_service_SOURCES)
+DIST_SOURCES = $(libappindicator_la_SOURCES) \
+	$(libappindicator3_la_SOURCES) $(libapplication_la_SOURCES) \
+	$(indicator_application_service_SOURCES)
 DATA = $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA) $(vapi_DATA)
-HEADERS = $(libappindicatorinclude_HEADERS)
+HEADERS = $(libappindicator3include_HEADERS) \
+	$(libappindicatorinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -363,6 +383,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
+@USE_GTK3_FALSE@lib_LTLIBRARIES = libappindicator.la
+@USE_GTK3_TRUE@lib_LTLIBRARIES = libappindicator3.la
+@USE_GTK3_FALSE@GTKGIR = Gtk-2.0
+@USE_GTK3_TRUE@GTKGIR = Gtk-3.0
+@USE_GTK3_FALSE@GTKVAPI = gtk+-2.0
+@USE_GTK3_TRUE@GTKVAPI = gtk+-3.0
 CLEANFILES = stamp-enum-types stamp-marshal $(BUILT_SOURCES) \
 	$(am__append_2)
 DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
@@ -374,7 +402,8 @@ BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
 	notification-watcher-server.h notification-watcher-client.h \
 	notification-item-server.h $(DBUS_SPECS:.xml=-client.h) \
 	$(DBUS_SPECS:.xml=-server.h)
-EXTRA_DIST = appindicator-0.1.pc.in $(enum_tmpl_h) $(enum_tmpl_c) \
+EXTRA_DIST = appindicator-0.1.pc.in appindicator3-0.1.pc.in \
+	AppIndicator-0.1.metadata $(enum_tmpl_h) $(enum_tmpl_c) \
 	$(glib_marshal_list) $(DBUS_SPECS)
 enum_tmpl_h = $(glib_enum_h:.h=.h.in)
 enum_tmpl_c = $(glib_enum_c:.c=.c.in)
@@ -421,7 +450,7 @@ indicator_application_service_CFLAGS = \
 
 indicator_application_service_LDADD = \
 	$(INDICATOR_LIBS) \
-	libappindicator.la
+	libappindicator$(VER).la
 
 glib_marshal_list = application-service-marshal.list
 glib_marshal_prefix = _application_service_marshal
@@ -429,15 +458,12 @@ glib_marshal_prefix = _application_service_marshal
 ##################################
 # Library
 ##################################
-pkgconfig_DATA = appindicator-0.1.pc
+pkgconfig_DATA = appindicator$(VER)-0.1.pc
 pkgconfigdir = $(libdir)/pkgconfig
 glib_enum_h = app-indicator-enum-types.h
 glib_enum_c = app-indicator-enum-types.c
 glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
-lib_LTLIBRARIES = \
-	libappindicator.la
-
-libappindicatorincludedir = $(includedir)/libappindicator-0.1/libappindicator
+libappindicatorincludedir = $(includedir)/libappindicator$(VER)-0.1/libappindicator
 libappindicator_headers = \
 	app-indicator.h
 
@@ -467,6 +493,17 @@ libappindicator_la_LIBADD = \
 	$(INDICATOR_LIBS)
 
 
+# We duplicate these here because Automake won't let us use $(VER) on the left hand side.
+# Since we carefully use $(VER) in the right hand side above, we can assign the same values.
+# Only one version of the library is every compiled at the same time, so it is safe to reuse
+# the right hand sides like this.
+libappindicator3includedir = $(libappindicatorincludedir)
+libappindicator3include_HEADERS = $(libappindicatorinclude_HEADERS)
+libappindicator3_la_SOURCES = $(libappindicator_la_SOURCES)
+libappindicator3_la_LDFLAGS = $(libappindicator_la_LDFLAGS)
+libappindicator3_la_CFLAGS = $(libappindicator_la_CFLAGS)
+libappindicator3_la_LIBADD = $(libappindicator_la_LIBADD)
+
 ##################################
 # DBus Specs
 ##################################
@@ -480,20 +517,25 @@ DBUS_SPECS = \
 INTROSPECTION_GIRS = $(am__append_1)
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=libappindicator/, $(introspection_sources))
+	$(addprefix --c-include=src/, $(introspection_sources)) \
+	--symbol-prefix=app \
+	--identifier-prefix=App
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@introspection_sources = \
-@HAVE_INTROSPECTION_TRUE@	$(addprefix $(srcdir)/,$(libappindicator_headers)) \
-@HAVE_INTROSPECTION_TRUE@	$(addprefix $(top_builddir)/src/, $(glib_enum_h))
+@HAVE_INTROSPECTION_TRUE@	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_INCLUDES = \
 @HAVE_INTROSPECTION_TRUE@    GObject-2.0 \
-@HAVE_INTROSPECTION_TRUE@    Gtk-2.0
+@HAVE_INTROSPECTION_TRUE@    $(GTKGIR)
 
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_CFLAGS = $(INDICATOR_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
-@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_LIBS = libappindicator.la
+@HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_FILES = $(introspection_sources)
+@HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_INCLUDES = $(AppIndicator_0_1_gir_INCLUDES)
+@HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_CFLAGS = $(AppIndicator_0_1_gir_CFLAGS)
+@HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_LIBS = $(AppIndicator_0_1_gir_LIBS)
+@HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_FILES = $(AppIndicator_0_1_gir_FILES)
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
@@ -503,7 +545,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 # VAPI Files
 #########################
 @HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = AppIndicator-0.1.vapi
+@HAVE_INTROSPECTION_TRUE@vapi_DATA = AppIndicator$(VER)-0.1.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -540,6 +582,8 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 appindicator-0.1.pc: $(top_builddir)/config.status $(srcdir)/appindicator-0.1.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+appindicator3-0.1.pc: $(top_builddir)/config.status $(srcdir)/appindicator3-0.1.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-applicationlibLTLIBRARIES: $(applicationlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -604,7 +648,9 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libappindicator.la: $(libappindicator_la_OBJECTS) $(libappindicator_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libappindicator_la_LINK) -rpath $(libdir) $(libappindicator_la_OBJECTS) $(libappindicator_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libappindicator_la_LINK) $(am_libappindicator_la_rpath) $(libappindicator_la_OBJECTS) $(libappindicator_la_LIBADD) $(LIBS)
+libappindicator3.la: $(libappindicator3_la_OBJECTS) $(libappindicator3_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libappindicator3_la_LINK) $(am_libappindicator3_la_rpath) $(libappindicator3_la_OBJECTS) $(libappindicator3_la_LIBADD) $(LIBS)
 libapplication.la: $(libapplication_la_OBJECTS) $(libapplication_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libapplication_la_LINK) -rpath $(applicationlibdir) $(libapplication_la_OBJECTS) $(libapplication_la_LIBADD) $(LIBS)
 install-libexecPROGRAMS: $(libexec_PROGRAMS)
@@ -666,6 +712,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service-watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-application-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indicator_application_service-generate-id.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator3_la-app-indicator-enum-types.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator3_la-app-indicator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator3_la-application-service-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator3_la-generate-id.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator-enum-types.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-app-indicator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libappindicator_la-application-service-marshal.Plo@am__quote@
@@ -728,6 +778,38 @@ libappindicator_la-generate-id.lo: generate-id.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generate-id.c' object='libappindicator_la-generate-id.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator_la_CFLAGS) $(CFLAGS) -c -o libappindicator_la-generate-id.lo `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
+
+libappindicator3_la-app-indicator-enum-types.lo: app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -MT libappindicator3_la-app-indicator-enum-types.lo -MD -MP -MF $(DEPDIR)/libappindicator3_la-app-indicator-enum-types.Tpo -c -o libappindicator3_la-app-indicator-enum-types.lo `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator3_la-app-indicator-enum-types.Tpo $(DEPDIR)/libappindicator3_la-app-indicator-enum-types.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator-enum-types.c' object='libappindicator3_la-app-indicator-enum-types.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -c -o libappindicator3_la-app-indicator-enum-types.lo `test -f 'app-indicator-enum-types.c' || echo '$(srcdir)/'`app-indicator-enum-types.c
+
+libappindicator3_la-app-indicator.lo: app-indicator.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -MT libappindicator3_la-app-indicator.lo -MD -MP -MF $(DEPDIR)/libappindicator3_la-app-indicator.Tpo -c -o libappindicator3_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator3_la-app-indicator.Tpo $(DEPDIR)/libappindicator3_la-app-indicator.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='app-indicator.c' object='libappindicator3_la-app-indicator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -c -o libappindicator3_la-app-indicator.lo `test -f 'app-indicator.c' || echo '$(srcdir)/'`app-indicator.c
+
+libappindicator3_la-application-service-marshal.lo: application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -MT libappindicator3_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libappindicator3_la-application-service-marshal.Tpo -c -o libappindicator3_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator3_la-application-service-marshal.Tpo $(DEPDIR)/libappindicator3_la-application-service-marshal.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='application-service-marshal.c' object='libappindicator3_la-application-service-marshal.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -c -o libappindicator3_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
+
+libappindicator3_la-generate-id.lo: generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -MT libappindicator3_la-generate-id.lo -MD -MP -MF $(DEPDIR)/libappindicator3_la-generate-id.Tpo -c -o libappindicator3_la-generate-id.lo `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libappindicator3_la-generate-id.Tpo $(DEPDIR)/libappindicator3_la-generate-id.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='generate-id.c' object='libappindicator3_la-generate-id.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libappindicator3_la_CFLAGS) $(CFLAGS) -c -o libappindicator3_la-generate-id.lo `test -f 'generate-id.c' || echo '$(srcdir)/'`generate-id.c
 
 libapplication_la-application-service-marshal.lo: application-service-marshal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libapplication_la_CFLAGS) $(CFLAGS) -MT libapplication_la-application-service-marshal.lo -MD -MP -MF $(DEPDIR)/libapplication_la-application-service-marshal.Tpo -c -o libapplication_la-application-service-marshal.lo `test -f 'application-service-marshal.c' || echo '$(srcdir)/'`application-service-marshal.c
@@ -926,6 +1008,26 @@ uninstall-vapiDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(vapidir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(vapidir)" && rm -f $$files
+install-libappindicator3includeHEADERS: $(libappindicator3include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libappindicator3includedir)" || $(MKDIR_P) "$(DESTDIR)$(libappindicator3includedir)"
+	@list='$(libappindicator3include_HEADERS)'; test -n "$(libappindicator3includedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(libappindicator3includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(libappindicator3includedir)" || exit $$?; \
+	done
+
+uninstall-libappindicator3includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libappindicator3include_HEADERS)'; test -n "$(libappindicator3includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(libappindicator3includedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(libappindicator3includedir)" && rm -f $$files
 install-libappindicatorincludeHEADERS: $(libappindicatorinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libappindicatorincludedir)" || $(MKDIR_P) "$(DESTDIR)$(libappindicatorincludedir)"
@@ -1034,7 +1136,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(applicationlibdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
+	for dir in "$(DESTDIR)$(applicationlibdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libappindicator3includedir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -1091,6 +1193,7 @@ info: info-am
 info-am:
 
 install-data-am: install-applicationlibLTLIBRARIES install-girDATA \
+	install-libappindicator3includeHEADERS \
 	install-libappindicatorincludeHEADERS install-pkgconfigDATA \
 	install-typelibDATA install-vapiDATA
 
@@ -1140,6 +1243,7 @@ ps-am:
 
 uninstall-am: uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
 	uninstall-libLTLIBRARIES \
+	uninstall-libappindicator3includeHEADERS \
 	uninstall-libappindicatorincludeHEADERS \
 	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA \
 	uninstall-typelibDATA uninstall-vapiDATA
@@ -1156,6 +1260,7 @@ uninstall-am: uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-girDATA install-html install-html-am install-info \
 	install-info-am install-libLTLIBRARIES \
+	install-libappindicator3includeHEADERS \
 	install-libappindicatorincludeHEADERS install-libexecPROGRAMS \
 	install-man install-pdf install-pdf-am install-pkgconfigDATA \
 	install-ps install-ps-am install-strip install-typelibDATA \
@@ -1165,6 +1270,7 @@ uninstall-am: uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-applicationlibLTLIBRARIES uninstall-girDATA \
 	uninstall-libLTLIBRARIES \
+	uninstall-libappindicator3includeHEADERS \
 	uninstall-libappindicatorincludeHEADERS \
 	uninstall-libexecPROGRAMS uninstall-pkgconfigDATA \
 	uninstall-typelibDATA uninstall-vapiDATA
@@ -1231,11 +1337,11 @@ $(marshal_c): $(marshal_h)
 
 -include $(INTROSPECTION_MAKEFILE)
 
-@HAVE_INTROSPECTION_TRUE@AppIndicator-0.1.gir: libappindicator.la $(glib_enum_h)
+@HAVE_INTROSPECTION_TRUE@AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
 
-@HAVE_INTROSPECTION_TRUE@AppIndicator-0.1.vapi: AppIndicator-0.1.gir Makefile.am
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=AppIndicator-0.1 \
-@HAVE_INTROSPECTION_TRUE@		--pkg gtk+-2.0 \
+@HAVE_INTROSPECTION_TRUE@AppIndicator$(VER)-0.1.vapi: AppIndicator$(VER)-0.1.gir Makefile.am
+@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=AppIndicator$(VER)-0.1 \
+@HAVE_INTROSPECTION_TRUE@		--pkg $(GTKVAPI) \
 @HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/src \
 @HAVE_INTROSPECTION_TRUE@		$<
 
