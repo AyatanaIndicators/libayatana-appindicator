@@ -73,6 +73,10 @@ AS_IF([test "x$with_gtk" = x3],
 )
 AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
+PKG_CHECK_MODULES(TESTDEPS, dbus-glib-1)
+AC_SUBST(TESTDEPS_CFLAGS)
+AC_SUBST(TESTDEPS_LIBS)
+
 ###########################
 # GObject Introspection
 ###########################
