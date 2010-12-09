@@ -1,7 +1,8 @@
-indicator-application (0.2.90-0ubuntu3) UNRELEASED; urgency=low
+indicator-application (0.2.90-0ubuntu3) natty; urgency=low
 
   * debian/control
     - build depend on dbusmenu >= 0.3.90
+    - Fixes FTBFS (LP: #684949)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Wed, 08 Dec 2010 13:32:07 -0500
 
