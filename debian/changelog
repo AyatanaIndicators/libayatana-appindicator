@@ -1,4 +1,4 @@
-libappindicator (0.2.90+r175-0ubuntu1) UNRELEASED; urgency=low
+libappindicator (0.2.90+r175-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]
   * Intial release.
