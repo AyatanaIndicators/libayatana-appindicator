@@ -1,5 +1,11 @@
-libappindicator (0.2.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.90+r175-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Ted Gould ]
   * Intial release.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 08 Dec 2010 16:28:55 -0600
+  [ Ken VanDine ]
+  * debian/rules
+    - Changes to build targets to get it building multipass for 
+      python 2.6 and 2.7 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 10 Dec 2010 16:37:17 -0500
