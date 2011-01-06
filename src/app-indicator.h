@@ -280,6 +280,11 @@ const gchar *                   app_indicator_get_label          (AppIndicator *
 const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
 guint32                         app_indicator_get_ordering_index (AppIndicator *self);
 
+/* Helpers */
+void                            app_indicator_build_menu_from_desktop (AppIndicator * self,
+                                                                  const gchar * desktop_file,
+                                                                  const gchar * desktop_profile);
+
 G_END_DECLS
 
 /**

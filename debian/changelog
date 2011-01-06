@@ -1,3 +1,20 @@
+libappindicator (0.2.90+r175-0ubuntu2) natty; urgency=low
+
+  * Merged changes from ~ubuntu-desktop package
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 06 Jan 2011 10:03:56 -0500
+
+libappindicator (0.2.90+r175-0ubuntu1) natty; urgency=low
+
+  [ Ted Gould ]
+  * Intial release.
+
+  [ Ken VanDine ]
+  * debian/rules
+    - Changes to build targets to get it building multipass for 
+      python 2.6 and 2.7 
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 10 Dec 2010 16:37:17 -0500
 indicator-application (0.2.90-0ubuntu4) natty; urgency=low
 
   * Updated for the gir abi transition

@@ -46,26 +46,23 @@
     <function name="app_indicator_get_label ()" link="libappindicator-app-indicator.html#app-indicator-get-label"/>
     <function name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <function name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
+    <function name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
     <function name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
     <function name="The &quot;category&quot; property" link="libappindicator-app-indicator.html#AppIndicator--category"/>
     <function name="The &quot;connected&quot; property" link="libappindicator-app-indicator.html#AppIndicator--connected"/>
+    <function name="The &quot;dbus-menu-server&quot; property" link="libappindicator-app-indicator.html#AppIndicator--dbus-menu-server"/>
     <function name="The &quot;icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-name"/>
     <function name="The &quot;icon-theme-path&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-theme-path"/>
     <function name="The &quot;id&quot; property" link="libappindicator-app-indicator.html#AppIndicator--id"/>
     <function name="The &quot;label&quot; property" link="libappindicator-app-indicator.html#AppIndicator--label"/>
     <function name="The &quot;label-guide&quot; property" link="libappindicator-app-indicator.html#AppIndicator--label-guide"/>
-    <function name="The &quot;menu&quot; property" link="libappindicator-app-indicator.html#AppIndicator--menu"/>
     <function name="The &quot;ordering-index&quot; property" link="libappindicator-app-indicator.html#AppIndicator--ordering-index"/>
     <function name="The &quot;status&quot; property" link="libappindicator-app-indicator.html#AppIndicator--status"/>
-    <function name="The &quot;x-ayatana-label&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label"/>
-    <function name="The &quot;x-ayatana-label-guide&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-label-guide"/>
-    <function name="The &quot;x-ayatana-ordering-index&quot; property" link="libappindicator-app-indicator.html#AppIndicator--x-ayatana-ordering-index"/>
     <function name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
     <function name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
     <function name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>
     <function name="The &quot;new-icon-theme-path&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path"/>
     <function name="The &quot;new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-label"/>
     <function name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
-    <function name="The &quot;x-ayatana-new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-x-ayatana-new-label"/>
   </functions>
 </book>

@@ -24,7 +24,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MULTIPLIER 32
 
 guint32
-generate_id (const AppIndicatorCategory catenum, const gchar * id)
+_generate_id (const AppIndicatorCategory catenum, const gchar * id)
 {
 	guchar category = 0;
 	guchar first = 0;

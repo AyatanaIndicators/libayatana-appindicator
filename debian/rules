@@ -63,27 +63,23 @@ configure-stamp:
 		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
 	touch $@
 
-configure/indicator-application:: configure-stamp
+configure/libappindicator1:: configure-stamp
 
 build-stamp:
 	$(MAKE) -C $(DEB_BUILDDIR)
 	touch $@
 
-build/indicator-application:: build-stamp
+build/libappindicator1:: build-stamp
 
 install-stamp:
 	$(MAKE) -C $(DEB_BUILDDIR) install DESTDIR=$(CURDIR)/debian/tmp
 	touch $@
 
-install/indicator-application:: install-stamp
+install/libappindicator1:: install-stamp
 
 binary-predeb/libappindicator1:: install-stamp
 	dh_fixperms
 	dh_strip
-
-binary-post-install/indicator-application::
-	find debian/indicator-application/usr/lib -name \*.la -exec rm {} \;
-	find debian/indicator-application/usr/lib -name \*.a -exec rm {} \;
 
 common-binary-predeb-arch:: list-missing
 	dh_fixperms

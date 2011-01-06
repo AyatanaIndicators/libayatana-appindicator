@@ -25,6 +25,6 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <glib.h>
 #include "app-indicator.h"
 
-guint32 generate_id (const AppIndicatorCategory category, const gchar * id);
+guint32 _generate_id (const AppIndicatorCategory category, const gchar * id);
 
 #endif /* __GENERATE_ID_H__ */
