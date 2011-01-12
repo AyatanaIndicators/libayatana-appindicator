@@ -29,9 +29,9 @@ Build-Depends: debhelper (>= 5.0),
                gir1.2-glib-2.0,
                gir1.2-gtk-2.0,
                valac-0.12
-Standards-Version: 3.8.4
-Homepage: https://launchpad.net/indicator-application
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/indicator-application/ubuntu
+Standards-Version: 3.9.1
+Homepage: https://launchpad.net/libappindicator
+Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/libappindicator/ubuntu
 
 Package: python-appindicator
 Section: python

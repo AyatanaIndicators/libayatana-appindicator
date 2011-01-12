@@ -1,3 +1,9 @@
+libappindicator (0.2.90+r175-0ubuntu4) natty; urgency=low
+
+  * Fixed pkgconfig files to require dbusmenu-glib-0.4
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 12 Jan 2011 09:04:39 -0600
+
 libappindicator (0.2.90+r175-0ubuntu3) natty; urgency=low
 
   * Rebuild for libindicator2
