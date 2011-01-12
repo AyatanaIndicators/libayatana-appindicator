@@ -1,3 +1,9 @@
+libappindicator (0.2.90+r175-0ubuntu3) natty; urgency=low
+
+  * Rebuild for libindicator2
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Jan 2011 16:29:38 -0600
+
 libappindicator (0.2.90+r175-0ubuntu2) natty; urgency=low
 
   * Merged changes from ~ubuntu-desktop package
