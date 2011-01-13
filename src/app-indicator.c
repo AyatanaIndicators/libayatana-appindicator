@@ -909,17 +909,17 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	AppIndicatorPrivate *priv = app->priv;
 
 	if (g_strcmp0(property, "Id") == 0) {
-		return g_variant_new_string(app->priv->id);
+		return g_variant_new_string(app->priv->id ? app->priv->id : "");
 	} else if (g_strcmp0(property, "Category") == 0) {
         GEnumValue *enum_value;
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), priv->category);
-		return g_variant_new_string(enum_value->value_nick);
+		return g_variant_new_string(enum_value->value_nick ? enum_value->value_nick : "");
 	} else if (g_strcmp0(property, "Status") == 0) {
         GEnumValue *enum_value;
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), priv->status);
-		return g_variant_new_string(enum_value->value_nick);
+		return g_variant_new_string(enum_value->value_nick ? enum_value->value_nick : "");
 	} else if (g_strcmp0(property, "IconName") == 0) {
-		return g_variant_new_string(priv->icon_name);
+		return g_variant_new_string(priv->icon_name ? priv->icon_name : "");
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
 		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
