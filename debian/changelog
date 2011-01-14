@@ -1,22 +1,14 @@
-libappindicator (0.2.90+r175-0ubuntu4) natty; urgency=low
-
-  * Fixed pkgconfig files to require dbusmenu-glib-0.4
-
- -- Ken VanDine <ken.vandine@canonical.com>  Wed, 12 Jan 2011 09:04:39 -0600
-
-libappindicator (0.2.90+r175-0ubuntu3) natty; urgency=low
-
-  * Rebuild for libindicator2
-
- -- Ken VanDine <ken.vandine@canonical.com>  Tue, 11 Jan 2011 16:29:38 -0600
-
-libappindicator (0.2.90+r175-0ubuntu2) natty; urgency=low
-
-  * Merged changes from ~ubuntu-desktop package
-
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 06 Jan 2011 10:03:56 -0500
-
-libappindicator (0.2.90+r175-0ubuntu1) natty; urgency=low
+libappindicator (0.2.91-0ubuntu1) natty; urgency=low
+  
+  * debian/control: 
+    - clean unrequired build-depends
+  * debian/compat: updated the version
+  * debian/copyright: 
+    - updated
+  * debian/libappindicator1.symbols: 
+    - use a .symbols for api tracking
+  * debian/watch: 
+    - updated product name
 
   [ Ted Gould ]
   * Intial release.
@@ -26,7 +18,8 @@ libappindicator (0.2.90+r175-0ubuntu1) natty; urgency=low
     - Changes to build targets to get it building multipass for 
       python 2.6 and 2.7 
 
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 10 Dec 2010 16:37:17 -0500
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 13 Jan 2011 19:27:54 -0600
+
 indicator-application (0.2.90-0ubuntu4) natty; urgency=low
 
   * Updated for the gir abi transition
