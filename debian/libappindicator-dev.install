@@ -1,5 +1,0 @@
-debian/tmp/usr/include/libappindicator-0.1/*
-debian/tmp/usr/lib/libappindicator.so
-debian/tmp/usr/lib/pkgconfig/appindicator-0.1.pc
-debian/tmp/usr/share/gir-1.0/*
-debian/tmp/usr/share/vala/vapi/*
