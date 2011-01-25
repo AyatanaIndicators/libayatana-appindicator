@@ -63,19 +63,19 @@ configure-stamp:
 		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
 	touch $@
 
-configure/libappindicator:: configure-stamp
+configure/libappindicator1:: configure-stamp
 
 build-stamp:
 	$(MAKE) -C $(DEB_BUILDDIR)
 	touch $@
 
-build/libappindicator:: build-stamp
+build/libappindicator1:: build-stamp
 
 install-stamp:
 	$(MAKE) -C $(DEB_BUILDDIR) install DESTDIR=$(CURDIR)/debian/tmp
 	touch $@
 
-install/libappindicator:: install-stamp
+install/libappindicator1:: install-stamp
 
 binary-predeb/libappindicator1:: install-stamp
 	dh_fixperms

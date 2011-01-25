@@ -909,21 +909,21 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	AppIndicatorPrivate *priv = app->priv;
 
 	if (g_strcmp0(property, "Id") == 0) {
-		return g_variant_new_string(app->priv->id);
+		return g_variant_new_string(app->priv->id ? app->priv->id : "");
 	} else if (g_strcmp0(property, "Category") == 0) {
         GEnumValue *enum_value;
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), priv->category);
-		return g_variant_new_string(enum_value->value_nick);
+		return g_variant_new_string(enum_value->value_nick ? enum_value->value_nick : "");
 	} else if (g_strcmp0(property, "Status") == 0) {
         GEnumValue *enum_value;
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), priv->status);
-		return g_variant_new_string(enum_value->value_nick);
+		return g_variant_new_string(enum_value->value_nick ? enum_value->value_nick : "");
 	} else if (g_strcmp0(property, "IconName") == 0) {
-		return g_variant_new_string(priv->icon_name);
+		return g_variant_new_string(priv->icon_name ? priv->icon_name : "");
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
-		return g_variant_new_string(priv->attention_icon_name);
+		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
-		return g_variant_new_string(priv->icon_theme_path);
+		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
 		if (priv->menuservice != NULL) {
 			GValue strval = { 0 };
@@ -936,9 +936,9 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 			return g_variant_new("o", "/");
 		}
 	} else if (g_strcmp0(property, "XAyatanaLabel") == 0) {
-		return g_variant_new_string(priv->label);
+		return g_variant_new_string(priv->label ? priv->label : "");
 	} else if (g_strcmp0(property, "XAyatanaLabelGuide") == 0) {
-		return g_variant_new_string(priv->label_guide);
+		return g_variant_new_string(priv->label_guide ? priv->label_guide : "");
 	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
 		return g_variant_new_uint32(priv->ordering_index);
 	}

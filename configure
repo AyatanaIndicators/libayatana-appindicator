@@ -2829,7 +2829,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=libappindicator
- VERSION=0.2.91
+ VERSION=0.2.91.1
 
 
 cat >>confdefs.h <<_ACEOF
