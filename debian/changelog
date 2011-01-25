@@ -1,3 +1,10 @@
+libappindicator (0.2.91.1-0ubuntu2~ted1) UNRELEASED; urgency=low
+
+  * Upstream Merge
+    * Use the dbusmenu parser
+
+ -- Ted Gould <ted@ubuntu.com>  Tue, 25 Jan 2011 14:35:36 -0600
+
 libappindicator (0.2.91.1-0ubuntu1) natty; urgency=low
 
   * New upstream release.
