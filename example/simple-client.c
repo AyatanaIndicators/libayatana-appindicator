@@ -86,13 +86,14 @@ toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
 {
   GtkWidget *target = (GtkWidget *)data;
 
-  gtk_widget_set_sensitive (target, !GTK_WIDGET_IS_SENSITIVE (target));
+  gtk_widget_set_sensitive (target, !gtk_widget_is_sensitive (target));
 }
 
 static void
 image_clicked_cb (GtkWidget *widget, gpointer data)
 {
-  gtk_image_set_from_stock (GTK_IMAGE (GTK_IMAGE_MENU_ITEM (widget)->image),
+  gtk_image_set_from_stock (GTK_IMAGE (gtk_image_menu_item_get_image (
+                            GTK_IMAGE_MENU_ITEM (widget))),
                             GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 }
 
