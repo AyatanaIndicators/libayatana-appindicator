@@ -34,6 +34,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
+#include <libdbusmenu-gtk/parser.h>
 
 #include <libindicator/indicator-desktop-shortcuts.h>
 
@@ -2032,32 +2033,35 @@ submenu_changed (GtkWidget *widget,
                         root);
 }
 
+/* Does the dbusmenu related work.  If there isn't a server, it builds
+   one and if there are menus it runs the parse to put those menus into
+   the server. */
 static void
 setup_dbusmenu (AppIndicator *self)
 {
-  AppIndicatorPrivate *priv;
-  DbusmenuMenuitem *root;
+	AppIndicatorPrivate *priv;
+	DbusmenuMenuitem *root = NULL;
 
-  priv = self->priv;
-  root = dbusmenu_menuitem_new ();
+	priv = self->priv;
 
-  if (priv->menu)
-    {
-      gtk_container_foreach (GTK_CONTAINER (priv->menu),
-                            container_iterate,
-                            root);
-    }
+	if (priv->menu) {
+		root = dbusmenu_gtk_parse_menu_structure(priv->menu);
+	}
 
-  if (priv->menuservice == NULL)
-    {
-      gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
-      priv->menuservice = dbusmenu_server_new (path);
-      g_free(path);
-    }
+	if (priv->menuservice == NULL) {
+		gchar * path = g_strdup_printf(DEFAULT_ITEM_PATH "/%s/Menu", priv->clean_id);
+		priv->menuservice = dbusmenu_server_new (path);
+		g_free(path);
+	}
 
-  dbusmenu_server_set_root (priv->menuservice, root);
+	dbusmenu_server_set_root (priv->menuservice, root);
 
-  return;
+	/* Drop our local ref as set_root should get it's own. */
+	if (root != NULL) {
+		g_object_unref(root);
+	}
+
+	return;
 }
 
 static void
