@@ -17,7 +17,10 @@
 		<property name="XAyatanaOrderingIndex" type="u" access="read" />
 
 <!-- Methods -->
-		<!-- None currently -->
+		<method name="XAyatanaScrollAction">
+			<arg type="i" name="delta" direction="in" />
+			<arg type="u" name="direction" direction="in" />
+		</method>
 
 <!-- Signals -->
 		<signal name="NewIcon">
@@ -34,6 +37,5 @@
 			<arg type="s" name="label" direction="out" />
 			<arg type="s" name="guide" direction="out" />
 		</signal>
-
 	</interface>
 </node>
