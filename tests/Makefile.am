@@ -1,3 +1,9 @@
+if USE_GTK3
+VER=3
+else
+VER=
+endif
+
 
 check_PROGRAMS = \
 	test-libappindicator \
@@ -31,7 +37,7 @@ test_libappindicator_CFLAGS = \
 
 test_libappindicator_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 #########################################
 ##  test-libappindicator-dbus-client
@@ -48,7 +54,7 @@ test_libappindicator_dbus_client_CFLAGS = \
 
 test_libappindicator_dbus_client_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 #########################################
 ##  test-libappindicator-dbus-server
@@ -65,7 +71,7 @@ test_libappindicator_dbus_server_CFLAGS = \
 
 test_libappindicator_dbus_server_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 #########################################
 ##  test-libappindicator-status-client
@@ -82,7 +88,7 @@ test_libappindicator_status_client_CFLAGS = \
 
 test_libappindicator_status_client_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 #########################################
 ##  test-libappindicator-status-server
@@ -99,7 +105,7 @@ test_libappindicator_status_server_CFLAGS = \
 
 test_libappindicator_status_server_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 #########################################
 ##  test-libappindicator-fallback
@@ -115,7 +121,7 @@ test_libappindicator_fallback_watcher_CFLAGS = \
 
 test_libappindicator_fallback_watcher_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 test_libappindicator_fallback_item_SOURCES = \
 	test-libappindicator-fallback-item.c
@@ -127,7 +133,7 @@ test_libappindicator_fallback_item_CFLAGS = \
 
 test_libappindicator_fallback_item_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
 	@echo "#!/bin/bash" > $@
@@ -192,5 +198,5 @@ test_simple_app_CFLAGS = \
 
 test_simple_app_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 

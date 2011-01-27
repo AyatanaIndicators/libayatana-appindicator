@@ -1,3 +1,9 @@
+if USE_GTK3
+VER=3
+else
+VER=
+endif
+
 
 check_PROGRAMS = \
 	simple-client
@@ -17,7 +23,7 @@ simple_client_CFLAGS = \
 
 simple_client_LDADD = \
 	$(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 EXTRA_DIST = \
 	simple-client-test-icon.png
