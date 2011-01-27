@@ -1145,11 +1145,6 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 		/* Setting up a signal to watch when the unique name
 		   changes */
 		g_signal_connect(G_OBJECT(app->priv->watcher_proxy), "notify::g-name-owner", G_CALLBACK(watcher_owner_changed), user_data);
-
-		char * name = g_dbus_proxy_get_name_owner(app->priv->watcher_proxy);
-		if (name != NULL) {
-			g_free(name);
-		}
 	}
 
 	/* Let's insure that someone is on the other side, else we're
