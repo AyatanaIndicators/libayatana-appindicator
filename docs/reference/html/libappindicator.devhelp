@@ -25,7 +25,7 @@
     <function name="enum AppIndicatorStatus" link="libappindicator-app-indicator.html#AppIndicatorStatus"/>
     <function name="AppIndicatorPrivate" link="libappindicator-app-indicator.html#AppIndicatorPrivate"/>
     <function name="AppIndicator" link="libappindicator-app-indicator.html#AppIndicator-struct"/>
-    <function name="AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
+    <function name="struct AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
     <function name="app_indicator_get_type ()" link="libappindicator-app-indicator.html#app-indicator-get-type"/>
     <function name="app_indicator_new ()" link="libappindicator-app-indicator.html#app-indicator-new"/>
     <function name="app_indicator_new_with_path ()" link="libappindicator-app-indicator.html#app-indicator-new-with-path"/>

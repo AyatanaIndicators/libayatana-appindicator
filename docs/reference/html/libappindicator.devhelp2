@@ -25,7 +25,7 @@
     <keyword type="enum" name="enum AppIndicatorStatus" link="libappindicator-app-indicator.html#AppIndicatorStatus"/>
     <keyword type="struct" name="AppIndicatorPrivate" link="libappindicator-app-indicator.html#AppIndicatorPrivate"/>
     <keyword type="struct" name="AppIndicator" link="libappindicator-app-indicator.html#AppIndicator-struct"/>
-    <keyword type="struct" name="AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
+    <keyword type="struct" name="struct AppIndicatorClass" link="libappindicator-app-indicator.html#AppIndicatorClass"/>
     <keyword type="function" name="app_indicator_get_type ()" link="libappindicator-app-indicator.html#app-indicator-get-type"/>
     <keyword type="function" name="app_indicator_new ()" link="libappindicator-app-indicator.html#app-indicator-new"/>
     <keyword type="function" name="app_indicator_new_with_path ()" link="libappindicator-app-indicator.html#app-indicator-new-with-path"/>

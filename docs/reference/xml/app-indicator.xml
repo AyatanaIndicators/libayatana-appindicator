@@ -44,7 +44,7 @@ enum                <link linkend="AppIndicatorCategory">AppIndicatorCategory</l
 enum                <link linkend="AppIndicatorStatus">AppIndicatorStatus</link>;
                     <link linkend="AppIndicatorPrivate">AppIndicatorPrivate</link>;
                     <link linkend="AppIndicator-struct">AppIndicator</link>;
-                    <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
+struct              <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
 <link linkend="GType"><returnvalue>GType</returnvalue></link>               <link linkend="app-indicator-get-type">app_indicator_get_type</link>              (<parameter><type>void</type></parameter>);
 <link linkend="AppIndicator"><returnvalue>AppIndicator</returnvalue></link> *      <link linkend="app-indicator-new">app_indicator_new</link>                   (<parameter>const <link linkend="gchar"><type>gchar</type></link> *id</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>,
@@ -68,15 +68,19 @@ enum                <link linkend="AppIndicatorStatus">AppIndicatorStatus</link>
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *guide</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-ordering-index">app_indicator_set_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter><link linkend="guint32"><type>guint32</type></link> ordering_index</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-id">app_indicator_get_id</link>                (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-id">app_indicator_get_id</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link>  <link linkend="app-indicator-get-category">app_indicator_get_category</link>        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorStatus"><returnvalue>AppIndicatorStatus</returnvalue></link>  <link linkend="app-indicator-get-status">app_indicator_get_status</link>            (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-icon">app_indicator_get_icon</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-icon-theme-path">app_indicator_get_icon_theme_path</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-attention-icon">app_indicator_get_attention_icon</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-<link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           <link linkend="app-indicator-get-menu">app_indicator_get_menu</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label">app_indicator_get_label</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>       (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon">app_indicator_get_icon</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon-theme-path">app_indicator_get_icon_theme_path</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-attention-icon">app_indicator_get_attention_icon</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+<link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        <link linkend="app-indicator-get-menu">app_indicator_get_menu</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label">app_indicator_get_label</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="guint32"><returnvalue>guint32</returnvalue></link>             <link linkend="app-indicator-get-ordering-index">app_indicator_get_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-build-menu-from-desktop">app_indicator_build_menu_from_desktop</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
@@ -110,12 +114,12 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
 <refsect1 id="libappindicator-app-indicator.signals" role="signal_proto">
 <title role="signal_proto.title">Signals</title>
 <synopsis>
-  &quot;<link linkend="AppIndicator-connection-changed">connection-changed</link>&quot;                             : Run Last
-  &quot;<link linkend="AppIndicator-new-attention-icon">new-attention-icon</link>&quot;                             : Run Last
-  &quot;<link linkend="AppIndicator-new-icon">new-icon</link>&quot;                                       : Run Last
-  &quot;<link linkend="AppIndicator-new-icon-theme-path">new-icon-theme-path</link>&quot;                            : Run Last
-  &quot;<link linkend="AppIndicator-new-label">new-label</link>&quot;                                      : Run Last
-  &quot;<link linkend="AppIndicator-new-status">new-status</link>&quot;                                     : Run Last
+  &quot;<link linkend="AppIndicator-connection-changed">connection-changed</link>&quot;                             : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-new-attention-icon">new-attention-icon</link>&quot;                             : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-new-icon">new-icon</link>&quot;                                       : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-new-icon-theme-path">new-icon-theme-path</link>&quot;                            : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-new-label">new-label</link>&quot;                                      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-new-status">new-status</link>&quot;                                     : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
 </synopsis>
 </refsect1>
 
@@ -151,8 +155,7 @@ Get the <link linkend="GType"><type>GType</type></link> for a <link linkend="App
 Safely convert a <link linkend="GObject"><type>GObject</type></link> into an <link linkend="AppIndicator"><type>AppIndicator</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>obj</parameter>&#160;:</term>
-<listitem><simpara>The object to convert
-</simpara></listitem></varlistentry>
+<listitem><simpara>The object to convert</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="APP-INDICATOR-CLASS:CAPS" role="macro">
 <title>APP_INDICATOR_CLASS()</title>
@@ -163,8 +166,7 @@ Safely convert a <link linkend="GObject"><type>GObject</type></link> into an <li
 Safely convert a <link linkend="GObjectClass"><type>GObjectClass</type></link> into a <link linkend="AppIndicatorClass"><type>AppIndicatorClass</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>klass</parameter>&#160;:</term>
-<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link> based class to convert.
-</simpara></listitem></varlistentry>
+<listitem><simpara><link linkend="GObjectClass"><type>GObjectClass</type></link> based class to convert.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="IS-APP-INDICATOR:CAPS" role="macro">
 <title>IS_APP_INDICATOR()</title>
@@ -175,8 +177,7 @@ Safely convert a <link linkend="GObjectClass"><type>GObjectClass</type></link> i
 Checks to see if <parameter>obj</parameter> is in the object hierarchy of <link linkend="AppIndicator"><type>AppIndicator</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>obj</parameter>&#160;:</term>
-<listitem><simpara>An <link linkend="GObject"><type>GObject</type></link> to check
-</simpara></listitem></varlistentry>
+<listitem><simpara>An <link linkend="GObject"><type>GObject</type></link> to check</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="IS-APP-INDICATOR-CLASS:CAPS" role="macro">
 <title>IS_APP_INDICATOR_CLASS()</title>
@@ -187,8 +188,7 @@ Checks to see if <parameter>obj</parameter> is in the object hierarchy of <link 
 Checks to see if <parameter>klass</parameter> is in the object class hierarchy of <link linkend="AppIndicatorClass"><type>AppIndicatorClass</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>klass</parameter>&#160;:</term>
-<listitem><simpara>An <link linkend="GObjectClass"><type>GObjectClass</type></link> to check
-</simpara></listitem></varlistentry>
+<listitem><simpara>An <link linkend="GObjectClass"><type>GObjectClass</type></link> to check</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="APP-INDICATOR-GET-CLASS:CAPS" role="macro">
 <title>APP_INDICATOR_GET_CLASS()</title>
@@ -199,8 +199,7 @@ Checks to see if <parameter>klass</parameter> is in the object class hierarchy o
 Gets a pointer to the <link linkend="AppIndicatorClass"><type>AppIndicatorClass</type></link> for the object <parameter>obj</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>obj</parameter>&#160;:</term>
-<listitem><simpara>A <link linkend="GObject"><type>GObject</type></link> in the class hierarchy of <link linkend="AppIndicator"><type>AppIndicator</type></link>.
-</simpara></listitem></varlistentry>
+<listitem><simpara>A <link linkend="GObject"><type>GObject</type></link> in the class hierarchy of <link linkend="AppIndicator"><type>AppIndicator</type></link>.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="APP-INDICATOR-SIGNAL-NEW-ICON:CAPS" role="macro">
 <title>APP_INDICATOR_SIGNAL_NEW_ICON</title>
@@ -341,9 +340,9 @@ A application indicator represents the values that are needed to show a
 	panel before using this.  But, sometimes it is necissary.
 </para></refsect2>
 <refsect2 id="AppIndicatorClass" role="struct">
-<title>AppIndicatorClass</title>
+<title>struct AppIndicatorClass</title>
 <indexterm zone="AppIndicatorClass"><primary>AppIndicatorClass</primary></indexterm>
-<programlisting>typedef struct {
+<programlisting>struct AppIndicatorClass {
 	/* Parent */
 	GObjectClass parent_class;
 
@@ -382,81 +381,64 @@ A application indicator represents the values that are needed to show a
 	void (*app_indicator_reserved_4)(void);
 	void (*app_indicator_reserved_5)(void);
 	void (*app_indicator_reserved_6)(void);
-} AppIndicatorClass;
+};
 </programlisting>
 <para>
 The signals and external functions that make up the <link linkend="AppIndicator"><type>AppIndicator</type></link>
 	class object.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="AppIndicatorClass.parent-class">parent_class</structfield>;</term>
-<listitem><simpara>Mia familia
-</simpara></listitem>
+<listitem><simpara>Mia familia</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.new-icon">new_icon</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-new-icon"><type>"new-icon"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-new-icon"><type>"new-icon"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.new-attention-icon">new_attention_icon</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-new-attention-icon"><type>"new-attention-icon"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-new-attention-icon"><type>"new-attention-icon"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.new-status">new_status</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-new-status"><type>"new-status"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-new-status"><type>"new-status"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.new-icon-theme-path">new_icon_theme_path</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-new-icon-theme-path"><type>"new-icon-theme-path"</type></link>
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-new-icon-theme-path"><type>"new-icon-theme-path"</type></link></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.new-label">new_label</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-new-label"><type>"new-label"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-new-label"><type>"new-label"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.connection-changed">connection_changed</structfield>&#160;()</term>
-<listitem><simpara>Slot for <link linkend="AppIndicator-connection-changed"><type>"connection-changed"</type></link>.
-</simpara></listitem>
+<listitem><simpara>Slot for <link linkend="AppIndicator-connection-changed"><type>"connection-changed"</type></link>.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-sw">app_indicator_reserved_sw</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-ats">app_indicator_reserved_ats</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.fallback">fallback</structfield>&#160;()</term>
 <listitem><simpara>Function that gets called to make a <link linkend="GtkStatusIcon"><type>GtkStatusIcon</type></link> when
-		there is no Application Indicator area available.
-</simpara></listitem>
+there is no Application Indicator area available.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.unfallback">unfallback</structfield>&#160;()</term>
 <listitem><simpara>The function that gets called if an Application
-		Indicator area appears after the fallback has been created.
-</simpara></listitem>
+Indicator area appears after the fallback has been created.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-1">app_indicator_reserved_1</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-2">app_indicator_reserved_2</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-3">app_indicator_reserved_3</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-4">app_indicator_reserved_4</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-5">app_indicator_reserved_5</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-6">app_indicator_reserved_6</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.
-</simpara></listitem>
+<listitem><simpara>Reserved for future use.</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-type" role="function">
@@ -466,8 +448,7 @@ The signals and external functions that make up the <link linkend="AppIndicator"
 <para>
 Generates or returns the unique <link linkend="GType"><type>GType</type></link> for <link linkend="AppIndicator"><type>AppIndicator</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A unique <link linkend="GType"><type>GType</type></link> for <link linkend="AppIndicator"><type>AppIndicator</type></link> objects.
-</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A unique <link linkend="GType"><type>GType</type></link> for <link linkend="AppIndicator"><type>AppIndicator</type></link> objects.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-new" role="function">
 <title>app_indicator_new ()</title>
@@ -482,16 +463,12 @@ Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> sett
 		<parameter>icon_name</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
-<listitem><simpara>The unique id of the indicator to create.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The unique id of the indicator to create.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
-<listitem><simpara>The icon name for this indicator
-</simpara></listitem></varlistentry>
+<listitem><simpara>The icon name for this indicator</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>category</parameter>&#160;:</term>
-<listitem><simpara>The category of indicator.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A pointer to a new <link linkend="AppIndicator"><type>AppIndicator</type></link> object.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The category of indicator.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A pointer to a new <link linkend="AppIndicator"><type>AppIndicator</type></link> object.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-new-with-path" role="function">
 <title>app_indicator_new_with_path ()</title>
@@ -507,19 +484,14 @@ Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> sett
 		<parameter>icon_name</parameter> and <link linkend="AppIndicator--icon-theme-path"><type>"icon-theme-path"</type></link> with <parameter>icon_theme_path</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
-<listitem><simpara>The unique id of the indicator to create.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The unique id of the indicator to create.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
-<listitem><simpara>The icon name for this indicator
-</simpara></listitem></varlistentry>
+<listitem><simpara>The icon name for this indicator</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>category</parameter>&#160;:</term>
-<listitem><simpara>The category of indicator.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The category of indicator.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_theme_path</parameter>&#160;:</term>
-<listitem><simpara>A custom path for finding icons.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A pointer to a new <link linkend="AppIndicator"><type>AppIndicator</type></link> object.
-</simpara></listitem></varlistentry>
+<listitem><simpara>A custom path for finding icons.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A pointer to a new <link linkend="AppIndicator"><type>AppIndicator</type></link> object.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-status" role="function">
 <title>app_indicator_set_status ()</title>
@@ -530,11 +502,9 @@ Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> sett
 Wrapper function for property <link linkend="AppIndicator--status"><type>"status"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>status</parameter>&#160;:</term>
-<listitem><simpara>The status to set for this indicator
-</simpara></listitem></varlistentry>
+<listitem><simpara>The status to set for this indicator</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-attention-icon" role="function">
 <title>app_indicator_set_attention_icon ()</title>
@@ -545,11 +515,9 @@ Wrapper function for property <link linkend="AppIndicator--status"><type>"status
 Wrapper function for property <link linkend="AppIndicator--attention-icon-name"><type>"attention-icon-name"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
-<listitem><simpara>The name of the attention icon to set for this indicator
-</simpara></listitem></varlistentry>
+<listitem><simpara>The name of the attention icon to set for this indicator</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-menu" role="function">
 <title>app_indicator_set_menu ()</title>
@@ -564,11 +532,9 @@ Sets the menu that should be shown when the Application Indicator
         Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>menu</parameter>&#160;:</term>
-<listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> to set
-</simpara></listitem></varlistentry>
+<listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> to set</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-icon" role="function">
 <title>app_indicator_set_icon ()</title>
@@ -582,11 +548,9 @@ Sets the default icon to use when the status is active but
 		Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
-<listitem><simpara>The icon name to set.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The icon name to set.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-icon-theme-path" role="function">
 <title>app_indicator_set_icon_theme_path ()</title>
@@ -597,11 +561,9 @@ Sets the default icon to use when the status is active but
 Sets the path to use when searching for icons.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_theme_path</parameter>&#160;:</term>
-<listitem><simpara>The icon theme path to set.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The icon theme path to set.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-label" role="function">
 <title>app_indicator_set_label ()</title>
@@ -615,14 +577,11 @@ This is a wrapper function for the <link linkend="AppIndicator--label"><type>"la
 	as either <parameter>label</parameter> or <parameter>guide</parameter> and will clear the entries.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>label</parameter>&#160;:</term>
-<listitem><simpara>The label to show next to the icon.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The label to show next to the icon.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>guide</parameter>&#160;:</term>
-<listitem><simpara>A guide to size the label correctly.
-</simpara></listitem></varlistentry>
+<listitem><simpara>A guide to size the label correctly.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-ordering-index" role="function">
 <title>app_indicator_set_ordering_index ()</title>
@@ -638,24 +597,20 @@ Sets the ordering index for the app indicator which effects the
 	Wrapper function for property <link linkend="AppIndicator--ordering-index"><type>"ordering-index"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link>
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ordering_index</parameter>&#160;:</term>
-<listitem><simpara>A value for the ordering of this app indicator
-</simpara></listitem></varlistentry>
+<listitem><simpara>A value for the ordering of this app indicator</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-id" role="function">
 <title>app_indicator_get_id ()</title>
 <indexterm zone="app-indicator-get-id"><primary>app_indicator_get_id</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_id                (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_id   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--id"><type>"id"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current ID
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current ID</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-category" role="function">
 <title>app_indicator_get_category ()</title>
@@ -665,10 +620,8 @@ Wrapper function for property <link linkend="AppIndicator--id"><type>"id"</type>
 Wrapper function for property <link linkend="AppIndicator--category"><type>"category"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current category.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current category.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-status" role="function">
 <title>app_indicator_get_status ()</title>
@@ -678,89 +631,79 @@ Wrapper function for property <link linkend="AppIndicator--category"><type>"cate
 Wrapper function for property <link linkend="AppIndicator--status"><type>"status"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current status.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current status.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-icon" role="function">
 <title>app_indicator_get_icon ()</title>
 <indexterm zone="app-indicator-get-icon"><primary>app_indicator_get_icon</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_icon              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current icon name.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current icon name.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-icon-theme-path" role="function">
 <title>app_indicator_get_icon_theme_path ()</title>
 <indexterm zone="app-indicator-get-icon-theme-path"><primary>app_indicator_get_icon_theme_path</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_icon_theme_path   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon_theme_path
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--icon-theme-path"><type>"icon-theme-path"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current icon theme path.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current icon theme path.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-attention-icon" role="function">
 <title>app_indicator_get_attention_icon ()</title>
 <indexterm zone="app-indicator-get-attention-icon"><primary>app_indicator_get_attention_icon</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_attention_icon    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_attention_icon
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--attention-icon-name"><type>"attention-icon-name"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current attention icon name.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current attention icon name.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-menu" role="function">
 <title>app_indicator_get_menu ()</title>
 <indexterm zone="app-indicator-get-menu"><primary>app_indicator_get_menu</primary></indexterm>
-<programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           app_indicator_get_menu              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        app_indicator_get_menu (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Gets the menu being used for this application indicator.
 	Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> A <link linkend="GtkMenu"><type>GtkMenu</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if one hasn't been set.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if one hasn't been set.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-label" role="function">
 <title>app_indicator_get_label ()</title>
 <indexterm zone="app-indicator-get-label"><primary>app_indicator_get_label</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_label             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_label
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--label"><type>"label"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current label.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current label.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-label-guide" role="function">
 <title>app_indicator_get_label_guide ()</title>
 <indexterm zone="app-indicator-get-label-guide"><primary>app_indicator_get_label_guide</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_label_guide       (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_label_guide
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--label-guide"><type>"label-guide"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current label guide.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current label guide.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-ordering-index" role="function">
 <title>app_indicator_get_ordering_index ()</title>
@@ -770,10 +713,8 @@ Wrapper function for property <link linkend="AppIndicator--label-guide"><type>"l
 Wrapper function for property <link linkend="AppIndicator--ordering-index"><type>"ordering-index"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara> The current ordering index.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current ordering index.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-build-menu-from-desktop" role="function">
 <title>app_indicator_build_menu_from_desktop ()</title>
@@ -787,14 +728,11 @@ This function allows for building the Application Indicator menu
 	from a static desktop file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desktop_file</parameter>&#160;:</term>
-<listitem><simpara>A path to the desktop file to build the menu from
-</simpara></listitem></varlistentry>
+<listitem><simpara>A path to the desktop file to build the menu from</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desktop_profile</parameter>&#160;:</term>
-<listitem><simpara>Which entries should be used from the desktop file
-</simpara></listitem></varlistentry>
+<listitem><simpara>Which entries should be used from the desktop file</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
@@ -909,54 +847,49 @@ Whether the indicator is shown or requests attention. Defaults to
 <indexterm zone="AppIndicator-connection-changed"><primary>AppIndicator::connection-changed</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
                                                         <link linkend="gboolean"><type>gboolean</type></link>      arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Signaled when we connect to a watcher, or when it drops away.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>Whether we're connected or not
-</simpara></listitem></varlistentry>
+<listitem><simpara>Whether we're connected or not</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="AppIndicator-new-attention-icon" role="signal"><title>The <literal>&quot;new-attention-icon&quot;</literal> signal</title>
 <indexterm zone="AppIndicator-new-attention-icon"><primary>AppIndicator::new-attention-icon</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Emitted when <link linkend="AppIndicator--attention-icon-name"><type>"attention-icon-name"</type></link> is changed
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="AppIndicator-new-icon" role="signal"><title>The <literal>&quot;new-icon&quot;</literal> signal</title>
 <indexterm zone="AppIndicator-new-icon"><primary>AppIndicator::new-icon</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Emitted when <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> is changed
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="AppIndicator-new-icon-theme-path" role="signal"><title>The <literal>&quot;new-icon-theme-path&quot;</literal> signal</title>
 <indexterm zone="AppIndicator-new-icon-theme-path"><primary>AppIndicator::new-icon-theme-path</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
                                                         <link linkend="gchar"><type>gchar</type></link>        *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Signaled when there is a new icon set for the
 		object.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="AppIndicator-new-label" role="signal"><title>The <literal>&quot;new-label&quot;</literal> signal</title>
@@ -964,36 +897,31 @@ Signaled when there is a new icon set for the
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
                                                         <link linkend="gchar"><type>gchar</type></link>        *arg1,
                                                         <link linkend="gchar"><type>gchar</type></link>        *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Emitted when either <link linkend="AppIndicator--label"><type>"label"</type></link> or <link linkend="AppIndicator--label-guide"><type>"label-guide"</type></link> are
 		changed.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The string for the label
-</simpara></listitem></varlistentry>
+<listitem><simpara>The string for the label</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The string for the guide
-</simpara></listitem></varlistentry>
+<listitem><simpara>The string for the guide</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2 id="AppIndicator-new-status" role="signal"><title>The <literal>&quot;new-status&quot;</literal> signal</title>
 <indexterm zone="AppIndicator-new-status"><primary>AppIndicator::new-status</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
                                                         <link linkend="gchar"><type>gchar</type></link>        *arg1,
-                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : Run Last</programlisting>
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Emitted when <link linkend="AppIndicator--status"><type>"status"</type></link> is changed
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
-<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object
-</simpara></listitem></varlistentry>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
-<listitem><simpara>The string value of the <link linkend="AppIndicatorStatus"><type>AppIndicatorStatus</type></link> enum.
-</simpara></listitem></varlistentry>
+<listitem><simpara>The string value of the <link linkend="AppIndicatorStatus"><type>AppIndicatorStatus</type></link> enum.</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
