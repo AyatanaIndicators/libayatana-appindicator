@@ -1,10 +1,10 @@
-libappindicator (0.2.91.1-0ubuntu2~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.91.1-0ubuntu2~ppa1) natty; urgency=low
 
   * Upstream Merge
     * Fixes to build system to build with GTK3
     * Use the dbusmenu parser
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 08:53:54 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 27 Jan 2011 09:00:08 -0600
 
 libappindicator (0.2.91.1-0ubuntu1) natty; urgency=low
 
