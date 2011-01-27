@@ -228,6 +228,7 @@ struct _AppIndicatorClass {
 	void (*app_indicator_reserved_3)(void);
 	void (*app_indicator_reserved_4)(void);
 	void (*app_indicator_reserved_5)(void);
+	void (*app_indicator_reserved_6)(void);
 };
 
 /**
