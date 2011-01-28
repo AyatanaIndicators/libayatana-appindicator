@@ -396,7 +396,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 glib_enum_h = app-indicator-enum-types.h
 glib_enum_c = app-indicator-enum-types.c
 glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
-libappindicatorincludedir = $(includedir)/libappindicator$(VER)-0.1/libappindicator
+libappindicatorincludedir = $(includedir)/libappindicator-0.1/libappindicator
 libappindicator_headers = \
 	app-indicator.h
 
