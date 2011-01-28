@@ -60,7 +60,8 @@ am_test_libappindicator_OBJECTS =  \
 test_libappindicator_OBJECTS = $(am_test_libappindicator_OBJECTS)
 am__DEPENDENCIES_1 =
 test_libappindicator_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(top_builddir)/src/libappindicator.la
+	$(am__DEPENDENCIES_1) \
+	$(top_builddir)/src/libappindicator$(VER).la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -72,7 +73,8 @@ am_test_libappindicator_dbus_client_OBJECTS = test_libappindicator_dbus_client-t
 test_libappindicator_dbus_client_OBJECTS =  \
 	$(am_test_libappindicator_dbus_client_OBJECTS)
 test_libappindicator_dbus_client_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(top_builddir)/src/libappindicator.la
+	$(am__DEPENDENCIES_1) \
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_dbus_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_libappindicator_dbus_client_CFLAGS) $(CFLAGS) \
@@ -81,7 +83,8 @@ am_test_libappindicator_dbus_server_OBJECTS = test_libappindicator_dbus_server-t
 test_libappindicator_dbus_server_OBJECTS =  \
 	$(am_test_libappindicator_dbus_server_OBJECTS)
 test_libappindicator_dbus_server_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(top_builddir)/src/libappindicator.la
+	$(am__DEPENDENCIES_1) \
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_dbus_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_libappindicator_dbus_server_CFLAGS) $(CFLAGS) \
@@ -91,7 +94,7 @@ test_libappindicator_fallback_item_OBJECTS =  \
 	$(am_test_libappindicator_fallback_item_OBJECTS)
 test_libappindicator_fallback_item_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_fallback_item_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(test_libappindicator_fallback_item_CFLAGS) $(CFLAGS) \
@@ -101,7 +104,7 @@ test_libappindicator_fallback_watcher_OBJECTS =  \
 	$(am_test_libappindicator_fallback_watcher_OBJECTS)
 test_libappindicator_fallback_watcher_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_fallback_watcher_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(test_libappindicator_fallback_watcher_CFLAGS) \
@@ -111,7 +114,7 @@ test_libappindicator_status_client_OBJECTS =  \
 	$(am_test_libappindicator_status_client_OBJECTS)
 test_libappindicator_status_client_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_status_client_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(test_libappindicator_status_client_CFLAGS) $(CFLAGS) \
@@ -121,7 +124,7 @@ test_libappindicator_status_server_OBJECTS =  \
 	$(am_test_libappindicator_status_server_OBJECTS)
 test_libappindicator_status_server_DEPENDENCIES =  \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 test_libappindicator_status_server_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(test_libappindicator_status_server_CFLAGS) $(CFLAGS) \
@@ -130,7 +133,8 @@ am_test_simple_app_OBJECTS =  \
 	test_simple_app-test-simple-app.$(OBJEXT)
 test_simple_app_OBJECTS = $(am_test_simple_app_OBJECTS)
 test_simple_app_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(top_builddir)/src/libappindicator.la
+	$(am__DEPENDENCIES_1) \
+	$(top_builddir)/src/libappindicator$(VER).la
 test_simple_app_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_simple_app_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
@@ -349,6 +353,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
 TESTS = test-libappindicator-fallback libappindicator-tests \
 	test-libappindicator-dbus test-libappindicator-status
 DISTCLEANFILES = $(TESTS) $(XML_REPORT) $(HTML_REPORT) \
@@ -371,7 +377,7 @@ test_libappindicator_CFLAGS = \
 
 test_libappindicator_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -387,7 +393,7 @@ test_libappindicator_dbus_client_CFLAGS = \
 
 test_libappindicator_dbus_client_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -403,7 +409,7 @@ test_libappindicator_dbus_server_CFLAGS = \
 
 test_libappindicator_dbus_server_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -419,7 +425,7 @@ test_libappindicator_status_client_CFLAGS = \
 
 test_libappindicator_status_client_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -435,7 +441,7 @@ test_libappindicator_status_server_CFLAGS = \
 
 test_libappindicator_status_server_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -450,7 +456,7 @@ test_libappindicator_fallback_watcher_CFLAGS = \
 
 test_libappindicator_fallback_watcher_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 test_libappindicator_fallback_item_SOURCES = \
 	test-libappindicator-fallback-item.c
@@ -462,7 +468,7 @@ test_libappindicator_fallback_item_CFLAGS = \
 
 test_libappindicator_fallback_item_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 
 #########################################
@@ -484,7 +490,7 @@ test_simple_app_CFLAGS = \
 
 test_simple_app_LDADD = \
 	$(TESTDEPS_LIBS) $(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 all: all-am
 

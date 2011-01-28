@@ -52,7 +52,7 @@ am_simple_client_OBJECTS = simple_client-simple-client.$(OBJEXT)
 simple_client_OBJECTS = $(am_simple_client_OBJECTS)
 am__DEPENDENCIES_1 =
 simple_client_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -257,6 +257,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@USE_GTK3_FALSE@VER = 
+@USE_GTK3_TRUE@VER = 3
 
 #########################################
 #########################################
@@ -271,7 +273,7 @@ simple_client_CFLAGS = \
 
 simple_client_LDADD = \
 	$(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator.la
+	$(top_builddir)/src/libappindicator$(VER).la
 
 EXTRA_DIST = \
 	simple-client-test-icon.png

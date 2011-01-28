@@ -45,7 +45,7 @@ glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 
 DISTCLEANFILES += app-indicator-enum-types.c
 
-libappindicatorincludedir=$(includedir)/libappindicator$(VER)-0.1/libappindicator
+libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
 
 libappindicator_headers = \
 	app-indicator.h
