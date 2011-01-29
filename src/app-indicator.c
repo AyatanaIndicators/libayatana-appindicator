@@ -929,12 +929,25 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 	AppIndicator * app = APP_INDICATOR(user_data);
 	GVariant * retval = NULL;
 
-	if (g_strcmp0(method, "XAyatanaScrollAction") == 0) {
-		gint delta;
+	if (g_strcmp0(method, "Scroll") == 0) {
 		guint direction;
+		gint delta;
+		const gchar *orientation;
 
-		g_variant_get(params, "(iu)", &delta, &direction);
+		g_variant_get(params, "(i&s)", &delta, &orientation);
+
+		if (g_strcmp0(orientation, "horizontal") == 0) {
+			direction = (delta >= 0) ? GDK_SCROLL_RIGHT : GDK_SCROLL_LEFT;
+		} else if (g_strcmp0(orientation, "vertical") == 0) {
+			direction = (delta >= 0) ? GDK_SCROLL_DOWN : GDK_SCROLL_UP;
+		} else {
+			g_dbus_method_invocation_return_value(invocation, retval);
+			return;
+		}
+
+		delta = ABS(delta);
 		g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
+
 	} else {
 		g_warning("Calling method '%s' on the app-indicator and it's unknown", method);
 	}

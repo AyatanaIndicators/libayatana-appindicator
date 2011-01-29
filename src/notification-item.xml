@@ -17,9 +17,9 @@
 		<property name="XAyatanaOrderingIndex" type="u" access="read" />
 
 <!-- Methods -->
-		<method name="XAyatanaScrollAction">
+		<method name="Scroll">
 			<arg type="i" name="delta" direction="in" />
-			<arg type="u" name="direction" direction="in" />
+			<arg type="s" name="orientation" direction="in" />
 		</method>
 
 <!-- Signals -->
