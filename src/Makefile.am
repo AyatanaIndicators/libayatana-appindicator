@@ -2,12 +2,10 @@ if USE_GTK3
 VER=3
 lib_LTLIBRARIES = libappindicator3.la
 GTKGIR = Gtk-3.0
-GTKVAPI = gtk+-3.0
 else
 VER=
 lib_LTLIBRARIES = libappindicator.la
 GTKGIR = Gtk-2.0
-GTKVAPI = gtk+-2.0
 endif
 
 CLEANFILES =
@@ -45,7 +43,8 @@ glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 
 DISTCLEANFILES += app-indicator-enum-types.c
 
-libappindicatorincludedir=$(includedir)/libappindicator-0.1/libappindicator
+libappindicatorincludefolder=libappindicator
+libappindicatorincludedir=$(includedir)/libappindicator-0.1/$(libappindicatorincludefolder)
 
 libappindicator_headers = \
 	app-indicator.h
@@ -133,13 +132,13 @@ INTROSPECTION_GIRS =
 if INTROSPECTION_TEN
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=src/, $(introspection_sources)) \
+	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers)) \
 	--symbol-prefix=app \
 	--identifier-prefix=App
 else
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
-	$(addprefix --c-include=src/, $(introspection_sources))
+	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers))
 endif
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
@@ -174,23 +173,3 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 endif
-
-#########################
-# VAPI Files
-#########################
-
-if HAVE_INTROSPECTION
-
-vapidir = $(datadir)/vala/vapi
-vapi_DATA = AppIndicator$(VER)-0.1.vapi
-
-AppIndicator$(VER)-0.1.vapi: AppIndicator$(VER)-0.1.gir Makefile.am
-	$(VALA_API_GEN) --library=AppIndicator$(VER)-0.1 \
-		--pkg $(GTKVAPI) \
-		--vapidir=$(top_builddir)/src \
-		$<
-
-CLEANFILES += $(vapi_DATA)
-
-endif
-
