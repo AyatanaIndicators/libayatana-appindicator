@@ -23,8 +23,7 @@ $(vapiprefix).deps:
 
 $(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir $(vapiprefix).deps
 	$(VALA_API_GEN) --library=$(vapiprefix) \
-		--pkg $(GTKVAPI) \
-		$<
+	$<
 	
 
 CLEANFILES = $(vapi_DATA)
