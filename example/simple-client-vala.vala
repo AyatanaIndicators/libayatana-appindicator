@@ -87,6 +87,11 @@ class SimpleClient {
 	}
 
 	public void run() {
+
+		ci.scroll_event.connect((delta, direction) => {
+			print(@"Got scroll event! delta: $delta, direction: $direction\n");
+		});
+
 		Timeout.add_seconds(1, () => {
 			percentage = (percentage + 1) % 100;
 			if (can_haz_label) {
