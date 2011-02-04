@@ -41,7 +41,7 @@ VALAFLAGS = \
 BUILT_SOURCES = simple-client-vala.c
 simple-client-vala.c: $(srcdir)/simple-client-vala.vala
 	$(VALAC) $(VALAFLAGS) -C $< -o $@
-	$(SED) -i "s|#include\s<libappindicator/app-indicator.h>||g" $@
+	$(SED) -i "s|#include\s*<\s*libappindicator/app-indicator.h\s*>||g" $@
 
 simple_client_vala_SOURCES = simple-client-vala.c
 simple_client_vala_CFLAGS = \
