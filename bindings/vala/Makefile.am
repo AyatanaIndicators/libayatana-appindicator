@@ -1,10 +1,11 @@
+if HAVE_INTROSPECTION
+if HAVE_VAPIGEN
+
 SUBDIRS = . examples
 
 #########################
 # VAPI Files
 #########################
-
-if HAVE_INTROSPECTION
 
 if USE_GTK3
 GTKVAPI = gtk+-3.0
@@ -31,4 +32,5 @@ $(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
 
 CLEANFILES = $(vapi_DATA)
 
+endif
 endif

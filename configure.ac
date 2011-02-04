@@ -94,6 +94,7 @@ AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
 ###########################
 
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$VALA_API_GEN" != "x"])
 
 ###########################
 # Vala Compiler support
