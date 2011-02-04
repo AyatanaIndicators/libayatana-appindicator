@@ -14,7 +14,7 @@ BUILT_SOURCES =
 EXTRA_DIST = \
 	appindicator-0.1.pc.in \
 	appindicator3-0.1.pc.in \
-	AppIndicator-0.1.metadata
+	AppIndicator$(VER)-0.1.metadata.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -163,6 +163,12 @@ AppIndicator3_0_1_gir_LIBS = $(AppIndicator_0_1_gir_LIBS)
 AppIndicator3_0_1_gir_FILES = $(AppIndicator_0_1_gir_FILES)
 
 INTROSPECTION_GIRS += AppIndicator$(VER)-0.1.gir
+
+AppIndicator$(VER)-0.1.metadata: AppIndicator$(VER)-0.1.gir
+	cp -f $(srcdir)/$@.in $@
+
+BUILT_SOURCES += AppIndicator$(VER)-0.1.metadata
+CLEANFILES += AppIndicator$(VER)-0.1.metadata
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(INTROSPECTION_GIRS)
