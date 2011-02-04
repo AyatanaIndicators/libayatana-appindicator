@@ -105,7 +105,8 @@ enum {
 	NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
-	NEW_ACCESSIBLE_NAME,
+    SCROLL_EVENT,
+    NEW_ACCESSIBLE_NAME,
 	LAST_SIGNAL
 };
 
@@ -176,19 +177,22 @@ static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
+static gboolean scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer user_data);
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
+static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data);
 static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
+static void bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data);
 static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static const GDBusInterfaceVTable item_interface_table = {
-	method_call:    NULL, /* No methods on this object */
+	method_call:    bus_method_call,
 	get_property:   bus_get_prop,
 	set_property:   NULL /* No properties that can be set */
 };
@@ -505,6 +509,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  NULL, NULL,
 	                                  g_cclosure_marshal_VOID__STRING,
 	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
+
+	/**
+		AppIndicator::scroll-event:
+		@arg0: The #AppIndicator object
+
+		Signaled when there is a new icon set for the
+		object.
+	*/
+	signals[SCROLL_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_SCROLL_EVENT,
+	                                  G_TYPE_FROM_CLASS(klass),
+	                                  G_SIGNAL_RUN_LAST,
+	                                  G_STRUCT_OFFSET (AppIndicatorClass, scroll_event),
+	                                  NULL, NULL,
+	                                  _application_service_marshal_VOID__INT_UINT,
+	                                  G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
 
 	/* DBus interfaces */
 	if (item_node_info == NULL) {
@@ -969,6 +988,43 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 	return;
 }
 
+static void
+bus_method_call (GDBusConnection * connection, const gchar * sender,
+                 const gchar * path, const gchar * interface,
+                 const gchar * method, GVariant * params,
+                 GDBusMethodInvocation * invocation, gpointer user_data)
+{
+	g_return_if_fail(IS_APP_INDICATOR(user_data));
+
+	AppIndicator * app = APP_INDICATOR(user_data);
+	GVariant * retval = NULL;
+
+	if (g_strcmp0(method, "Scroll") == 0) {
+		guint direction;
+		gint delta;
+		const gchar *orientation;
+
+		g_variant_get(params, "(i&s)", &delta, &orientation);
+
+		if (g_strcmp0(orientation, "horizontal") == 0) {
+			direction = (delta >= 0) ? GDK_SCROLL_RIGHT : GDK_SCROLL_LEFT;
+		} else if (g_strcmp0(orientation, "vertical") == 0) {
+			direction = (delta >= 0) ? GDK_SCROLL_DOWN : GDK_SCROLL_UP;
+		} else {
+			g_dbus_method_invocation_return_value(invocation, retval);
+			return;
+		}
+
+		delta = ABS(delta);
+		g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
+
+	} else {
+		g_warning("Calling method '%s' on the app-indicator and it's unknown", method);
+	}
+
+	g_dbus_method_invocation_return_value(invocation, retval);
+}
+
 /* DBus is asking for a property so we should figure out what it
    wants and try and deliver. */
 static GVariant *
@@ -1174,7 +1230,8 @@ check_connect (AppIndicator *self)
 	if (priv->watcher_proxy == NULL) {
 		/* Build Watcher Proxy */
 		g_dbus_proxy_new(priv->connection,
-		                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES | G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS, /* We don't use these, don't bother with them */
+		                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES|
+		                 G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS, /* We don't use these, don't bother with them */
 		                 watcher_interface_info,
 		                 NOTIFICATION_WATCHER_DBUS_ADDR,
 		                 NOTIFICATION_WATCHER_DBUS_OBJ,
@@ -1436,6 +1493,8 @@ fallback (AppIndicator * self)
 	status_icon_changes(self, icon);
 
 	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
+	g_signal_connect(G_OBJECT(icon), "popup-menu", G_CALLBACK(status_icon_menu_activate), self);
+	g_signal_connect(G_OBJECT(icon), "scroll-event", G_CALLBACK(scroll_event_wrapper), self);
 
 	return icon;
 }
@@ -1446,6 +1505,18 @@ static void
 status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data)
 {
 	return status_icon_changes(self, data);
+}
+
+/* A wrapper for redirecting the scroll events to the app-indicator from status
+   icon widget. */
+static gboolean
+scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+	AppIndicator * app = APP_INDICATOR(data);
+	g_signal_emit(app, signals[SCROLL_EVENT], 0, 1, event->direction);
+
+	return FALSE;
 }
 
 /* This tracks changes to either the status or the icons
@@ -1509,6 +1580,14 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
 	return;
 }
 
+/* Handles the right-click action by the status icon by showing
+   the menu in a popup. */
+static void
+status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data)
+{
+	status_icon_activate(status_icon, user_data);
+}
+
 /* Removes the status icon as the application indicator area
    is now up and running again. */
 static void
@@ -1516,6 +1595,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 {
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), scroll_event_wrapper, status_icon);
 	gtk_status_icon_set_visible(status_icon, FALSE);
 	g_object_unref(G_OBJECT(status_icon));
 	return;

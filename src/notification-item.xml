@@ -18,7 +18,10 @@
 		<property name="AccessibleName" type="s" access="read" />
 
 <!-- Methods -->
-		<!-- None currently -->
+		<method name="Scroll">
+			<arg type="i" name="delta" direction="in" />
+			<arg type="s" name="orientation" direction="in" />
+		</method>
 
 <!-- Signals -->
 		<signal name="NewIcon">

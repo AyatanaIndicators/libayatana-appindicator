@@ -11,6 +11,8 @@
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_accessible_name']" name="cname">new-accessible-name</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="name">ConnectionChanged</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="cname">connection-changed</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='scroll_event']" name="name">ScrollEvent</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='scroll_event']" name="cname">scroll-event</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon']" name="name">NewIcon</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon']" name="cname">new-icon</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon_theme_path']" name="name">NewIconThemePath</attr>
