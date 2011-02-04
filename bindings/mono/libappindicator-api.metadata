@@ -7,6 +7,8 @@
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_status']" name="cname">new-status</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_label']" name="name">NewLabel</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_label']" name="cname">new-label</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_accessible_name']" name="name">NewAccessibleName</attr>
+	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_accessible_name']" name="cname">new-accessible-name</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="name">ConnectionChanged</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='connection_changed']" name="cname">connection-changed</attr>
 	<attr path="/api/namespace/object[@cname='AppIndicator']/signal[@field_name='new_icon']" name="name">NewIcon</attr>
@@ -24,6 +26,7 @@
     <attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_CONNECTED_S']" name="name">Connected</attr>
     <attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_LABEL_S']" name="name">Label</attr>
     <attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_LABEL_GUIDE_S']" name="name">LabelGuide</attr>
+    <attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ACCESSIBLE_NAME_S']" name="name">AccessibleName</attr>
     <attr path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_ORDERING_INDEX_S']" name="name">OrderingIndex</attr>
     <attr path="/api/namespace/object[@cname='AppIndicator']/method[@name='SetMenu']" name="name">SetMenu</attr>
 
@@ -38,6 +41,7 @@
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_LABEL_S']" />
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_LABEL_GUIDE_S']" />
     <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_ORDERING_INDEX_S']" />
+    <remove-node path="/api/namespace/object[@cname='AppIndicator']/property[@cname='PROP_X_ACCESSIBLE_NAME_S']" />
 
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_id']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_status']" />
@@ -48,6 +52,7 @@
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_label_guide']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_ordering_index']" />
+    <remove-node path="/api/namespace/object/method[@cname='app_indicator_get_accessible_name']" />
 
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_status']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_icon']" />
@@ -55,4 +60,5 @@
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_attention_icon']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_label']" />
     <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_ordering_index']" />
+    <remove-node path="/api/namespace/object/method[@cname='app_indicator_set_accessible_name']" />
 </metadata>

@@ -228,6 +228,46 @@ test_libappindicator_set_label (void)
 }
 
 void
+test_libappindicator_set_accessible_name (void)
+{
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_accessible_name(ci) == NULL);
+
+	/* First check all the clearing modes, this is important as
+	   we're going to use them later, we need them to work. */
+	app_indicator_set_accessible_name(ci, NULL);
+
+	g_assert(app_indicator_get_accessible_name(ci) == NULL);
+
+	app_indicator_set_accessible_name(ci, "");
+
+	g_assert(app_indicator_get_accessible_name(ci) == NULL);
+
+	app_indicator_set_accessible_name(ci, "accessible_name");
+
+	g_assert(g_strcmp0(app_indicator_get_accessible_name(ci), "accessible_name") == 0);
+
+	app_indicator_set_accessible_name(ci, NULL);
+
+	g_assert(app_indicator_get_accessible_name(ci) == NULL);
+
+	app_indicator_set_accessible_name(ci, "accessible_name2");
+
+	g_assert(g_strcmp0(app_indicator_get_accessible_name(ci), "accessible_name2") == 0);
+
+	app_indicator_set_accessible_name(ci, "trick-accessible_name");
+
+	g_assert(g_strcmp0(app_indicator_get_accessible_name(ci), "trick-accessible_name") == 0);
+
+	g_object_unref(G_OBJECT(ci));
+	return;
+}
+
+void
 test_libappindicator_set_menu (void)
 {
 	AppIndicator * ci = app_indicator_new ("my-id",
@@ -287,6 +327,14 @@ label_signals_cb (AppIndicator * appindicator, gchar * label, gchar * guide, gpo
 }
 
 void
+accessible_name_signals_cb (AppIndicator * appindicator, gchar * accessible_name, gpointer user_data)
+{
+        gint * accessible_name_signals_count = (gint *)user_data;
+        (*accessible_name_signals_count)++;
+        return;
+}
+
+void
 label_signals_check (void)
 {
 	while (g_main_context_pending(NULL)) {
@@ -294,6 +342,16 @@ label_signals_check (void)
 	}
 
 	return;
+}
+
+void
+accessible_name_signals_check (void)
+{
+        while (g_main_context_pending(NULL)) {
+                g_main_context_iteration(NULL, TRUE);
+        }
+
+        return;
 }
 
 void
@@ -343,6 +401,56 @@ test_libappindicator_label_signals (void)
 	app_indicator_set_label(ci, NULL, NULL);
 	label_signals_check();
 	g_assert(label_signals_count == 1);
+
+	return;
+}
+
+void
+test_libappindicator_accessible_name_signals (void)
+{
+	gint accessible_name_signals_count = 0;
+	AppIndicator * ci = app_indicator_new ("my-id",
+	                                       "my-name",
+	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
+	g_assert(ci != NULL);
+	g_assert(app_indicator_get_accessible_name(ci) == NULL);
+
+	g_signal_connect(G_OBJECT(ci), APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_NAME, G_CALLBACK(accessible_name_signals_cb), &accessible_name_signals_count);
+
+	/* Shouldn't be a signal as it should be stuck in idle */
+	app_indicator_set_accessible_name(ci, "accessible_name");
+	g_assert(accessible_name_signals_count == 0);
+
+	/* Should show up after idle processing */
+	accessible_name_signals_check();
+	g_assert(accessible_name_signals_count == 1);
+
+	/* Shouldn't signal with no change */
+	accessible_name_signals_count = 0;
+	app_indicator_set_accessible_name(ci, "accessible_name");
+	accessible_name_signals_check();
+	g_assert(accessible_name_signals_count == 0);
+
+	/* Change one, we should get one signal */
+	app_indicator_set_accessible_name(ci, "accessible_name2");
+	accessible_name_signals_check();
+	g_assert(accessible_name_signals_count == 1);
+
+	/* Change several times, one signal */
+	accessible_name_signals_count = 0;
+	app_indicator_set_accessible_name(ci, "accessible_name1");
+	app_indicator_set_accessible_name(ci, "accessible_name1");
+	app_indicator_set_accessible_name(ci, "accessible_name2");
+	app_indicator_set_accessible_name(ci, "accessible_name3");
+	accessible_name_signals_check();
+	g_assert(accessible_name_signals_count == 1);
+
+	/* Clear should signal too */
+	accessible_name_signals_count = 0;
+	app_indicator_set_accessible_name(ci, NULL);
+	accessible_name_signals_check();
+	g_assert(accessible_name_signals_count == 1);
 
 	return;
 }
@@ -428,6 +536,8 @@ test_libappindicator_props_suite (void)
 	g_test_add_func ("/indicator-application/libappindicator/label_signals",   test_libappindicator_label_signals);
 	g_test_add_func ("/indicator-application/libappindicator/desktop_menu",    test_libappindicator_desktop_menu);
 	g_test_add_func ("/indicator-application/libappindicator/desktop_menu_bad",test_libappindicator_desktop_menu_bad);
+	g_test_add_func ("/indicator-application/libappindicator/set_accessible_name",test_libappindicator_set_accessible_name);
+	g_test_add_func ("/indicator-application/libappindicator/accessible_name_signals",test_libappindicator_accessible_name_signals);
 
 	return;
 }

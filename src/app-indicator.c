@@ -80,7 +80,9 @@ struct _AppIndicatorPrivate {
 	guint32               ordering_index;
 	gchar *               label;
 	gchar *               label_guide;
+	gchar *               accessible_name;
 	guint                 label_change_idle;
+	guint                  accessible_name_change_idle;
 
 	GtkStatusIcon *       status_icon;
 	gint                  fallback_timer;
@@ -103,6 +105,7 @@ enum {
 	NEW_LABEL,
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
+	NEW_ACCESSIBLE_NAME,
 	LAST_SIGNAL
 };
 
@@ -122,7 +125,8 @@ enum {
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_DBUS_MENU_SERVER
+	PROP_DBUS_MENU_SERVER,
+	PROP_ACCESSIBLE_NAME
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -137,6 +141,7 @@ enum {
 #define PROP_LABEL_GUIDE_S           "label-guide"
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
+#define PROP_ACCESSIBLE_NAME_S       "accessible-name"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -164,6 +169,7 @@ static void app_indicator_set_property (GObject * object, guint prop_id, const G
 static void app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
 static void signal_label_change (AppIndicator * self);
+static void signal_accessible_name_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
 static void register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
@@ -342,6 +348,22 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
+		AppIndicator:accessible-name:
+
+		A string that describes the indicator in text form. This string is 
+		used to identify the indicator to users of assistive technologies, such
+		as screen readers. If the indicator has a label, then duplicating the
+		contents of the label is fine, if the label alone conveys enough
+		information about the state of the indicator to the user.
+        */
+        g_object_class_install_property(object_class,
+                                        PROP_ACCESSIBLE_NAME,
+                                        g_param_spec_string (PROP_ACCESSIBLE_NAME_S,
+                                                             "A string that describes the indicator in text form.",
+                                                             "This string shoudl convey a description of the indicator's current status, for users who use assistive technologies.",
+                                                             NULL,
+                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
 		AppIndicator:ordering-index:
 
 		The ordering index is an odd parameter, and if you think you don't need
@@ -438,6 +460,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
+	/**
+		AppIndicator::new-accessible-name:
+		@arg0: The #AppIndicator object
+		@arg1: The string for the accessible name
+
+		Emitted when #AppIndicator:accessible_name changes.
+	*/
+	signals[NEW_ACCESSIBLE_NAME] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_NAME,
+	                                    G_TYPE_FROM_CLASS(klass),
+	                                    G_SIGNAL_RUN_LAST,
+	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_accessible_name),
+	                                    NULL, NULL,
+	                                    _application_service_marshal_VOID__STRING_STRING,
+	                                    G_TYPE_NONE, 1, G_TYPE_STRING);
+
 
 	/**
 		AppIndicator::connection-changed:
@@ -527,6 +564,7 @@ app_indicator_init (AppIndicator *self)
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
+	priv->accessible_name_change_idle = 0;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -588,6 +626,11 @@ app_indicator_dispose (GObject *object)
 	if (priv->label_change_idle != 0) {
 		g_source_remove(priv->label_change_idle);
 		priv->label_change_idle = 0;
+	}
+
+	if (priv->accessible_name_change_idle != 0) {
+		g_source_remove(priv->accessible_name_change_idle);
+		priv->accessible_name_change_idle = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -665,6 +708,11 @@ app_indicator_finalize (GObject *object)
 	if (priv->label_guide != NULL) {
 		g_free(priv->label_guide);
 		priv->label_guide = NULL;
+	}
+
+	if (priv->accessible_name != NULL) {
+		g_free(priv->accessible_name);
+		priv->accessible_name = NULL;
 	}
 
 	if (priv->path != NULL) {
@@ -778,6 +826,24 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_ACCESSIBLE_NAME: {
+		  gchar * olda11yname = priv->accessible_name;
+		  priv->accessible_name = g_value_dup_string(value);
+
+		  if (g_strcmp0(olda11yname, priv->accessible_name) != 0) {
+			signal_accessible_name_change(APP_INDICATOR(object));
+		  }
+
+		  if (priv->accessible_name != NULL && priv->accessible_name[0] == '\0') {
+			g_free(priv->accessible_name);
+			priv->accessible_name = NULL;
+		  }
+
+		  if (olda11yname != NULL) {
+			g_free(olda11yname);
+		  }
+		  break;
+                }
 		case PROP_ORDERING_INDEX:
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
@@ -855,6 +921,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
+
+	case PROP_ACCESSIBLE_NAME:
+	  g_value_set_string (value, priv->accessible_name);
+	  break;
 
 		case PROP_ORDERING_INDEX:
 		  g_value_set_uint(value, priv->ordering_index);
@@ -941,6 +1011,8 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_string(priv->label_guide ? priv->label_guide : "");
 	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
 		return g_variant_new_uint32(priv->ordering_index);
+	} else if (g_strcmp0(property, "AccessibleName") == 0) {
+		return g_variant_new_string(priv->accessible_name ? priv->accessible_name : "");
 	}
 
 	*error = g_error_new(0, 0, "Unknown property: %s", property);
@@ -995,6 +1067,55 @@ signal_label_change (AppIndicator * self)
 
 	priv->label_change_idle = g_idle_add(signal_label_change_idle, self);
 	return;
+}
+
+/* Sends the accessible name changed signal and resets the source ID */
+static gboolean
+signal_accessible_name_change_idle (gpointer user_data)
+{
+	AppIndicator * self = (AppIndicator *)user_data;
+	AppIndicatorPrivate *priv = self->priv;
+
+	gchar * accessible_name  = priv->accessible_name != NULL ? priv->accessible_name : "";
+
+	g_signal_emit(G_OBJECT(self), signals[NEW_ACCESSIBLE_NAME], 0,
+		      accessible_name, TRUE);
+	if (priv->dbus_registration != 0 && priv->connection != NULL) {
+		GError * error = NULL;
+
+		g_dbus_connection_emit_signal(priv->connection,
+		                              NULL,
+		                              priv->path,
+		                              NOTIFICATION_ITEM_DBUS_IFACE,
+		                              "NewAccessibleName",
+		                              g_variant_new("(s)", accessible_name),
+		                              &error);
+
+		if (error != NULL) {
+			g_warning("Unable to send signal for NewIcon: %s", error->message);
+			g_error_free(error);
+		}
+	}
+
+	priv->accessible_name_change_idle = 0;
+
+	return FALSE;
+}
+
+/* Sets up an idle function to send the accessible name changed
+   signal so that we don't send it too many times. */
+static void
+signal_accessible_name_change (AppIndicator * self)
+{
+        AppIndicatorPrivate *priv = self->priv;
+
+        /* don't set it twice */
+        if (priv->accessible_name_change_idle != 0) {
+                return;
+        }
+
+        priv->accessible_name_change_idle = g_idle_add(signal_accessible_name_change_idle, self);
+        return;
 }
 
 /* This function is used to see if we have enough information to
@@ -1639,6 +1760,28 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 }
 
 /**
+	app_indicator_set_accessible_name:
+	@self: The #AppIndicator object to use
+	@accessible_name: The accessible name used by assistive technologies.
+
+	This is a wrapper function for the #AppIndicator:accessible_name
+	property.  This function can take #NULL as @accessible_name and
+	will clear the entry.
+*/
+void
+app_indicator_set_accessible_name (AppIndicator *self, const gchar * accessible_name)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	/* Note: The accessible name can be NULL, it's okay */
+
+	g_object_set(G_OBJECT(self),
+	             PROP_ACCESSIBLE_NAME_S, accessible_name == NULL ? "" : accessible_name,
+	             NULL);
+
+	return;
+}
+
+/**
         app_indicator_set_icon_theme_path:
         @self: The #AppIndicator object to use
         @icon_theme_path: The icon theme path to set.
@@ -1930,6 +2073,22 @@ app_indicator_get_label_guide (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->label_guide;
+}
+
+/**
+	app_indicator_get_accessible_name:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:accessible_name.
+
+	Return value: The current accessible name.
+*/
+const gchar *
+app_indicator_get_accessible_name (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->accessible_name;
 }
 
 /**
