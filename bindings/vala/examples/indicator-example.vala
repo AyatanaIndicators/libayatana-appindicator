@@ -23,7 +23,7 @@ using AppIndicator;
 public class IndicatorExample {
 	public static int main(string[] args) {
 		Gtk.init(ref args);
-	
+
 		var win = new Window();
 		win.title = "Indicator Test";
 		win.resize(200, 200);

@@ -1,6 +1,5 @@
 SUBDIRS = . examples
 
-
 #########################
 # VAPI Files
 #########################
@@ -9,8 +8,10 @@ if HAVE_INTROSPECTION
 
 if USE_GTK3
 GTKVAPI = gtk+-3.0
+VER=3
 else
 GTKVAPI = gtk+-2.0
+VER=
 endif
 
 vapidir = $(datadir)/vala/vapi
@@ -21,8 +22,10 @@ DEPS = $(GTKVAPI)
 $(vapiprefix).deps:
 	echo $(DEPS) > $@
 
-$(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir $(vapiprefix).deps
-	$(VALA_API_GEN) --library=$(vapiprefix) \
+$(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
+                    $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
+                    $(vapiprefix).deps
+	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
 	$<
 	
 
