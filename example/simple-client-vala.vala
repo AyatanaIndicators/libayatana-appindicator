@@ -108,9 +108,9 @@ class SimpleClient {
 		menu.append(radio);
 		radio.show();
 
-        var submenu = new MenuItem.with_label("3");
-        menu.append(submenu);
-        append_submenu(submenu);
+		var submenu = new MenuItem.with_label("3");
+		menu.append(submenu);
+		append_submenu(submenu);
 		submenu.show();
 
 		var toggle_item = new MenuItem.with_label("Toggle 3");
