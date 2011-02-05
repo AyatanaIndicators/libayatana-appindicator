@@ -30,11 +30,10 @@ simple_client_LDADD = \
 EXTRA_DIST = \
 	simple-client-test-icon.png
 
-if HAVE_VALAC
-
 #########################################
 ##  simple-client-vala
 #########################################
+if HAVE_VALAC
 
 VALAFLAGS = \
 	--pkg appindicator$(VER)-0.1 \
