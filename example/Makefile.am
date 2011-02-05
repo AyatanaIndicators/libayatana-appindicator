@@ -30,6 +30,8 @@ simple_client_LDADD = \
 EXTRA_DIST = \
 	simple-client-test-icon.png
 
+if HAVE_VALAC
+
 #########################################
 ##  simple-client-vala
 #########################################
@@ -51,3 +53,5 @@ simple_client_vala_CFLAGS = \
 simple_client_vala_LDADD = $(simple_client_LDADD)
 
 CLEANFILES += *.stamp *-vala.c
+
+endif
