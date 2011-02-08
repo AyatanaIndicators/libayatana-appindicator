@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-export DH_VERBOSE = 1
-
 DEB_SRCDIR = .
 DEB_BUILDDIR = $(DEB_SRCDIR)/build
 
@@ -15,6 +13,9 @@ include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/cdbs/1/rules/utils.mk
 
 API_VERSION = 0.1
+
+DEB_DH_MAKESHLIBS_ARGS_libappindicator1 := -V 'libappindicator1 (>= 0.2.91)'
+DEB_DH_MAKESHLIBS_ARGS_libappindicator3_1 := -V 'libappindicator3-1 (>= 0.2.92)'
 
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 
@@ -36,6 +37,8 @@ build/python-appindicator:: $(addprefix build-stamp-, $(PY_VERSIONS))
 install-stamp-%:
 	PYTHON=`which $*` \
 		$(MAKE) -C build-$*/bindings/python install DESTDIR=$(CURDIR)/debian/tmp
+	dh_installdirs -ppython-appindicator 
+	dh_install -ppython-appindicator
 	touch $@
 
 binary-install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
@@ -58,6 +61,7 @@ install-stamp:
 	touch $@
 
 binary-install/libappindicator1:: install-stamp install-gtk3-stamp
+	dh_makeshlibs DEB_DH_MAKESHLIBS_ARGS_libappindicator1
 
 configure-gtk3-stamp:
 	: # configure for GTK+ 3.0
@@ -86,6 +90,7 @@ install-gtk3-stamp:
 	touch $@
 
 binary-install/libappindicator3-1:: install-gtk3-stamp
+	dh_makeshlibs DEB_DH_MAKESHLIBS_ARGS_libappindicator3_1
 
 binary-install/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_clistrip
