@@ -9,13 +9,12 @@ export MONO_SHARED_DIR=$(CURDIR)
 export CSC=/usr/bin/mono-csc
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools-vars.mk
+include /usr/share/cdbs/1/class/gnome.mk
 include /usr/share/cdbs/1/rules/utils.mk
 
-DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc
 API_VERSION = 0.1
 
-DEB_DH_MAKESHLIBS_ARGS_libappindicator1 := -V 'libappindicator1 (>= 0.0.19)'
+DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 
 configure-stamp-%:
 	mkdir build-$*
@@ -41,31 +40,48 @@ install-stamp-%:
 
 install/python-appindicator:: $(addprefix install-stamp-, $(PY_VERSIONS))
 
-binary-predeb/python-appindicator::
-	dh_python2 -ppython-appindicator
-	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
-	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
+stamp-configure-gtk3:
+	: # configure for GTK+ 3.0
+	set -e; \
+	rm -rf build-gtk3; \
+	mkdir build-gtk3; \
+	cd build-gtk3; \
+	$(DEB_CONFIGURE_SCRIPT_ENV) ../configure --with-gtk=3 \
+		$(filter-out --enable-gtk-doc, $(filter-out --srcdir=%, $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS))) \
+		--enable-gtk-doc=no; \
+	cd ..;
+	touch $@
 
-binary-install/libappindicator0.1-cil::
-	dh_clistrip
-	dh_clifixperms
-	dh_makeclilibs -V
-	dh_installcligac
+configure/libappindicator3-1:: stamp-configure-gtk3
 
-binary-predeb/gir1.0-appindicator-0.1::
-	dh_girepository -p$(cdbs_curpkg)
+stamp-build-gtk3:
+	: # build for GTK+ 3.0
+	$(MAKE) -C build-gtk3/src;
+	touch $@
 
-binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator1
-	dh_clideps -plibappindicator0.1-cil
+build/libappindicator3-1:: stamp-build-gtk3
 
-configure-stamp:
+stamp-install-gtk3:
+	: # install for GTK+ 3.0
+	$(MAKE) -C build-gtk3/src DESTDIR=$(CURDIR)/debian/tmp install
+	dh_installdirs -plibappindicator3-1 -s
+	dh_installdirs -plibappindicator3-dev -s
+	dh_installdirs -pgir1.2-appindicator3-0.1 -s
+	dh_install -plibappindicator3-1 -s
+	dh_install -plibappindicator3-dev -s
+	dh_install -pgir1.2-appindicator3-0.1 -s
+	touch $@
+
+binary-install/libappindicator3-1:: stamp-install-gtk3
+
+configure-stamp: 
 	cd $(DEB_BUILDDIR) && \
-		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS)
+		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) $(DEB_CONFIGURE_EXTRA_FLAGS) --enable-gtk-doc
 	touch $@
 
 configure/libappindicator1:: configure-stamp
 
-build-stamp:
+build-stamp: 
 	$(MAKE) -C $(DEB_BUILDDIR)
 	touch $@
 
@@ -73,13 +89,44 @@ build/libappindicator1:: build-stamp
 
 install-stamp:
 	$(MAKE) -C $(DEB_BUILDDIR) install DESTDIR=$(CURDIR)/debian/tmp
+	dh_installdirs -plibappindicator1 -s
+	dh_installdirs -plibappindicator-dev -s
+	dh_installdirs -plibappindicator-doc -s
+	dh_installdirs -pgir1.2-appindicator-0.1 -s
+	dh_install -plibappindicator1 -s
+	dh_install -plibappindicator-dev -s
+	dh_install -plibappindicator-doc -s
+	dh_install -pgir1.2-appindicator-0.1 -s
 	touch $@
 
-install/libappindicator1:: install-stamp
+binary-install/libappindicator1:: install-stamp
 
-binary-predeb/libappindicator1:: install-stamp
+binary-predeb/libappindicator1::
 	dh_fixperms
 	dh_strip
+
+binary-predeb/libappindicator3-1:: binary-install/libappindicator3-1
+	dh_fixperms
+	dh_strip
+
+binary-install/libappindicator0.1-cil:: binary-install/libappindicator1
+	dh_clistrip
+	dh_clifixperms
+	dh_makeclilibs -V
+	dh_installcligac
+
+binary-predeb/gir%::
+	dh_girepository -p$(cdbs_curpkg)
+
+binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator1
+	dh_clideps -plibappindicator0.1-cil
+
+binary-predeb/python-appindicator::
+	dh_python2 -ppython-appindicator
+	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
+	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
+
+common-install-prehook-arch:: binary-install/libappindicator3-1
 
 common-binary-predeb-arch:: list-missing
 	dh_fixperms
