@@ -113,9 +113,9 @@ G_BEGIN_DECLS
 	String identifier for the #AppIndicator::scroll-event signal.
 */
 /**
-	APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_NAME:
+	APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_DESC:
 
-	String identifier for the #AppIndicator::new-accessible-name signal.
+	String identifier for the #AppIndicator::new-accessible-desc signal.
 */
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
@@ -124,7 +124,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
-#define APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_NAME "new-accessible-name"
+#define APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_DESC "new-accessible-desc"
 
 /**
 	AppIndicatorCategory:
@@ -174,7 +174,7 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_status: Slot for #AppIndicator::new-status.
 	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
 	@new_label: Slot for #AppIndicator::new-label.
-	@new_accessible_name: Slot for #AppIndicator::new-accessible-name.
+	@new_accessible_desc: Slot for #AppIndicator::new-accessible-desc.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
 	@scroll-event: Slot for #AppIndicator::scroll-event
 	@app_indicator_reserved_ats: Reserved for future use.
@@ -211,8 +211,8 @@ struct _AppIndicatorClass {
 	                                 const gchar        *label,
 	                                 const gchar        *guide,
 	                                 gpointer            user_data);
-	void (* new_accessible_name)    (AppIndicator       *indicator,
-	                                 const gchar        *accessible_name);
+	void (* new_accessible_desc)    (AppIndicator       *indicator,
+	                                 const gchar        *accessible_desc);
 
 
 	/* Local Signals */
@@ -284,8 +284,8 @@ void                            app_indicator_set_icon           (AppIndicator  
 void                            app_indicator_set_label          (AppIndicator       *self,
                                                                   const gchar        *label,
                                                                   const gchar        *guide);
-void                            app_indicator_set_accessible_name(AppIndicator      *self,
-                                                                  const gchar       *accessible_name);
+void                            app_indicator_set_accessible_desc(AppIndicator      *self,
+                                                                  const gchar       *accessible_desc);
 void                            app_indicator_set_icon_theme_path(AppIndicator       *self,
                                                                   const gchar        *icon_theme_path);
 void                            app_indicator_set_ordering_index (AppIndicator       *self,
@@ -301,7 +301,7 @@ const gchar *                   app_indicator_get_attention_icon (AppIndicator *
 GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
 const gchar *                   app_indicator_get_label          (AppIndicator *self);
 const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
-const gchar *                   app_indicator_get_accessible_name(AppIndicator *self);
+const gchar *                   app_indicator_get_accessible_desc(AppIndicator *self);
 guint32                         app_indicator_get_ordering_index (AppIndicator *self);
 
 /* Helpers */

@@ -94,7 +94,7 @@ $(API): $(MIDDLE_API) Makefile.am
 		-e "s|PROP_LABEL_S|label|" \
 		-e "s|PROP_LABEL_GUIDE_S|label-guide|" \
 		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
-		-e "s|PROP_ACCESSIBLE_NAME_S|accessible-name|" \
+		-e "s|PROP_ACCESSIBLE_DESC_S|accessible-name|" \
 		$< > $@
 
 api_includes = $(GTK_SHARP_CFLAGS)

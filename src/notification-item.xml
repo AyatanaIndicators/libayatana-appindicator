@@ -15,7 +15,7 @@
 		<property name="XAyatanaLabel" type="s" access="read" />
 		<property name="XAyatanaLabelGuide" type="s" access="read" />
 		<property name="XAyatanaOrderingIndex" type="u" access="read" />
-		<property name="AccessibleName" type="s" access="read" />
+		<property name="AccessibleDesc" type="s" access="read" />
 
 <!-- Methods -->
 		<method name="Scroll">
@@ -38,8 +38,8 @@
 			<arg type="s" name="label" direction="out" />
 			<arg type="s" name="guide" direction="out" />
 		</signal>
-		<signal name="AccessibleName">
-			<arg type="s" name="accessible_name" direction="out" />
+		<signal name="AccessibleDesc">
+			<arg type="s" name="accessible_desc" direction="out" />
 		</signal>
 
 	</interface>

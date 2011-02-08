@@ -72,12 +72,12 @@
   )
 )
 
-(define-method set_accessible_name
+(define-method set_accessible_desc
   (of-object "AppIndicator")
-  (c-name "app_indicator_set_accessible_name")
+  (c-name "app_indicator_set_accessible_desc")
   (return-type "none")
   (parameters
-    '("const-gchar*" "accessible_name" (null-ok))
+    '("const-gchar*" "accessible_desc" (null-ok))
   )
 )
 
@@ -155,9 +155,9 @@
   (return-type "const-gchar*")
 )
 
-(define-method get_accessible_name
+(define-method get_accessible_desc
   (of-object "AppIndicator")
-  (c-name "app_indicator_get_accessible_name")
+  (c-name "app_indicator_get_accessible_desc")
   (return-type "const-gchar*")
 )
 
