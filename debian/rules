@@ -14,9 +14,6 @@ include /usr/share/cdbs/1/rules/utils.mk
 
 API_VERSION = 0.1
 
-DEB_DH_MAKESHLIBS_ARGS_libappindicator1 := -V 'libappindicator1 (>= 0.2.91)'
-DEB_DH_MAKESHLIBS_ARGS_libappindicator3_1 := -V 'libappindicator3-1 (>= 0.2.92)'
-
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 
 configure-stamp-%:
@@ -61,11 +58,10 @@ install-stamp:
 	touch $@
 
 binary-install/libappindicator1:: install-stamp install-stamp-gtk3
-	dh_makeshlibs DEB_DH_MAKESHLIBS_ARGS_libappindicator1
+	dh_makeshlibs -plibappindicator1
 
 configure-stamp-gtk3:
 	: # configure for GTK+ 3.0
-	set -e; \
 	rm -rf build-gtk3; \
 	mkdir build-gtk3; \
 	cd build-gtk3; \
@@ -90,7 +86,7 @@ install-stamp-gtk3:
 	touch $@
 
 binary-install/libappindicator3-1:: install-stamp-gtk3
-	dh_makeshlibs DEB_DH_MAKESHLIBS_ARGS_libappindicator3_1
+	dh_makeshlibs -plibappindicator3-1
 
 binary-install/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_clistrip
