@@ -1,3 +1,12 @@
+libappindicator (0.2.92-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/control, debian/rules
+    - Include new binaries for gtk3 builds
+  * debian/libappindicator1.symbols, debian/libappindicator3-1.symbols
+    - Added symbol files for libappindicator1 and libappdindicator3-1
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 08 Feb 2011 14:31:11 -0500
+
 libappindicator (0.2.92-0ubuntu1) natty; urgency=low
 
   * New upstream release.
