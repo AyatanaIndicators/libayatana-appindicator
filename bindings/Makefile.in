@@ -69,7 +69,7 @@ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
 	distdir
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = mono python
+DIST_SUBDIRS = mono python vala
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -205,6 +205,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 TESTDEPS_CFLAGS = @TESTDEPS_CFLAGS@
 TESTDEPS_LIBS = @TESTDEPS_LIBS@
+VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -265,9 +266,13 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @USE_GTK3_FALSE@SUBDIRS = \
 @USE_GTK3_FALSE@	mono		\
-@USE_GTK3_FALSE@	python
+@USE_GTK3_FALSE@	python		\
+@USE_GTK3_FALSE@	vala
 
-@USE_GTK3_TRUE@SUBDIRS = mono
+@USE_GTK3_TRUE@SUBDIRS = \
+@USE_GTK3_TRUE@	mono	\
+@USE_GTK3_TRUE@	vala
+
 all: all-recursive
 
 .SUFFIXES:

@@ -33,20 +33,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = bindings/mono/examples
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/indicator-example.in
+subdir = bindings/vala/examples
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = indicator-example
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -225,11 +221,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-ASSEMBLY = IndicatorExample.exe
-CSFILES = IndicatorExample.cs
-CLEANFILES = $(ASSEMBLY)
-EXTRA_DIST = $(CSFILES)
-references = $(GTK_SHARP_LIBS) -r:$(top_builddir)/bindings/mono/appindicator-sharp.dll
+VALAFILES = indicator-example.vala
+CLEANFILES = $(TESTS) *.c
+EXTRA_DIST = $(VALAFILES)
+VALAFLAGS = --pkg appindicator-0.1 --vapidir=$(top_builddir)/bindings/vala --save-temps
 all: all-am
 
 .SUFFIXES:
@@ -242,9 +237,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu bindings/mono/examples/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu bindings/vala/examples/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu bindings/mono/examples/Makefile
+	  $(AUTOMAKE) --gnu bindings/vala/examples/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -263,8 +258,6 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-indicator-example: $(top_builddir)/config.status $(srcdir)/indicator-example.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -418,10 +411,10 @@ uninstall-am:
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am
 
 
-$(ASSEMBLY): $(CSFILES) Makefile.am
-	$(CSC) $(CSFLAGS) -out:$(ASSEMBLY) -target:exe $(references) $(srcdir)/$(CSFILES)
+@HAVE_VALAC_TRUE@indicator-example: $(VALAFILES) Makefile.am
+@HAVE_VALAC_TRUE@	$(VALAC) $(VALAFLAGS) $(srcdir)/$(VALAFILES)
 
-all: $(ASSEMBLY)
+@HAVE_VALAC_TRUE@check: indicator-example
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

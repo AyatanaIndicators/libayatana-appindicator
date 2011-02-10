@@ -34,22 +34,16 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = bindings/mono
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/appindicator-sharp-0.1.pc.in \
-	$(srcdir)/appindicator-sharp.dll.config.in
+subdir = bindings/vala
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
-	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = appindicator-sharp.dll.config \
-	appindicator-sharp-0.1.pc
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
@@ -87,9 +81,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(assemblydir)" \
-	"$(DESTDIR)$(pkgconfigdir)"
-DATA = $(assembly_DATA) $(pkgconfig_DATA)
+am__installdirs = "$(DESTDIR)$(vapidir)"
+DATA = $(vapi_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -97,7 +90,7 @@ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
 	distdir
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = . examples
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -292,71 +285,20 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = . examples
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = appindicator-sharp-0.1.pc
-TEST = AppIndicator.Test.dll
-API = libappindicator-api.xml
-MIDDLE_API = libappindicator-api.middle
-RAW_API = libappindicator-api.raw
-METADATA = libappindicator-api.metadata
-ASSEMBLY_NAME = appindicator-sharp
-ASSEMBLY_VERSION = 0.2.0.0
-ASSEMBLY = $(ASSEMBLY_NAME).dll
-POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
-POLICY_VERSION = 0.0
-DLLPOLICY = $(POLICY).dll
-POLICY1 = policy.$(POLICY1_VERSION).$(ASSEMBLY_NAME)
-POLICY1_VERSION = 0.1
-DLLPOLICY1 = $(POLICY1).dll
-WRAPPER_FREE_BINDING_SRC = $(top_srcdir)/src/app-indicator.c
-WRAPPER_FREE_BINDING = app-indicator.c
-TARGET = \
-	$(ASSEMBLY) \
-	$(ASSEMBLY).config \
-	$(DLLPOLICY) \
-	$(POLICY).config \
-	$(DLLPOLICY1) \
-	$(POLICY1).config
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@SUBDIRS = . examples
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@@USE_GTK3_FALSE@GTKVAPI = gtk+-2.0
 
-assemblydir = $(libdir)/cli/appindicator-sharp-0.1
-assembly_DATA = $(TARGET)
-CLEANFILES = \
-	$(ASSEMBLY) \
-	$(ASSEMBLY).mdb \
-	generated-stamp \
-	generated/*.cs \
-	$(API) \
-	$(MIDDLE_API) \
-	$(RAW_API) \
-	$(TEST) \
-	$(DLLPOLICY) \
-	$(DLLPOLICY1) \
-	$(WRAPPER_FREE_BINDING) \
-	$(POLICY).config \
-	$(POLICY1).config
-
-DISTCLEANFILES = $(ASSEMBLY).config
-TEST_SOURCES = TestIndicator.cs
-customs = ApplicationIndicator.custom
-EXTRA_DIST = \
-	AssemblyInfo.cs \
-	$(RAW_API)				\
-	$(METADATA)				\
-	appindicator-sharp-0.1.pc.in		\
-	appindicator-sharp.dll.config.in	\
-	app-indicator.sources.xml		\
-	$(ASSEMBLY_NAME).snk			\
-	$(POLICY).config.in \
-	$(POLICY1).config.in \
-	$(customs)				\
-	$(TEST_SOURCES)
-
-GACUTIL_FLAGS = -package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
-references = $(GTK_SHARP_LIBS)
-test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
-api_includes = $(GTK_SHARP_CFLAGS)
-build_customs = $(addprefix $(srcdir)/, $(customs))
+#########################
+# VAPI Files
+#########################
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@@USE_GTK3_TRUE@GTKVAPI = gtk+-3.0
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@@USE_GTK3_FALSE@VER = 
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@@USE_GTK3_TRUE@VER = 3
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@vapidir = $(datadir)/vala/vapi
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@vapiprefix = appindicator$(VER)-0.1
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@vapi_DATA = $(vapiprefix).vapi $(vapiprefix).deps
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@DEPS = $(GTKVAPI)
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@CLEANFILES = $(vapi_DATA)
 all: all-recursive
 
 .SUFFIXES:
@@ -369,9 +311,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu bindings/mono/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu bindings/vala/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu bindings/mono/Makefile
+	  $(AUTOMAKE) --gnu bindings/vala/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -390,56 +332,32 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-appindicator-sharp.dll.config: $(top_builddir)/config.status $(srcdir)/appindicator-sharp.dll.config.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-appindicator-sharp-0.1.pc: $(top_builddir)/config.status $(srcdir)/appindicator-sharp-0.1.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-assemblyDATA: $(assembly_DATA)
+install-vapiDATA: $(vapi_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(assemblydir)" || $(MKDIR_P) "$(DESTDIR)$(assemblydir)"
-	@list='$(assembly_DATA)'; test -n "$(assemblydir)" || list=; \
+	test -z "$(vapidir)" || $(MKDIR_P) "$(DESTDIR)$(vapidir)"
+	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(assemblydir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(assemblydir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(vapidir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(vapidir)" || exit $$?; \
 	done
 
-uninstall-assemblyDATA:
+uninstall-vapiDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(assembly_DATA)'; test -n "$(assemblydir)" || list=; \
+	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(assemblydir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(assemblydir)" && rm -f $$files
-install-pkgconfigDATA: $(pkgconfig_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(pkgconfigdir)" || $(MKDIR_P) "$(DESTDIR)$(pkgconfigdir)"
-	@list='$(pkgconfig_DATA)'; test -n "$(pkgconfigdir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pkgconfigdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pkgconfigdir)" || exit $$?; \
-	done
-
-uninstall-pkgconfigDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(pkgconfig_DATA)'; test -n "$(pkgconfigdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(pkgconfigdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(pkgconfigdir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(vapidir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(vapidir)" && rm -f $$files
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -639,7 +557,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(assemblydir)" "$(DESTDIR)$(pkgconfigdir)"; do \
+	for dir in "$(DESTDIR)$(vapidir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -664,7 +582,6 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -689,8 +606,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-assemblyDATA install-data-local \
-	install-pkgconfigDATA
+install-data-am: install-vapiDATA
 
 install-dvi: install-dvi-recursive
 
@@ -734,8 +650,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-assemblyDATA uninstall-local \
-	uninstall-pkgconfigDATA
+uninstall-am: uninstall-vapiDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
 	install-am install-strip tags-recursive
@@ -744,90 +659,25 @@ uninstall-am: uninstall-assemblyDATA uninstall-local \
 	all all-am check check-am clean clean-generic clean-libtool \
 	ctags ctags-recursive distclean distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-assemblyDATA \
-	install-data install-data-am install-data-local install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-assemblyDATA uninstall-local \
-	uninstall-pkgconfigDATA
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip install-vapiDATA \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am uninstall-vapiDATA
 
 
-$(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
-	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@$(vapiprefix).deps:
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	echo $(DEPS) > $@
 
-$(WRAPPER_FREE_BINDING): $(WRAPPER_FREE_BINDING_SRC)
-	sed '/signals\[X_NEW_LABEL\] /,+6d' $(WRAPPER_FREE_BINDING_SRC) > $(WRAPPER_FREE_BINDING)
-
-$(MIDDLE_API): $(METADATA) $(RAW_API)
-	cp $(srcdir)/$(RAW_API) $(MIDDLE_API)
-	chmod u+w $(MIDDLE_API)
-	@if test -n '$(METADATA)'; then							\
-		echo "$(GAPI_FIXUP) --api=$(MIDDLE_API) --metadata=$(srcdir)/$(METADATA)"; 	\
-		$(GAPI_FIXUP) --api=$(MIDDLE_API) --metadata=$(srcdir)/$(METADATA);		\
-	fi
-
-$(API): $(MIDDLE_API) Makefile.am
-	sed -e "s|PROP_ID_S|id|" \
-		-e "s|PROP_STATUS_S|status|" \
-		-e "s|PROP_CATEGORY_S|category|" \
-		-e "s|PROP_ICON_NAME_S|icon-name|" \
-		-e "s|PROP_ATTENTION_ICON_NAME_S|attention-icon-name|" \
-		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
-		-e "s|PROP_MENU_S|menu|" \
-		-e "s|PROP_CONNECTED_S|connected|" \
-		-e "s|PROP_LABEL_S|label|" \
-		-e "s|PROP_LABEL_GUIDE_S|label-guide|" \
-		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
-		$< > $@
-
-generated-stamp: $(API) $(build_customs)
-	rm -f generated/* &&					\
-	$(GAPI_CODEGEN) --generate $(API) $(api_includes)	\
-	--customdir=$(srcdir)					\
-	--outdir=generated --assembly-name=$(ASSEMBLY_NAME)	\
-	&& touch generated-stamp
-
-$(ASSEMBLY): generated-stamp $(srcdir)/AssemblyInfo.cs
-	@rm -f $(ASSEMBLY).mdb
-	$(CSC) $(CSFLAGS) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk -nowarn:0169,0612,0618 -unsafe -out:$(ASSEMBLY) -target:library $(references) $(builddir)/$(GENERATED_SOURCES) $(srcdir)/AssemblyInfo.cs
-
-install-data-local:
-	echo "$(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS)";  \
-            $(GACUTIL) -i $(ASSEMBLY_NAME).dll $(GACUTIL_FLAGS) || exit 1;
-	echo "$(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
-            $(GACUTIL) -i $(DLLPOLICY) $(GACUTIL_FLAGS) || exit 1;
-
-uninstall-local:
-	echo "$(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS)"; \
-            $(GACUTIL) -u $(ASSEMBLY_NAME) $(GACUTIL_FLAGS) || exit 1;
-	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
-            $(GACUTIL) -u $(POLICY) $(GACUTIL_FLAGS) || exit 1;
-
-$(TEST): $(ASSEMBLY) $(TEST_SOURCES)
-	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
-
-all: $(TEST)
-
-$(POLICY).config: $(POLICY).config.in Makefile
-	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
-		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
-		$< > $@
-
-$(DLLPOLICY): $(POLICY).config $(ASSEMBLY_NAME).snk Makefile
-	$(AL) -link:$(POLICY).config -out:$(DLLPOLICY) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
-
-$(POLICY1).config: $(POLICY1).config.in Makefile
-	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
-		-e "s|@ASSEMBLY_VERSION@|$(ASSEMBLY_VERSION)|g" \
-		$< > $@
-
-$(DLLPOLICY1): $(POLICY1).config $(ASSEMBLY_NAME).snk Makefile
-	$(AL) -link:$(POLICY1).config -out:$(DLLPOLICY1) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@$(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@                    $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@                    $(vapiprefix).deps
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	$<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

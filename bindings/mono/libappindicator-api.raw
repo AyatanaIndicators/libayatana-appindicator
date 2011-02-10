@@ -79,6 +79,15 @@
           <parameter type="gpointer" name="user_data" />
         </parameters>
       </signal>
+      <signal when="LAST" field_name="scroll_event">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="AppIndicator*" name="indicator" />
+          <parameter type="gint" name="delta" />
+          <parameter type="GdkScrollDirection" name="direction" />
+          <parameter type="gpointer" name="user_data" />
+        </parameters>
+      </signal>
       <virtual_method name="Fallback" cname="fallback">
         <return-type type="GtkStatusIcon*" />
         <parameters>
