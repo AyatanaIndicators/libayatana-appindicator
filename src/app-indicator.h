@@ -212,7 +212,7 @@ struct _AppIndicatorClass {
 
 	void (* scroll_event)           (AppIndicator * indicator,
 	                                 gint                  delta,
-	                                 guint             direction,
+	                                 GdkScrollDirection direction,
 	                                 gpointer          user_data);
 
 	void (*app_indicator_reserved_ats)(void);
