@@ -1,10 +1,12 @@
-libappindicator (0.2.93-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.94-0ubuntu1~ppa1) UNRELEASED; urgency=low
 
-  * New upstream release.
+  * New upstream release (0.2.93)
     ∘ Fix Vala bindings
     ∘ Add support for scroll events
+  * New upstream release (0.2.94)
+    ∘ Include vala example files as well
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 14:56:48 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 15:28:25 -0600
 
 libappindicator (0.2.92-0ubuntu2) natty; urgency=low
 
