@@ -5,6 +5,7 @@ VER=
 endif
 
 CLEANFILES =
+EXTRA_DIST = 
 
 check_PROGRAMS = \
 	simple-client \
@@ -27,7 +28,7 @@ simple_client_LDADD = \
 	$(LIBRARY_LIBS) \
 	$(top_builddir)/src/libappindicator$(VER).la
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	simple-client-test-icon.png
 
 #########################################
@@ -54,3 +55,6 @@ simple_client_vala_LDADD = $(simple_client_LDADD)
 CLEANFILES += *.stamp *-vala.c
 
 endif
+
+EXTRA_DIST += \
+	simple-client-vala.vala
