@@ -129,3 +129,10 @@ src/gen-notification-watcher.xml.c
 src/gen-notification-watcher.xml.h
 src/libappindicator_la-gen-notification-item.xml.lo
 src/libappindicator_la-gen-notification-watcher.xml.lo
+bindings/vala/appindicator-0.1.deps
+bindings/vala/appindicator-0.1.vapi
+bindings/vala/examples/indicator-example
+bindings/vala/examples/indicator-example.c
+example/simple-client-vala
+example/simple-client-vala.c
+src/AppIndicator-0.1.metadata

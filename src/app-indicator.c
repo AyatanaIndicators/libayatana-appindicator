@@ -513,6 +513,8 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	/**
 		AppIndicator::scroll-event:
 		@arg0: The #AppIndicator object
+		@arg1: How many steps the scroll wheel has taken
+		@arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
 
 		Signaled when there is a new icon set for the
 		object.
