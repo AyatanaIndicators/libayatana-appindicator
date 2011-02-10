@@ -1,7 +1,10 @@
 if USE_GTK3
-SUBDIRS = mono
+SUBDIRS =	\
+	mono	\
+	vala
 else
 SUBDIRS =		\
 	mono		\
-	python
+	python		\
+	vala
 endif
