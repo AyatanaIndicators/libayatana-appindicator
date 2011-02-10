@@ -64,6 +64,7 @@
     <keyword type="signal" name="The &quot;new-icon-theme-path&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path"/>
     <keyword type="signal" name="The &quot;new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-label"/>
     <keyword type="signal" name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
+    <keyword type="signal" name="The &quot;scroll-event&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-scroll-event"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_APPLICATION_STATUS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_COMMUNICATIONS" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-COMMUNICATIONS:CAPS"/>
     <keyword type="constant" name="APP_INDICATOR_CATEGORY_SYSTEM_SERVICES" link="libappindicator-app-indicator.html#APP-INDICATOR-CATEGORY-SYSTEM-SERVICES:CAPS"/>

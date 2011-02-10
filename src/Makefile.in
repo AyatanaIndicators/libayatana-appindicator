@@ -76,8 +76,10 @@ DIST_COMMON = $(libappindicator3include_HEADERS) \
 	$(top_srcdir)/Makefile.am.enum \
 	$(top_srcdir)/Makefile.am.marshal
 @HAVE_INTROSPECTION_TRUE@am__append_1 = AppIndicator$(VER)-0.1.gir
-@HAVE_INTROSPECTION_TRUE@am__append_2 = $(gir_DATA) $(typelib_DATA) \
-@HAVE_INTROSPECTION_TRUE@	$(vapi_DATA)
+@HAVE_INTROSPECTION_TRUE@am__append_2 = AppIndicator$(VER)-0.1.metadata
+@HAVE_INTROSPECTION_TRUE@am__append_3 =  \
+@HAVE_INTROSPECTION_TRUE@	AppIndicator$(VER)-0.1.metadata \
+@HAVE_INTROSPECTION_TRUE@	$(gir_DATA) $(typelib_DATA)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -111,7 +113,6 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" \
-	"$(DESTDIR)$(vapidir)" \
 	"$(DESTDIR)$(libappindicator3includedir)" \
 	"$(DESTDIR)$(libappindicatorincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
@@ -179,7 +180,7 @@ am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libappindicator_la_SOURCES) $(libappindicator3_la_SOURCES)
 DIST_SOURCES = $(libappindicator_la_SOURCES) \
 	$(libappindicator3_la_SOURCES)
-DATA = $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA) $(vapi_DATA)
+DATA = $(gir_DATA) $(pkgconfig_DATA) $(typelib_DATA)
 HEADERS = $(libappindicator3include_HEADERS) \
 	$(libappindicatorinclude_HEADERS)
 ETAGS = etags
@@ -294,6 +295,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 TESTDEPS_CFLAGS = @TESTDEPS_CFLAGS@
 TESTDEPS_LIBS = @TESTDEPS_LIBS@
+VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -358,12 +360,10 @@ top_srcdir = @top_srcdir@
 @USE_GTK3_TRUE@lib_LTLIBRARIES = libappindicator3.la
 @USE_GTK3_FALSE@GTKGIR = Gtk-2.0
 @USE_GTK3_TRUE@GTKGIR = Gtk-3.0
-@USE_GTK3_FALSE@GTKVAPI = gtk+-2.0
-@USE_GTK3_TRUE@GTKVAPI = gtk+-3.0
 CLEANFILES = stamp-enum-types stamp-marshal \
 	gen-notification-item.xml.c gen-notification-item.xml.h \
 	gen-notification-watcher.xml.c gen-notification-watcher.xml.h \
-	$(am__append_2)
+	$(am__append_3)
 DISTCLEANFILES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
 	$(marshal_c) app-indicator-enum-types.c
 
@@ -374,10 +374,10 @@ BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
 	$(marshal_c) application-service-marshal.h \
 	application-service-marshal.c gen-notification-item.xml.c \
 	gen-notification-item.xml.h gen-notification-watcher.xml.c \
-	gen-notification-watcher.xml.h
+	gen-notification-watcher.xml.h $(am__append_2)
 EXTRA_DIST = appindicator-0.1.pc.in appindicator3-0.1.pc.in \
-	AppIndicator-0.1.metadata $(enum_tmpl_h) $(enum_tmpl_c) \
-	$(glib_marshal_list) $(DBUS_SPECS)
+	AppIndicator$(VER)-0.1.metadata.in $(enum_tmpl_h) \
+	$(enum_tmpl_c) $(glib_marshal_list) $(DBUS_SPECS)
 enum_tmpl_h = $(glib_enum_h:.h=.h.in)
 enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 marshal_h = $(glib_marshal_list:.list=.h)
@@ -393,7 +393,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 glib_enum_h = app-indicator-enum-types.h
 glib_enum_c = app-indicator-enum-types.c
 glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
-libappindicatorincludedir = $(includedir)/libappindicator-0.1/libappindicator
+libappindicatorincludefolder = libappindicator
+libappindicatorincludedir = $(includedir)/libappindicator-0.1/$(libappindicatorincludefolder)
 libappindicator_headers = \
 	app-indicator.h
 
@@ -449,11 +450,11 @@ DBUS_SPECS = \
 INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_FALSE@INTROSPECTION_SCANNER_ARGS = \
 @INTROSPECTION_TEN_FALSE@	--add-include-path=$(srcdir) \
-@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=src/, $(introspection_sources))
+@INTROSPECTION_TEN_FALSE@	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers))
 
 @INTROSPECTION_TEN_TRUE@INTROSPECTION_SCANNER_ARGS = \
 @INTROSPECTION_TEN_TRUE@	--add-include-path=$(srcdir) \
-@INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=src/, $(introspection_sources)) \
+@INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers)) \
 @INTROSPECTION_TEN_TRUE@	--symbol-prefix=app \
 @INTROSPECTION_TEN_TRUE@	--identifier-prefix=App
 
@@ -476,12 +477,6 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0
 @HAVE_INTROSPECTION_TRUE@typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
-
-#########################
-# VAPI Files
-#########################
-@HAVE_INTROSPECTION_TRUE@vapidir = $(datadir)/vala/vapi
-@HAVE_INTROSPECTION_TRUE@vapi_DATA = AppIndicator$(VER)-0.1.vapi
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -761,26 +756,6 @@ uninstall-typelibDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(typelibdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(typelibdir)" && rm -f $$files
-install-vapiDATA: $(vapi_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(vapidir)" || $(MKDIR_P) "$(DESTDIR)$(vapidir)"
-	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(vapidir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(vapidir)" || exit $$?; \
-	done
-
-uninstall-vapiDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(vapi_DATA)'; test -n "$(vapidir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(vapidir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(vapidir)" && rm -f $$files
 install-libappindicator3includeHEADERS: $(libappindicator3include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libappindicator3includedir)" || $(MKDIR_P) "$(DESTDIR)$(libappindicator3includedir)"
@@ -909,7 +884,7 @@ check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(vapidir)" "$(DESTDIR)$(libappindicator3includedir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(girdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(typelibdir)" "$(DESTDIR)$(libappindicator3includedir)" "$(DESTDIR)$(libappindicatorincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -967,7 +942,7 @@ info-am:
 install-data-am: install-girDATA \
 	install-libappindicator3includeHEADERS \
 	install-libappindicatorincludeHEADERS install-pkgconfigDATA \
-	install-typelibDATA install-vapiDATA
+	install-typelibDATA
 
 install-dvi: install-dvi-am
 
@@ -1016,8 +991,7 @@ ps-am:
 uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-libappindicator3includeHEADERS \
 	uninstall-libappindicatorincludeHEADERS \
-	uninstall-pkgconfigDATA uninstall-typelibDATA \
-	uninstall-vapiDATA
+	uninstall-pkgconfigDATA uninstall-typelibDATA
 
 .MAKE: all check install install-am install-strip
 
@@ -1031,16 +1005,14 @@ uninstall-am: uninstall-girDATA uninstall-libLTLIBRARIES \
 	install-libLTLIBRARIES install-libappindicator3includeHEADERS \
 	install-libappindicatorincludeHEADERS install-man install-pdf \
 	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
-	install-strip install-typelibDATA install-vapiDATA \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-girDATA \
-	uninstall-libLTLIBRARIES \
+	install-strip install-typelibDATA installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-girDATA uninstall-libLTLIBRARIES \
 	uninstall-libappindicator3includeHEADERS \
 	uninstall-libappindicatorincludeHEADERS \
-	uninstall-pkgconfigDATA uninstall-typelibDATA \
-	uninstall-vapiDATA
+	uninstall-pkgconfigDATA uninstall-typelibDATA
 
 
 stamp-enum-types: $(glib_enum_headers)
@@ -1102,11 +1074,8 @@ gen-%.xml.c: %.xml
 
 @HAVE_INTROSPECTION_TRUE@AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la
 
-@HAVE_INTROSPECTION_TRUE@AppIndicator$(VER)-0.1.vapi: AppIndicator$(VER)-0.1.gir Makefile.am
-@HAVE_INTROSPECTION_TRUE@	$(VALA_API_GEN) --library=AppIndicator$(VER)-0.1 \
-@HAVE_INTROSPECTION_TRUE@		--pkg $(GTKVAPI) \
-@HAVE_INTROSPECTION_TRUE@		--vapidir=$(top_builddir)/src \
-@HAVE_INTROSPECTION_TRUE@		$<
+@HAVE_INTROSPECTION_TRUE@AppIndicator$(VER)-0.1.metadata: AppIndicator$(VER)-0.1.gir
+@HAVE_INTROSPECTION_TRUE@	cp -f $(srcdir)/$@.in $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

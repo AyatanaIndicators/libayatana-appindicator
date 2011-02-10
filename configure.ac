@@ -1,11 +1,11 @@
 
-AC_INIT(libappindicator, 0.2.92, ted@canonical.com)
+AC_INIT(libappindicator, 0.2.93, ted@canonical.com)
 AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
 
 AC_PREREQ(2.53)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libappindicator, 0.2.92)
+AM_INIT_AUTOMAKE(libappindicator, 0.2.93)
 
 AM_MAINTAINER_MODE
 
@@ -94,6 +94,14 @@ AM_CONDITIONAL(INTROSPECTION_TEN, [test "x$introspection_ten" = "xyes"])
 ###########################
 
 AC_PATH_PROG([VALA_API_GEN], [vapigen])
+AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$VALA_API_GEN" != "x"])
+
+###########################
+# Vala Compiler support
+###########################
+
+AM_PROG_VALAC([0.11.0])
+AM_CONDITIONAL(HAVE_VALAC, [test "x$VALAC" != "x"])
 
 ###########################
 # Check for Mono support
@@ -205,6 +213,8 @@ bindings/mono/appindicator-sharp-0.1.pc
 bindings/mono/examples/Makefile
 bindings/mono/examples/indicator-example
 bindings/python/Makefile
+bindings/vala/Makefile
+bindings/vala/examples/Makefile
 tests/Makefile
 example/Makefile
 docs/Makefile

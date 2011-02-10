@@ -188,6 +188,15 @@ AppIndicator
 @appindicator: the object which received the signal.
 @arg1: 
 
+<!-- ##### SIGNAL AppIndicator::scroll-event ##### -->
+<para>
+
+</para>
+
+@appindicator: the object which received the signal.
+@arg1: 
+@arg2: 
+
 <!-- ##### ARG AppIndicator:attention-icon-name ##### -->
 <para>
 
@@ -255,7 +264,7 @@ AppIndicator
 @new_icon_theme_path: 
 @new_label: 
 @connection_changed: 
-@app_indicator_reserved_sw: 
+@scroll_event: 
 @app_indicator_reserved_ats: 
 @fallback: 
 @unfallback: 

@@ -81,7 +81,7 @@ struct              <a class="link" href="libappindicator-app-indicator.html#App
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-attention-icon" title="app_indicator_set_attention_icon ()">app_indicator_set_attention_icon</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_name</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-menu" title="app_indicator_set_menu ()">app_indicator_set_menu</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-icon" title="app_indicator_set_icon ()">app_indicator_set_icon</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_name</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-icon-theme-path" title="app_indicator_set_icon_theme_path ()">app_indicator_set_icon_theme_path</a>   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
@@ -99,7 +99,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon" title="app_indicator_get_attention_icon ()">app_indicator_get_attention_icon</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-<a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+<a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label" title="app_indicator_get_label ()">app_indicator_get_label</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label-guide" title="app_indicator_get_label_guide ()">app_indicator_get_label_guide</a>
@@ -143,6 +143,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path" title='The "new-icon-theme-path" signal'>new-icon-theme-path</a>"                            : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-label" title='The "new-label" signal'>new-label</a>"                                      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
   "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-new-status" title='The "new-status" signal'>new-status</a>"                                     : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+  "<a class="link" href="libappindicator-app-indicator.html#AppIndicator-scroll-event" title='The "scroll-event" signal'>scroll-event</a>"                                   : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
 </pre>
 </div>
 <div class="refsect1">
@@ -432,7 +433,12 @@ A application indicator represents the values that are needed to show a
 	void (* connection_changed)     (AppIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
-	void (*app_indicator_reserved_sw)(void);
+
+	void (* scroll_event)           (AppIndicator * indicator,
+	                                 gint                  delta,
+	                                 GdkScrollDirection direction,
+	                                 gpointer          user_data);
+
 	void (*app_indicator_reserved_ats)(void);
 
 	/* Overridable Functions */
@@ -486,8 +492,8 @@ The signals and external functions that make up the <a class="link" href="libapp
 <td>Slot for <a class="link" href="libappindicator-app-indicator.html#AppIndicator-connection-changed" title='The "connection-changed" signal'><span class="type">"connection-changed"</span></a>.</td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-sw"></a>app_indicator_reserved_sw</code></em> ()</span></p></td>
-<td>Reserved for future use.</td>
+<td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.scroll-event"></a>scroll_event</code></em> ()</span></p></td>
+<td></td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.app-indicator-reserved-ats"></a>app_indicator_reserved_ats</code></em> ()</span></p></td>
@@ -495,7 +501,7 @@ The signals and external functions that make up the <a class="link" href="libapp
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.fallback"></a>fallback</code></em> ()</span></p></td>
-<td>Function that gets called to make a <a href="http://library.gnome.org/devel/gtk/unstable/GtkStatusIcon.html"><span class="type">GtkStatusIcon</span></a> when
+<td>Function that gets called to make a <a href="http://library.gnome.org/devel/gtk/2.22/GtkStatusIcon.html"><span class="type">GtkStatusIcon</span></a> when
 there is no Application Indicator area available.</td>
 </tr>
 <tr>
@@ -666,7 +672,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <div class="refsect2">
 <a name="app-indicator-set-menu"></a><h3>app_indicator_set_menu ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                app_indicator_set_menu              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);</pre>
 <p>
 Sets the menu that should be shown when the Application Indicator
         is clicked on in the panel.  An application indicator will not
@@ -684,7 +690,7 @@ Sets the menu that should be shown when the Application Indicator
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>menu</code></em> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="type">GtkMenu</span></a> to set</td>
+<td>A <a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="type">GtkMenu</span></a> to set</td>
 </tr>
 </tbody>
 </table></div>
@@ -924,7 +930,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-menu"></a><h3>app_indicator_get_menu ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        app_indicator_get_menu (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        app_indicator_get_menu (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Gets the menu being used for this application indicator.
 	Wrapper function for property <span class="type">"menu"</span>.
@@ -938,7 +944,7 @@ Gets the menu being used for this application indicator.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/unstable/GtkMenu.html"><span class="type">GtkMenu</span></a> object or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one hasn't been set.</td>
+<td>A <a href="http://library.gnome.org/devel/gtk/2.22/GtkMenu.html"><span class="type">GtkMenu</span></a> object or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one hasn't been set.</td>
 </tr>
 </tbody>
 </table></div>
@@ -1311,6 +1317,39 @@ Emitted when <a class="link" href="libappindicator-app-indicator.html#AppIndicat
 <tr>
 <td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
 <td>The string value of the <a class="link" href="libappindicator-app-indicator.html#AppIndicatorStatus" title="enum AppIndicatorStatus"><span class="type">AppIndicatorStatus</span></a> enum.</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
+<td>user data set when the signal handler was connected.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="AppIndicator-scroll-event"></a><h3>The <code class="literal">"scroll-event"</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *arg0,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>          arg1,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>         arg2,
+                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>      user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
+<p>
+Signaled when there is a new icon set for the
+		object.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg0</code></em> :</span></p></td>
+<td>The <a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> object</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg1</code></em> :</span></p></td>
+<td>How many steps the scroll wheel has taken</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>arg2</code></em> :</span></p></td>
+<td>(type Gdk.ScrollDirection) Which direction the wheel went in</td>
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>

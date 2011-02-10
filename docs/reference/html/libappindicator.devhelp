@@ -64,5 +64,6 @@
     <function name="The &quot;new-icon-theme-path&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon-theme-path"/>
     <function name="The &quot;new-label&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-label"/>
     <function name="The &quot;new-status&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-status"/>
+    <function name="The &quot;scroll-event&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-scroll-event"/>
   </functions>
 </book>

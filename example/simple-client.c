@@ -98,6 +98,12 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
+scroll_event_cb (AppIndicator * ci, gint delta, guint direction)
+{
+	g_print("Got scroll event! delta: %d, direction: %d\n", delta, direction);
+}
+
+static void
 append_submenu (GtkWidget *item)
 {
   GtkWidget *menu;
@@ -161,6 +167,9 @@ main (int argc, char ** argv)
 	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
 	app_indicator_set_attention_icon(ci, "indicator-messages-new");
 	app_indicator_set_label (ci, "1%", "100%");
+
+	g_signal_connect (ci, "scroll-event",
+                      G_CALLBACK (scroll_event_cb), NULL);
 
 	g_timeout_add_seconds(1, percent_change, ci);
 

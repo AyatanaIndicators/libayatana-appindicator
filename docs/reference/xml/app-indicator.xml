@@ -120,6 +120,7 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *           
   &quot;<link linkend="AppIndicator-new-icon-theme-path">new-icon-theme-path</link>&quot;                            : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
   &quot;<link linkend="AppIndicator-new-label">new-label</link>&quot;                                      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
   &quot;<link linkend="AppIndicator-new-status">new-status</link>&quot;                                     : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
+  &quot;<link linkend="AppIndicator-scroll-event">scroll-event</link>&quot;                                   : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link>
 </synopsis>
 </refsect1>
 
@@ -366,7 +367,12 @@ A application indicator represents the values that are needed to show a
 	void (* connection_changed)     (AppIndicator * indicator,
 	                                 gboolean          connected,
 	                                 gpointer          user_data);
-	void (*app_indicator_reserved_sw)(void);
+
+	void (* scroll_event)           (AppIndicator * indicator,
+	                                 gint                  delta,
+	                                 GdkScrollDirection direction,
+	                                 gpointer          user_data);
+
 	void (*app_indicator_reserved_ats)(void);
 
 	/* Overridable Functions */
@@ -408,8 +414,8 @@ The signals and external functions that make up the <link linkend="AppIndicator"
 <varlistentry><term><structfield id="AppIndicatorClass.connection-changed">connection_changed</structfield>&#160;()</term>
 <listitem><simpara>Slot for <link linkend="AppIndicator-connection-changed"><type>"connection-changed"</type></link>.</simpara></listitem>
 </varlistentry>
-<varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-sw">app_indicator_reserved_sw</structfield>&#160;()</term>
-<listitem><simpara>Reserved for future use.</simpara></listitem>
+<varlistentry><term><structfield id="AppIndicatorClass.scroll-event">scroll_event</structfield>&#160;()</term>
+<listitem><simpara></simpara></listitem>
 </varlistentry>
 <varlistentry><term><structfield id="AppIndicatorClass.app-indicator-reserved-ats">app_indicator_reserved_ats</structfield>&#160;()</term>
 <listitem><simpara>Reserved for future use.</simpara></listitem>
@@ -922,6 +928,24 @@ Emitted when <link linkend="AppIndicator--status"><type>"status"</type></link> i
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&#160;:</term>
 <listitem><simpara>The string value of the <link linkend="AppIndicatorStatus"><type>AppIndicatorStatus</type></link> enum.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&#160;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2 id="AppIndicator-scroll-event" role="signal"><title>The <literal>&quot;scroll-event&quot;</literal> signal</title>
+<indexterm zone="AppIndicator-scroll-event"><primary>AppIndicator::scroll-event</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
+                                                        <link linkend="gint"><type>gint</type></link>          arg1,
+                                                        <link linkend="guint"><type>guint</type></link>         arg2,
+                                                        <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
+<para>
+Signaled when there is a new icon set for the
+		object.
+</para><variablelist role="params">
+<varlistentry><term><parameter>arg0</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&#160;:</term>
+<listitem><simpara>How many steps the scroll wheel has taken</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&#160;:</term>
+<listitem><simpara>(type Gdk.ScrollDirection) Which direction the wheel went in</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&#160;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>

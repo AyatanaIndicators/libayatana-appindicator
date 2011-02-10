@@ -33,7 +33,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = simple-client$(EXEEXT)
+check_PROGRAMS = simple-client$(EXEEXT) simple-client-vala$(EXEEXT)
+@HAVE_VALAC_TRUE@am__append_1 = *.stamp *-vala.c
 subdir = example
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -56,6 +57,17 @@ am__v_lt_0 = --silent
 simple_client_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(simple_client_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__simple_client_vala_SOURCES_DIST = simple-client-vala.c
+@HAVE_VALAC_TRUE@am_simple_client_vala_OBJECTS = simple_client_vala-simple-client-vala.$(OBJEXT)
+simple_client_vala_OBJECTS = $(am_simple_client_vala_OBJECTS)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) \
+	$(top_builddir)/src/libappindicator$(VER).la
+@HAVE_VALAC_TRUE@simple_client_vala_DEPENDENCIES =  \
+@HAVE_VALAC_TRUE@	$(am__DEPENDENCIES_2)
+simple_client_vala_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(simple_client_vala_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -82,8 +94,9 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(simple_client_SOURCES)
-DIST_SOURCES = $(simple_client_SOURCES)
+SOURCES = $(simple_client_SOURCES) $(simple_client_vala_SOURCES)
+DIST_SOURCES = $(simple_client_SOURCES) \
+	$(am__simple_client_vala_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -196,6 +209,7 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 TESTDEPS_CFLAGS = @TESTDEPS_CFLAGS@
 TESTDEPS_LIBS = @TESTDEPS_LIBS@
+VALAC = @VALAC@
 VALA_API_GEN = @VALA_API_GEN@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
@@ -256,6 +270,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @USE_GTK3_FALSE@VER = 
 @USE_GTK3_TRUE@VER = 3
+CLEANFILES = $(am__append_1)
 
 #########################################
 #########################################
@@ -275,7 +290,22 @@ simple_client_LDADD = \
 EXTRA_DIST = \
 	simple-client-test-icon.png
 
-all: all-am
+
+#########################################
+#########################################
+@HAVE_VALAC_TRUE@VALAFLAGS = \
+@HAVE_VALAC_TRUE@	--pkg appindicator$(VER)-0.1 \
+@HAVE_VALAC_TRUE@	--vapidir=$(top_builddir)/bindings/vala
+
+@HAVE_VALAC_TRUE@BUILT_SOURCES = simple-client-vala.c
+@HAVE_VALAC_TRUE@simple_client_vala_SOURCES = simple-client-vala.c
+@HAVE_VALAC_TRUE@simple_client_vala_CFLAGS = \
+@HAVE_VALAC_TRUE@	$(simple_client_CFLAGS) \
+@HAVE_VALAC_TRUE@	-include $(top_srcdir)/src/app-indicator.h
+
+@HAVE_VALAC_TRUE@simple_client_vala_LDADD = $(simple_client_LDADD)
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -321,6 +351,9 @@ clean-checkPROGRAMS:
 simple-client$(EXEEXT): $(simple_client_OBJECTS) $(simple_client_DEPENDENCIES) 
 	@rm -f simple-client$(EXEEXT)
 	$(AM_V_CCLD)$(simple_client_LINK) $(simple_client_OBJECTS) $(simple_client_LDADD) $(LIBS)
+simple-client-vala$(EXEEXT): $(simple_client_vala_OBJECTS) $(simple_client_vala_DEPENDENCIES) 
+	@rm -f simple-client-vala$(EXEEXT)
+	$(AM_V_CCLD)$(simple_client_vala_LINK) $(simple_client_vala_OBJECTS) $(simple_client_vala_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -329,6 +362,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_client-simple-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_client_vala-simple-client-vala.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -369,6 +403,22 @@ simple_client-simple-client.obj: simple-client.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-client.c' object='simple_client-simple-client.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(simple_client_CFLAGS) $(CFLAGS) -c -o simple_client-simple-client.obj `if test -f 'simple-client.c'; then $(CYGPATH_W) 'simple-client.c'; else $(CYGPATH_W) '$(srcdir)/simple-client.c'; fi`
+
+simple_client_vala-simple-client-vala.o: simple-client-vala.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(simple_client_vala_CFLAGS) $(CFLAGS) -MT simple_client_vala-simple-client-vala.o -MD -MP -MF $(DEPDIR)/simple_client_vala-simple-client-vala.Tpo -c -o simple_client_vala-simple-client-vala.o `test -f 'simple-client-vala.c' || echo '$(srcdir)/'`simple-client-vala.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simple_client_vala-simple-client-vala.Tpo $(DEPDIR)/simple_client_vala-simple-client-vala.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-client-vala.c' object='simple_client_vala-simple-client-vala.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(simple_client_vala_CFLAGS) $(CFLAGS) -c -o simple_client_vala-simple-client-vala.o `test -f 'simple-client-vala.c' || echo '$(srcdir)/'`simple-client-vala.c
+
+simple_client_vala-simple-client-vala.obj: simple-client-vala.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(simple_client_vala_CFLAGS) $(CFLAGS) -MT simple_client_vala-simple-client-vala.obj -MD -MP -MF $(DEPDIR)/simple_client_vala-simple-client-vala.Tpo -c -o simple_client_vala-simple-client-vala.obj `if test -f 'simple-client-vala.c'; then $(CYGPATH_W) 'simple-client-vala.c'; else $(CYGPATH_W) '$(srcdir)/simple-client-vala.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/simple_client_vala-simple-client-vala.Tpo $(DEPDIR)/simple_client_vala-simple-client-vala.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='simple-client-vala.c' object='simple_client_vala-simple-client-vala.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(simple_client_vala_CFLAGS) $(CFLAGS) -c -o simple_client_vala-simple-client-vala.obj `if test -f 'simple-client-vala.c'; then $(CYGPATH_W) 'simple-client-vala.c'; else $(CYGPATH_W) '$(srcdir)/simple-client-vala.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -460,10 +510,12 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile
 installdirs:
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -480,6 +532,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -488,6 +541,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
@@ -559,7 +613,7 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: check-am install-am install-strip
+.MAKE: all check check-am install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean \
 	clean-checkPROGRAMS clean-generic clean-libtool ctags \
@@ -575,6 +629,9 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am
 
+@HAVE_VALAC_TRUE@simple-client-vala.c: $(srcdir)/simple-client-vala.vala
+@HAVE_VALAC_TRUE@	$(VALAC) $(VALAFLAGS) -C $< -o $@
+@HAVE_VALAC_TRUE@	$(SED) -i "s|#include\s*<\s*libappindicator/app-indicator.h\s*>||g" $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
