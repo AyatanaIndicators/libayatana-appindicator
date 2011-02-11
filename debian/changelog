@@ -7,8 +7,10 @@ libappindicator (0.2.95-0ubuntu1~ppa1) UNRELEASED; urgency=low
     ∘ Include vala example files as well
   * New upstream release (0.2.95)
     ∘ Fixing build for GTK2/3 dual build
+  * debian/libappindicator-dev.install, debian/libappindicator3-dev.install:
+    switching the file name of the vapi files.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 22:24:53 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 22:29:47 -0600
 
 libappindicator (0.2.92-0ubuntu2) natty; urgency=low
 
