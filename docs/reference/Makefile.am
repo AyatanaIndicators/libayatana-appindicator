@@ -3,6 +3,14 @@
 # We require automake 1.6 at least.
 AUTOMAKE_OPTIONS = 1.6
 
+if USE_GTK3
+VER=3
+APPINDICATORLIB = libappindicator3.la
+else
+VER=
+APPINDICATORLIB = libappindicator.la
+endif
+
 # This is a blank Makefile.am for using gtk-doc.
 # Copy this to your project's API docs directory and modify the variables to
 # suit your project. See the GTK+ Makefiles in gtk+/docs/reference for examples
@@ -91,7 +99,7 @@ expand_content_files=
 # e.g. GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src $(LIBRARY_CFLAGS)
-GTKDOC_LIBS=$(top_builddir)/src/$(DOC_MODULE).la $(LIBRARY_LIBS)
+GTKDOC_LIBS=$(top_builddir)/src/$(APPINDICATORLIB) $(LIBRARY_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.local.make
