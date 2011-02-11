@@ -9,12 +9,7 @@ AUTOMAKE_OPTIONS = 1.6
 # of using the various options.
 
 # The name of the module, e.g. 'glib'.
-if USE_GTK3
-DOC_MODULE=libappindicator3
-else
 DOC_MODULE=libappindicator
-endif
-
 
 # Uncomment for versioned docs and specify the version of the module, e.g. '2'.
 #DOC_MODULE_VERSION=2
