@@ -2,6 +2,54 @@
 
 2011-02-10  Ted Gould  <ted@gould.cx>
 
+	0.2.95
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Fix the build so we can distcheck with GTK 2 and 3
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Blocking the menu proxy from our test
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Changing the build so that it uses the right version of the vala files and removes the predefined header location
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Changing the install path of the headers for libappindicator GTK3 version so it's parrallel installable
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Adjusting the name of the different namespace with GTK 3
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Ensure that we're building with the right library
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Cleanup what we create
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	gtk-doc wants a deprecated section now
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Removing the multiple modules as we shouldn't need them
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Fixing scroll documentation
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
+	Making sure to pick up both metadata files in dist.
+
+2011-02-10  Ted Gould  <ted@gould.cx>
+
 	0.2.94
 
 2011-02-10  Ted Gould  <ted@gould.cx>

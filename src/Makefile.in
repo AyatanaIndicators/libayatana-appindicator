@@ -75,6 +75,7 @@ DIST_COMMON = $(libappindicator3include_HEADERS) \
 	$(srcdir)/appindicator3-0.1.pc.in \
 	$(top_srcdir)/Makefile.am.enum \
 	$(top_srcdir)/Makefile.am.marshal
+# AppIndicator3_0_1_gir_NAMESPACE = AppIndicator
 @HAVE_INTROSPECTION_TRUE@am__append_1 = AppIndicator$(VER)-0.1.gir
 @HAVE_INTROSPECTION_TRUE@am__append_2 = AppIndicator$(VER)-0.1.metadata
 @HAVE_INTROSPECTION_TRUE@am__append_3 =  \
@@ -376,8 +377,9 @@ BUILT_SOURCES = $(glib_enum_h) $(glib_enum_c) $(marshal_h) \
 	gen-notification-item.xml.h gen-notification-watcher.xml.c \
 	gen-notification-watcher.xml.h $(am__append_2)
 EXTRA_DIST = appindicator-0.1.pc.in appindicator3-0.1.pc.in \
-	AppIndicator$(VER)-0.1.metadata.in $(enum_tmpl_h) \
-	$(enum_tmpl_c) $(glib_marshal_list) $(DBUS_SPECS)
+	AppIndicator-0.1.metadata.in AppIndicator3-0.1.metadata.in \
+	$(enum_tmpl_h) $(enum_tmpl_c) $(glib_marshal_list) \
+	$(DBUS_SPECS)
 enum_tmpl_h = $(glib_enum_h:.h=.h.in)
 enum_tmpl_c = $(glib_enum_c:.c=.c.in)
 marshal_h = $(glib_marshal_list:.list=.h)
@@ -394,7 +396,7 @@ glib_enum_h = app-indicator-enum-types.h
 glib_enum_c = app-indicator-enum-types.c
 glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 libappindicatorincludefolder = libappindicator
-libappindicatorincludedir = $(includedir)/libappindicator-0.1/$(libappindicatorincludefolder)
+libappindicatorincludedir = $(includedir)/libappindicator$(VER)-0.1/$(libappindicatorincludefolder)
 libappindicator_headers = \
 	app-indicator.h
 
@@ -456,7 +458,8 @@ INTROSPECTION_GIRS = $(am__append_1)
 @INTROSPECTION_TEN_TRUE@	--add-include-path=$(srcdir) \
 @INTROSPECTION_TEN_TRUE@	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers)) \
 @INTROSPECTION_TEN_TRUE@	--symbol-prefix=app \
-@INTROSPECTION_TEN_TRUE@	--identifier-prefix=App
+@INTROSPECTION_TEN_TRUE@	--identifier-prefix=App \
+@INTROSPECTION_TEN_TRUE@	--warn-all
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@introspection_sources = \
@@ -469,6 +472,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_CFLAGS = $(LIBRARY_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_FILES = $(introspection_sources)
+# AppIndicator_0_1_gir_NAMESPACE = AppIndicator
 @HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_INCLUDES = $(AppIndicator_0_1_gir_INCLUDES)
 @HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_CFLAGS = $(AppIndicator_0_1_gir_CFLAGS)
 @HAVE_INTROSPECTION_TRUE@AppIndicator3_0_1_gir_LIBS = $(AppIndicator_0_1_gir_LIBS)
