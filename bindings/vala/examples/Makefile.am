@@ -1,6 +1,5 @@
 
 VALAFILES = indicator-example.vala
-CLEANFILES = $(TESTS) *.c
 EXTRA_DIST = $(VALAFILES)
 
 VALAFLAGS = --pkg appindicator-0.1 --vapidir=$(top_builddir)/bindings/vala --save-temps
@@ -10,4 +9,9 @@ indicator-example: $(VALAFILES) Makefile.am
 	$(VALAC) $(VALAFLAGS) $(srcdir)/$(VALAFILES)
 
 check: indicator-example
+
+CLEANFILES = \
+	*.c \
+	indicator-example
+
 endif
