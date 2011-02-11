@@ -14,7 +14,8 @@ BUILT_SOURCES =
 EXTRA_DIST = \
 	appindicator-0.1.pc.in \
 	appindicator3-0.1.pc.in \
-	AppIndicator$(VER)-0.1.metadata.in
+	AppIndicator-0.1.metadata.in \
+	AppIndicator3-0.1.metadata.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
