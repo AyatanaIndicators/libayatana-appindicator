@@ -73,12 +73,16 @@ configure-stamp-gtk3:
 
 configure/libappindicator3-1:: configure-stamp-gtk3
 
+configure/libappindicator3-dev:: configure-stamp-gtk3
+
 build-stamp-gtk3:
 	: # build for GTK+ 3.0
 	$(MAKE) -C build-gtk3/src;
 	touch $@
 
 build/libappindicator3-1:: build-stamp-gtk3
+
+build/libappindicator3-dev:: build-stamp-gtk3
 
 install-stamp-gtk3:
 	: # install for GTK+ 3.0
@@ -87,6 +91,8 @@ install-stamp-gtk3:
 
 binary-install/libappindicator3-1:: install-stamp-gtk3
 	dh_makeshlibs -plibappindicator3-1
+
+binary-install/libappindicator3-dev:: install-stamp-gtk3
 
 binary-install/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_clistrip
