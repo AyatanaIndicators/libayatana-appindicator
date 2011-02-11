@@ -579,11 +579,6 @@ app_indicator_dispose (GObject *object)
 	AppIndicator *self = APP_INDICATOR (object);
 	AppIndicatorPrivate *priv = self->priv;
 
-	if (priv->dbus_registration != 0) {
-		g_dbus_connection_unregister_object(priv->connection, priv->dbus_registration);
-		priv->dbus_registration = 0;
-	}
-
 	if (priv->shorties != NULL) {
 		g_object_unref(G_OBJECT(priv->shorties));
 		priv->shorties = NULL;
@@ -630,6 +625,11 @@ app_indicator_dispose (GObject *object)
 
 	    /* Emit the AppIndicator::connection-changed signal*/
         g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
+	}
+
+	if (priv->dbus_registration != 0) {
+		g_dbus_connection_unregister_object(priv->connection, priv->dbus_registration);
+		priv->dbus_registration = 0;
 	}
 
 	if (priv->connection != NULL) {
