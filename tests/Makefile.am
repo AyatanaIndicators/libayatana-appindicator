@@ -153,6 +153,7 @@ HTML_REPORT  = libappindicator-check-results.html
 libappindicator-tests: libappindicator-tests-gtester Makefile.am
 	@echo "#!/bin/bash" > $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
+	@echo export UBUNTU_MENUPROXY= >> $@
 	@echo $(DBUS_RUNNER) --task ./libappindicator-tests-gtester >> $@
 	@chmod +x $@
 
