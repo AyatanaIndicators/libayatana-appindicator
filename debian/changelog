@@ -1,3 +1,20 @@
+libappindicator (0.2.95-0ubuntu1) natty; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release (0.2.95)
+    ∘ Fix Vala bindings
+    ∘ Add support for scroll events
+    ∘ Include vala example files as well
+    ∘ Fixing build for GTK2/3 dual build
+  * debian/libappindicator-dev.install, debian/libappindicator3-dev.install:
+    switching the file name of the vapi files.
+
+  [ Ken VanDine ]
+  * debian/rules
+    - build and install the vapi for gtk3
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Feb 2011 10:03:17 -0500
+
 libappindicator (0.2.92-0ubuntu2) natty; urgency=low
 
   * debian/control, debian/rules
