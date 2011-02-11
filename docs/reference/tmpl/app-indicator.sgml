@@ -109,6 +109,13 @@ AppIndicator
 
 
 
+<!-- ##### MACRO APP_INDICATOR_SIGNAL_SCROLL_EVENT ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### ENUM AppIndicatorCategory ##### -->
 <para>
 

@@ -169,7 +169,7 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
 	@new_label: Slot for #AppIndicator::new-label.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
-	@scroll-event: Slot for #AppIndicator::scroll-event
+	@scroll_event: Slot for #AppIndicator::scroll-event
 	@app_indicator_reserved_ats: Reserved for future use.
 	@fallback: Function that gets called to make a #GtkStatusIcon when
 		there is no Application Indicator area available.

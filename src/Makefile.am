@@ -14,7 +14,8 @@ BUILT_SOURCES =
 EXTRA_DIST = \
 	appindicator-0.1.pc.in \
 	appindicator3-0.1.pc.in \
-	AppIndicator$(VER)-0.1.metadata.in
+	AppIndicator-0.1.metadata.in \
+	AppIndicator3-0.1.metadata.in
 
 include $(top_srcdir)/Makefile.am.enum
 include $(top_srcdir)/Makefile.am.marshal
@@ -44,7 +45,7 @@ glib_enum_headers = $(addprefix $(srcdir)/, $(libappindicator_headers))
 DISTCLEANFILES += app-indicator-enum-types.c
 
 libappindicatorincludefolder=libappindicator
-libappindicatorincludedir=$(includedir)/libappindicator-0.1/$(libappindicatorincludefolder)
+libappindicatorincludedir=$(includedir)/libappindicator$(VER)-0.1/$(libappindicatorincludefolder)
 
 libappindicator_headers = \
 	app-indicator.h
@@ -134,7 +135,8 @@ INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
 	$(addprefix --c-include=$(libappindicatorincludefolder)/, $(libappindicator_headers)) \
 	--symbol-prefix=app \
-	--identifier-prefix=App
+	--identifier-prefix=App \
+	--warn-all
 else
 INTROSPECTION_SCANNER_ARGS = \
 	--add-include-path=$(srcdir) \
@@ -156,11 +158,13 @@ AppIndicator_0_1_gir_INCLUDES = \
 AppIndicator_0_1_gir_CFLAGS = $(LIBRARY_CFLAGS) -I$(srcdir) -I$(top_builddir)/src
 AppIndicator_0_1_gir_LIBS = libappindicator$(VER).la
 AppIndicator_0_1_gir_FILES = $(introspection_sources)
+# AppIndicator_0_1_gir_NAMESPACE = AppIndicator
 
 AppIndicator3_0_1_gir_INCLUDES = $(AppIndicator_0_1_gir_INCLUDES)
 AppIndicator3_0_1_gir_CFLAGS = $(AppIndicator_0_1_gir_CFLAGS)
 AppIndicator3_0_1_gir_LIBS = $(AppIndicator_0_1_gir_LIBS)
 AppIndicator3_0_1_gir_FILES = $(AppIndicator_0_1_gir_FILES)
+# AppIndicator3_0_1_gir_NAMESPACE = AppIndicator
 
 INTROSPECTION_GIRS += AppIndicator$(VER)-0.1.gir
 
