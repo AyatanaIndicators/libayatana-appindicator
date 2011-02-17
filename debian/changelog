@@ -1,3 +1,10 @@
+libappindicator (0.2.95-0ubuntu2) natty; urgency=low
+
+  * debian/control
+    - Bump build depends for libindicator-dev and libindicator3-dev to >= 0.3.19
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 17 Feb 2011 15:05:29 -0500
+
 libappindicator (0.2.95-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]
