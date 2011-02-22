@@ -1,3 +1,10 @@
+libappindicator (0.2.95-0ubuntu3) UNRELEASED; urgency=low
+
+  * debian/control:
+    - Use new build-depends for libgtk-3-dev
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Tue, 22 Feb 2011 16:14:00 +1100
+
 libappindicator (0.2.95-0ubuntu2) natty; urgency=low
 
   * debian/control
