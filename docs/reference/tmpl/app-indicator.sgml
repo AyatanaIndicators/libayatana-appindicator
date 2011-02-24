@@ -204,6 +204,11 @@ AppIndicator
 @arg1: 
 @arg2: 
 
+<!-- ##### ARG AppIndicator:attention-icon-desc ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG AppIndicator:attention-icon-name ##### -->
 <para>
 
@@ -220,6 +225,11 @@ AppIndicator
 </para>
 
 <!-- ##### ARG AppIndicator:dbus-menu-server ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG AppIndicator:icon-desc ##### -->
 <para>
 
 </para>
@@ -332,6 +342,16 @@ AppIndicator
 @icon_name: 
 
 
+<!-- ##### FUNCTION app_indicator_set_attention_icon_full ##### -->
+<para>
+
+</para>
+
+@self: 
+@icon_name: 
+@icon_desc: 
+
+
 <!-- ##### FUNCTION app_indicator_set_menu ##### -->
 <para>
 
@@ -348,6 +368,16 @@ AppIndicator
 
 @self: 
 @icon_name: 
+
+
+<!-- ##### FUNCTION app_indicator_set_icon_full ##### -->
+<para>
+
+</para>
+
+@self: 
+@icon_name: 
+@icon_desc: 
 
 
 <!-- ##### FUNCTION app_indicator_set_icon_theme_path ##### -->
@@ -414,6 +444,15 @@ AppIndicator
 @Returns: 
 
 
+<!-- ##### FUNCTION app_indicator_get_icon_desc ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
 <!-- ##### FUNCTION app_indicator_get_icon_theme_path ##### -->
 <para>
 
@@ -424,6 +463,15 @@ AppIndicator
 
 
 <!-- ##### FUNCTION app_indicator_get_attention_icon ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_attention_icon_desc ##### -->
 <para>
 
 </para>

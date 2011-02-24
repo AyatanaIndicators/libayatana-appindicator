@@ -8,7 +8,9 @@ const char * _notification_item =
 "		<property name=\"Category\" type=\"s\" access=\"read\" />\n"
 "		<property name=\"Status\" type=\"s\" access=\"read\" />\n"
 "		<property name=\"IconName\" type=\"s\" access=\"read\" />\n"
+"		<property name=\"IconAccessibleDesc\" type=\"s\" access=\"read\" />\n"
 "		<property name=\"AttentionIconName\" type=\"s\" access=\"read\" />\n"
+"		<property name=\"AttentionAccessibleDesc\" type=\"s\" access=\"read\" />\n"
 "		<!-- An additional path to add to the theme search path\n"
 "		     to find the icons specified above. -->\n"
 "		<property name=\"IconThemePath\" type=\"s\" access=\"read\" />\n"
@@ -38,6 +40,7 @@ const char * _notification_item =
 "			<arg type=\"s\" name=\"label\" direction=\"out\" />\n"
 "			<arg type=\"s\" name=\"guide\" direction=\"out\" />\n"
 "		</signal>\n"
+"\n"
 "	</interface>\n"
 "</node>\n"
 ;

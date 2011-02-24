@@ -1,3 +1,11 @@
+libappindicator (0.2.96-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Add support for accessible descriptions
+    * Move deregistration of object later to send final signals
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 24 Feb 2011 16:01:24 -0600
+
 libappindicator (0.2.95-0ubuntu3) natty; urgency=low
 
   * debian/control:
