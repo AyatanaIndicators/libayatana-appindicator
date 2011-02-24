@@ -83,7 +83,6 @@ struct _AppIndicatorPrivate {
 	gchar *               accessible_desc;
 	gchar *               att_accessible_desc;
 	guint                 label_change_idle;
-	guint                  accessible_desc_change_idle;
 
 	GtkStatusIcon *       status_icon;
 	gint                  fallback_timer;
@@ -171,7 +170,6 @@ static void app_indicator_set_property (GObject * object, guint prop_id, const G
 static void app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec);
 /* Other stuff */
 static void signal_label_change (AppIndicator * self);
-static void signal_accessible_desc_change (AppIndicator * self);
 static void check_connect (AppIndicator * self);
 static void register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data);
 static void start_fallback_timer (AppIndicator * self, gboolean disable_timeout);
@@ -586,7 +584,6 @@ app_indicator_init (AppIndicator *self)
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
-	priv->accessible_desc_change_idle = 0;
 
 	priv->watcher_proxy = NULL;
 	priv->connection = NULL;
@@ -648,11 +645,6 @@ app_indicator_dispose (GObject *object)
 	if (priv->label_change_idle != 0) {
 		g_source_remove(priv->label_change_idle);
 		priv->label_change_idle = 0;
-	}
-
-	if (priv->accessible_desc_change_idle != 0) {
-		g_source_remove(priv->accessible_desc_change_idle);
-		priv->accessible_desc_change_idle = 0;
 	}
 
 	if (priv->menu != NULL) {
@@ -857,10 +849,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  gchar * olda11ydesc = priv->accessible_desc;
 		  priv->accessible_desc = g_value_dup_string(value);
 
-		  if (g_strcmp0(olda11ydesc, priv->accessible_desc) != 0) {
-			signal_accessible_desc_change(APP_INDICATOR(object));
-		  }
-
 		  if (priv->accessible_desc != NULL && priv->accessible_desc[0] == '\0') {
 			g_free(priv->accessible_desc);
 			priv->accessible_desc = NULL;
@@ -870,7 +858,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 			g_free(olda11ydesc);
 		  }
 		  break;
-                }
+        }
 		case PROP_ORDERING_INDEX:
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
@@ -1133,55 +1121,6 @@ signal_label_change (AppIndicator * self)
 
 	priv->label_change_idle = g_idle_add(signal_label_change_idle, self);
 	return;
-}
-
-/* Sends the accessible description changed signal and resets the source ID */
-static gboolean
-signal_accessible_desc_change_idle (gpointer user_data)
-{
-	AppIndicator * self = (AppIndicator *)user_data;
-	AppIndicatorPrivate *priv = self->priv;
-
-	gchar * accessible_desc  = priv->accessible_desc != NULL ? priv->accessible_desc : "";
-
-	g_signal_emit(G_OBJECT(self), signals[NEW_ACCESSIBLE_DESC], 0,
-		      accessible_desc, TRUE);
-	if (priv->dbus_registration != 0 && priv->connection != NULL) {
-		GError * error = NULL;
-
-		g_dbus_connection_emit_signal(priv->connection,
-		                              NULL,
-		                              priv->path,
-		                              NOTIFICATION_ITEM_DBUS_IFACE,
-		                              "NewAccessibleDesc",
-		                              g_variant_new("(s)", accessible_desc),
-		                              &error);
-
-		if (error != NULL) {
-			g_warning("Unable to send signal for NewAccessibleDesc: %s", error->message);
-			g_error_free(error);
-		}
-	}
-
-	priv->accessible_desc_change_idle = 0;
-
-	return FALSE;
-}
-
-/* Sets up an idle function to send the accessible description
-   changed signal so that we don't send it too many times. */
-static void
-signal_accessible_desc_change (AppIndicator * self)
-{
-        AppIndicatorPrivate *priv = self->priv;
-
-        /* don't set it twice */
-        if (priv->accessible_desc_change_idle != 0) {
-                return;
-        }
-
-        priv->accessible_desc_change_idle = g_idle_add(signal_accessible_desc_change_idle, self);
-        return;
 }
 
 /* This function is used to see if we have enough information to
