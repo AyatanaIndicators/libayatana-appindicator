@@ -119,14 +119,15 @@ enum {
 	PROP_CATEGORY,
 	PROP_STATUS,
 	PROP_ICON_NAME,
+	PROP_ICON_DESC,
 	PROP_ATTENTION_ICON_NAME,
+	PROP_ATTENTION_ICON_DESC,
 	PROP_ICON_THEME_PATH,
 	PROP_CONNECTED,
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_DBUS_MENU_SERVER,
-	PROP_ACCESSIBLE_DESC
+	PROP_DBUS_MENU_SERVER
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -134,14 +135,15 @@ enum {
 #define PROP_CATEGORY_S              "category"
 #define PROP_STATUS_S                "status"
 #define PROP_ICON_NAME_S             "icon-name"
+#define PROP_ICON_DESC_S             "icon-desc"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
+#define PROP_ATTENTION_ICON_DESC_S   "attention-icon-desc"
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
 #define PROP_LABEL_GUIDE_S           "label-guide"
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
-#define PROP_ACCESSIBLE_DESC_S       "accessible-desc"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -267,12 +269,24 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		The name of the regular icon that is shown for the indicator.
 	*/
 	g_object_class_install_property(object_class,
-                                    PROP_ICON_NAME,
+	                                PROP_ICON_NAME,
 	                                g_param_spec_string (PROP_ICON_NAME_S,
-                                                             "An icon for the indicator",
-                                                             "The default icon that is shown for the indicator.",
-                                                             NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
+	                                                     "An icon for the indicator",
+	                                                     "The default icon that is shown for the indicator.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:icon-desc:
+		
+		The description of the regular icon that is shown for the indicator.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_ICON_DESC,
+	                                g_param_spec_string (PROP_ICON_DESC_S,
+	                                                     "A description of the icon for the indicator",
+	                                                     "A description of the default icon that is shown for the indicator.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 		AppIndicator:attention-icon-name:
@@ -287,6 +301,19 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               "If the indicator sets it's status to 'attention' then this icon is shown.",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:attention-icon-desc:
+		
+		If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+		then this textual description of the icon shown.
+	*/
+	g_object_class_install_property (object_class,
+	                                 PROP_ATTENTION_ICON_DESC,
+	                                 g_param_spec_string (PROP_ATTENTION_ICON_DESC_S,
+	                                                      "A description of the icon to show when the indicator request attention.",
+	                                                      "When the indicator is an attention mode this should describe the icon shown",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
 		AppIndicator:icon-theme-path:
 		
@@ -349,22 +376,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "To ensure that the label does not cause the panel to 'jiggle' this string should provide information on how much space it could take.",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-	/**
-		AppIndicator:accessible-desc:
-
-		A string that describes the indicator in text form. This string is 
-		used to identify the indicator to users of assistive technologies, such
-		as screen readers. If the indicator has a label, then duplicating the
-		contents of the label is fine, if the label alone conveys enough
-		information about the state of the indicator to the user.
-        */
-        g_object_class_install_property(object_class,
-                                        PROP_ACCESSIBLE_DESC,
-                                        g_param_spec_string (PROP_ACCESSIBLE_DESC_S,
-                                                             "A string that describes the indicator in text form.",
-                                                             "This string should convey a description of the indicator's current status, for users who use assistive technologies.",
-                                                             NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
 		AppIndicator:ordering-index:
 
@@ -776,14 +787,29 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           break;
 
         case PROP_ICON_NAME:
-          app_indicator_set_icon (APP_INDICATOR (object),
-                                  g_value_get_string (value));
+          app_indicator_set_icon_full (APP_INDICATOR (object),
+                                       g_value_get_string (value),
+                                       priv->accessible_desc);
+          check_connect (self);
+          break;
+
+        case PROP_ICON_DESC:
+          app_indicator_set_icon_full (APP_INDICATOR (object),
+                                       priv->icon_name,
+                                       g_value_get_string (value));
           check_connect (self);
           break;
 
         case PROP_ATTENTION_ICON_NAME:
-          app_indicator_set_attention_icon (APP_INDICATOR (object),
-                                            g_value_get_string (value));
+          app_indicator_set_attention_icon_full (APP_INDICATOR (object),
+                                                 g_value_get_string (value),
+                                                 priv->att_accessible_desc);
+          break;
+
+        case PROP_ATTENTION_ICON_DESC:
+          app_indicator_set_attention_icon_full (APP_INDICATOR (object),
+                                                 priv->attention_icon_name,
+                                                 g_value_get_string (value));
           break;
 
         case PROP_ICON_THEME_PATH:
@@ -828,20 +854,6 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
-		case PROP_ACCESSIBLE_DESC: {
-		  gchar * olda11ydesc = priv->accessible_desc;
-		  priv->accessible_desc = g_value_dup_string(value);
-
-		  if (priv->accessible_desc != NULL && priv->accessible_desc[0] == '\0') {
-			g_free(priv->accessible_desc);
-			priv->accessible_desc = NULL;
-		  }
-
-		  if (olda11ydesc != NULL) {
-			g_free(olda11ydesc);
-		  }
-		  break;
-        }
 		case PROP_ORDERING_INDEX:
 		  priv->ordering_index = g_value_get_uint(value);
 		  break;
@@ -889,8 +901,16 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->icon_name);
           break;
 
+        case PROP_ICON_DESC:
+          g_value_set_string (value, priv->accessible_desc);
+          break;
+
         case PROP_ATTENTION_ICON_NAME:
           g_value_set_string (value, priv->attention_icon_name);
+          break;
+
+        case PROP_ATTENTION_ICON_DESC:
+          g_value_set_string (value, priv->att_accessible_desc);
           break;
 
         case PROP_ICON_THEME_PATH:
@@ -919,10 +939,6 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
         case PROP_LABEL_GUIDE:
           g_value_set_string (value, priv->label_guide);
           break;
-
-	case PROP_ACCESSIBLE_DESC:
-	  g_value_set_string (value, priv->accessible_desc);
-	  break;
 
 		case PROP_ORDERING_INDEX:
 		  g_value_set_uint(value, priv->ordering_index);
