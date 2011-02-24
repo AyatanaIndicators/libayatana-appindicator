@@ -269,14 +269,14 @@ void                            app_indicator_set_attention_icon (AppIndicator  
                                                                   const gchar        *icon_name);
 void                            app_indicator_set_attention_icon_full (AppIndicator       *self,
                                                                   const gchar        *icon_name,
-                                                                  const gchar        *icon_description);
+                                                                  const gchar        *icon_desc);
 void                            app_indicator_set_menu           (AppIndicator       *self,
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
 void                            app_indicator_set_icon_full      (AppIndicator       *self,
                                                                   const gchar        *icon_name,
-                                                                  const gchar        *icon_description);
+                                                                  const gchar        *icon_desc);
 void                            app_indicator_set_label          (AppIndicator       *self,
                                                                   const gchar        *label,
                                                                   const gchar        *guide);
