@@ -80,6 +80,8 @@ struct _AppIndicatorPrivate {
 	guint32               ordering_index;
 	gchar *               label;
 	gchar *               label_guide;
+	gchar *               accessible_desc;
+	gchar *               att_accessible_desc;
 	guint                 label_change_idle;
 
 	GtkStatusIcon *       status_icon;
@@ -117,7 +119,9 @@ enum {
 	PROP_CATEGORY,
 	PROP_STATUS,
 	PROP_ICON_NAME,
+	PROP_ICON_DESC,
 	PROP_ATTENTION_ICON_NAME,
+	PROP_ATTENTION_ICON_DESC,
 	PROP_ICON_THEME_PATH,
 	PROP_CONNECTED,
 	PROP_LABEL,
@@ -131,7 +135,9 @@ enum {
 #define PROP_CATEGORY_S              "category"
 #define PROP_STATUS_S                "status"
 #define PROP_ICON_NAME_S             "icon-name"
+#define PROP_ICON_DESC_S             "icon-desc"
 #define PROP_ATTENTION_ICON_NAME_S   "attention-icon-name"
+#define PROP_ATTENTION_ICON_DESC_S   "attention-icon-desc"
 #define PROP_ICON_THEME_PATH_S       "icon-theme-path"
 #define PROP_CONNECTED_S             "connected"
 #define PROP_LABEL_S                 "label"
@@ -263,12 +269,24 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		The name of the regular icon that is shown for the indicator.
 	*/
 	g_object_class_install_property(object_class,
-                                    PROP_ICON_NAME,
+	                                PROP_ICON_NAME,
 	                                g_param_spec_string (PROP_ICON_NAME_S,
-                                                             "An icon for the indicator",
-                                                             "The default icon that is shown for the indicator.",
-                                                             NULL,
-                                                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
+	                                                     "An icon for the indicator",
+	                                                     "The default icon that is shown for the indicator.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:icon-desc:
+		
+		The description of the regular icon that is shown for the indicator.
+	*/
+	g_object_class_install_property(object_class,
+	                                PROP_ICON_DESC,
+	                                g_param_spec_string (PROP_ICON_DESC_S,
+	                                                     "A description of the icon for the indicator",
+	                                                     "A description of the default icon that is shown for the indicator.",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 		AppIndicator:attention-icon-name:
@@ -283,6 +301,19 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               "If the indicator sets it's status to 'attention' then this icon is shown.",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+		AppIndicator:attention-icon-desc:
+		
+		If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+		then this textual description of the icon shown.
+	*/
+	g_object_class_install_property (object_class,
+	                                 PROP_ATTENTION_ICON_DESC,
+	                                 g_param_spec_string (PROP_ATTENTION_ICON_DESC_S,
+	                                                      "A description of the icon to show when the indicator request attention.",
+	                                                      "When the indicator is an attention mode this should describe the icon shown",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
 		AppIndicator:icon-theme-path:
 		
@@ -441,7 +472,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    NULL, NULL,
 	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
-
 
 	/**
 		AppIndicator::connection-changed:
@@ -688,6 +718,16 @@ app_indicator_finalize (GObject *object)
 		priv->label_guide = NULL;
 	}
 
+	if (priv->accessible_desc != NULL) {
+		g_free(priv->accessible_desc);
+		priv->accessible_desc = NULL;
+	}
+
+	if (priv->att_accessible_desc != NULL) {
+		g_free(priv->att_accessible_desc);
+		priv->att_accessible_desc = NULL;
+	}
+
 	if (priv->path != NULL) {
 		g_free(priv->path);
 		priv->path = NULL;
@@ -747,14 +787,29 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           break;
 
         case PROP_ICON_NAME:
-          app_indicator_set_icon (APP_INDICATOR (object),
-                                  g_value_get_string (value));
+          app_indicator_set_icon_full (APP_INDICATOR (object),
+                                       g_value_get_string (value),
+                                       priv->accessible_desc);
+          check_connect (self);
+          break;
+
+        case PROP_ICON_DESC:
+          app_indicator_set_icon_full (APP_INDICATOR (object),
+                                       priv->icon_name,
+                                       g_value_get_string (value));
           check_connect (self);
           break;
 
         case PROP_ATTENTION_ICON_NAME:
-          app_indicator_set_attention_icon (APP_INDICATOR (object),
-                                            g_value_get_string (value));
+          app_indicator_set_attention_icon_full (APP_INDICATOR (object),
+                                                 g_value_get_string (value),
+                                                 priv->att_accessible_desc);
+          break;
+
+        case PROP_ATTENTION_ICON_DESC:
+          app_indicator_set_attention_icon_full (APP_INDICATOR (object),
+                                                 priv->attention_icon_name,
+                                                 g_value_get_string (value));
           break;
 
         case PROP_ICON_THEME_PATH:
@@ -846,8 +901,16 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
           g_value_set_string (value, priv->icon_name);
           break;
 
+        case PROP_ICON_DESC:
+          g_value_set_string (value, priv->accessible_desc);
+          break;
+
         case PROP_ATTENTION_ICON_NAME:
           g_value_set_string (value, priv->attention_icon_name);
+          break;
+
+        case PROP_ATTENTION_ICON_DESC:
+          g_value_set_string (value, priv->att_accessible_desc);
           break;
 
         case PROP_ICON_THEME_PATH:
@@ -999,6 +1062,10 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_string(priv->label_guide ? priv->label_guide : "");
 	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
 		return g_variant_new_uint32(priv->ordering_index);
+	} else if (g_strcmp0(property, "IconAccessibleDesc") == 0) {
+		return g_variant_new_string(priv->accessible_desc ? priv->accessible_desc : "");
+	} else if (g_strcmp0(property, "AttentionAccessibleDesc") == 0) {
+		return g_variant_new_string(priv->att_accessible_desc ? priv->att_accessible_desc : "");
 	}
 
 	*error = g_error_new(0, 0, "Unknown property: %s", property);
@@ -1613,20 +1680,51 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 	@self: The #AppIndicator object to use
 	@icon_name: The name of the attention icon to set for this indicator
 
-	Wrapper function for property #AppIndicator:attention-icon-name.
+	Wrapper for app_indicator_set_attention_icon_full() with a NULL
+	description.
+
+	Deprecated: Use app_indicator_set_attention_icon_full() instead.
 */
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
+	return app_indicator_set_attention_icon_full(self, icon_name, NULL);
+}
+
+/**
+	app_indicator_set_attention_icon_full:
+	@self: The #AppIndicator object to use
+	@icon_name: The name of the attention icon to set for this indicator
+	@icon_desc: A textual description of the icon
+
+	Wrapper function for property #AppIndicator:attention-icon-name.
+*/
+void
+app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
+{
 	g_return_if_fail (IS_APP_INDICATOR (self));
 	g_return_if_fail (icon_name != NULL);
+	gboolean changed = FALSE;
 
 	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
-		if (self->priv->attention_icon_name)
+		if (self->priv->attention_icon_name) {
 			g_free (self->priv->attention_icon_name);
+		}
 
 		self->priv->attention_icon_name = g_strdup(icon_name);
+		changed = TRUE;
+	}
 
+	if (g_strcmp0(self->priv->att_accessible_desc, icon_desc) != 0) {
+		if (self->priv->att_accessible_desc) {
+			g_free (self->priv->att_accessible_desc);
+		}
+
+		self->priv->att_accessible_desc = g_strdup(icon_name);
+		changed = TRUE;
+	}
+
+	if (changed) {
 		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
 
 		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
@@ -1655,23 +1753,56 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
         @self: The #AppIndicator object to use
         @icon_name: The icon name to set.
 
-		Sets the default icon to use when the status is active but
-		not set to attention.  In most cases, this should be the
-		application icon for the program.
-		Wrapper function for property #AppIndicator:icon-name.
+		Wrapper function for app_indicator_set_icon_full() with a NULL
+		description.
+
+		Deprecated: Use app_indicator_set_icon_full()
 **/
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
+	return app_indicator_set_icon_full(self, icon_name, NULL);
+}
+
+/**
+        app_indicator_set_icon_full:
+        @self: The #AppIndicator object to use
+        @icon_name: The icon name to set.
+		@icon_desc: A textual description of the icon for accessibility
+
+		Sets the default icon to use when the status is active but
+		not set to attention.  In most cases, this should be the
+		application icon for the program.
+
+		Wrapper function for property #AppIndicator:icon-name and
+		#AppIndicator::icon-description.
+**/
+void
+app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
+{
 	g_return_if_fail (IS_APP_INDICATOR (self));
 	g_return_if_fail (icon_name != NULL);
+	gboolean changed = FALSE;
 
 	if (g_strcmp0 (self->priv->icon_name, icon_name) != 0) {
-		if (self->priv->icon_name)
+		if (self->priv->icon_name) {
 			g_free (self->priv->icon_name);
+		}
 
 		self->priv->icon_name = g_strdup(icon_name);
+		changed = TRUE;
+	}
 
+	if (g_strcmp0(self->priv->accessible_desc, icon_desc) != 0) {
+		if (self->priv->accessible_desc != NULL) {
+			g_free(self->priv->accessible_desc);
+		}
+
+		self->priv->accessible_desc = g_strdup(icon_desc);
+		changed = TRUE;
+	}
+
+	if (changed) {
 		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
 
 		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
@@ -1930,6 +2061,22 @@ app_indicator_get_icon (AppIndicator *self)
 }
 
 /**
+	app_indicator_get_icon_desc:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:icon-desc.
+
+	Return value: The current icon description.
+*/
+const gchar *
+app_indicator_get_icon_desc (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->accessible_desc;
+}
+
+/**
 	app_indicator_get_icon_theme_path:
 	@self: The #AppIndicator object to use
 
@@ -1962,13 +2109,29 @@ app_indicator_get_attention_icon (AppIndicator *self)
 }
 
 /**
+	app_indicator_get_attention_icon_desc:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:attention-icon-desc.
+
+	Return value: The current attention icon description.
+*/
+const gchar *
+app_indicator_get_attention_icon_desc (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->att_accessible_desc;
+}
+
+/**
 	app_indicator_get_menu:
 	@self: The #AppIndicator object to use
 
 	Gets the menu being used for this application indicator.
 	Wrapper function for property #AppIndicator:menu.
 
-	Return value: A #GtkMenu object or %NULL if one hasn't been set.
+	Return value: (transfer none): A #GtkMenu object or %NULL if one hasn't been set.
 */
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)

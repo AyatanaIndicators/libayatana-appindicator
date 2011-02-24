@@ -72,6 +72,15 @@
   )
 )
 
+(define-method set_accessible_desc
+  (of-object "AppIndicator")
+  (c-name "app_indicator_set_accessible_desc")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "accessible_desc" (null-ok))
+  )
+)
+
 (define-method set_ordering_index
   (of-object "AppIndicator")
   (c-name "app_indicator_set_ordering_index")
@@ -143,6 +152,12 @@
 (define-method get_label_guide
   (of-object "AppIndicator")
   (c-name "app_indicator_get_label_guide")
+  (return-type "const-gchar*")
+)
+
+(define-method get_accessible_desc
+  (of-object "AppIndicator")
+  (c-name "app_indicator_get_accessible_desc")
   (return-type "const-gchar*")
 )
 
