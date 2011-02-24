@@ -81,6 +81,7 @@ struct _AppIndicatorPrivate {
 	gchar *               label;
 	gchar *               label_guide;
 	gchar *               accessible_desc;
+	gchar *               att_accessible_desc;
 	guint                 label_change_idle;
 	guint                  accessible_desc_change_idle;
 
@@ -736,6 +737,11 @@ app_indicator_finalize (GObject *object)
 		priv->accessible_desc = NULL;
 	}
 
+	if (priv->att_accessible_desc != NULL) {
+		g_free(priv->att_accessible_desc);
+		priv->att_accessible_desc = NULL;
+	}
+
 	if (priv->path != NULL) {
 		g_free(priv->path);
 		priv->path = NULL;
@@ -1069,8 +1075,10 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_string(priv->label_guide ? priv->label_guide : "");
 	} else if (g_strcmp0(property, "XAyatanaOrderingIndex") == 0) {
 		return g_variant_new_uint32(priv->ordering_index);
-	} else if (g_strcmp0(property, "AccessibleDesc") == 0) {
+	} else if (g_strcmp0(property, "IconAccessibleDesc") == 0) {
 		return g_variant_new_string(priv->accessible_desc ? priv->accessible_desc : "");
+	} else if (g_strcmp0(property, "AttentionAccessibleDesc") == 0) {
+		return g_variant_new_string(priv->att_accessible_desc ? priv->att_accessible_desc : "");
 	}
 
 	*error = g_error_new(0, 0, "Unknown property: %s", property);
