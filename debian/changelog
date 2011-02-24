@@ -1,18 +1,33 @@
-libappindicator (0.2.95-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.95-0ubuntu3) natty; urgency=low
 
-  * New upstream release (0.2.93)
+  * debian/control:
+    - Use new build-depends for libgtk-3-dev
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 23 Feb 2011 10:42:57 +1100
+
+libappindicator (0.2.95-0ubuntu2) natty; urgency=low
+
+  * debian/control
+    - Bump build depends for libindicator-dev and libindicator3-dev to >= 0.3.19
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 17 Feb 2011 15:05:29 -0500
+
+libappindicator (0.2.95-0ubuntu1) natty; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release (0.2.95)
     ∘ Fix Vala bindings
     ∘ Add support for scroll events
-  * New upstream release (0.2.94)
     ∘ Include vala example files as well
-  * New upstream release (0.2.95)
     ∘ Fixing build for GTK2/3 dual build
   * debian/libappindicator-dev.install, debian/libappindicator3-dev.install:
     switching the file name of the vapi files.
-  * debian/rules: Not building libappindicator3-dev until we've got the GTK3
-    build all put together.
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Feb 2011 22:39:44 -0600
+  [ Ken VanDine ]
+  * debian/rules
+    - build and install the vapi for gtk3
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 11 Feb 2011 10:03:17 -0500
 
 libappindicator (0.2.92-0ubuntu2) natty; urgency=low
 
