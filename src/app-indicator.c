@@ -2045,6 +2045,22 @@ app_indicator_get_icon (AppIndicator *self)
 }
 
 /**
+	app_indicator_get_icon_desc:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:icon-desc.
+
+	Return value: The current icon description.
+*/
+const gchar *
+app_indicator_get_icon_desc (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->accessible_desc;
+}
+
+/**
 	app_indicator_get_icon_theme_path:
 	@self: The #AppIndicator object to use
 
@@ -2077,13 +2093,29 @@ app_indicator_get_attention_icon (AppIndicator *self)
 }
 
 /**
+	app_indicator_get_attention_icon_desc:
+	@self: The #AppIndicator object to use
+
+	Wrapper function for property #AppIndicator:attention-icon-desc.
+
+	Return value: The current attention icon description.
+*/
+const gchar *
+app_indicator_get_attention_icon_desc (AppIndicator *self)
+{
+  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+  return self->priv->att_accessible_desc;
+}
+
+/**
 	app_indicator_get_menu:
 	@self: The #AppIndicator object to use
 
 	Gets the menu being used for this application indicator.
 	Wrapper function for property #AppIndicator:menu.
 
-	Return value: A #GtkMenu object or %NULL if one hasn't been set.
+	Return value: (transfer none): A #GtkMenu object or %NULL if one hasn't been set.
 */
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)
@@ -2127,22 +2159,6 @@ app_indicator_get_label_guide (AppIndicator *self)
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
   return self->priv->label_guide;
-}
-
-/**
-	app_indicator_get_accessible_desc:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:accessible_desc.
-
-	Return value: The current accessible description.
-*/
-const gchar *
-app_indicator_get_accessible_desc (AppIndicator *self)
-{
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
-
-  return self->priv->accessible_desc;
 }
 
 /**
