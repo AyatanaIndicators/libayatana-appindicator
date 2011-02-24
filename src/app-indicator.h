@@ -267,32 +267,37 @@ void                            app_indicator_set_status         (AppIndicator  
                                                                   AppIndicatorStatus  status);
 void                            app_indicator_set_attention_icon (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_attention_icon_full (AppIndicator       *self,
+                                                                  const gchar        *icon_name,
+                                                                  const gchar        *icon_description);
 void                            app_indicator_set_menu           (AppIndicator       *self,
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
                                                                   const gchar        *icon_name);
+void                            app_indicator_set_icon_full      (AppIndicator       *self,
+                                                                  const gchar        *icon_name,
+                                                                  const gchar        *icon_description);
 void                            app_indicator_set_label          (AppIndicator       *self,
                                                                   const gchar        *label,
                                                                   const gchar        *guide);
-void                            app_indicator_set_accessible_desc(AppIndicator      *self,
-                                                                  const gchar       *accessible_desc);
 void                            app_indicator_set_icon_theme_path(AppIndicator       *self,
                                                                   const gchar        *icon_theme_path);
 void                            app_indicator_set_ordering_index (AppIndicator       *self,
                                                                   guint32             ordering_index);
 
 /* Get properties */
-const gchar *                   app_indicator_get_id             (AppIndicator *self);
-AppIndicatorCategory            app_indicator_get_category       (AppIndicator *self);
-AppIndicatorStatus              app_indicator_get_status         (AppIndicator *self);
-const gchar *                   app_indicator_get_icon           (AppIndicator *self);
-const gchar *                   app_indicator_get_icon_theme_path(AppIndicator *self);
-const gchar *                   app_indicator_get_attention_icon (AppIndicator *self);
-GtkMenu *                       app_indicator_get_menu           (AppIndicator *self);
-const gchar *                   app_indicator_get_label          (AppIndicator *self);
-const gchar *                   app_indicator_get_label_guide    (AppIndicator *self);
-const gchar *                   app_indicator_get_accessible_desc(AppIndicator *self);
-guint32                         app_indicator_get_ordering_index (AppIndicator *self);
+const gchar *                   app_indicator_get_id                   (AppIndicator *self);
+AppIndicatorCategory            app_indicator_get_category             (AppIndicator *self);
+AppIndicatorStatus              app_indicator_get_status               (AppIndicator *self);
+const gchar *                   app_indicator_get_icon                 (AppIndicator *self);
+const gchar *                   app_indicator_get_icon_desc            (AppIndicator *self);
+const gchar *                   app_indicator_get_icon_theme_path      (AppIndicator *self);
+const gchar *                   app_indicator_get_attention_icon       (AppIndicator *self);
+const gchar *                   app_indicator_get_attention_icon_desc  (AppIndicator *self);
+GtkMenu *                       app_indicator_get_menu                 (AppIndicator *self);
+const gchar *                   app_indicator_get_label                (AppIndicator *self);
+const gchar *                   app_indicator_get_label_guide          (AppIndicator *self);
+guint32                         app_indicator_get_ordering_index       (AppIndicator *self);
 
 /* Helpers */
 void                            app_indicator_build_menu_from_desktop (AppIndicator * self,
