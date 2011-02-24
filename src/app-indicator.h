@@ -112,11 +112,6 @@ G_BEGIN_DECLS
 
 	String identifier for the #AppIndicator::scroll-event signal.
 */
-/**
-	APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_DESC:
-
-	String identifier for the #AppIndicator::new-accessible-desc signal.
-*/
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
@@ -124,7 +119,6 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
-#define APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_DESC "new-accessible-desc"
 
 /**
 	AppIndicatorCategory:
@@ -174,7 +168,6 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_status: Slot for #AppIndicator::new-status.
 	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
 	@new_label: Slot for #AppIndicator::new-label.
-	@new_accessible_desc: Slot for #AppIndicator::new-accessible-desc.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
 	@scroll_event: Slot for #AppIndicator::scroll-event
 	@app_indicator_reserved_ats: Reserved for future use.
@@ -211,9 +204,6 @@ struct _AppIndicatorClass {
 	                                 const gchar        *label,
 	                                 const gchar        *guide,
 	                                 gpointer            user_data);
-	void (* new_accessible_desc)    (AppIndicator       *indicator,
-	                                 const gchar        *accessible_desc);
-
 
 	/* Local Signals */
 	void (* connection_changed)     (AppIndicator * indicator,

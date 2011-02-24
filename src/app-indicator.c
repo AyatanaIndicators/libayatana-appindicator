@@ -106,7 +106,6 @@ enum {
 	CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
     SCROLL_EVENT,
-    NEW_ACCESSIBLE_DESC,
 	LAST_SIGNAL
 };
 
@@ -462,22 +461,6 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    NULL, NULL,
 	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
-
-	/**
-		AppIndicator::new-accessible-desc:
-		@arg0: The #AppIndicator object
-		@arg1: The string for the accessible description
-
-		Emitted when #AppIndicator:accessible_desc changes.
-	*/
-	signals[NEW_ACCESSIBLE_DESC] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ACCESSIBLE_DESC,
-	                                    G_TYPE_FROM_CLASS(klass),
-	                                    G_SIGNAL_RUN_LAST,
-	                                    G_STRUCT_OFFSET (AppIndicatorClass, new_accessible_desc),
-	                                    NULL, NULL,
-	                                    _application_service_marshal_VOID__STRING_STRING,
-	                                    G_TYPE_NONE, 1, G_TYPE_STRING);
-
 
 	/**
 		AppIndicator::connection-changed:
