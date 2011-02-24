@@ -85,10 +85,13 @@ $(MIDDLE_API): $(METADATA) $(RAW_API)
 $(API): $(MIDDLE_API) Makefile.am
 	sed -e "s|PROP_ID_S|id|" \
 		-e "s|PROP_STATUS_S|status|" \
+		-e "s|PROP_CATEGORY_S|Category|" \
 		-e "s|PROP_CATEGORY_S|category|" \
 		-e "s|PROP_ICON_NAME_S|icon-name|" \
+		-e "s|PROP_ICON_DESC_S|IconDesc|" \
 		-e "s|PROP_ICON_DESC_S|icon-desc|" \
 		-e "s|PROP_ATTENTION_ICON_NAME_S|attention-icon-name|" \
+		-e "s|PROP_ATTENTION_ICON_DESC_S|AttentionIconDesc|" \
 		-e "s|PROP_ATTENTION_ICON_DESC_S|attention-icon-desc|" \
 		-e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|" \
 		-e "s|PROP_MENU_S|menu|" \
@@ -96,6 +99,8 @@ $(API): $(MIDDLE_API) Makefile.am
 		-e "s|PROP_LABEL_S|label|" \
 		-e "s|PROP_LABEL_GUIDE_S|label-guide|" \
 		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
+		-e "s|PROP_DBUS_MENU_SERVER_S|DbusMenuServer|" \
+		-e "s|PROP_DBUS_MENU_SERVER_S|dbus-menu-server|" \
 		$< > $@
 
 api_includes = $(GTK_SHARP_CFLAGS)
