@@ -1664,20 +1664,51 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 	@self: The #AppIndicator object to use
 	@icon_name: The name of the attention icon to set for this indicator
 
-	Wrapper function for property #AppIndicator:attention-icon-name.
+	Wrapper for app_indicator_set_attention_icon_full() with a NULL
+	description.
+
+	Deprecated: Use app_indicator_set_attention_icon_full() instead.
 */
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
+	return app_indicator_set_attention_icon_full(self, icon_name, NULL);
+}
+
+/**
+	app_indicator_set_attention_icon_full:
+	@self: The #AppIndicator object to use
+	@icon_name: The name of the attention icon to set for this indicator
+	@icon_desc: A textual description of the icon
+
+	Wrapper function for property #AppIndicator:attention-icon-name.
+*/
+void
+app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
+{
 	g_return_if_fail (IS_APP_INDICATOR (self));
 	g_return_if_fail (icon_name != NULL);
+	gboolean changed = FALSE;
 
 	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
-		if (self->priv->attention_icon_name)
+		if (self->priv->attention_icon_name) {
 			g_free (self->priv->attention_icon_name);
+		}
 
 		self->priv->attention_icon_name = g_strdup(icon_name);
+		changed = TRUE;
+	}
 
+	if (g_strcmp0(self->priv->att_accessible_desc, icon_desc) != 0) {
+		if (self->priv->att_accessible_desc) {
+			g_free (self->priv->att_accessible_desc);
+		}
+
+		self->priv->att_accessible_desc = g_strdup(icon_name);
+		changed = TRUE;
+	}
+
+	if (changed) {
 		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
 
 		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
@@ -1706,23 +1737,56 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
         @self: The #AppIndicator object to use
         @icon_name: The icon name to set.
 
-		Sets the default icon to use when the status is active but
-		not set to attention.  In most cases, this should be the
-		application icon for the program.
-		Wrapper function for property #AppIndicator:icon-name.
+		Wrapper function for app_indicator_set_icon_full() with a NULL
+		description.
+
+		Deprecated: Use app_indicator_set_icon_full()
 **/
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
+	return app_indicator_set_icon_full(self, icon_name, NULL);
+}
+
+/**
+        app_indicator_set_icon_full:
+        @self: The #AppIndicator object to use
+        @icon_name: The icon name to set.
+		@icon_desc: A textual description of the icon for accessibility
+
+		Sets the default icon to use when the status is active but
+		not set to attention.  In most cases, this should be the
+		application icon for the program.
+
+		Wrapper function for property #AppIndicator:icon-name and
+		#AppIndicator::icon-description.
+**/
+void
+app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
+{
 	g_return_if_fail (IS_APP_INDICATOR (self));
 	g_return_if_fail (icon_name != NULL);
+	gboolean changed = FALSE;
 
 	if (g_strcmp0 (self->priv->icon_name, icon_name) != 0) {
-		if (self->priv->icon_name)
+		if (self->priv->icon_name) {
 			g_free (self->priv->icon_name);
+		}
 
 		self->priv->icon_name = g_strdup(icon_name);
+		changed = TRUE;
+	}
 
+	if (g_strcmp0(self->priv->accessible_desc, icon_desc) != 0) {
+		if (self->priv->accessible_desc != NULL) {
+			g_free(self->priv->accessible_desc);
+		}
+
+		self->priv->accessible_desc = g_strdup(icon_desc);
+		changed = TRUE;
+	}
+
+	if (changed) {
 		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
 
 		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
@@ -1766,28 +1830,6 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 	g_object_set(G_OBJECT(self),
 	             PROP_LABEL_S,       label == NULL ? "" : label,
 	             PROP_LABEL_GUIDE_S, guide == NULL ? "" : guide,
-	             NULL);
-
-	return;
-}
-
-/**
-	app_indicator_set_accessible_desc:
-	@self: The #AppIndicator object to use
-	@accessible_desc: The accessible description used by assistive technologies.
-
-	This is a wrapper function for the #AppIndicator:accessible_desc
-	property.  This function can take #NULL as @accessible_desc and
-	will clear the entry.
-*/
-void
-app_indicator_set_accessible_desc (AppIndicator *self, const gchar * accessible_desc)
-{
-	g_return_if_fail (IS_APP_INDICATOR (self));
-	/* Note: The accessible description can be NULL, it's okay */
-
-	g_object_set(G_OBJECT(self),
-	             PROP_ACCESSIBLE_DESC_S, accessible_desc == NULL ? "" : accessible_desc,
 	             NULL);
 
 	return;
