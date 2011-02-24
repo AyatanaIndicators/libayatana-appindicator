@@ -58,10 +58,17 @@ struct              <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
                                                          <parameter><link linkend="AppIndicatorStatus"><type>AppIndicatorStatus</type></link> status</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-attention-icon">app_indicator_set_attention_icon</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-attention-icon-full">app_indicator_set_attention_icon_full</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_desc</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-menu">app_indicator_set_menu</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter><link linkend="GtkMenu"><type>GtkMenu</type></link> *menu</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-icon">app_indicator_set_icon</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-icon-full">app_indicator_set_icon_full</link>         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_desc</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-icon-theme-path">app_indicator_set_icon_theme_path</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_theme_path</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-label">app_indicator_set_label</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
@@ -73,9 +80,13 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *           
 <link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link>  <link linkend="app-indicator-get-category">app_indicator_get_category</link>        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorStatus"><returnvalue>AppIndicatorStatus</returnvalue></link>  <link linkend="app-indicator-get-status">app_indicator_get_status</link>            (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon">app_indicator_get_icon</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon-desc">app_indicator_get_icon_desc</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon-theme-path">app_indicator_get_icon_theme_path</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-attention-icon">app_indicator_get_attention_icon</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-attention-icon-desc">app_indicator_get_attention_icon_desc</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        <link linkend="app-indicator-get-menu">app_indicator_get_menu</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label">app_indicator_get_label</link>
@@ -99,11 +110,13 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *           
 <refsect1 id="libappindicator-app-indicator.properties" role="properties">
 <title role="properties.title">Properties</title>
 <synopsis>
+  &quot;<link linkend="AppIndicator--attention-icon-desc">attention-icon-desc</link>&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--attention-icon-name">attention-icon-name</link>&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--category">category</link>&quot;                 <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--connected">connected</link>&quot;                <link linkend="gboolean"><type>gboolean</type></link>              : Read
   &quot;<link linkend="AppIndicator--dbus-menu-server">dbus-menu-server</link>&quot;         <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>*       : Read / Write
-  &quot;<link linkend="AppIndicator--icon-name">icon-name</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct
+  &quot;<link linkend="AppIndicator--icon-desc">icon-desc</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
+  &quot;<link linkend="AppIndicator--icon-name">icon-name</link>&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--icon-theme-path">icon-theme-path</link>&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct
   &quot;<link linkend="AppIndicator--id">id</link>&quot;                       <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only
   &quot;<link linkend="AppIndicator--label">label</link>&quot;                    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
@@ -521,11 +534,28 @@ Wrapper function for property <link linkend="AppIndicator--status"><type>"status
 <varlistentry><term><parameter>status</parameter>&#160;:</term>
 <listitem><simpara>The status to set for this indicator</simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="app-indicator-set-attention-icon" role="function">
+<refsect2 id="app-indicator-set-attention-icon" role="function" condition="deprecated:Use app_indicator_set_attention_icon_full() instead.">
 <title>app_indicator_set_attention_icon ()</title>
-<indexterm zone="app-indicator-set-attention-icon"><primary>app_indicator_set_attention_icon</primary></indexterm>
+<indexterm zone="app-indicator-set-attention-icon" role="deprecated"><primary>app_indicator_set_attention_icon</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_attention_icon    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>);</programlisting>
+<warning><para><literal>app_indicator_set_attention_icon</literal> is deprecated and should not be used in newly-written code. Use <link linkend="app-indicator-set-attention-icon-full"><function>app_indicator_set_attention_icon_full()</function></link> instead.</para></warning>
+<para>
+Wrapper for <link linkend="app-indicator-set-attention-icon-full"><function>app_indicator_set_attention_icon_full()</function></link> with a NULL
+	description.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
+<listitem><simpara>The name of the attention icon to set for this indicator</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="app-indicator-set-attention-icon-full" role="function">
+<title>app_indicator_set_attention_icon_full ()</title>
+<indexterm zone="app-indicator-set-attention-icon-full"><primary>app_indicator_set_attention_icon_full</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_attention_icon_full
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_desc</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--attention-icon-name"><type>"attention-icon-name"</type></link>.
 </para><variablelist role="params">
@@ -533,6 +563,8 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-name">
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
 <listitem><simpara>The name of the attention icon to set for this indicator</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_desc</parameter>&#160;:</term>
+<listitem><simpara>A textual description of the icon</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-menu" role="function">
 <title>app_indicator_set_menu ()</title>
@@ -551,21 +583,42 @@ Sets the menu that should be shown when the Application Indicator
 <varlistentry><term><parameter>menu</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> to set</simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="app-indicator-set-icon" role="function">
+<refsect2 id="app-indicator-set-icon" role="function" condition="deprecated:Use app_indicator_set_icon_full()">
 <title>app_indicator_set_icon ()</title>
-<indexterm zone="app-indicator-set-icon"><primary>app_indicator_set_icon</primary></indexterm>
+<indexterm zone="app-indicator-set-icon" role="deprecated"><primary>app_indicator_set_icon</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_icon              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>);</programlisting>
+<warning><para><literal>app_indicator_set_icon</literal> is deprecated and should not be used in newly-written code. Use <link linkend="app-indicator-set-icon-full"><function>app_indicator_set_icon_full()</function></link></para></warning>
 <para>
-Sets the default icon to use when the status is active but
-		not set to attention.  In most cases, this should be the
-		application icon for the program.
-		Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link>.
+Wrapper function for <link linkend="app-indicator-set-icon-full"><function>app_indicator_set_icon_full()</function></link> with a NULL
+		description.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
 <listitem><simpara>The icon name to set.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="app-indicator-set-icon-full" role="function">
+<title>app_indicator_set_icon_full ()</title>
+<indexterm zone="app-indicator-set-icon-full"><primary>app_indicator_set_icon_full</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_icon_full         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_name</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_desc</parameter>);</programlisting>
+<para>
+Sets the default icon to use when the status is active but
+		not set to attention.  In most cases, this should be the
+		application icon for the program.
+</para>
+<para>
+		Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> and
+		<link linkend="AppIndicator-icon-description"><type>"icon-description"</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_name</parameter>&#160;:</term>
+<listitem><simpara>The icon name to set.</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_desc</parameter>&#160;:</term>
+<listitem><simpara>A textual description of the icon for accessibility</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-icon-theme-path" role="function">
 <title>app_indicator_set_icon_theme_path ()</title>
@@ -660,6 +713,18 @@ Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"ico
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current icon name.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-get-icon-desc" role="function">
+<title>app_indicator_get_icon_desc ()</title>
+<indexterm zone="app-indicator-get-icon-desc"><primary>app_indicator_get_icon_desc</primary></indexterm>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon_desc
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<para>
+Wrapper function for property <link linkend="AppIndicator--icon-desc"><type>"icon-desc"</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current icon description.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="app-indicator-get-icon-theme-path" role="function">
 <title>app_indicator_get_icon_theme_path ()</title>
 <indexterm zone="app-indicator-get-icon-theme-path"><primary>app_indicator_get_icon_theme_path</primary></indexterm>
@@ -684,6 +749,18 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-name">
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current attention icon name.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-get-attention-icon-desc" role="function">
+<title>app_indicator_get_attention_icon_desc ()</title>
+<indexterm zone="app-indicator-get-attention-icon-desc"><primary>app_indicator_get_attention_icon_desc</primary></indexterm>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_attention_icon_desc
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<para>
+Wrapper function for property <link linkend="AppIndicator--attention-icon-desc"><type>"attention-icon-desc"</type></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current attention icon description.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="app-indicator-get-menu" role="function">
 <title>app_indicator_get_menu ()</title>
 <indexterm zone="app-indicator-get-menu"><primary>app_indicator_get_menu</primary></indexterm>
@@ -694,7 +771,7 @@ Gets the menu being used for this application indicator.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if one hasn't been set.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if one hasn't been set. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-label" role="function">
 <title>app_indicator_get_label ()</title>
@@ -753,6 +830,14 @@ This function allows for building the Application Indicator menu
 </refsect1>
 <refsect1 id="libappindicator-app-indicator.property-details" role="property_details">
 <title role="property_details.title">Property Details</title>
+<refsect2 id="AppIndicator--attention-icon-desc" role="property"><title>The <literal>&quot;attention-icon-desc&quot;</literal> property</title>
+<indexterm zone="AppIndicator--attention-icon-desc"><primary>AppIndicator:attention-icon-desc</primary></indexterm>
+<programlisting>  &quot;attention-icon-desc&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
+<para>
+If the indicator sets it's status to <link linkend="APP-INDICATOR-STATUS-ATTENTION:CAPS"><literal>APP_INDICATOR_STATUS_ATTENTION</literal></link>
+		then this textual description of the icon shown.
+</para><para>Default value: NULL</para>
+</refsect2>
 <refsect2 id="AppIndicator--attention-icon-name" role="property"><title>The <literal>&quot;attention-icon-name&quot;</literal> property</title>
 <indexterm zone="AppIndicator--attention-icon-name"><primary>AppIndicator:attention-icon-name</primary></indexterm>
 <programlisting>  &quot;attention-icon-name&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
@@ -784,9 +869,16 @@ Pretty simple, <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if we ha
 A way to get the internal dbusmenu server if it is available.
 		This should only be used for testing.
 </para></refsect2>
+<refsect2 id="AppIndicator--icon-desc" role="property"><title>The <literal>&quot;icon-desc&quot;</literal> property</title>
+<indexterm zone="AppIndicator--icon-desc"><primary>AppIndicator:icon-desc</primary></indexterm>
+<programlisting>  &quot;icon-desc&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
+<para>
+The description of the regular icon that is shown for the indicator.
+</para><para>Default value: NULL</para>
+</refsect2>
 <refsect2 id="AppIndicator--icon-name" role="property"><title>The <literal>&quot;icon-name&quot;</literal> property</title>
 <indexterm zone="AppIndicator--icon-name"><primary>AppIndicator:icon-name</primary></indexterm>
-<programlisting>  &quot;icon-name&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct</programlisting>
+<programlisting>  &quot;icon-name&quot;                <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 The name of the regular icon that is shown for the indicator.
 </para><para>Default value: NULL</para>

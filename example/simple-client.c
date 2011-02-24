@@ -65,9 +65,9 @@ local_icon_toggle_cb (GtkWidget *widget, gpointer data)
 	AppIndicator * ci = APP_INDICATOR(data);
 
 	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
-		app_indicator_set_icon(ci, LOCAL_ICON);
+		app_indicator_set_icon_full(ci, LOCAL_ICON, "Local Icon");
 	} else {
-		app_indicator_set_icon(ci, "indicator-messages");
+		app_indicator_set_icon_full(ci, "indicator-messages", "System Icon");
 	}
 
 	return;
@@ -165,7 +165,7 @@ main (int argc, char ** argv)
         g_assert (G_IS_OBJECT (ci));
 
 	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-	app_indicator_set_attention_icon(ci, "indicator-messages-new");
+	app_indicator_set_attention_icon_full(ci, "indicator-messages-new", "System Messages Icon Highlighted");
 	app_indicator_set_label (ci, "1%", "100%");
 
 	g_signal_connect (ci, "scroll-event",
