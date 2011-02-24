@@ -7,7 +7,9 @@
 		<property name="Category" type="s" access="read" />
 		<property name="Status" type="s" access="read" />
 		<property name="IconName" type="s" access="read" />
+		<property name="IconAccessibleDesc" type="s" access="read" />
 		<property name="AttentionIconName" type="s" access="read" />
+		<property name="AttentionAccessibleDesc" type="s" access="read" />
 		<!-- An additional path to add to the theme search path
 		     to find the icons specified above. -->
 		<property name="IconThemePath" type="s" access="read" />
@@ -15,7 +17,6 @@
 		<property name="XAyatanaLabel" type="s" access="read" />
 		<property name="XAyatanaLabelGuide" type="s" access="read" />
 		<property name="XAyatanaOrderingIndex" type="u" access="read" />
-		<property name="AccessibleDesc" type="s" access="read" />
 
 <!-- Methods -->
 		<method name="Scroll">
@@ -37,9 +38,6 @@
 		<signal name="XAyatanaNewLabel">
 			<arg type="s" name="label" direction="out" />
 			<arg type="s" name="guide" direction="out" />
-		</signal>
-		<signal name="AccessibleDesc">
-			<arg type="s" name="accessible_desc" direction="out" />
 		</signal>
 
 	</interface>
