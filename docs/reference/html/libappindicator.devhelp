@@ -8,6 +8,7 @@
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
     <sub name="Deprecated API Index" link="api-index-deprecated.html"/>
+    <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
   <functions>
     <function name="APP_INDICATOR_TYPE" link="libappindicator-app-indicator.html#APP-INDICATOR-TYPE:CAPS"/>
@@ -33,8 +34,10 @@
     <function name="app_indicator_new_with_path ()" link="libappindicator-app-indicator.html#app-indicator-new-with-path"/>
     <function name="app_indicator_set_status ()" link="libappindicator-app-indicator.html#app-indicator-set-status"/>
     <function name="app_indicator_set_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-attention-icon"/>
+    <function name="app_indicator_set_attention_icon_full ()" link="libappindicator-app-indicator.html#app-indicator-set-attention-icon-full"/>
     <function name="app_indicator_set_menu ()" link="libappindicator-app-indicator.html#app-indicator-set-menu"/>
     <function name="app_indicator_set_icon ()" link="libappindicator-app-indicator.html#app-indicator-set-icon"/>
+    <function name="app_indicator_set_icon_full ()" link="libappindicator-app-indicator.html#app-indicator-set-icon-full"/>
     <function name="app_indicator_set_icon_theme_path ()" link="libappindicator-app-indicator.html#app-indicator-set-icon-theme-path"/>
     <function name="app_indicator_set_label ()" link="libappindicator-app-indicator.html#app-indicator-set-label"/>
     <function name="app_indicator_set_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-set-ordering-index"/>
@@ -42,17 +45,21 @@
     <function name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
     <function name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
     <function name="app_indicator_get_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-icon"/>
+    <function name="app_indicator_get_icon_desc ()" link="libappindicator-app-indicator.html#app-indicator-get-icon-desc"/>
     <function name="app_indicator_get_icon_theme_path ()" link="libappindicator-app-indicator.html#app-indicator-get-icon-theme-path"/>
     <function name="app_indicator_get_attention_icon ()" link="libappindicator-app-indicator.html#app-indicator-get-attention-icon"/>
+    <function name="app_indicator_get_attention_icon_desc ()" link="libappindicator-app-indicator.html#app-indicator-get-attention-icon-desc"/>
     <function name="app_indicator_get_menu ()" link="libappindicator-app-indicator.html#app-indicator-get-menu"/>
     <function name="app_indicator_get_label ()" link="libappindicator-app-indicator.html#app-indicator-get-label"/>
     <function name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <function name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
     <function name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
+    <function name="The &quot;attention-icon-desc&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-desc"/>
     <function name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
     <function name="The &quot;category&quot; property" link="libappindicator-app-indicator.html#AppIndicator--category"/>
     <function name="The &quot;connected&quot; property" link="libappindicator-app-indicator.html#AppIndicator--connected"/>
     <function name="The &quot;dbus-menu-server&quot; property" link="libappindicator-app-indicator.html#AppIndicator--dbus-menu-server"/>
+    <function name="The &quot;icon-desc&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-desc"/>
     <function name="The &quot;icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-name"/>
     <function name="The &quot;icon-theme-path&quot; property" link="libappindicator-app-indicator.html#AppIndicator--icon-theme-path"/>
     <function name="The &quot;id&quot; property" link="libappindicator-app-indicator.html#AppIndicator--id"/>

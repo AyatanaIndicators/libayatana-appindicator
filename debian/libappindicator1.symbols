@@ -2,8 +2,10 @@ libappindicator.so.1 libappindicator1 #MINVER#
  app_indicator_build_menu_from_desktop@Base 0.2.91
  app_indicator_category_get_type@Base 0.2.91
  app_indicator_get_attention_icon@Base 0.2.91
+ app_indicator_get_attention_icon_desc@Base 0.2.96
  app_indicator_get_category@Base 0.2.91
  app_indicator_get_icon@Base 0.2.91
+ app_indicator_get_icon_desc@Base 0.2.96
  app_indicator_get_icon_theme_path@Base 0.2.91
  app_indicator_get_id@Base 0.2.91
  app_indicator_get_label@Base 0.2.91
@@ -15,7 +17,9 @@ libappindicator.so.1 libappindicator1 #MINVER#
  app_indicator_new@Base 0.2.91
  app_indicator_new_with_path@Base 0.2.91
  app_indicator_set_attention_icon@Base 0.2.91
+ app_indicator_set_attention_icon_full@Base 0.2.96
  app_indicator_set_icon@Base 0.2.91
+ app_indicator_set_icon_full@Base 0.2.96
  app_indicator_set_icon_theme_path@Base 0.2.91
  app_indicator_set_label@Base 0.2.91
  app_indicator_set_menu@Base 0.2.91
