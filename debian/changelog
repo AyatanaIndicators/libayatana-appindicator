@@ -1,3 +1,13 @@
+libappindicator (0.2.96-0ubuntu2) natty; urgency=low
+
+  * debian/control, debian/rules:
+    - Add quilt
+  * debian/patches/disconnect-from-theme.patch:
+    - Fix crash when switching themes by disconnecting a signal from
+      the theme on dispose.  LP: #708188
+
+ -- Michael Terry <mterry@ubuntu.com>  Mon, 28 Feb 2011 08:48:40 -0500
+
 libappindicator (0.2.96-0ubuntu1) natty; urgency=low
 
   [ Ted Gould ]
