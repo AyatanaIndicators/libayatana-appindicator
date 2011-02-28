@@ -1,3 +1,10 @@
+libappindicator (0.2.96-0ubuntu3) natty; urgency=low
+
+  * debian/patches/update-defs.patch:
+    - Fix crash when importing appindicator from Python (LP: #724917).
+
+ -- Артём Попов <artfwo@ubuntu.com>  Mon, 28 Feb 2011 22:33:47 +0600
+
 libappindicator (0.2.96-0ubuntu2) natty; urgency=low
 
   * debian/control, debian/rules:
