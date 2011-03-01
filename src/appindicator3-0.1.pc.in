@@ -4,7 +4,7 @@ libdir=@libdir@
 bindir=@bindir@
 includedir=@includedir@
 
-Cflags: -I${includedir}/libappindicator3-0.1
+Cflags: -I${includedir}/libappindicator-0.1
 Requires: dbusmenu-glib-0.4 gtk+-3.0
 Libs: -L${libdir} -lappindicator3
 

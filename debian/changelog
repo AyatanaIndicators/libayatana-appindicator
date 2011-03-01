@@ -1,3 +1,14 @@
+libappindicator (0.2.96-0ubuntu4) natty; urgency=low
+
+  * src/appindicator3-0.1.pc.in
+    - Set includedir to the location of the headers provided by 
+      libappindicator-dev (LP: #721562)
+  * debian/control
+    - Make libappindicator3-dev depend on libappindicator-dev which 
+      includes the headers (LP: #721562)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 28 Feb 2011 23:26:35 -0500
+
 libappindicator (0.2.96-0ubuntu3) natty; urgency=low
 
   * debian/patches/update-defs.patch:
