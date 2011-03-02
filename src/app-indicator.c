@@ -667,6 +667,8 @@ app_indicator_dispose (GObject *object)
 		priv->connection = NULL;
 	}
 
+	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), self);
+
 	G_OBJECT_CLASS (app_indicator_parent_class)->dispose (object);
 	return;
 }
