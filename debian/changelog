@@ -6,8 +6,9 @@ libappindicator (0.2.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Fix crash when importing appindicator from Python (LP: #724917).
     * Fix crash when switching themes by disconnecting a signal from
       the theme on dispose.  LP: #708188
+  * debian/patches: Removed, all upstream
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:33:54 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:35:03 -0600
 
 libappindicator (0.2.96-0ubuntu4) natty; urgency=low
 
