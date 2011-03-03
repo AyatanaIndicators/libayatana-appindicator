@@ -1,10 +1,44 @@
-libappindicator (0.2.96-0ubuntu1~ppa1) natty; urgency=low
+libappindicator (0.2.96-0ubuntu4) natty; urgency=low
 
+  * src/appindicator3-0.1.pc.in
+    - Set includedir to the location of the headers provided by 
+      libappindicator-dev (LP: #721562)
+  * debian/control
+    - Make libappindicator3-dev depend on libappindicator-dev which 
+      includes the headers (LP: #721562)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 28 Feb 2011 23:26:35 -0500
+
+libappindicator (0.2.96-0ubuntu3) natty; urgency=low
+
+  * debian/patches/update-defs.patch:
+    - Fix crash when importing appindicator from Python (LP: #724917).
+
+ -- Артём Попов <artfwo@ubuntu.com>  Mon, 28 Feb 2011 22:33:47 +0600
+
+libappindicator (0.2.96-0ubuntu2) natty; urgency=low
+
+  * debian/control, debian/rules:
+    - Add quilt
+  * debian/patches/disconnect-from-theme.patch:
+    - Fix crash when switching themes by disconnecting a signal from
+      the theme on dispose.  LP: #708188
+
+ -- Michael Terry <mterry@ubuntu.com>  Mon, 28 Feb 2011 08:48:40 -0500
+
+libappindicator (0.2.96-0ubuntu1) natty; urgency=low
+
+  [ Ted Gould ]
   * New upstream release.
     * Add support for accessible descriptions
     * Move deregistration of object later to send final signals
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 24 Feb 2011 16:06:43 -0600
+  [ Ken VanDine ]
+  * debian/libappindicator3-1.symbols
+  * debian/libappindicator1.symbols
+    - Added symbols
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 24 Feb 2011 21:45:34 -0500
 
 libappindicator (0.2.95-0ubuntu3) natty; urgency=low
 
