@@ -1,4 +1,4 @@
-libappindicator (0.2.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.97-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Set includedir to the location of the headers provided by 
@@ -8,7 +8,7 @@ libappindicator (0.2.97-0ubuntu1~ppa1) UNRELEASED; urgency=low
       the theme on dispose.  LP: #708188
   * debian/patches: Removed, all upstream
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:35:03 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:42:10 -0600
 
 libappindicator (0.2.96-0ubuntu4) natty; urgency=low
 
