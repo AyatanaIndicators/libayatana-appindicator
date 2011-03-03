@@ -1,3 +1,15 @@
+libappindicator (0.2.97-0ubuntu1) natty; urgency=low
+
+  * New upstream release.
+    * Set includedir to the location of the headers provided by 
+      libappindicator-dev (LP: #721562)
+    * Fix crash when importing appindicator from Python (LP: #724917).
+    * Fix crash when switching themes by disconnecting a signal from
+      the theme on dispose.  (LP: #708188)
+  * debian/patches: Removed, all upstream
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 03 Mar 2011 13:42:10 -0600
+
 libappindicator (0.2.96-0ubuntu4) natty; urgency=low
 
   * src/appindicator3-0.1.pc.in
