@@ -6,18 +6,19 @@ Exec=/usr/bin/false
 Terminal=false
 Type=Application
 X-Ayatana-Desktop-Shortcuts=Short1;Short2;Short3;
+TargetEnvironment=Test Program;
 
 [Short1 Shortcut Group]
 Name=Shortcut 1
 Exec=/usr/bin/true
-OnlyShowIn=Test Program;
+TargetEnvironment=Test Program;
 
 [Short2 Shortcut Group]
 Name=Shortcut 2
 Exec=/usr/bin/true
-OnlyShowIn=Test Program;
+TargetEnvironment=Test Program;
 
 [Short3 Shortcut Group]
 Name=Shortcut 3
 Exec=/usr/bin/true
-OnlyShowIn=Test Program;
+TargetEnvironment=Test Program;
