@@ -184,7 +184,6 @@ static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button,
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data);
-static void client_menu_changed (GtkWidget *widget, GtkWidget *child, AppIndicator *indicator);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
 static void bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data);
@@ -637,10 +636,7 @@ app_indicator_dispose (GObject *object)
 	}
 
 	if (priv->menu != NULL) {
-                g_signal_handlers_disconnect_by_func (G_OBJECT (priv->menu),
-                                                      client_menu_changed,
-                                                      self);
-                g_object_unref(G_OBJECT(priv->menu));
+		g_object_unref(G_OBJECT(priv->menu));
 		priv->menu = NULL;
 	}
 
@@ -1925,14 +1921,6 @@ setup_dbusmenu (AppIndicator *self)
 	return;
 }
 
-static void
-client_menu_changed (GtkWidget    *widget,
-                     GtkWidget    *child,
-                     AppIndicator *indicator)
-{
-  setup_dbusmenu (indicator);
-}
-
 /**
         app_indicator_set_menu:
         @self: The #AppIndicator
@@ -1967,14 +1955,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
   check_connect (self);
 
-  g_signal_connect (menu,
-                    "child-added",
-                    G_CALLBACK (client_menu_changed),
-                    self);
-  g_signal_connect (menu,
-                    "child-removed",
-                    G_CALLBACK (client_menu_changed),
-                    self);
+  return;
 }
 
 /**
