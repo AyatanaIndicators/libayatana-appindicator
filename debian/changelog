@@ -1,9 +1,9 @@
-libappindicator (0.2.98-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.98-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Don't watch signals we don't need to.  (LP: #728503)
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 12:59:05 -0600
+ -- Ted Gould <ted@ubuntu.com>  Thu, 10 Mar 2011 13:35:59 -0600
 
 libappindicator (0.2.97-0ubuntu1) natty; urgency=low
 
