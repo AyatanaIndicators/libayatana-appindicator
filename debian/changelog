@@ -1,4 +1,4 @@
-libappindicator (0.2.98-0ubuntu1~ppa1) natty; urgency=low
+libappindicator (0.2.98-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     ∘ Don't watch signals we don't need to.  (LP: #728503)
