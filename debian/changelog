@@ -1,9 +1,9 @@
-libappindicator (0.2.99-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.2.99-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     ∘ Fix long standing memory leak (LP: #569273)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 16 Mar 2011 13:36:16 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 16 Mar 2011 13:41:55 -0500
 
 libappindicator (0.2.98-0ubuntu1) natty; urgency=low
 
