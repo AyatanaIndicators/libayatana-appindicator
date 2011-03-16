@@ -1949,7 +1949,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
     }
 
   priv->menu = GTK_WIDGET (menu);
-  g_object_ref (priv->menu);
+  g_object_ref_sink (priv->menu);
 
   setup_dbusmenu (self);
 
