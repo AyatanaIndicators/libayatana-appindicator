@@ -1,4 +1,4 @@
-libappindicator (0.2.99-0ubuntu1~ppa1) natty; urgency=low
+libappindicator (0.2.99-0ubuntu1) natty; urgency=low
 
   * New upstream release.
     ∘ Fix long standing memory leak (LP: #569273)
