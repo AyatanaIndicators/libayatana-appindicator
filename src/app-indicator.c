@@ -1471,33 +1471,25 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
-	GIcon *themed_icon = NULL;
 	gchar *longname = NULL;
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
 		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
-		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
 		gtk_status_icon_set_visible(icon, FALSE);
-		gtk_status_icon_set_from_gicon(icon, themed_icon);
+		gtk_status_icon_set_from_icon_name(icon, longname);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
 		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
-		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
-		gtk_status_icon_set_from_gicon(icon, themed_icon);
+		gtk_status_icon_set_from_icon_name(icon, longname);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
 		longname = append_panel_icon_suffix(app_indicator_get_attention_icon(self));
-		themed_icon = g_themed_icon_new_with_default_fallbacks (longname);
-		gtk_status_icon_set_from_gicon(icon, themed_icon);
+		gtk_status_icon_set_from_icon_name(icon, longname);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
-
-	if (themed_icon) {
-		g_object_unref (themed_icon);
-	}
 
 	if (longname) {
 		g_free(longname);
