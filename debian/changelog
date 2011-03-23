@@ -1,9 +1,9 @@
-libappindicator (0.3.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+libappindicator (0.3.0-0ubuntu1~ppa1) natty; urgency=low
 
   * New upstream release.
     * Don't use GIcon with GtkStatusIcon (LP: #708118)
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 15:33:44 -0500
+ -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 15:50:55 -0500
 
 libappindicator (0.2.99-0ubuntu1) natty; urgency=low
 
