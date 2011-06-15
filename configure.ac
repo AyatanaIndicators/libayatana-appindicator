@@ -1,24 +1,28 @@
-
-AC_INIT(libappindicator, 0.3.0, ted@canonical.com)
+AC_INIT([libappindicator],
+        [0.3.0],
+        [http://bugs.launchpad.net/libappindicator],
+        [libappindicator],
+        [http://launchpad.net/libappindicator])
 AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
 
-AC_PREREQ(2.53)
+AC_PREREQ([2.64])
 
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libappindicator, 0.3.0)
-
-AM_MAINTAINER_MODE
-
-AC_ISC_POSIX
-AC_PROG_CC
-AM_PROG_CC_C_O
-AC_STDC_HEADERS
-AC_PROG_LIBTOOL
-
-AC_SUBST(VERSION)
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AM_INIT_AUTOMAKE([1.11])
+
+AM_MAINTAINER_MODE([enable])
+
+AM_SILENT_RULES([yes])
+
+# Check for programs
+AC_PROG_CC
+AM_PROG_CC_C_O
+
+# Initialize libtool
+LT_PREREQ([2.2])
+LT_INIT
 
 AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
 AC_PATH_PROG([GLIB_GENMARSHAL], [glib-genmarshal])
@@ -30,7 +34,6 @@ PKG_PROG_PKG_CONFIG
 ###########################
 
 GTK_DOC_CHECK([1.9])
-AC_CONFIG_MACRO_DIR(m4)
 
 
 ###########################
@@ -56,8 +59,6 @@ AS_IF([test "x$with_gtk" = x3],
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
                                      indicator3 >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
-         AC_SUBST(LIBRARY_CFLAGS)
-         AC_SUBST(LIBRARY_LIBS)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
       [test "x$with_gtk" = x2],
@@ -66,16 +67,12 @@ AS_IF([test "x$with_gtk" = x3],
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
                                      indicator >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
-         AC_SUBST(LIBRARY_CFLAGS)
-         AC_SUBST(LIBRARY_LIBS)
         ],
       [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
 )
 AM_CONDITIONAL(USE_GTK3, [test "x$with_gtk" = x3])
 
 PKG_CHECK_MODULES(TESTDEPS, dbus-glib-1)
-AC_SUBST(TESTDEPS_CFLAGS)
-AC_SUBST(TESTDEPS_LIBS)
 
 ###########################
 # GObject Introspection
@@ -147,8 +144,6 @@ AC_SUBST(GENERATED_SOURCES)
 GLIB_SHARP_REQ_VERSION=2.12.1
 GTK_SHARP_REQ_VERSION=2.12
 PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 >= $GTK_SHARP_REQ_VERSION)
-AC_SUBST(GTK_SHARP_LIBS)
-AC_SUBST(GTK_SHARP_CFLAGS)
 
 PKG_CHECK_MODULES(GAPI, gapi-2.0 >= $GLIB_SHARP_REQ_VERSION)
 AC_PATH_PROG(GAPI_PARSER, gapi2-parser, no)
@@ -159,7 +154,6 @@ AC_PATH_PROG(GAPI_FIXUP, gapi2-fixup, no)
 AC_SUBST(GAPI_FIXUP)
 
 PKG_CHECK_MODULES(NUNIT, nunit >= 2.4.7)
-AC_SUBST(NUNIT_LIBS)
 
 ###########################
 # Check to see if we're local
@@ -184,8 +178,6 @@ PKG_CHECK_MODULES(APPINDICATOR_PYTHON,
 					gtk+-2.0 >= $GTK_REQUIRED_VERSION
 					pygobject-2.0 >= $PYGOBJECT_REQUIRED
                   ])
-AC_SUBST(APPINDICATOR_PYTHON_CFLAGS)
-AC_SUBST(APPINDICATOR_PYTHON_LIBS)
 
 AC_MSG_CHECKING(for pygtk defs)
 PYGTK_DEFSDIR=`$PKG_CONFIG --variable=defsdir pygtk-2.0`
@@ -201,7 +193,7 @@ AC_MSG_RESULT($PYGTK_CODEGEN)
 # Files
 ###########################
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/appindicator-0.1.pc
@@ -222,6 +214,7 @@ docs/reference/Makefile
 docs/reference/version.xml
 docs/reference/libappindicator-docs.sgml
 ])
+AC_OUTPUT
 
 ###########################
 # Results
