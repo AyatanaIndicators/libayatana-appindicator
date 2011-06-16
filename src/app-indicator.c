@@ -1765,7 +1765,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 		application icon for the program.
 
 		Wrapper function for property #AppIndicator:icon-name and
-		#AppIndicator::icon-description.
+		#AppIndicator::icon-desc.
 **/
 void
 app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
