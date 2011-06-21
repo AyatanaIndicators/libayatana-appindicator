@@ -1,3 +1,10 @@
+libappindicator (0.3.0-0ubuntu2) UNRELEASED; urgency=low
+
+  * Call dh_python2 from binary-fixup rather than binary-predeb, so that
+    generated maintainer script snippets actually end up in the package.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 21 Jun 2011 17:13:49 +0100
+
 libappindicator (0.3.0-0ubuntu1) natty; urgency=low
 
   * New upstream release.
