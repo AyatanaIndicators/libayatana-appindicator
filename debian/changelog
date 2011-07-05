@@ -1,3 +1,10 @@
+libappindicator (0.3.0-0ubuntu3) oneiric; urgency=low
+
+  * No change rebuild to depend on libdbusmenu-gtk4 (instead of -gtk3)
+    LP: #803667
+
+ -- Michael Terry <mterry@ubuntu.com>  Tue, 05 Jul 2011 16:17:48 -0400
+
 libappindicator (0.3.0-0ubuntu2) oneiric; urgency=low
 
   * Call dh_python2 from binary-fixup rather than binary-predeb, so that
