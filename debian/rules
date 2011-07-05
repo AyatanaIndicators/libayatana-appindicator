@@ -97,16 +97,16 @@ binary-install/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_makeclilibs -V
 	dh_installcligac
 
+binary-fixup/python-appindicator::
+	dh_python2 -ppython-appindicator
+	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
+	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
+
 binary-predeb/gir%::
 	dh_girepository -p$(cdbs_curpkg)
 
 binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator1
 	dh_clideps -plibappindicator0.1-cil
-
-binary-predeb/python-appindicator::
-	dh_python2 -ppython-appindicator
-	find debian/python-appindicator/usr/lib -name \*.la -exec rm {} \;
-	find debian/python-appindicator/usr/lib -name \*.a -exec rm {} \;
 
 common-binary-predeb-arch:: list-missing
 	dh_fixperms

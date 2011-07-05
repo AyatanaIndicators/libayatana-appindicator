@@ -1,7 +1,22 @@
-libappindicator (0.3.0-0ubuntu1~ppa1) natty; urgency=low
+libappindicator (0.3.0-0ubuntu3) oneiric; urgency=low
+
+  * No change rebuild to depend on libdbusmenu-gtk4 (instead of -gtk3)
+    LP: #803667
+
+ -- Michael Terry <mterry@ubuntu.com>  Tue, 05 Jul 2011 16:17:48 -0400
+
+libappindicator (0.3.0-0ubuntu2) oneiric; urgency=low
+
+  * Call dh_python2 from binary-fixup rather than binary-predeb, so that
+    generated maintainer script snippets actually end up in the package.
+  * Remove unused libmono-dev build-dependency (for Mono 2.10 transition).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 21 Jun 2011 17:50:12 +0100
+
+libappindicator (0.3.0-0ubuntu1) natty; urgency=low
 
   * New upstream release.
-    * Don't use GIcon with GtkStatusIcon (LP: #708118)
+    * Don't use GIcon with GtkStatusIcon (LP: #708118) (LP: #729150)
 
  -- Ted Gould <ted@ubuntu.com>  Wed, 23 Mar 2011 15:50:55 -0500
 
