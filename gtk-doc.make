@@ -23,12 +23,14 @@ GPATH = $(srcdir)
 
 TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
 
-EXTRA_DIST = 				\
+SETUP_FILES = \
 	$(content_files)		\
-	$(HTML_IMAGES)			\
 	$(DOC_MAIN_SGML_FILE)		\
 	$(DOC_MODULE)-sections.txt	\
 	$(DOC_MODULE)-overrides.txt
+
+EXTRA_DIST = 				\
+	$(SETUP_FILES)
 
 DOC_STAMPS=setup-build.stamp scan-build.stamp tmpl-build.stamp sgml-build.stamp \
 	html-build.stamp pdf-build.stamp \
@@ -71,17 +73,20 @@ $(REPORT_FILES): sgml-build.stamp
 
 #### setup ####
 
-setup-build.stamp::
+setup-build.stamp:
 	-@if test "$(abs_srcdir)" != "$(abs_builddir)" ; then \
-	   cp -a $(abs_srcdir)/$(DOC_MAIN_SGML_FILE) $(abs_builddir)/; \
-	   cp -a $(abs_srcdir)/$(DOC_MODULE)* $(abs_builddir)/; \
-	   if test "x$(content_files)" != "x" ; then \
-	       for file in $(content_files) ; do \
-	           test -f $(abs_srcdir)/$$file || \
-	               cp -a $(abs_srcdir)/$$file $(abs_builddir)/; \
+	   echo 'gtk-doc: Preparing build'; \
+	   files=`echo $(SETUP_FILES) $(expand_content_files) $(DOC_MODULE).types`; \
+	   if test "x$$files" != "x" ; then \
+	       for file in $$files ; do \
+	           test -f $(abs_srcdir)/$$file && \
+	               cp -p $(abs_srcdir)/$$file $(abs_builddir)/; \
 	       done \
-	   fi \
+	   fi; \
+	   test -f $(abs_srcdir)/tmpl && \
+	       cp -rp $(abs_srcdir)/tmpl $(abs_builddir)/; \
 	fi
+	@touch setup-build.stamp
 
 
 setup.stamp: setup-build.stamp
@@ -92,7 +97,7 @@ setup.stamp: setup-build.stamp
 
 scan-build.stamp: $(HFILE_GLOB) $(CFILE_GLOB)
 	@echo 'gtk-doc: Scanning header files'
-	@_source_dir='' ;
+	@_source_dir='' ; \
 	for i in $(DOC_SOURCE_DIR) ; do \
 	    _source_dir="$${_source_dir} --source-dir=$$i" ; \
 	done ; \
@@ -111,9 +116,14 @@ $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)
 
 #### templates ####
 
-tmpl-build.stamp: $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt
+tmpl-build.stamp: setup.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt
 	@echo 'gtk-doc: Rebuilding template files'
 	@gtkdoc-mktmpl --module=$(DOC_MODULE) $(MKTMPL_OPTIONS)
+	@if test "$(abs_srcdir)" != "$(abs_builddir)" ; then \
+	  if test -w $(abs_srcdir) ; then \
+	    cp -rp $(abs_builddir)/tmpl $(abs_srcdir)/; \
+	  fi \
+	fi
 	@touch tmpl-build.stamp
 
 tmpl.stamp: tmpl-build.stamp
@@ -149,7 +159,15 @@ html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	  mkhtml_options=--path="$(abs_srcdir)"; \
 	fi; \
 	cd html && gtkdoc-mkhtml $$mkhtml_options $(MKHTML_OPTIONS) $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
-	@test "x$(HTML_IMAGES)" = "x" || ( cd $(srcdir) && cp $(HTML_IMAGES) $(abs_builddir)/html )
+	-@test "x$(HTML_IMAGES)" = "x" || \
+	for file in $(HTML_IMAGES) ; do \
+	  if test -f $(abs_srcdir)/$$file ; then \
+	    cp $(abs_srcdir)/$$file $(abs_builddir)/html; \
+	  fi; \
+	  if test -f $(abs_builddir)/$$file ; then \
+	    cp $(abs_builddir)/$$file $(abs_builddir)/html; \
+	  fi; \
+	done;
 	@echo 'gtk-doc: Fixing cross-references'
 	@gtkdoc-fixxref --module=$(DOC_MODULE) --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	@touch html-build.stamp
@@ -179,10 +197,11 @@ clean-local:
 	rm -rf .libs
 
 distclean-local:
-	rm -rf xml $(REPORT_FILES) $(DOC_MODULE).pdf \
+	rm -rf xml html $(REPORT_FILES) $(DOC_MODULE).pdf \
 	    $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 	if test "$(abs_srcdir)" != "$(abs_builddir)" ; then \
-	    rm -f $(DOC_MAIN_SGML_FILE) $(DOC_MODULE)*; \
+	    rm -f $(SETUP_FILES) $(expand_content_files) $(DOC_MODULE).types; \
+	    rm -rf tmpl; \
 	fi
 
 maintainer-clean-local: clean
@@ -234,11 +253,11 @@ endif
 dist-hook: dist-check-gtkdoc dist-hook-local
 	mkdir $(distdir)/tmpl
 	mkdir $(distdir)/html
-	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
-	cp $(srcdir)/html/* $(distdir)/html
-	-cp $(srcdir)/$(DOC_MODULE).pdf $(distdir)/
-	-cp $(srcdir)/$(DOC_MODULE).types $(distdir)/
-	-cp $(srcdir)/$(DOC_MODULE)-sections.txt $(distdir)/
+	-cp $(build)/tmpl/*.sgml $(distdir)/tmpl
+	cp $(builddir)/html/* $(distdir)/html
+	-cp $(builddir)/$(DOC_MODULE).pdf $(distdir)/
+	-cp $(build)/$(DOC_MODULE).types $(distdir)/
+	-cp $(build)/$(DOC_MODULE)-sections.txt $(distdir)/
 	cd $(distdir) && rm -f $(DISTCLEANFILES)
 	$(GTKDOC_REBASE) --online --relative --html-dir=$(distdir)/html
 

@@ -23,7 +23,7 @@ indicator-example.c: $(VALAFILES) Makefile.am
 nodist_indicator_example_SOURCES = indicator-example.c
 indicator_example_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
-	-Wall -Werror \
+	-Wall \
 	-I$(top_srcdir)/src \
 	-include $(top_srcdir)/src/app-indicator.h
 indicator_example_LDADD = \

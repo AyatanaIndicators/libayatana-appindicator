@@ -18,10 +18,11 @@ check_PROGRAMS = \
 simple_client_SOURCES = \
 	simple-client.c
 
+#-Werror removed for Vala
 simple_client_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
 	-DLOCAL_ICON="\"$(abs_srcdir)/simple-client-test-icon.png\"" \
-	-Wall -Werror \
+	-Wall \
 	-I$(top_srcdir)/src
 
 simple_client_LDADD = \

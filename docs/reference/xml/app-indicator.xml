@@ -611,7 +611,7 @@ Sets the default icon to use when the status is active but
 </para>
 <para>
 		Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> and
-		<link linkend="AppIndicator-icon-description"><type>"icon-description"</type></link>.
+		<link linkend="AppIndicator-icon-desc"><type>"icon-desc"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
