@@ -1,3 +1,11 @@
+libappindicator (0.3.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix a memory leak (LP: #) 
+    * Port to libindicator 0.4
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 07 Jul 2011 15:14:05 -0500
+
 libappindicator (0.3.0-0ubuntu3) oneiric; urgency=low
 
   * No change rebuild to depend on libdbusmenu-gtk4 (instead of -gtk3)

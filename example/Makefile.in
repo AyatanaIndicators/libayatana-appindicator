@@ -38,8 +38,11 @@ check_PROGRAMS = simple-client$(EXEEXT) simple-client-vala$(EXEEXT)
 subdir = example
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/introspection.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -278,10 +281,12 @@ EXTRA_DIST = simple-client-test-icon.png simple-client-vala.vala
 simple_client_SOURCES = \
 	simple-client.c
 
+
+#-Werror removed for Vala
 simple_client_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
 	-DLOCAL_ICON="\"$(abs_srcdir)/simple-client-test-icon.png\"" \
-	-Wall -Werror \
+	-Wall \
 	-I$(top_srcdir)/src
 
 simple_client_LDADD = \

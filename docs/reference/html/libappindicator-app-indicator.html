@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="Base Classes for Applications">
 <link rel="prev" href="ch01.html" title="Base Classes for Applications">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.16 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -86,7 +86,7 @@ struct              <a class="link" href="libappindicator-app-indicator.html#App
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_name</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_desc</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-menu" title="app_indicator_set_menu ()">app_indicator_set_menu</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-icon" title="app_indicator_set_icon ()">app_indicator_set_icon</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
                                                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *icon_name</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-icon-full" title="app_indicator_set_icon_full ()">app_indicator_set_icon_full</a>         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
@@ -111,7 +111,7 @@ const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.htm
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon-desc" title="app_indicator_get_attention_icon_desc ()">app_indicator_get_attention_icon_desc</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-<a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+<a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label" title="app_indicator_get_label ()">app_indicator_get_label</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label-guide" title="app_indicator_get_label_guide ()">app_indicator_get_label_guide</a>
@@ -525,7 +525,7 @@ The signals and external functions that make up the <a class="link" href="libapp
 </tr>
 <tr>
 <td><p><span class="term"><em class="structfield"><code><a name="AppIndicatorClass.fallback"></a>fallback</code></em> ()</span></p></td>
-<td>Function that gets called to make a <a href="http://library.gnome.org/devel/gtk/2.24/GtkStatusIcon.html"><span class="type">GtkStatusIcon</span></a> when
+<td>Function that gets called to make a <a href="http://library.gnome.org/devel/gtk/GtkStatusIcon.html"><span class="type">GtkStatusIcon</span></a> when
 there is no Application Indicator area available.</td>
 </tr>
 <tr>
@@ -729,7 +729,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <div class="refsect2">
 <a name="app-indicator-set-menu"></a><h3>app_indicator_set_menu ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                app_indicator_set_menu              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);</pre>
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> *menu</code></em>);</pre>
 <p>
 Sets the menu that should be shown when the Application Indicator
         is clicked on in the panel.  An application indicator will not
@@ -747,7 +747,7 @@ Sets the menu that should be shown when the Application Indicator
 </tr>
 <tr>
 <td><p><span class="term"><em class="parameter"><code>menu</code></em> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="type">GtkMenu</span></a> to set</td>
+<td>A <a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> to set</td>
 </tr>
 </tbody>
 </table></div>
@@ -792,7 +792,7 @@ Sets the default icon to use when the status is active but
 </p>
 <p>
 		Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-name" title='The "icon-name" property'><span class="type">"icon-name"</span></a> and
-		<span class="type">"icon-description"</span>.
+		<span class="type">"icon-desc"</span>.
 </p>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -1066,7 +1066,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-menu"></a><h3>app_indicator_get_menu ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        app_indicator_get_menu (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        app_indicator_get_menu (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Gets the menu being used for this application indicator.
 	Wrapper function for property <span class="type">"menu"</span>.
@@ -1080,7 +1080,7 @@ Gets the menu being used for this application indicator.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>A <a href="http://library.gnome.org/devel/gtk/2.24/GtkMenu.html"><span class="type">GtkMenu</span></a> object or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one hasn't been set. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+<td>A <a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="type">GtkMenu</span></a> object or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if one hasn't been set. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -1518,6 +1518,6 @@ Signaled when there is a new icon set for the
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.16</div>
+          Generated by GTK-Doc V1.17</div>
 </body>
 </html>
