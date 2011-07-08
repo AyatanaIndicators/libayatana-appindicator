@@ -1,3 +1,14 @@
+libappindicator (0.3.90-0ubuntu1) oneiric; urgency=low
+
+  * debian/control: updated libindicator requirement.
+
+  [ Ted Gould ]
+  * New upstream release.
+    * Fix a memory leak (LP: #784327) 
+    * Port to libindicator 0.4
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 08 Jul 2011 13:53:35 +0200
+
 libappindicator (0.3.0-0ubuntu3) oneiric; urgency=low
 
   * No change rebuild to depend on libdbusmenu-gtk4 (instead of -gtk3)

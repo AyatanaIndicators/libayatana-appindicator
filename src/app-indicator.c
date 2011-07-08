@@ -1235,6 +1235,7 @@ bus_watcher_ready (GObject * obj, GAsyncResult * res, gpointer user_data)
 		g_object_unref(G_OBJECT(user_data));
 		return;
 	}
+	g_free(name);
 
 	/* g_object_unref(G_OBJECT(user_data)); */
 	/* Why is this commented out?  Oh, wait, we don't want to
@@ -1765,7 +1766,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 		application icon for the program.
 
 		Wrapper function for property #AppIndicator:icon-name and
-		#AppIndicator::icon-description.
+		#AppIndicator::icon-desc.
 **/
 void
 app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
