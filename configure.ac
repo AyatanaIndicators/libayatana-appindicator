@@ -1,5 +1,5 @@
 AC_INIT([libappindicator],
-        [0.3.0],
+        [0.3.90],
         [http://bugs.launchpad.net/libappindicator],
         [libappindicator],
         [http://launchpad.net/libappindicator])
@@ -57,7 +57,7 @@ AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
-                                     indicator3 >= $INDICATOR_REQUIRED_VERSION
+                                     indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
@@ -65,7 +65,7 @@ AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
-                                     indicator >= $INDICATOR_REQUIRED_VERSION
+                                     indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
         ],
       [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
