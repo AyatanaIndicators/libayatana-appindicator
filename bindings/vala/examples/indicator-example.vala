@@ -56,6 +56,14 @@ public class IndicatorExample {
 
 		indicator.set_menu(menu);
 
+		indicator.secondary_activate.connect(() => {
+			print("Got secondary_activate event\n");
+			if (indicator.get_status() != IndicatorStatus.ACTIVE)
+				indicator.set_status(IndicatorStatus.ACTIVE);
+			else
+				indicator.set_status(IndicatorStatus.ATTENTION);
+		});
+
 		win.show_all();
 
 		Gtk.main();
