@@ -47,6 +47,10 @@ public class IndicatorExample
                 indicator.Menu = menu;
                 indicator.Menu.ShowAll ();
 
+                indicator.SecondaryActivate += delegate {
+                        System.Console.WriteLine ("Got secondary activate event");
+                };
+
                 win.ShowAll ();
 
                 Application.Run ();
