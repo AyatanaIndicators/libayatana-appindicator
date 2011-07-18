@@ -118,6 +118,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_NEW_LABEL           "new-label"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
+#define APP_INDICATOR_SIGNAL_SECONDARY_ACTIVATE  "secondary-activate"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
 
 /**
@@ -170,7 +171,10 @@ typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 	@new_label: Slot for #AppIndicator::new-label.
 	@connection_changed: Slot for #AppIndicator::connection-changed.
 	@scroll_event: Slot for #AppIndicator::scroll-event
-	@app_indicator_reserved_ats: Reserved for future use.
+	@secondary_activate: Slot for #AppIndicator::secondary-activate.
+		This signal is generally called on middle-click over the #AppIndicator,
+		it's meant to be used only for advanced actions, which must be
+		accessible also via menu items or any other platform-independent controls.
 	@fallback: Function that gets called to make a #GtkStatusIcon when
 		there is no Application Indicator area available.
 	@unfallback: The function that gets called if an Application
@@ -206,16 +210,19 @@ struct _AppIndicatorClass {
 	                                 gpointer            user_data);
 
 	/* Local Signals */
-	void (* connection_changed)     (AppIndicator * indicator,
-	                                 gboolean          connected,
-	                                 gpointer          user_data);
+	void (* connection_changed)     (AppIndicator      *indicator,
+	                                 gboolean           connected,
+	                                 gpointer           user_data);
 
-	void (* scroll_event)           (AppIndicator * indicator,
-	                                 gint                  delta,
+	void (* scroll_event)           (AppIndicator      *indicator,
+	                                 gint               delta,
 	                                 GdkScrollDirection direction,
-	                                 gpointer          user_data);
+	                                 gpointer           user_data);
 
-	void (*app_indicator_reserved_ats)(void);
+	void (* secondary_activate)     (AppIndicator      *indicator,
+	                                 gint               x,
+	                                 gint               y,
+	                                 gpointer           user_data);
 
 	/* Overridable Functions */
 	GtkStatusIcon * (*fallback)     (AppIndicator * indicator);

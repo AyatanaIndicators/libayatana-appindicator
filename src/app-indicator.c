@@ -104,8 +104,9 @@ enum {
 	NEW_STATUS,
 	NEW_LABEL,
 	CONNECTION_CHANGED,
-    NEW_ICON_THEME_PATH,
-    SCROLL_EVENT,
+	NEW_ICON_THEME_PATH,
+	SCROLL_EVENT,
+	SECONDARY_ACTIVATE,
 	LAST_SIGNAL
 };
 
@@ -508,8 +509,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		@arg1: How many steps the scroll wheel has taken
 		@arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
 
-		Signaled when there is a new icon set for the
-		object.
+		Signaled when the #AppIndicator receives a scroll event.
 	*/
 	signals[SCROLL_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_SCROLL_EVENT,
 	                                  G_TYPE_FROM_CLASS(klass),
@@ -518,6 +518,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  NULL, NULL,
 	                                  _application_service_marshal_VOID__INT_UINT,
 	                                  G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
+
+	/**
+		AppIndicator::secondary-activate:
+		@arg0: The #AppIndicator object
+		@arg1: The x pointer position of the secondary activation
+		@arg2: The y pointer position of the secondary activation
+
+		Signaled when the #AppIndicator receives a secondary activate event
+		(i.e. a middle-click over the #AppIndicator icon/label).
+	*/
+	signals[SECONDARY_ACTIVATE] = g_signal_new (APP_INDICATOR_SIGNAL_SECONDARY_ACTIVATE,
+	                                  G_TYPE_FROM_CLASS(klass),
+	                                  G_SIGNAL_RUN_LAST,
+	                                  G_STRUCT_OFFSET (AppIndicatorClass, secondary_activate),
+	                                  NULL, NULL,
+	                                  _application_service_marshal_VOID__INT_INT,
+	                                  G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 
 	/* DBus interfaces */
 	if (item_node_info == NULL) {
@@ -1011,6 +1028,11 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 		delta = ABS(delta);
 		g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
 
+	} else if (g_strcmp0(method, "SecondaryActivate") == 0) {
+		gint x, y;
+
+		g_variant_get(params, "(ii)", &x, &y);
+		g_signal_emit(app, signals[SECONDARY_ACTIVATE], 0, x, y);
 	} else {
 		g_warning("Calling method '%s' on the app-indicator and it's unknown", method);
 	}
