@@ -179,6 +179,7 @@ static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
 static gboolean scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer user_data);
+static gboolean middle_click_wrapper(GtkWidget *status_icon, GdkEventButton *event, gpointer user_data);
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
@@ -1464,6 +1465,7 @@ fallback (AppIndicator * self)
 	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
 	g_signal_connect(G_OBJECT(icon), "popup-menu", G_CALLBACK(status_icon_menu_activate), self);
 	g_signal_connect(G_OBJECT(icon), "scroll-event", G_CALLBACK(scroll_event_wrapper), self);
+	g_signal_connect(G_OBJECT(icon), "button-release-event", G_CALLBACK(middle_click_wrapper), self);
 
 	return icon;
 }
@@ -1479,11 +1481,36 @@ status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer 
 /* A wrapper for redirecting the scroll events to the app-indicator from status
    icon widget. */
 static gboolean
-scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
+scroll_event_wrapper (GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
 	AppIndicator * app = APP_INDICATOR(data);
 	g_signal_emit(app, signals[SCROLL_EVENT], 0, 1, event->direction);
+
+	return TRUE;
+}
+
+static gboolean
+middle_click_wrapper (GtkWidget *status_icon, GdkEventButton *event, gpointer data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+	AppIndicator * app = APP_INDICATOR(data);
+
+	if (event->button == 2 && event->type == GDK_BUTTON_RELEASE) {
+		GtkAllocation alloc;
+		gint px = event->x;
+		gint py = event->y;
+		gtk_widget_get_allocation (status_icon, &alloc);
+
+		if (px >= 0 && px < alloc.width && py >= 0 && py < alloc.height) {
+			gint wx, wy;
+			gdk_window_get_origin(event->window, &wx, &wy);
+
+			g_signal_emit(app, signals[SCROLL_EVENT], wx+px, wy+py);
+
+			return TRUE;
+		}
+	}
 
 	return FALSE;
 }
@@ -1557,6 +1584,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), scroll_event_wrapper, status_icon);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), middle_click_wrapper, status_icon);
 	gtk_status_icon_set_visible(status_icon, FALSE);
 	g_object_unref(G_OBJECT(status_icon));
 	return;
