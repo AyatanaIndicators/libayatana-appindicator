@@ -92,6 +92,13 @@ class SimpleClient {
 			print(@"Got scroll event! delta: $delta, direction: $direction\n");
 		});
 
+		ci.secondary_activate.connect((x, y) => {
+			print(@"Got secondary activate event at $(x)x$(y)\n");
+
+			if (ci.get_status() == IndicatorStatus.ATTENTION)
+				ci.set_status(IndicatorStatus.ACTIVE);
+		});
+
 		Timeout.add_seconds(1, () => {
 			percentage = (percentage + 1) % 100;
 			if (can_haz_label) {

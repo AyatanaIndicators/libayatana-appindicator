@@ -98,9 +98,18 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
-scroll_event_cb (AppIndicator * ci, gint delta, guint direction)
+scroll_event_cb (AppIndicator * ci, gint delta, guint direction, gpointer data)
 {
 	g_print("Got scroll event! delta: %d, direction: %d\n", delta, direction);
+}
+
+static void
+secondary_activate_cb (AppIndicator * ci, gint x, gint y, gpointer data)
+{
+	g_print("Got secondary activate event at %dx%d\n", x, y);
+
+	if (app_indicator_get_status (ci) == APP_INDICATOR_STATUS_ATTENTION)
+		app_indicator_set_status(ci, APP_INDICATOR_STATUS_ACTIVE);
 }
 
 static void
@@ -170,6 +179,9 @@ main (int argc, char ** argv)
 
 	g_signal_connect (ci, "scroll-event",
                       G_CALLBACK (scroll_event_cb), NULL);
+
+	g_signal_connect (ci, "secondary-activate",
+                      G_CALLBACK (secondary_activate_cb), NULL);
 
 	g_timeout_add_seconds(1, percent_change, ci);
 
