@@ -1506,7 +1506,7 @@ middle_click_wrapper (GtkWidget *status_icon, GdkEventButton *event, gpointer da
 			gint wx, wy;
 			gdk_window_get_origin(event->window, &wx, &wy);
 
-			g_signal_emit(app, signals[SCROLL_EVENT], wx+px, wy+py);
+			g_signal_emit(app, signals[SECONDARY_ACTIVATE], wx+px, wy+py);
 
 			return TRUE;
 		}
