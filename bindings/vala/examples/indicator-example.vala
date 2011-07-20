@@ -47,22 +47,15 @@ public class IndicatorExample {
 		item.show();
 		menu.append(item);
 
-		item = new MenuItem.with_label("Bar");
+		var bar = item = new MenuItem.with_label("Bar");
 		item.show();
 		item.activate.connect(() => {
-			indicator.set_status(IndicatorStatus.ATTENTION);
+			indicator.set_status(IndicatorStatus.ACTIVE);
 		});
 		menu.append(item);
 
 		indicator.set_menu(menu);
-
-		indicator.secondary_activate.connect(() => {
-			print("Got secondary_activate event\n");
-			if (indicator.get_status() != IndicatorStatus.ACTIVE)
-				indicator.set_status(IndicatorStatus.ACTIVE);
-			else
-				indicator.set_status(IndicatorStatus.ATTENTION);
-		});
+		indicator.set_secondary_activate_target(bar);
 
 		win.show_all();
 
