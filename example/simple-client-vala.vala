@@ -72,6 +72,17 @@ class SimpleClient {
 		menu.append(mi);
 		mi.activate.connect(() => { print("Sub3\n"); });
 
+		mi = new MenuItem.with_label("Toggle Attention");
+		menu.append(mi);
+		mi.activate.connect(() => {
+			if (ci.get_status() == IndicatorStatus.ATTENTION)
+				ci.set_status(IndicatorStatus.ACTIVE);
+			else
+				ci.set_status(IndicatorStatus.ATTENTION);
+		});
+
+		ci.set_secondary_activate_target(mi);
+
 		menu.show_all();
 		item.set_submenu(menu);
 	}
@@ -92,13 +103,6 @@ class SimpleClient {
 			print(@"Got scroll event! delta: $delta, direction: $direction\n");
 		});
 
-		ci.secondary_activate.connect((x, y) => {
-			print(@"Got secondary activate event at $(x)x$(y)\n");
-
-			if (ci.get_status() == IndicatorStatus.ATTENTION)
-				ci.set_status(IndicatorStatus.ACTIVE);
-		});
-
 		Timeout.add_seconds(1, () => {
 			percentage = (percentage + 1) % 100;
 			if (can_haz_label) {
@@ -116,7 +120,7 @@ class SimpleClient {
 		chk.show();
 
 		var radio = new RadioMenuItem.with_label(new SList<RadioMenuItem>(), "2");
-		radio.activate.connect(() => { print("2\n");	});
+		radio.activate.connect(() => { print("2\n"); });
 		menu.append(radio);
 		radio.show();
 
