@@ -41,15 +41,18 @@ public class IndicatorExample
                 indicator.Status = Status.Attention;
 
                 Menu menu = new Menu ();
-                menu.Append (new MenuItem ("Foo"));
+                var foo = new MenuItem ("Foo");
+                menu.Append (foo);
+                foo.Activated += delegate {
+                        System.Console.WriteLine ("Foo item has been activated");
+                };
+
                 menu.Append (new MenuItem ("Bar"));
 
                 indicator.Menu = menu;
                 indicator.Menu.ShowAll ();
 
-                indicator.SecondaryActivate += delegate {
-                        System.Console.WriteLine ("Got secondary activate event");
-                };
+                indicator.SecondaryActivateTarget = foo;
 
                 win.ShowAll ();
 
