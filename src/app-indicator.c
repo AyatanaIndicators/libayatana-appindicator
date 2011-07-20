@@ -51,20 +51,18 @@ License version 3 and version 2.1 along with this program.  If not, see
 #define PANEL_ICON_SUFFIX  "panel"
 
 /**
-	AppIndicatorPrivate:
-
-	All of the private data in an instance of a
-	application indicator.
-*/
-/*  Private Fields
-	@id: The ID of the indicator.  Maps to AppIndicator:id.
-	@category: Which category the indicator is.  Maps to AppIndicator:category.
-	@status: The status of the indicator.  Maps to AppIndicator:status.
-	@icon_name: The name of the icon to use.  Maps to AppIndicator:icon-name.
-	@attention_icon_name: The name of the attention icon to use.  Maps to AppIndicator:attention-icon-name.
-	@menu: The menu for this indicator.  Maps to AppIndicator:menu
-	@watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be %NULL.
-*/
+ * AppIndicatorPrivate:
+ * All of the private data in an instance of an application indicator.
+ *
+ * Private Fields
+ * @id: The ID of the indicator.  Maps to AppIndicator:id.
+ * @category: Which category the indicator is.  Maps to AppIndicator:category.
+ * @status: The status of the indicator.  Maps to AppIndicator:status.
+ * @icon_name: The name of the icon to use.  Maps to AppIndicator:icon-name.
+ * @attention_icon_name: The name of the attention icon to use.  Maps to AppIndicator:attention-icon-name.
+ * @menu: The menu for this indicator.  Maps to AppIndicator:menu
+ * @watcher_proxy: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be %NULL.
+ */
 struct _AppIndicatorPrivate {
 	/*< Private >*/
 	/* Properties */
@@ -225,11 +223,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	/* Properties */
 
 	/**
-		AppIndicator:id:
-		
-		The ID for this indicator, which should be unique, but used consistently
-		by this program and its indicator.
-	*/
+	 * AppIndicator:id:
+	 *
+	 * The ID for this indicator, which should be unique, but used consistently
+	 * by this program and its indicator.
+	 */
 	g_object_class_install_property (object_class,
                                          PROP_ID,
                                          g_param_spec_string(PROP_ID_S,
@@ -239,11 +237,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-		AppIndicator:category:
-		
-		The type of indicator that this represents.  Please don't use 'Other'. 
-		Defaults to 'ApplicationStatus'.
-	*/
+	 * AppIndicator:category:
+	 *
+	 * The type of indicator that this represents.  Please don't use 'Other'. 
+	 * Defaults to 'ApplicationStatus'.
+	 */
 	g_object_class_install_property (object_class,
                                          PROP_CATEGORY,
                                          g_param_spec_string (PROP_CATEGORY_S,
@@ -253,11 +251,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-		AppIndicator:status:
-		
-		Whether the indicator is shown or requests attention. Defaults to
-		'Passive'.
-	*/
+	 * AppIndicator:
+	 *
+	 * Whether the indicator is shown or requests attention. Defaults to
+	 * 'Passive'.
+	 */
 	g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_string (PROP_STATUS_S,
@@ -267,10 +265,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-		AppIndicator:icon-name:
-		
-		The name of the regular icon that is shown for the indicator.
-	*/
+	 * AppIndicator:icon-name:
+	 *
+	 * The name of the regular icon that is shown for the indicator.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_ICON_NAME,
 	                                g_param_spec_string (PROP_ICON_NAME_S,
@@ -279,10 +277,10 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:icon-desc:
-		
-		The description of the regular icon that is shown for the indicator.
-	*/
+	 * AppIndicator:icon-desc:
+	 *
+	 * The description of the regular icon that is shown for the indicator.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_ICON_DESC,
 	                                g_param_spec_string (PROP_ICON_DESC_S,
@@ -292,11 +290,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-		AppIndicator:attention-icon-name:
-		
-		If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
-		then this icon is shown.
-	*/
+	 * AppIndicator:attention-icon-name:
+	 *
+	 * If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+	 * then this icon is shown.
+	 */
 	g_object_class_install_property (object_class,
                                          PROP_ATTENTION_ICON_NAME,
                                          g_param_spec_string (PROP_ATTENTION_ICON_NAME_S,
@@ -305,11 +303,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:attention-icon-desc:
-		
-		If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
-		then this textual description of the icon shown.
-	*/
+	 * AppIndicator:attention-icon-desc:
+	 *
+	 * If the indicator sets it's status to %APP_INDICATOR_STATUS_ATTENTION
+	 * then this textual description of the icon shown.
+	 */
 	g_object_class_install_property (object_class,
 	                                 PROP_ATTENTION_ICON_DESC,
 	                                 g_param_spec_string (PROP_ATTENTION_ICON_DESC_S,
@@ -318,11 +316,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:icon-theme-path:
-		
-		An additional place to look for icon names that may be installed by the
-		application.
-	*/
+	 * AppIndicator:icon-theme-path:
+	 *
+	 * An additional place to look for icon names that may be installed by the
+	 * application.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_ICON_THEME_PATH,
 	                                g_param_spec_string (PROP_ICON_THEME_PATH_S,
@@ -332,11 +330,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
 	
 	/**
-		AppIndicator:connected:
-		
-		Pretty simple, %TRUE if we have a reasonable expectation of being 
-		displayed through this object. You should hide your TrayIcon if so.
-	*/
+	 * AppIndicator:connected:
+	 * 
+	 * Pretty simple, %TRUE if we have a reasonable expectation of being 
+	 * displayed through this object. You should hide your TrayIcon if so.
+	 */
 	g_object_class_install_property (object_class,
                                          PROP_CONNECTED,
                                          g_param_spec_boolean (PROP_CONNECTED_S,
@@ -345,15 +343,15 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                                FALSE,
                                                                G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:label:
-		
-		A label that can be shown next to the string in the application
-		indicator.  The label will not be shown unless there is an icon
-		as well.  The label is useful for numerical and other frequently
-		updated information.  In general, it shouldn't be shown unless a
-		user requests it as it can take up a significant amount of space
-		on the user's panel.  This may not be shown in all visualizations.
-	*/
+	 * AppIndicator:label:
+	 *
+	 * A label that can be shown next to the string in the application
+	 * indicator.  The label will not be shown unless there is an icon
+	 * as well.  The label is useful for numerical and other frequently
+	 * updated information.  In general, it shouldn't be shown unless a
+	 * user requests it as it can take up a significant amount of space
+	 * on the user's panel.  This may not be shown in all visualizations.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_LABEL,
 	                                g_param_spec_string (PROP_LABEL_S,
@@ -362,16 +360,16 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:label-guide:
-		
-		An optional string to provide guidance to the panel on how big
-		the #AppIndicator:label string could get.  If this is set correctly
-		then the panel should never 'jiggle' as the string adjusts through
-		out the range of options.  For instance, if you were providing a
-		percentage like "54% thrust" in #AppIndicator:label you'd want to
-		set this string to "100% thrust" to ensure space when Scotty can
-		get you enough power.
-	*/
+	 * AppIndicator:label-guide:
+	 *
+	 * An optional string to provide guidance to the panel on how big
+	 * the #AppIndicator:label string could get.  If this is set correctly
+	 * then the panel should never 'jiggle' as the string adjusts through
+	 * out the range of options.  For instance, if you were providing a
+	 * percentage like "54% thrust" in #AppIndicator:label you'd want to
+	 * set this string to "100% thrust" to ensure space when Scotty can
+	 * get you enough power.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_LABEL_GUIDE,
 	                                g_param_spec_string (PROP_LABEL_GUIDE_S,
@@ -380,17 +378,17 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 	/**
-		AppIndicator:ordering-index:
-
-		The ordering index is an odd parameter, and if you think you don't need
-		it you're probably right.  In general, the application indicator try
-		to place the applications in a recreatable place taking into account
-		which category they're in to try and group them.  But, there are some
-		cases where you'd want to ensure indicators are next to each other.
-		To do that you can override the generated ordering index and replace it
-		with a new one.  Again, you probably don't want to be doing this, but
-		in case you do, this is the way.
-	*/
+	 * AppIndicator:ordering-index:
+	 *
+	 * The ordering index is an odd parameter, and if you think you don't need
+	 * it you're probably right.  In general, the application indicator try
+	 * to place the applications in a recreatable place taking into account
+	 * which category they're in to try and group them.  But, there are some
+	 * cases where you'd want to ensure indicators are next to each other.
+	 * To do that you can override the generated ordering index and replace it
+	 * with a new one.  Again, you probably don't want to be doing this, but
+	 * in case you do, this is the way.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_ORDERING_INDEX,
 	                                g_param_spec_uint (PROP_ORDERING_INDEX_S,
@@ -400,11 +398,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                   G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-		AppIndicator:dbus-menu-server:
-
-		A way to get the internal dbusmenu server if it is available.
-		This should only be used for testing.
-	*/
+	 * AppIndicator:dbus-menu-server:
+	 *
+	 * A way to get the internal dbusmenu server if it is available.
+	 * This should only be used for testing.
+	 */
 	g_object_class_install_property(object_class,
 	                                PROP_DBUS_MENU_SERVER,
 	                                g_param_spec_object (PROP_DBUS_MENU_SERVER_S,
@@ -416,11 +414,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	/* Signals */
 
 	/**
-		AppIndicator::new-icon:
-		@arg0: The #AppIndicator object
-
-		Emitted when #AppIndicator:icon-name is changed
-	*/
+	 * AppIndicator::new-icon:
+	 * @arg0: The #AppIndicator object
+	 *
+	 * when #AppIndicator:icon-name is changed
+	 */
 	signals[NEW_ICON] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ICON,
 	                                  G_TYPE_FROM_CLASS(klass),
 	                                  G_SIGNAL_RUN_LAST,
@@ -430,11 +428,11 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	/**
-		AppIndicator::new-attention-icon:
-		@arg0: The #AppIndicator object
-
-		Emitted when #AppIndicator:attention-icon-name is changed
-	*/
+	 * AppIndicator::new-attention-icon:
+	 * @arg0: The #AppIndicator object
+	 *
+	 * Emitted when #AppIndicator:attention-icon-name is changed
+	 */
 	signals[NEW_ATTENTION_ICON] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
 	                                            G_TYPE_FROM_CLASS(klass),
 	                                            G_SIGNAL_RUN_LAST,
@@ -444,12 +442,12 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	/**
-		AppIndicator::new-status:
-		@arg0: The #AppIndicator object
-		@arg1: The string value of the #AppIndicatorStatus enum.
-
-		Emitted when #AppIndicator:status is changed
-	*/
+	 * AppIndicator::new-status:
+	 * @arg0: The #AppIndicator object
+	 * @arg1: The string value of the #AppIndicatorStatus enum.
+	 *
+	 * Emitted when #AppIndicator:status is changed
+	 */
 	signals[NEW_STATUS] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_STATUS,
 	                                    G_TYPE_FROM_CLASS(klass),
 	                                    G_SIGNAL_RUN_LAST,
@@ -460,13 +458,13 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                             G_TYPE_STRING);
 
 	/**
-		AppIndicator::new-label:
-		@arg0: The #AppIndicator object
-		@arg1: The string for the label
-		@arg1: The string for the guide
-
-		Emitted when either #AppIndicator:label or #AppIndicator:label-guide are
-		changed.
+	 * AppIndicator::new-label:
+	 * @arg0: The #AppIndicator object
+	 * @arg1: The string for the label
+	 * @arg1: The string for the guide
+	 *
+	 * Emitted when either #AppIndicator:label or #AppIndicator:label-guide are
+	 * changed.
 	*/
 	signals[NEW_LABEL] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_LABEL,
 	                                    G_TYPE_FROM_CLASS(klass),
@@ -477,12 +475,12 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	/**
-		AppIndicator::connection-changed:
-		@arg0: The #AppIndicator object
-		@arg1: Whether we're connected or not
-
-		Signaled when we connect to a watcher, or when it drops away.
-	*/
+	 * AppIndicator::connection-changed:
+	 * @arg0: The #AppIndicator object
+	 * @arg1: Whether we're connected or not
+	 *
+	 * Signaled when we connect to a watcher, or when it drops away.
+	 */
 	signals[CONNECTION_CHANGED] = g_signal_new (APP_INDICATOR_SIGNAL_CONNECTION_CHANGED,
 	                                            G_TYPE_FROM_CLASS(klass),
 	                                            G_SIGNAL_RUN_LAST,
@@ -492,12 +490,12 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
 
 	/**
-		AppIndicator::new-icon-theme-path:
-		@arg0: The #AppIndicator object
-
-		Signaled when there is a new icon set for the
-		object.
-	*/
+	 * AppIndicator::new-icon-theme-path:
+	 * @arg0: The #AppIndicator object
+	 *
+	 * Signaled when there is a new icon set for the
+	 * object.
+	 */
 	signals[NEW_ICON_THEME_PATH] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH,
 	                                  G_TYPE_FROM_CLASS(klass),
 	                                  G_SIGNAL_RUN_LAST,
@@ -507,13 +505,13 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	/**
-		AppIndicator::scroll-event:
-		@arg0: The #AppIndicator object
-		@arg1: How many steps the scroll wheel has taken
-		@arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
-
-		Signaled when the #AppIndicator receives a scroll event.
-	*/
+	 * AppIndicator::scroll-event:
+	 * @arg0: The #AppIndicator object
+	 * @arg1: How many steps the scroll wheel has taken
+	 * @arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
+	 *
+	 * Signaled when the #AppIndicator receives a scroll event.
+	 */
 	signals[SCROLL_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_SCROLL_EVENT,
 	                                  G_TYPE_FROM_CLASS(klass),
 	                                  G_SIGNAL_RUN_LAST,
@@ -1646,17 +1644,16 @@ sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent,
 /* ************************* */
 
 /**
-        app_indicator_new:
-        @id: The unique id of the indicator to create.
-        @icon_name: The icon name for this indicator
-        @category: The category of indicator.
-
-		Creates a new #AppIndicator setting the properties:
-		#AppIndicator:id with @id, #AppIndicator:category
-		with @category and #AppIndicator:icon-name with
-		@icon_name.
-
-        Return value: A pointer to a new #AppIndicator object.
+ * app_indicator_new:
+ * @id: The unique id of the indicator to create.
+ * @icon_name: The icon name for this indicator
+ * @category: The category of indicator.
+ *
+ * Creates a new #AppIndicator setting the properties:
+ * #AppIndicator:id with @id, #AppIndicator:category with @category
+ * and #AppIndicator:icon-name with @icon_name.
+ * 
+ * Return value: A pointer to a new #AppIndicator object.
  */
 AppIndicator *
 app_indicator_new (const gchar          *id,
@@ -1673,18 +1670,18 @@ app_indicator_new (const gchar          *id,
 }
 
 /**
-        app_indicator_new_with_path:
-        @id: The unique id of the indicator to create.
-        @icon_name: The icon name for this indicator
-        @category: The category of indicator.
-        @icon_theme_path: A custom path for finding icons.
+ * app_indicator_new_with_path:
+ * @id: The unique id of the indicator to create.
+ * @icon_name: The icon name for this indicator
+ * @category: The category of indicator.
+ * @icon_theme_path: A custom path for finding icons.
 
-		Creates a new #AppIndicator setting the properties:
-		#AppIndicator:id with @id, #AppIndicator:category
-		with @category, #AppIndicator:icon-name with
-		@icon_name and #AppIndicator:icon-theme-path with @icon_theme_path.
-
-        Return value: A pointer to a new #AppIndicator object.
+ * Creates a new #AppIndicator setting the properties:
+ * #AppIndicator:id with @id, #AppIndicator:category with @category,
+ * #AppIndicator:icon-name with @icon_name and #AppIndicator:icon-theme-path
+ * with @icon_theme_path.
+ *
+ * Return value: A pointer to a new #AppIndicator object.
  */
 AppIndicator *
 app_indicator_new_with_path (const gchar          *id,
@@ -1703,20 +1700,20 @@ app_indicator_new_with_path (const gchar          *id,
 }
 
 /**
-	app_indicator_get_type:
-
-	Generates or returns the unique #GType for #AppIndicator.
-
-	Return value: A unique #GType for #AppIndicator objects.
-*/
+ * app_indicator_get_type:
+ *
+ * Generates or returns the unique #GType for #AppIndicator.
+ *
+ * Return value: A unique #GType for #AppIndicator objects.
+ */
 
 /**
-	app_indicator_set_status:
-	@self: The #AppIndicator object to use
-	@status: The status to set for this indicator
-
-	Wrapper function for property #AppIndicator:status.
-*/
+ * app_indicator_set_status:
+ * @self: The #AppIndicator object to use
+ * @status: The status to set for this indicator
+ *
+ * Wrapper function for property #AppIndicator:status.
+ */
 void
 app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 {
@@ -1750,15 +1747,15 @@ app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 }
 
 /**
-	app_indicator_set_attention_icon:
-	@self: The #AppIndicator object to use
-	@icon_name: The name of the attention icon to set for this indicator
-
-	Wrapper for app_indicator_set_attention_icon_full() with a NULL
-	description.
-
-	Deprecated: Use app_indicator_set_attention_icon_full() instead.
-*/
+ * app_indicator_set_attention_icon:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The name of the attention icon to set for this indicator
+ *
+ * Wrapper for app_indicator_set_attention_icon_full() with a NULL
+ * description.
+ *
+ * Deprecated: Use app_indicator_set_attention_icon_full() instead.
+ */
 void
 app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 {
@@ -1766,13 +1763,13 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 /**
-	app_indicator_set_attention_icon_full:
-	@self: The #AppIndicator object to use
-	@icon_name: The name of the attention icon to set for this indicator
-	@icon_desc: A textual description of the icon
-
-	Wrapper function for property #AppIndicator:attention-icon-name.
-*/
+ * app_indicator_set_attention_icon_full:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The name of the attention icon to set for this indicator
+ * @icon_desc: A textual description of the icon
+ *
+ * Wrapper function for property #AppIndicator:attention-icon-name.
+ */
 void
 app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
 {
@@ -1823,15 +1820,15 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 }
 
 /**
-        app_indicator_set_icon:
-        @self: The #AppIndicator object to use
-        @icon_name: The icon name to set.
-
-		Wrapper function for app_indicator_set_icon_full() with a NULL
-		description.
-
-		Deprecated: Use app_indicator_set_icon_full()
-**/
+ * app_indicator_set_icon:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The icon name to set.
+ *
+ * Wrapper function for app_indicator_set_icon_full() with a NULL
+ * description.
+ *
+ * Deprecated: Use app_indicator_set_icon_full()
+ */
 void
 app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 {
@@ -1839,18 +1836,18 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 }
 
 /**
-        app_indicator_set_icon_full:
-        @self: The #AppIndicator object to use
-        @icon_name: The icon name to set.
-		@icon_desc: A textual description of the icon for accessibility
-
-		Sets the default icon to use when the status is active but
-		not set to attention.  In most cases, this should be the
-		application icon for the program.
-
-		Wrapper function for property #AppIndicator:icon-name and
-		#AppIndicator::icon-desc.
-**/
+ * app_indicator_set_icon_full:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The icon name to set.
+ * @icon_desc: A textual description of the icon for accessibility
+ *
+ * Sets the default icon to use when the status is active but
+ * not set to attention.  In most cases, this should be the
+ * application icon for the program.
+ *
+ * Wrapper function for property #AppIndicator:icon-name and
+ * #AppIndicator::icon-desc.
+ */
 void
 app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
 {
@@ -1901,14 +1898,14 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 }
 
 /**
-	app_indicator_set_label:
-	@self: The #AppIndicator object to use
-	@label: The label to show next to the icon.
-	@guide: A guide to size the label correctly.
-
-	This is a wrapper function for the #AppIndicator:label and
-	#AppIndicator:guide properties.  This function can take #NULL
-	as either @label or @guide and will clear the entries.
+ * app_indicator_set_label:
+ * @self: The #AppIndicator object to use
+ * @label: The label to show next to the icon.
+ * @guide: A guide to size the label correctly.
+ *
+ * This is a wrapper function for the #AppIndicator:label and
+ * #AppIndicator:guide properties.  This function can take #NULL
+ * as either @label or @guide and will clear the entries.
 */
 void
 app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * guide)
@@ -1926,12 +1923,12 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 }
 
 /**
-        app_indicator_set_icon_theme_path:
-        @self: The #AppIndicator object to use
-        @icon_theme_path: The icon theme path to set.
-
-		Sets the path to use when searching for icons.
-**/
+ * app_indicator_set_icon_theme_path:
+ * @self: The #AppIndicator object to use
+ * @icon_theme_path: The icon theme path to set.
+ *
+ * Sets the path to use when searching for icons.
+ */
 void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
@@ -1997,17 +1994,17 @@ setup_dbusmenu (AppIndicator *self)
 	return;
 }
 
-/**
-        app_indicator_set_menu:
-        @self: The #AppIndicator
-        @menu: A #GtkMenu to set
-
-        Sets the menu that should be shown when the Application Indicator
-        is clicked on in the panel.  An application indicator will not
-        be rendered unless it has a menu.
-        
-        Wrapper function for property #AppIndicator:menu.
-**/
+/*
+ * app_indicator_set_menu:
+ * @self: The #AppIndicator
+ * @menu: (allow-none): A #GtkMenu to set
+ *
+ * Sets the menu that should be shown when the Application Indicator
+ * is clicked on in the panel.  An application indicator will not
+ * be rendered unless it has a menu.
+ *
+ * Wrapper function for property #AppIndicator:menu.
+ */
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 {
@@ -2037,16 +2034,16 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 }
 
 /**
-	app_indicator_set_ordering_index:
-	@self: The #AppIndicator
-	@ordering_index: A value for the ordering of this app indicator
-
-	Sets the ordering index for the app indicator which effects the
-	placement of it on the panel.  For almost all app indicator
-	this is not the function you're looking for.
-
-	Wrapper function for property #AppIndicator:ordering-index.
-**/
+ * app_indicator_set_ordering_index:
+ * @self: The #AppIndicator
+ * @ordering_index: A value for the ordering of this app indicator
+ *
+ * Sets the ordering index for the app indicator which effects the
+ * placement of it on the panel.  For almost all app indicator
+ * this is not the function you're looking for.
+ *
+ * Wrapper function for property #AppIndicator:ordering-index.
+ */
 void
 app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 {
@@ -2058,19 +2055,19 @@ app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 }
 
 /**
-	app_indicator_set_secondary_activate_target:
-	@self: The #AppIndicator
-	@menuitem: A #GtkWidget to be activated on secondary activation
-
-	Set the @menuitem to be activated when a secondary activation event (i.e. a
-	middle-click) is emitted over the #AppIndicator icon/label.
-
-	The @menuitem can be also a complex #GtkWidget, but to get activated when
-	a secondary activation occurs in the #Appindicator, it must be a visible and
-	active child (or inner-child) of the #AppIndicator:menu.
-
-	Setting @menuitem to %NULL causes to disable this feature.
-**/
+ * app_indicator_set_secondary_activate_target:
+ * @self: The #AppIndicator
+ * @menuitem: (allow-none): A #GtkWidget to be activated on secondary activation
+ *
+ * Set the @menuitem to be activated when a secondary activation event (i.e. a
+ * middle-click) is emitted over the #AppIndicator icon/label.
+ *
+ * The @menuitem can be also a complex #GtkWidget, but to get activated when
+ * a secondary activation occurs in the #Appindicator, it must be a visible and
+ * active child (or inner-child) of the #AppIndicator:menu.
+ *
+ * Setting @menuitem to %NULL causes to disable this feature.
+ */
 void
 app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menuitem)
 {
@@ -2097,13 +2094,13 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
 }
 
 /**
-	app_indicator_get_id:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:id.
-
-	Return value: The current ID
-*/
+ * app_indicator_get_id:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:id.
+ *
+ * Return value: The current ID
+ */
 const gchar *
 app_indicator_get_id (AppIndicator *self)
 {
@@ -2113,13 +2110,13 @@ app_indicator_get_id (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_category:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:category.
-
-	Return value: The current category.
-*/
+ * app_indicator_get_category:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:category.
+ *
+ * Return value: The current category.
+ */
 AppIndicatorCategory
 app_indicator_get_category (AppIndicator *self)
 {
@@ -2129,13 +2126,13 @@ app_indicator_get_category (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_status:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:status.
-
-	Return value: The current status.
-*/
+ * app_indicator_get_status:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:status.
+ *
+ * Return value: The current status.
+ */
 AppIndicatorStatus
 app_indicator_get_status (AppIndicator *self)
 {
@@ -2145,13 +2142,13 @@ app_indicator_get_status (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_icon:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:icon-name.
-
-	Return value: The current icon name.
-*/
+ * app_indicator_get_icon:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:icon-name.
+ *
+ * Return value: The current icon name.
+ */
 const gchar *
 app_indicator_get_icon (AppIndicator *self)
 {
@@ -2161,12 +2158,12 @@ app_indicator_get_icon (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_icon_desc:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:icon-desc.
-
-	Return value: The current icon description.
+ * app_indicator_get_icon_desc:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:icon-desc.
+ *
+ * Return value: The current icon description.
 */
 const gchar *
 app_indicator_get_icon_desc (AppIndicator *self)
@@ -2177,13 +2174,13 @@ app_indicator_get_icon_desc (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_icon_theme_path:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:icon-theme-path.
-
-	Return value: The current icon theme path.
-*/
+ * app_indicator_get_icon_theme_path:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:icon-theme-path.
+ *
+ * Return value: The current icon theme path.
+ */
 const gchar *
 app_indicator_get_icon_theme_path (AppIndicator *self)
 {
@@ -2193,13 +2190,13 @@ app_indicator_get_icon_theme_path (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_attention_icon:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:attention-icon-name.
-
-	Return value: The current attention icon name.
-*/
+ * app_indicator_get_attention_icon:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:attention-icon-name.
+ *
+ * Return value: The current attention icon name.
+ */
 const gchar *
 app_indicator_get_attention_icon (AppIndicator *self)
 {
@@ -2209,13 +2206,13 @@ app_indicator_get_attention_icon (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_attention_icon_desc:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:attention-icon-desc.
-
-	Return value: The current attention icon description.
-*/
+ * app_indicator_get_attention_icon_desc:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:attention-icon-desc.
+ *
+ * Return value: The current attention icon description.
+ */
 const gchar *
 app_indicator_get_attention_icon_desc (AppIndicator *self)
 {
@@ -2225,14 +2222,14 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_menu:
-	@self: The #AppIndicator object to use
-
-	Gets the menu being used for this application indicator.
-	Wrapper function for property #AppIndicator:menu.
-
-	Return value: (transfer full): A #GtkMenu object or %NULL if one hasn't been set.
-*/
+ * app_indicator_get_menu:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the menu being used for this application indicator.
+ * Wrapper function for property #AppIndicator:menu.
+ *
+ * Returns: (transfer full): A #GtkMenu object or %NULL if one hasn't been set.
+ */
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)
 {
@@ -2246,13 +2243,13 @@ app_indicator_get_menu (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_label:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:label.
-
-	Return value: The current label.
-*/
+ * app_indicator_get_label:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:label.
+ *
+ * Return value: The current label.
+ */
 const gchar *
 app_indicator_get_label (AppIndicator *self)
 {
@@ -2262,13 +2259,13 @@ app_indicator_get_label (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_label_guide:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:label-guide.
-
-	Return value: The current label guide.
-*/
+ * app_indicator_get_label_guide:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:label-guide.
+ *
+ * Return value: The current label guide.
+ */
 const gchar *
 app_indicator_get_label_guide (AppIndicator *self)
 {
@@ -2278,13 +2275,13 @@ app_indicator_get_label_guide (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_ordering_index:
-	@self: The #AppIndicator object to use
-
-	Wrapper function for property #AppIndicator:ordering-index.
-
-	Return value: The current ordering index.
-*/
+ * app_indicator_get_ordering_index:
+ * @self: The #AppIndicator object to use
+ *
+ * Wrapper function for property #AppIndicator:ordering-index.
+ *
+ * Return value: The current ordering index.
+ */
 guint32
 app_indicator_get_ordering_index (AppIndicator *self)
 {
@@ -2298,13 +2295,13 @@ app_indicator_get_ordering_index (AppIndicator *self)
 }
 
 /**
-	app_indicator_get_secondary_activate_target:
-	@self: The #AppIndicator object to use
-
-	Gets the menuitem being called on secondary-activate event.
-
-	Return value: (transfer full): A #GtkWidget object or %NULL if none has been set.
-*/
+ * app_indicator_get_secondary_activate_target:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the menuitem being called on secondary-activate event.
+ *
+ * Returns: (transfer full): A #GtkWidget object or %NULL if none has been set.
+ */
 GtkWidget *
 app_indicator_get_secondary_activate_target (AppIndicator *self)
 {
@@ -2335,14 +2332,14 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 }
 
 /**
-	app_indicator_build_menu_from_desktop:
-	@self: The #AppIndicator object to use
-	@desktop_file: A path to the desktop file to build the menu from
-	@desktop_profile: Which entries should be used from the desktop file
-
-	This function allows for building the Application Indicator menu
-	from a static desktop file.
-*/
+ * app_indicator_build_menu_from_desktop:
+ * @self: The #AppIndicator object to use
+ * @desktop_file: A path to the desktop file to build the menu from
+ * @desktop_profile: Which entries should be used from the desktop file
+ *
+ * This function allows for building the Application Indicator menu
+ * from a static desktop file.
+ */
 void
 app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
 {

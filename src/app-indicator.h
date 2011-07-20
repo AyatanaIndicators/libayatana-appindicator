@@ -35,40 +35,40 @@ License version 3 and version 2.1 along with this program.  If not, see
 G_BEGIN_DECLS
 
 /**
-	APP_INDICATOR_TYPE:
-
-	Get the #GType for a #AppIndicator.
-*/
+ * APP_INDICATOR_TYPE:
+ *
+ * Get the #GType for a #AppIndicator.
+ */
 /**
-	APP_INDICATOR:
-	@obj: The object to convert
-
-	Safely convert a #GObject into an #AppIndicator.
-*/
+ * APP_INDICATOR:
+ * @obj: The object to convert
+ *
+ * Safely convert a #GObject into an #AppIndicator.
+ */
 /**
-	APP_INDICATOR_CLASS:
-	@klass: #GObjectClass based class to convert.
-
-	Safely convert a #GObjectClass into a #AppIndicatorClass.
-*/
+ * APP_INDICATOR_CLASS:
+ * @klass: #GObjectClass based class to convert.
+ *
+ * Safely convert a #GObjectClass into a #AppIndicatorClass.
+ */
 /**
-	IS_APP_INDICATOR:
-	@obj: An #GObject to check
-
-	Checks to see if @obj is in the object hierarchy of #AppIndicator.
-*/
+ * IS_APP_INDICATOR:
+ * @obj: An #GObject to check
+ *
+ * Checks to see if @obj is in the object hierarchy of #AppIndicator.
+ */
 /**
-	IS_APP_INDICATOR_CLASS:
-	@klass: An #GObjectClass to check
-
-	Checks to see if @klass is in the object class hierarchy of #AppIndicatorClass.
-*/
+ * IS_APP_INDICATOR_CLASS:
+ * @klass: An #GObjectClass to check
+ *
+ * Checks to see if @klass is in the object class hierarchy of #AppIndicatorClass.
+ */
 /**
-	APP_INDICATOR_GET_CLASS:
-	@obj: A #GObject in the class hierarchy of #AppIndicator.
-
-	Gets a pointer to the #AppIndicatorClass for the object @obj.
-*/
+ * APP_INDICATOR_GET_CLASS:
+ * @obj: A #GObject in the class hierarchy of #AppIndicator.
+ *
+ * Gets a pointer to the #AppIndicatorClass for the object @obj.
+ */
 
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
@@ -78,40 +78,40 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APP_INDICATOR_TYPE, AppIndicatorClass))
 
 /**
-	APP_INDICATOR_SIGNAL_NEW_ICON:
-
-	String identifier for the #AppIndicator::new-icon signal.
-*/
+ * APP_INDICATOR_SIGNAL_NEW_ICON:
+ *
+ * String identifier for the #AppIndicator::new-icon signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON:
-
-	String identifier for the #AppIndicator::new-attention-icon signal.
-*/
+ * APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON:
+ *
+ * String identifier for the #AppIndicator::new-attention-icon signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_NEW_STATUS:
-
-	String identifier for the #AppIndicator::new-status signal.
-*/
+ * APP_INDICATOR_SIGNAL_NEW_STATUS:
+ *
+ * String identifier for the #AppIndicator::new-status signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_NEW_LABEL:
-
-	String identifier for the #AppIndicator::new-label signal.
-*/
+ * APP_INDICATOR_SIGNAL_NEW_LABEL:
+ *
+ * String identifier for the #AppIndicator::new-label signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
-
-	String identifier for the #AppIndicator::connection-changed signal.
-*/
+ * APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
+ *
+ * String identifier for the #AppIndicator::connection-changed signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH:
-
-	String identifier for the #AppIndicator::new-icon-theme-path signal.
-*/
+ * APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH:
+ *
+ * String identifier for the #AppIndicator::new-icon-theme-path signal.
+ */
 /**
-	APP_INDICATOR_SIGNAL_SCROLL_EVENT:
-
-	String identifier for the #AppIndicator::scroll-event signal.
-*/
+ * APP_INDICATOR_SIGNAL_SCROLL_EVENT:
+ *
+ * String identifier for the #AppIndicator::scroll-event signal.
+ */
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
@@ -121,16 +121,16 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
 
 /**
-	AppIndicatorCategory:
-	@APP_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
-	@APP_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
-	@APP_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
-	@APP_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
-	@APP_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
-
-	The category provides grouping for the indicators so that
-	users can find indicators that are similar together.
-*/
+ * AppIndicatorCategory:
+ * @APP_INDICATOR_CATEGORY_APPLICATION_STATUS: The indicator is used to display the status of the application.
+ * @APP_INDICATOR_CATEGORY_COMMUNICATIONS: The application is used for communication with other people.
+ * @APP_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
+ * @APP_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
+ * @APP_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
+ * 
+ * The category provides grouping for the indicators so that
+ * users can find indicators that are similar together.
+ */
 typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
 	APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*< nick=ApplicationStatus >*/
 	APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*< nick=Communications >*/
@@ -140,16 +140,16 @@ typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
 } AppIndicatorCategory;
 
 /**
-	AppIndicatorStatus:
-	@APP_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
-	@APP_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
-	@APP_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
-
-	These are the states that the indicator can be on in
-	the user's panel.  The indicator by default starts
-	in the state @APP_INDICATOR_STATUS_PASSIVE and can be
-	shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
-*/
+ * AppIndicatorStatus:
+ * @APP_INDICATOR_STATUS_PASSIVE: The indicator should not be shown to the user.
+ * @APP_INDICATOR_STATUS_ACTIVE: The indicator should be shown in it's default state.
+ * @APP_INDICATOR_STATUS_ATTENTION: The indicator should show it's attention icon.
+ *
+ * These are the states that the indicator can be on in
+ * the user's panel.  The indicator by default starts
+ * in the state @APP_INDICATOR_STATUS_PASSIVE and can be
+ * shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
+ */
 typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
 	APP_INDICATOR_STATUS_PASSIVE, /*< nick=Passive >*/
 	APP_INDICATOR_STATUS_ACTIVE, /*< nick=Active >*/
@@ -161,30 +161,30 @@ typedef struct _AppIndicatorClass   AppIndicatorClass;
 typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 
 /**
-	AppIndicatorClass:
-	@parent_class: Mia familia
-	@new_icon: Slot for #AppIndicator::new-icon.
-	@new_attention_icon: Slot for #AppIndicator::new-attention-icon.
-	@new_status: Slot for #AppIndicator::new-status.
-	@new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
-	@new_label: Slot for #AppIndicator::new-label.
-	@connection_changed: Slot for #AppIndicator::connection-changed.
-	@scroll_event: Slot for #AppIndicator::scroll-event
-	@app_indicator_reserved_ats: Reserved for future use.
-	@fallback: Function that gets called to make a #GtkStatusIcon when
-		there is no Application Indicator area available.
-	@unfallback: The function that gets called if an Application
-		Indicator area appears after the fallback has been created.
-	@app_indicator_reserved_1: Reserved for future use.
-	@app_indicator_reserved_2: Reserved for future use.
-	@app_indicator_reserved_3: Reserved for future use.
-	@app_indicator_reserved_4: Reserved for future use.
-	@app_indicator_reserved_5: Reserved for future use.
-	@app_indicator_reserved_6: Reserved for future use.
-
-	The signals and external functions that make up the #AppIndicator
-	class object.
-*/
+ * AppIndicatorClass:
+ * @parent_class: Mia familia
+ * @new_icon: Slot for #AppIndicator::new-icon.
+ * @new_attention_icon: Slot for #AppIndicator::new-attention-icon.
+ * @new_status: Slot for #AppIndicator::new-status.
+ * @new_icon_theme_path: Slot for #AppIndicator::new-icon-theme-path
+ * @new_label: Slot for #AppIndicator::new-label.
+ * @connection_changed: Slot for #AppIndicator::connection-changed.
+ * @scroll_event: Slot for #AppIndicator::scroll-event
+ * @app_indicator_reserved_ats: Reserved for future use.
+ * @fallback: Function that gets called to make a #GtkStatusIcon when
+ *            there is no Application Indicator area available.
+ * @unfallback: The function that gets called if an Application
+ *              Indicator area appears after the fallback has been created.
+ * @app_indicator_reserved_1: Reserved for future use.
+ * @app_indicator_reserved_2: Reserved for future use.
+ * @app_indicator_reserved_3: Reserved for future use.
+ * @app_indicator_reserved_4: Reserved for future use.
+ * @app_indicator_reserved_5: Reserved for future use.
+ * @app_indicator_reserved_6: Reserved for future use.
+ * 
+ * The signals and external functions that make up the #AppIndicator
+ * class object.
+ */
 struct _AppIndicatorClass {
 	/* Parent */
 	GObjectClass parent_class;
@@ -232,19 +232,18 @@ struct _AppIndicatorClass {
 };
 
 /**
-	AppIndicator:
-
-	A application indicator represents the values that are needed to show a
-	unique status in the panel for an application.  In general, applications
-	should try to fit in the other indicators that are available on the
-	panel before using this.  But, sometimes it is necissary.
-*/
-/*  Private fields
-	@parent: Parent object.
-	@priv: Internal data.
-*/
+ * AppIndicator:
+ * 
+ * A application indicator represents the values that are needed to show a
+ * unique status in the panel for an application.  In general, applications
+ * should try to fit in the other indicators that are available on the
+ * panel before using this.  But, sometimes it is necissary.
+ *
+ *  Private fields
+ * @parent: Parent object.
+ * @priv: Internal data.
+ */
 struct _AppIndicator {
-	/*< Private >*/
 	GObject parent;
 
 	/*< Private >*/
@@ -296,6 +295,7 @@ const gchar *                   app_indicator_get_icon_desc            (AppIndic
 const gchar *                   app_indicator_get_icon_theme_path      (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon       (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon_desc  (AppIndicator *self);
+
 GtkMenu *                       app_indicator_get_menu                 (AppIndicator *self);
 const gchar *                   app_indicator_get_label                (AppIndicator *self);
 const gchar *                   app_indicator_get_label_guide          (AppIndicator *self);
@@ -310,20 +310,20 @@ void                            app_indicator_build_menu_from_desktop (AppIndica
 G_END_DECLS
 
 /**
-	SECTION:app-indicator
-	@short_description: An object to put application information
-		into the panel.
-	@stability: Unstable
-	@include: libappindicator/app-indicator.h
-
-	An application indicator is a way for an application to put
-	a menu into the panel on the user's screen.  This allows the
-	user to interact with the application even though it might
-	not be visible to the user at the time.  In most cases this
-	is not a good solution as there are other ways to inform the
-	user.  It should only be use if persistence is a desired
-	feature for the user (not for your marketing purpose of
-	having your logo in the panel).
-*/
+ * SECTION:app-indicator
+ * @short_description: An object to put application information
+ *                     into the panel.
+ * @stability: Unstable
+ * @include: libappindicator/app-indicator.h
+ *
+ * An application indicator is a way for an application to put
+ * a menu into the panel on the user's screen.  This allows the
+ * user to interact with the application even though it might
+ * not be visible to the user at the time.  In most cases this
+ * is not a good solution as there are other ways to inform the
+ * user.  It should only be use if persistence is a desired
+ * feature for the user (not for your marketing purpose of
+ * having your logo in the panel).
+ */
 
 #endif
