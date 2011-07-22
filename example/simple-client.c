@@ -31,46 +31,46 @@ static gboolean can_haz_label = TRUE;
 static void
 label_toggle_cb (GtkWidget * widget, gpointer data)
 {
-	can_haz_label = !can_haz_label;
+    can_haz_label = !can_haz_label;
 
-	if (can_haz_label) {
-		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Hide label");
-	} else {
-		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Show label");
-	}
+    if (can_haz_label) {
+        gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Hide label");
+    } else {
+        gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Show label");
+    }
 
-	return;
+    return;
 }
 
 static void
 activate_clicked_cb (GtkWidget *widget, gpointer data)
 {
-	AppIndicator * ci = APP_INDICATOR(data);
+    AppIndicator * ci = APP_INDICATOR(data);
 
-	if (active) {
-		app_indicator_set_status (ci, APP_INDICATOR_STATUS_ATTENTION);
-		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "I'm okay now");
-		active = FALSE;
-	} else {
-		app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-		gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Get Attention");
-		active = TRUE;
-	}
+    if (active) {
+        app_indicator_set_status (ci, APP_INDICATOR_STATUS_ATTENTION);
+        gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "I'm okay now");
+        active = FALSE;
+    } else {
+        app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
+        gtk_menu_item_set_label(GTK_MENU_ITEM(widget), "Get Attention");
+        active = TRUE;
+    }
 
 }
 
 static void
 local_icon_toggle_cb (GtkWidget *widget, gpointer data)
 {
-	AppIndicator * ci = APP_INDICATOR(data);
+    AppIndicator * ci = APP_INDICATOR(data);
 
-	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
-		app_indicator_set_icon_full(ci, LOCAL_ICON, "Local Icon");
-	} else {
-		app_indicator_set_icon_full(ci, "indicator-messages", "System Icon");
-	}
+    if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget))) {
+        app_indicator_set_icon_full(ci, LOCAL_ICON, "Local Icon");
+    } else {
+        app_indicator_set_icon_full(ci, "indicator-messages", "System Icon");
+    }
 
-	return;
+    return;
 }
 
 static void
@@ -98,9 +98,9 @@ image_clicked_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
-scroll_event_cb (AppIndicator * ci, gint delta, guint direction)
+scroll_event_cb (AppIndicator * ci, gint delta, guint direction, gpointer data)
 {
-	g_print("Got scroll event! delta: %d, direction: %d\n", delta, direction);
+    g_print("Got scroll event! delta: %d, direction: %d\n", delta, direction);
 }
 
 static void
@@ -138,15 +138,15 @@ guint percentage = 0;
 static gboolean
 percent_change (gpointer user_data)
 {
-	percentage = (percentage + 1) % 100;
-	if (can_haz_label) {
-		gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
-		app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
-		g_free(percentstr);
-	} else {
-		app_indicator_set_label (APP_INDICATOR(user_data), NULL, NULL);
-	}
-	return TRUE;
+    percentage = (percentage + 1) % 100;
+    if (can_haz_label) {
+        gchar * percentstr = g_strdup_printf("%d%%", percentage + 1);
+        app_indicator_set_label (APP_INDICATOR(user_data), percentstr, "100%");
+        g_free(percentstr);
+    } else {
+        app_indicator_set_label (APP_INDICATOR(user_data), NULL, NULL);
+    }
+    return TRUE;
 }
 
 int
@@ -161,17 +161,17 @@ main (int argc, char ** argv)
                                 "indicator-messages",
                                 APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
-	g_assert (IS_APP_INDICATOR (ci));
+    g_assert (IS_APP_INDICATOR (ci));
         g_assert (G_IS_OBJECT (ci));
 
-	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-	app_indicator_set_attention_icon_full(ci, "indicator-messages-new", "System Messages Icon Highlighted");
-	app_indicator_set_label (ci, "1%", "100%");
+    app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
+    app_indicator_set_attention_icon_full(ci, "indicator-messages-new", "System Messages Icon Highlighted");
+    app_indicator_set_label (ci, "1%", "100%");
 
-	g_signal_connect (ci, "scroll-event",
+    g_signal_connect (ci, "scroll-event",
                       G_CALLBACK (scroll_event_cb), NULL);
 
-	g_timeout_add_seconds(1, percent_change, ci);
+    g_timeout_add_seconds(1, percent_change, ci);
 
         menu = gtk_menu_new ();
         GtkWidget *item = gtk_check_menu_item_new_with_label ("1");
@@ -195,37 +195,38 @@ main (int argc, char ** argv)
         g_signal_connect (toggle_item, "activate",
                           G_CALLBACK (toggle_sensitivity_cb), item);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
-		gtk_widget_show(toggle_item);
+        gtk_widget_show(toggle_item);
 
         item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
         g_signal_connect (item, "activate",
                           G_CALLBACK (image_clicked_cb), NULL);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show(item);
 
         item = gtk_menu_item_new_with_label ("Get Attention");
         g_signal_connect (item, "activate",
                           G_CALLBACK (activate_clicked_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show(item);
+        app_indicator_set_secondary_activate_target(ci, item);
 
         item = gtk_menu_item_new_with_label ("Show label");
-		label_toggle_cb(item, ci);
+        label_toggle_cb(item, ci);
         g_signal_connect (item, "activate",
                           G_CALLBACK (label_toggle_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show(item);
 
         item = gtk_check_menu_item_new_with_label ("Set Local Icon");
         g_signal_connect (item, "activate",
                           G_CALLBACK (local_icon_toggle_cb), ci);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		gtk_widget_show(item);
+        gtk_widget_show(item);
 
         app_indicator_set_menu (ci, GTK_MENU (menu));
 
-	mainloop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(mainloop);
+    mainloop = g_main_loop_new(NULL, FALSE);
+    g_main_loop_run(mainloop);
 
-	return 0;
+    return 0;
 }

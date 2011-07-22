@@ -77,6 +77,8 @@ struct _AppIndicatorPrivate {
 	gchar                *icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
+	GtkWidget            *sec_activate_target;
+	gboolean              sec_activate_enabled;
 	guint32               ordering_index;
 	gchar *               label;
 	gchar *               label_guide;
@@ -104,8 +106,8 @@ enum {
 	NEW_STATUS,
 	NEW_LABEL,
 	CONNECTION_CHANGED,
-    NEW_ICON_THEME_PATH,
-    SCROLL_EVENT,
+	NEW_ICON_THEME_PATH,
+	SCROLL_EVENT,
 	LAST_SIGNAL
 };
 
@@ -178,6 +180,7 @@ static gboolean fallback_timer_expire (gpointer data);
 static GtkStatusIcon * fallback (AppIndicator * self);
 static void status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer data);
 static gboolean scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer user_data);
+static gboolean middle_click_wrapper(GtkWidget *status_icon, GdkEventButton *event, gpointer user_data);
 static void status_icon_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
@@ -185,6 +188,7 @@ static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
 static void watcher_owner_changed (GObject * obj, GParamSpec * pspec, gpointer user_data);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
+static void sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent, gpointer   user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
 static void bus_method_call (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * method, GVariant * params, GDBusMethodInvocation * invocation, gpointer user_data);
 static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
@@ -508,8 +512,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 		@arg1: How many steps the scroll wheel has taken
 		@arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
 
-		Signaled when there is a new icon set for the
-		object.
+		Signaled when the #AppIndicator receives a scroll event.
 	*/
 	signals[SCROLL_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_SCROLL_EVENT,
 	                                  G_TYPE_FROM_CLASS(klass),
@@ -588,6 +591,9 @@ app_indicator_init (AppIndicator *self)
 
 	priv->shorties = NULL;
 
+	priv->sec_activate_target = NULL;
+	priv->sec_activate_enabled = FALSE;
+
 	/* Start getting the session bus */
 	g_object_ref(self); /* ref for the bus creation callback */
 	g_bus_get(G_BUS_TYPE_SESSION, NULL, bus_creation, self);
@@ -661,6 +667,12 @@ app_indicator_dispose (GObject *object)
 	if (priv->connection != NULL) {
 		g_object_unref(G_OBJECT(priv->connection));
 		priv->connection = NULL;
+	}
+
+	if (priv->sec_activate_target != NULL) {
+		g_signal_handlers_disconnect_by_func (priv->sec_activate_target, sec_activate_target_parent_changed, self);
+		g_object_unref(G_OBJECT(priv->sec_activate_target));
+		priv->sec_activate_target = NULL;
 	}
 
 	g_signal_handlers_disconnect_by_func(gtk_icon_theme_get_default(), G_CALLBACK(theme_changed_cb), self);
@@ -990,6 +1002,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 	g_return_if_fail(IS_APP_INDICATOR(user_data));
 
 	AppIndicator * app = APP_INDICATOR(user_data);
+	AppIndicatorPrivate * priv = app->priv;
 	GVariant * retval = NULL;
 
 	if (g_strcmp0(method, "Scroll") == 0) {
@@ -1011,6 +1024,16 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 		delta = ABS(delta);
 		g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
 
+	} else if (g_strcmp0(method, "SecondaryActivate") == 0 ||
+	           g_strcmp0(method, "XAyatanaSecondaryActivate") == 0) {
+		GtkWidget *menuitem = priv->sec_activate_target;
+		
+		if (priv->sec_activate_enabled && menuitem &&
+		    gtk_widget_get_visible (menuitem) &&
+		    gtk_widget_get_sensitive (menuitem))
+		{
+			gtk_widget_activate (menuitem);
+		}
 	} else {
 		g_warning("Calling method '%s' on the app-indicator and it's unknown", method);
 	}
@@ -1442,6 +1465,7 @@ fallback (AppIndicator * self)
 	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
 	g_signal_connect(G_OBJECT(icon), "popup-menu", G_CALLBACK(status_icon_menu_activate), self);
 	g_signal_connect(G_OBJECT(icon), "scroll-event", G_CALLBACK(scroll_event_wrapper), self);
+	g_signal_connect(G_OBJECT(icon), "button-release-event", G_CALLBACK(middle_click_wrapper), self);
 
 	return icon;
 }
@@ -1457,11 +1481,38 @@ status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer 
 /* A wrapper for redirecting the scroll events to the app-indicator from status
    icon widget. */
 static gboolean
-scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
+scroll_event_wrapper (GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
 	AppIndicator * app = APP_INDICATOR(data);
 	g_signal_emit(app, signals[SCROLL_EVENT], 0, 1, event->direction);
+
+	return TRUE;
+}
+
+static gboolean
+middle_click_wrapper (GtkWidget *status_icon, GdkEventButton *event, gpointer data)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+	AppIndicator * app = APP_INDICATOR(data);
+	AppIndicatorPrivate *priv = app->priv;
+
+	if (event->button == 2 && event->type == GDK_BUTTON_RELEASE) {
+		GtkAllocation alloc;
+		gint px = event->x;
+		gint py = event->y;
+		gtk_widget_get_allocation (status_icon, &alloc);
+		GtkWidget *menuitem = priv->sec_activate_target;
+
+		if (px >= 0 && px < alloc.width && py >= 0 && py < alloc.height &&
+		    priv->sec_activate_enabled && menuitem &&
+		    gtk_widget_get_visible (menuitem) &&
+		    gtk_widget_get_sensitive (menuitem))
+		{
+			gtk_widget_activate (menuitem);
+			return TRUE;
+		}
+	}
 
 	return FALSE;
 }
@@ -1535,6 +1586,7 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_status_wrapper, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
 	g_signal_handlers_disconnect_by_func(G_OBJECT(self), scroll_event_wrapper, status_icon);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(self), middle_click_wrapper, status_icon);
 	gtk_status_icon_set_visible(status_icon, FALSE);
 	g_object_unref(G_OBJECT(status_icon));
 	return;
@@ -1555,6 +1607,38 @@ append_panel_icon_suffix (const gchar *icon_name)
         }
 
 	return long_name;	
+}
+
+static gboolean
+widget_is_menu_child(AppIndicator * self, GtkWidget *child)
+{
+	g_return_val_if_fail(IS_APP_INDICATOR(self), FALSE);
+
+	if (!self->priv->menu) return FALSE;
+	if (!child) return FALSE;
+
+	GtkWidget *parent;
+
+	while ((parent = gtk_widget_get_parent(child))) {
+		if (parent == self->priv->menu)
+			return TRUE;
+
+		if (GTK_IS_MENU(parent))
+			child = gtk_menu_get_attach_widget(GTK_MENU(parent));
+		else
+			child = parent;
+	}
+
+	return FALSE;
+}
+
+static void
+sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent,
+                                   gpointer data)
+{
+	g_return_if_fail(IS_APP_INDICATOR(data));
+	AppIndicator *self = data;
+	self->priv->sec_activate_enabled = widget_is_menu_child(self, menuitem);
 }
 
 
@@ -1946,6 +2030,8 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 
   setup_dbusmenu (self);
 
+  priv->sec_activate_enabled = widget_is_menu_child (self, priv->sec_activate_target);
+
   check_connect (self);
 
   return;
@@ -1970,6 +2056,45 @@ app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 	self->priv->ordering_index = ordering_index;
 
 	return;
+}
+
+/**
+	app_indicator_set_secondary_activate_target:
+	@self: The #AppIndicator
+	@menuitem: A #GtkWidget to be activated on secondary activation
+
+	Set the @menuitem to be activated when a secondary activation event (i.e. a
+	middle-click) is emitted over the #AppIndicator icon/label.
+
+	The @menuitem can be also a complex #GtkWidget, but to get activated when
+	a secondary activation occurs in the #Appindicator, it must be a visible and
+	active child (or inner-child) of the #AppIndicator:menu.
+
+	Setting @menuitem to %NULL causes to disable this feature.
+**/
+void
+app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menuitem)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	AppIndicatorPrivate *priv = self->priv;
+
+	if (priv->sec_activate_target) {
+		g_signal_handlers_disconnect_by_func (priv->sec_activate_target,
+		                                      sec_activate_target_parent_changed,
+		                                      self);
+		g_object_unref(G_OBJECT(priv->sec_activate_target));
+		priv->sec_activate_target = NULL;
+	}
+
+	if (menuitem == NULL) {
+		return;
+	}
+
+	g_return_if_fail (GTK_IS_WIDGET (menuitem));
+
+	priv->sec_activate_target = g_object_ref(G_OBJECT(menuitem));
+	priv->sec_activate_enabled = widget_is_menu_child(self, menuitem);
+	g_signal_connect(menuitem, "parent-set", G_CALLBACK(sec_activate_target_parent_changed), self);
 }
 
 /**
@@ -2107,7 +2232,7 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
 	Gets the menu being used for this application indicator.
 	Wrapper function for property #AppIndicator:menu.
 
-	Return value: (transfer none): A #GtkMenu object or %NULL if one hasn't been set.
+	Return value: (transfer full): A #GtkMenu object or %NULL if one hasn't been set.
 */
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)
@@ -2171,6 +2296,22 @@ app_indicator_get_ordering_index (AppIndicator *self)
 	} else {
 		return self->priv->ordering_index;
 	}
+}
+
+/**
+	app_indicator_get_secondary_activate_target:
+	@self: The #AppIndicator object to use
+
+	Gets the menuitem being called on secondary-activate event.
+
+	Return value: (transfer full): A #GtkWidget object or %NULL if none has been set.
+*/
+GtkWidget *
+app_indicator_get_secondary_activate_target (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	return GTK_WIDGET(self->priv->sec_activate_target);
 }
 
 #define APP_INDICATOR_SHORTY_NICK "app-indicator-shorty-nick"

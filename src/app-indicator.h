@@ -284,6 +284,8 @@ void                            app_indicator_set_icon_theme_path(AppIndicator  
                                                                   const gchar        *icon_theme_path);
 void                            app_indicator_set_ordering_index (AppIndicator       *self,
                                                                   guint32             ordering_index);
+void                            app_indicator_set_secondary_activate_target (AppIndicator *self,
+                                                                             GtkWidget    *menuitem);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id                   (AppIndicator *self);
@@ -298,6 +300,7 @@ GtkMenu *                       app_indicator_get_menu                 (AppIndic
 const gchar *                   app_indicator_get_label                (AppIndicator *self);
 const gchar *                   app_indicator_get_label_guide          (AppIndicator *self);
 guint32                         app_indicator_get_ordering_index       (AppIndicator *self);
+GtkWidget *                     app_indicator_get_secondary_activate_target (AppIndicator *self);
 
 /* Helpers */
 void                            app_indicator_build_menu_from_desktop (AppIndicator * self,
