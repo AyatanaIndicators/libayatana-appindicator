@@ -27,6 +27,9 @@
 			<arg type="i" name="x" direction="in" />
 			<arg type="i" name="y" direction="in" />
 		</method>
+		<method name="XAyatanaSecondaryActivate">
+			<arg type="u" name="timestamp" direction="in" />
+		</method>
 
 <!-- Signals -->
 		<signal name="NewIcon">

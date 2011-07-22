@@ -1024,7 +1024,8 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 		delta = ABS(delta);
 		g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
 
-	} else if (g_strcmp0(method, "SecondaryActivate") == 0) {
+	} else if (g_strcmp0(method, "SecondaryActivate") == 0 ||
+	           g_strcmp0(method, "XAyatanaSecondaryActivate") == 0) {
 		GtkWidget *menuitem = priv->sec_activate_target;
 		
 		if (priv->sec_activate_enabled && menuitem &&
