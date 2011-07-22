@@ -2077,15 +2077,15 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
 	g_return_if_fail (IS_APP_INDICATOR (self));
 	AppIndicatorPrivate *priv = self->priv;
 
-	if (menuitem == NULL) {
-		if (priv->sec_activate_target) {
-			g_object_unref(G_OBJECT(priv->sec_activate_target));
-			g_signal_handlers_disconnect_by_func (priv->sec_activate_target,
-			                                      sec_activate_target_parent_changed,
-			                                      self);
-			priv->sec_activate_target = NULL;
-		}
+	if (priv->sec_activate_target) {
+		g_signal_handlers_disconnect_by_func (priv->sec_activate_target,
+		                                      sec_activate_target_parent_changed,
+		                                      self);
+		g_object_unref(G_OBJECT(priv->sec_activate_target));
+		priv->sec_activate_target = NULL;
+	}
 
+	if (menuitem == NULL) {
 		return;
 	}
 
