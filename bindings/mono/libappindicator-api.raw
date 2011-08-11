@@ -143,6 +143,9 @@
       <method name="GetOrderingIndex" cname="app_indicator_get_ordering_index">
         <return-type type="guint32" />
       </method>
+      <method name="GetSecondaryActivateTarget" cname="app_indicator_get_secondary_activate_target">
+        <return-type type="GtkWidget*" />
+      </method>
       <method name="GetStatus" cname="app_indicator_get_status">
         <return-type type="AppIndicatorStatus" />
       </method>
@@ -213,6 +216,12 @@
         <return-type type="void" />
         <parameters>
           <parameter type="guint32" name="ordering_index" />
+        </parameters>
+      </method>
+      <method name="SetSecondaryActivateTarget" cname="app_indicator_set_secondary_activate_target">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="GtkWidget*" name="menuitem" />
         </parameters>
       </method>
       <method name="SetStatus" cname="app_indicator_set_status">

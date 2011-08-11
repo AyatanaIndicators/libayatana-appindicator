@@ -1,3 +1,11 @@
+libappindicator (0.3.91-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Secondary activate support
+    * Better GIR file annotations
+
+ -- Ted Gould <ted@ubuntu.com>  Thu, 11 Aug 2011 12:03:31 -0500
+
 libappindicator (0.3.90-0ubuntu1) oneiric; urgency=low
 
   * debian/control: updated libindicator requirement.
