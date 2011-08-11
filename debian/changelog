@@ -1,5 +1,10 @@
 libappindicator (0.3.91-0ubuntu1) UNRELEASED; urgency=low
 
+  * debian/rules:
+    - update the translations template after build, dh_translations doesn't 
+      work for builds out of the source directory
+
+  [ Ted Gould ]
   * New upstream release.
     * Secondary activate support
     * Better GIR file annotations
