@@ -41,6 +41,7 @@
     <function name="app_indicator_set_icon_theme_path ()" link="libappindicator-app-indicator.html#app-indicator-set-icon-theme-path"/>
     <function name="app_indicator_set_label ()" link="libappindicator-app-indicator.html#app-indicator-set-label"/>
     <function name="app_indicator_set_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-set-ordering-index"/>
+    <function name="app_indicator_set_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-set-secondary-activate-target"/>
     <function name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
     <function name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
     <function name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
@@ -53,6 +54,7 @@
     <function name="app_indicator_get_label ()" link="libappindicator-app-indicator.html#app-indicator-get-label"/>
     <function name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <function name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
+    <function name="app_indicator_get_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target"/>
     <function name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
     <function name="The &quot;attention-icon-desc&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-desc"/>
     <function name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>

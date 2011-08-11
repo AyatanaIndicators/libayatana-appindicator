@@ -408,6 +408,15 @@ AppIndicator
 @ordering_index: 
 
 
+<!-- ##### FUNCTION app_indicator_set_secondary_activate_target ##### -->
+<para>
+
+</para>
+
+@self: 
+@menuitem: 
+
+
 <!-- ##### FUNCTION app_indicator_get_id ##### -->
 <para>
 
@@ -508,6 +517,15 @@ AppIndicator
 
 
 <!-- ##### FUNCTION app_indicator_get_ordering_index ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_secondary_activate_target ##### -->
 <para>
 
 </para>

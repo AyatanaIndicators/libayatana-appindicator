@@ -466,6 +466,7 @@ INTROSPECTION_GIRS = $(am__append_1)
 
 INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 @HAVE_INTROSPECTION_TRUE@introspection_sources = \
+@HAVE_INTROSPECTION_TRUE@	$(addprefix $(srcdir)/,app-indicator.c) \
 @HAVE_INTROSPECTION_TRUE@	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
 @HAVE_INTROSPECTION_TRUE@AppIndicator_0_1_gir_INCLUDES = \
