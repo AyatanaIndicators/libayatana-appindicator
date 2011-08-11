@@ -7,6 +7,14 @@
 
 <glossary id="annotation-glossary">
   <title>Annotation Glossary</title>
+<glossdiv><title>A</title>
+    <glossentry>
+      <glossterm><anchor id="annotation-glossterm-allow-none"/>allow-none</glossterm>
+      <glossdef>
+        <para>NULL is ok, both for passing and for returning.</para>
+      </glossdef>
+    </glossentry>
+</glossdiv>
 <glossdiv><title>T</title>
     <glossentry>
       <glossterm><anchor id="annotation-glossterm-transfer none"/>transfer none</glossterm>

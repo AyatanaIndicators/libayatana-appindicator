@@ -148,6 +148,7 @@ INTROSPECTION_COMPILER_ARGS = --includedir=$(builddir)
 if HAVE_INTROSPECTION
 
 introspection_sources = \
+	$(addprefix $(srcdir)/,app-indicator.c) \
 	$(addprefix $(srcdir)/,$(libappindicator_headers))
 
 AppIndicator$(VER)-0.1.gir: libappindicator$(VER).la

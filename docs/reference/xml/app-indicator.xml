@@ -15,7 +15,7 @@
 <refnamediv>
 <refname>AppIndicator</refname>
 <refpurpose>An object to put application information
-		into the panel.</refpurpose>
+                    into the panel.</refpurpose>
 </refnamediv>
 <refsect1 id="libappindicator-app-indicator.stability-level">
 <title>Stability Level</title>
@@ -76,6 +76,9 @@ struct              <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *guide</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-ordering-index">app_indicator_set_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter><link linkend="guint32"><type>guint32</type></link> ordering_index</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-secondary-activate-target">app_indicator_set_secondary_activate_target</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *menuitem</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-id">app_indicator_get_id</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link>  <link linkend="app-indicator-get-category">app_indicator_get_category</link>        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorStatus"><returnvalue>AppIndicatorStatus</returnvalue></link>  <link linkend="app-indicator-get-status">app_indicator_get_status</link>            (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
@@ -94,6 +97,8 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *           
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="guint32"><returnvalue>guint32</returnvalue></link>             <link linkend="app-indicator-get-ordering-index">app_indicator_get_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+<link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *                      <link linkend="app-indicator-get-secondary-activate-target">app_indicator_get_secondary_activate_target</link>
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-build-menu-from-desktop">app_indicator_build_menu_from_desktop</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_file</parameter>,
@@ -142,13 +147,13 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *           
 <title role="desc.title">Description</title>
 <para>
 An application indicator is a way for an application to put
-	a menu into the panel on the user's screen.  This allows the
-	user to interact with the application even though it might
-	not be visible to the user at the time.  In most cases this
-	is not a good solution as there are other ways to inform the
-	user.  It should only be use if persistence is a desired
-	feature for the user (not for your marketing purpose of
-	having your logo in the panel).
+a menu into the panel on the user's screen.  This allows the
+user to interact with the application even though it might
+not be visible to the user at the time.  In most cases this
+is not a good solution as there are other ways to inform the
+user.  It should only be use if persistence is a desired
+feature for the user (not for your marketing purpose of
+having your logo in the panel).
 </para>
 </refsect1>
 <refsect1 id="libappindicator-app-indicator.details" role="details">
@@ -285,7 +290,7 @@ String identifier for the <link linkend="AppIndicator-scroll-event"><type>"scrol
 </programlisting>
 <para>
 The category provides grouping for the indicators so that
-	users can find indicators that are similar together.
+users can find indicators that are similar together.
 </para><variablelist role="enum">
 <varlistentry id="APP-INDICATOR-CATEGORY-APPLICATION-STATUS:CAPS" role="constant">
 <term><literal>APP_INDICATOR_CATEGORY_APPLICATION_STATUS</literal></term>
@@ -324,9 +329,9 @@ The category provides grouping for the indicators so that
 </programlisting>
 <para>
 These are the states that the indicator can be on in
-	the user's panel.  The indicator by default starts
-	in the state <parameter>APP_INDICATOR_STATUS_PASSIVE</parameter> and can be
-	shown by setting it to <parameter>APP_INDICATOR_STATUS_ACTIVE</parameter>.
+the user's panel.  The indicator by default starts
+in the state <parameter>APP_INDICATOR_STATUS_PASSIVE</parameter> and can be
+shown by setting it to <parameter>APP_INDICATOR_STATUS_ACTIVE</parameter>.
 </para><variablelist role="enum">
 <varlistentry id="APP-INDICATOR-STATUS-PASSIVE:CAPS" role="constant">
 <term><literal>APP_INDICATOR_STATUS_PASSIVE</literal></term>
@@ -349,18 +354,22 @@ These are the states that the indicator can be on in
 <indexterm zone="AppIndicatorPrivate"><primary>AppIndicatorPrivate</primary></indexterm>
 <programlisting>typedef struct _AppIndicatorPrivate AppIndicatorPrivate;</programlisting>
 <para>
-All of the private data in an instance of a
-	application indicator.
+Private Fields
+<parameter>id</parameter>: The ID of the indicator.  Maps to AppIndicator:id.
+<parameter>category</parameter>: Which category the indicator is.  Maps to AppIndicator:category.
+<parameter>status</parameter>: The status of the indicator.  Maps to AppIndicator:status.
+<parameter>icon_name</parameter>: The name of the icon to use.  Maps to AppIndicator:icon-name.
+<parameter>attention_icon_name</parameter>: The name of the attention icon to use.  Maps to AppIndicator:attention-icon-name.
+<parameter>menu</parameter>: The menu for this indicator.  Maps to AppIndicator:menu
+<parameter>watcher_proxy</parameter>: The proxy connection to the watcher we're connected to.  If we're not connected to one this will be <link linkend="NULL:CAPS"><literal>NULL</literal></link>.
 </para></refsect2>
 <refsect2 id="AppIndicator-struct" role="struct">
 <title>AppIndicator</title>
 <indexterm zone="AppIndicator-struct"><primary>AppIndicator</primary></indexterm>
 <programlisting>typedef struct _AppIndicator AppIndicator;</programlisting>
 <para>
-A application indicator represents the values that are needed to show a
-	unique status in the panel for an application.  In general, applications
-	should try to fit in the other indicators that are available on the
-	panel before using this.  But, sometimes it is necissary.
+Whether the indicator is shown or requests attention. Defaults to
+'Passive'.
 </para></refsect2>
 <refsect2 id="AppIndicatorClass" role="struct">
 <title>struct AppIndicatorClass</title>
@@ -413,7 +422,7 @@ A application indicator represents the values that are needed to show a
 </programlisting>
 <para>
 The signals and external functions that make up the <link linkend="AppIndicator"><type>AppIndicator</type></link>
-	class object.
+class object.
 </para><variablelist role="struct">
 <varlistentry><term><link linkend="GObjectClass"><type>GObjectClass</type></link>&#160;<structfield id="AppIndicatorClass.parent-class">parent_class</structfield>;</term>
 <listitem><simpara>Mia familia</simpara></listitem>
@@ -486,9 +495,8 @@ Generates or returns the unique <link linkend="GType"><type>GType</type></link> 
                                                          <parameter><link linkend="AppIndicatorCategory"><type>AppIndicatorCategory</type></link> category</parameter>);</programlisting>
 <para>
 Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> setting the properties:
-		<link linkend="AppIndicator--id"><type>"id"</type></link> with <parameter>id</parameter>, <link linkend="AppIndicator--category"><type>"category"</type></link>
-		with <parameter>category</parameter> and <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> with
-		<parameter>icon_name</parameter>.
+<link linkend="AppIndicator--id"><type>"id"</type></link> with <parameter>id</parameter>, <link linkend="AppIndicator--category"><type>"category"</type></link> with <parameter>category</parameter>
+and <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> with <parameter>icon_name</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
 <listitem><simpara>The unique id of the indicator to create.</simpara></listitem></varlistentry>
@@ -507,9 +515,9 @@ Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> sett
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_theme_path</parameter>);</programlisting>
 <para>
 Creates a new <link linkend="AppIndicator"><type>AppIndicator</type></link> setting the properties:
-		<link linkend="AppIndicator--id"><type>"id"</type></link> with <parameter>id</parameter>, <link linkend="AppIndicator--category"><type>"category"</type></link>
-		with <parameter>category</parameter>, <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> with
-		<parameter>icon_name</parameter> and <link linkend="AppIndicator--icon-theme-path"><type>"icon-theme-path"</type></link> with <parameter>icon_theme_path</parameter>.
+<link linkend="AppIndicator--id"><type>"id"</type></link> with <parameter>id</parameter>, <link linkend="AppIndicator--category"><type>"category"</type></link> with <parameter>category</parameter>,
+<link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> with <parameter>icon_name</parameter> and <link linkend="AppIndicator--icon-theme-path"><type>"icon-theme-path"</type></link>
+with <parameter>icon_theme_path</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>id</parameter>&#160;:</term>
 <listitem><simpara>The unique id of the indicator to create.</simpara></listitem></varlistentry>
@@ -542,7 +550,7 @@ Wrapper function for property <link linkend="AppIndicator--status"><type>"status
 <warning><para><literal>app_indicator_set_attention_icon</literal> is deprecated and should not be used in newly-written code. Use <link linkend="app-indicator-set-attention-icon-full"><function>app_indicator_set_attention_icon_full()</function></link> instead.</para></warning>
 <para>
 Wrapper for <link linkend="app-indicator-set-attention-icon-full"><function>app_indicator_set_attention_icon_full()</function></link> with a NULL
-	description.
+description.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -573,15 +581,16 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-name">
                                                          <parameter><link linkend="GtkMenu"><type>GtkMenu</type></link> *menu</parameter>);</programlisting>
 <para>
 Sets the menu that should be shown when the Application Indicator
-        is clicked on in the panel.  An application indicator will not
-        be rendered unless it has a menu.
-        
-        Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
+is clicked on in the panel.  An application indicator will not
+be rendered unless it has a menu.
+</para>
+<para>
+Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>menu</parameter>&#160;:</term>
-<listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> to set</simpara></listitem></varlistentry>
+<listitem><simpara>A <link linkend="GtkMenu"><type>GtkMenu</type></link> to set. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-set-icon" role="function" condition="deprecated:Use app_indicator_set_icon_full()">
 <title>app_indicator_set_icon ()</title>
@@ -591,7 +600,7 @@ Sets the menu that should be shown when the Application Indicator
 <warning><para><literal>app_indicator_set_icon</literal> is deprecated and should not be used in newly-written code. Use <link linkend="app-indicator-set-icon-full"><function>app_indicator_set_icon_full()</function></link></para></warning>
 <para>
 Wrapper function for <link linkend="app-indicator-set-icon-full"><function>app_indicator_set_icon_full()</function></link> with a NULL
-		description.
+description.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -606,12 +615,12 @@ Wrapper function for <link linkend="app-indicator-set-icon-full"><function>app_i
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *icon_desc</parameter>);</programlisting>
 <para>
 Sets the default icon to use when the status is active but
-		not set to attention.  In most cases, this should be the
-		application icon for the program.
+not set to attention.  In most cases, this should be the
+application icon for the program.
 </para>
 <para>
-		Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> and
-		<link linkend="AppIndicator-icon-desc"><type>"icon-desc"</type></link>.
+Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> and
+<link linkend="AppIndicator-icon-desc"><type>"icon-desc"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -641,8 +650,8 @@ Sets the path to use when searching for icons.
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *guide</parameter>);</programlisting>
 <para>
 This is a wrapper function for the <link linkend="AppIndicator--label"><type>"label"</type></link> and
-	<link linkend="AppIndicator--guide"><type>"guide"</type></link> properties.  This function can take <link linkend="NULL:CAPS"><type>NULL</type></link>
-	as either <parameter>label</parameter> or <parameter>guide</parameter> and will clear the entries.
+<link linkend="AppIndicator--guide"><type>"guide"</type></link> properties.  This function can take <link linkend="NULL:CAPS"><type>NULL</type></link>
+as either <parameter>label</parameter> or <parameter>guide</parameter> and will clear the entries.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -658,16 +667,39 @@ This is a wrapper function for the <link linkend="AppIndicator--label"><type>"la
                                                          <parameter><link linkend="guint32"><type>guint32</type></link> ordering_index</parameter>);</programlisting>
 <para>
 Sets the ordering index for the app indicator which effects the
-	placement of it on the panel.  For almost all app indicator
-	this is not the function you're looking for.
+placement of it on the panel.  For almost all app indicator
+this is not the function you're looking for.
 </para>
 <para>
-	Wrapper function for property <link linkend="AppIndicator--ordering-index"><type>"ordering-index"</type></link>.
+Wrapper function for property <link linkend="AppIndicator--ordering-index"><type>"ordering-index"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ordering_index</parameter>&#160;:</term>
 <listitem><simpara>A value for the ordering of this app indicator</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2 id="app-indicator-set-secondary-activate-target" role="function">
+<title>app_indicator_set_secondary_activate_target ()</title>
+<indexterm zone="app-indicator-set-secondary-activate-target"><primary>app_indicator_set_secondary_activate_target</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_secondary_activate_target
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *menuitem</parameter>);</programlisting>
+<para>
+Set the <parameter>menuitem</parameter> to be activated when a secondary activation event (i.e. a
+middle-click) is emitted over the <link linkend="AppIndicator"><type>AppIndicator</type></link> icon/label.
+</para>
+<para>
+The <parameter>menuitem</parameter> can be also a complex <link linkend="GtkWidget"><type>GtkWidget</type></link>, but to get activated when
+a secondary activation occurs in the <link linkend="Appindicator"><type>Appindicator</type></link>, it must be a visible and
+active child (or inner-child) of the <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
+</para>
+<para>
+Setting <parameter>menuitem</parameter> to <link linkend="NULL:CAPS"><literal>NULL</literal></link> causes to disable this feature.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><parameter>menuitem</parameter>&#160;:</term>
+<listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> to be activated on secondary activation. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2 id="app-indicator-get-id" role="function">
 <title>app_indicator_get_id ()</title>
@@ -767,7 +799,7 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-desc">
 <programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        app_indicator_get_menu (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Gets the menu being used for this application indicator.
-	Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
+Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -808,6 +840,18 @@ Wrapper function for property <link linkend="AppIndicator--ordering-index"><type
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current ordering index.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-get-secondary-activate-target" role="function">
+<title>app_indicator_get_secondary_activate_target ()</title>
+<indexterm zone="app-indicator-get-secondary-activate-target"><primary>app_indicator_get_secondary_activate_target</primary></indexterm>
+<programlisting><link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *                      app_indicator_get_secondary_activate_target
+                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<para>
+Gets the menuitem being called on secondary-activate event.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none has been set. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="app-indicator-build-menu-from-desktop" role="function">
 <title>app_indicator_build_menu_from_desktop ()</title>
 <indexterm zone="app-indicator-build-menu-from-desktop"><primary>app_indicator_build_menu_from_desktop</primary></indexterm>
@@ -817,7 +861,7 @@ Wrapper function for property <link linkend="AppIndicator--ordering-index"><type
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_profile</parameter>);</programlisting>
 <para>
 This function allows for building the Application Indicator menu
-	from a static desktop file.
+from a static desktop file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
@@ -835,7 +879,7 @@ This function allows for building the Application Indicator menu
 <programlisting>  &quot;attention-icon-desc&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 If the indicator sets it's status to <link linkend="APP-INDICATOR-STATUS-ATTENTION:CAPS"><literal>APP_INDICATOR_STATUS_ATTENTION</literal></link>
-		then this textual description of the icon shown.
+then this textual description of the icon shown.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--attention-icon-name" role="property"><title>The <literal>&quot;attention-icon-name&quot;</literal> property</title>
@@ -843,7 +887,7 @@ If the indicator sets it's status to <link linkend="APP-INDICATOR-STATUS-ATTENTI
 <programlisting>  &quot;attention-icon-name&quot;      <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 If the indicator sets it's status to <link linkend="APP-INDICATOR-STATUS-ATTENTION:CAPS"><literal>APP_INDICATOR_STATUS_ATTENTION</literal></link>
-		then this icon is shown.
+then this icon is shown.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--category" role="property"><title>The <literal>&quot;category&quot;</literal> property</title>
@@ -851,7 +895,7 @@ If the indicator sets it's status to <link linkend="APP-INDICATOR-STATUS-ATTENTI
 <programlisting>  &quot;category&quot;                 <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only</programlisting>
 <para>
 The type of indicator that this represents.  Please don't use 'Other'.
-		Defaults to 'ApplicationStatus'.
+Defaults to 'ApplicationStatus'.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--connected" role="property"><title>The <literal>&quot;connected&quot;</literal> property</title>
@@ -859,7 +903,7 @@ The type of indicator that this represents.  Please don't use 'Other'.
 <programlisting>  &quot;connected&quot;                <link linkend="gboolean"><type>gboolean</type></link>              : Read</programlisting>
 <para>
 Pretty simple, <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if we have a reasonable expectation of being 
-		displayed through this object. You should hide your TrayIcon if so.
+displayed through this object. You should hide your TrayIcon if so.
 </para><para>Default value: FALSE</para>
 </refsect2>
 <refsect2 id="AppIndicator--dbus-menu-server" role="property"><title>The <literal>&quot;dbus-menu-server&quot;</literal> property</title>
@@ -867,7 +911,7 @@ Pretty simple, <link linkend="TRUE:CAPS"><literal>TRUE</literal></link> if we ha
 <programlisting>  &quot;dbus-menu-server&quot;         <link linkend="DbusmenuServer"><type>DbusmenuServer</type></link>*       : Read / Write</programlisting>
 <para>
 A way to get the internal dbusmenu server if it is available.
-		This should only be used for testing.
+This should only be used for testing.
 </para></refsect2>
 <refsect2 id="AppIndicator--icon-desc" role="property"><title>The <literal>&quot;icon-desc&quot;</literal> property</title>
 <indexterm zone="AppIndicator--icon-desc"><primary>AppIndicator:icon-desc</primary></indexterm>
@@ -888,7 +932,7 @@ The name of the regular icon that is shown for the indicator.
 <programlisting>  &quot;icon-theme-path&quot;          <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct</programlisting>
 <para>
 An additional place to look for icon names that may be installed by the
-		application.
+application.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--id" role="property"><title>The <literal>&quot;id&quot;</literal> property</title>
@@ -896,7 +940,7 @@ An additional place to look for icon names that may be installed by the
 <programlisting>  &quot;id&quot;                       <link linkend="gchar"><type>gchar</type></link>*                : Read / Write / Construct Only</programlisting>
 <para>
 The ID for this indicator, which should be unique, but used consistently
-		by this program and its indicator.
+by this program and its indicator.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--label" role="property"><title>The <literal>&quot;label&quot;</literal> property</title>
@@ -904,11 +948,11 @@ The ID for this indicator, which should be unique, but used consistently
 <programlisting>  &quot;label&quot;                    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 A label that can be shown next to the string in the application
-		indicator.  The label will not be shown unless there is an icon
-		as well.  The label is useful for numerical and other frequently
-		updated information.  In general, it shouldn't be shown unless a
-		user requests it as it can take up a significant amount of space
-		on the user's panel.  This may not be shown in all visualizations.
+indicator.  The label will not be shown unless there is an icon
+as well.  The label is useful for numerical and other frequently
+updated information.  In general, it shouldn't be shown unless a
+user requests it as it can take up a significant amount of space
+on the user's panel.  This may not be shown in all visualizations.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--label-guide" role="property"><title>The <literal>&quot;label-guide&quot;</literal> property</title>
@@ -916,12 +960,12 @@ A label that can be shown next to the string in the application
 <programlisting>  &quot;label-guide&quot;              <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
 <para>
 An optional string to provide guidance to the panel on how big
-		the <link linkend="AppIndicator--label"><type>"label"</type></link> string could get.  If this is set correctly
-		then the panel should never 'jiggle' as the string adjusts through
-		out the range of options.  For instance, if you were providing a
-		percentage like "54% thrust" in <link linkend="AppIndicator--label"><type>"label"</type></link> you'd want to
-		set this string to "100% thrust" to ensure space when Scotty can
-		get you enough power.
+the <link linkend="AppIndicator--label"><type>"label"</type></link> string could get.  If this is set correctly
+then the panel should never 'jiggle' as the string adjusts through
+out the range of options.  For instance, if you were providing a
+percentage like "54% thrust" in <link linkend="AppIndicator--label"><type>"label"</type></link> you'd want to
+set this string to "100% thrust" to ensure space when Scotty can
+get you enough power.
 </para><para>Default value: NULL</para>
 </refsect2>
 <refsect2 id="AppIndicator--ordering-index" role="property"><title>The <literal>&quot;ordering-index&quot;</literal> property</title>
@@ -929,22 +973,19 @@ An optional string to provide guidance to the panel on how big
 <programlisting>  &quot;ordering-index&quot;           <link linkend="guint"><type>guint</type></link>                 : Read / Write</programlisting>
 <para>
 The ordering index is an odd parameter, and if you think you don't need
-		it you're probably right.  In general, the application indicator try
-		to place the applications in a recreatable place taking into account
-		which category they're in to try and group them.  But, there are some
-		cases where you'd want to ensure indicators are next to each other.
-		To do that you can override the generated ordering index and replace it
-		with a new one.  Again, you probably don't want to be doing this, but
-		in case you do, this is the way.
+it you're probably right.  In general, the application indicator try
+to place the applications in a recreatable place taking into account
+which category they're in to try and group them.  But, there are some
+cases where you'd want to ensure indicators are next to each other.
+To do that you can override the generated ordering index and replace it
+with a new one.  Again, you probably don't want to be doing this, but
+in case you do, this is the way.
 </para><para>Default value: 0</para>
 </refsect2>
 <refsect2 id="AppIndicator--status" role="property"><title>The <literal>&quot;status&quot;</literal> property</title>
 <indexterm zone="AppIndicator--status"><primary>AppIndicator:status</primary></indexterm>
 <programlisting>  &quot;status&quot;                   <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
-<para>
-Whether the indicator is shown or requests attention. Defaults to
-		'Passive'.
-</para><para>Default value: NULL</para>
+<para>Whether the indicator is shown or requests attention. Defaults to 'Passive'.</para><para>Default value: NULL</para>
 </refsect2>
 
 </refsect1>
@@ -980,7 +1021,7 @@ Emitted when <link linkend="AppIndicator--attention-icon-name"><type>"attention-
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                user_function                      (<link linkend="AppIndicator"><type>AppIndicator</type></link> *arg0,
                                                         <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
-Emitted when <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> is changed
+when <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link> is changed
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
@@ -993,7 +1034,7 @@ Emitted when <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></l
                                                         <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Signaled when there is a new icon set for the
-		object.
+object.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
@@ -1007,7 +1048,7 @@ Signaled when there is a new icon set for the
                                                         <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
 Emitted when either <link linkend="AppIndicator--label"><type>"label"</type></link> or <link linkend="AppIndicator--label-guide"><type>"label-guide"</type></link> are
-		changed.
+changed.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
@@ -1038,8 +1079,7 @@ Emitted when <link linkend="AppIndicator--status"><type>"status"</type></link> i
                                                         <link linkend="guint"><type>guint</type></link>         arg2,
                                                         <link linkend="gpointer"><type>gpointer</type></link>      user_data)      : <link linkend="G-SIGNAL-RUN-LAST:CAPS"><literal>Run Last</literal></link></programlisting>
 <para>
-Signaled when there is a new icon set for the
-		object.
+Signaled when the <link linkend="AppIndicator"><type>AppIndicator</type></link> receives a scroll event.
 </para><variablelist role="params">
 <varlistentry><term><parameter>arg0</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object</simpara></listitem></varlistentry>
