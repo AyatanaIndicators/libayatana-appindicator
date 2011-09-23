@@ -25,9 +25,10 @@ $(vapiprefix).deps:
 
 $(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
                     $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
+                    $(vapiprefix)-custom.vala \
                     $(vapiprefix).deps
 	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
-	$<
+	$< $(vapiprefix)-custom.vala
 	
 
 CLEANFILES = $(vapi_DATA)
