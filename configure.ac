@@ -97,7 +97,7 @@ AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$VALA_API_GEN" != "x"])
 # Vala Compiler support
 ###########################
 
-AM_PROG_VALAC([0.11.0])
+AM_PROG_VALAC([0.14.0])
 AM_CONDITIONAL(HAVE_VALAC, [test "x$VALAC" != "x"])
 
 ###########################

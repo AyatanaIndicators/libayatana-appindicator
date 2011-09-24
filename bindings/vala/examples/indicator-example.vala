@@ -34,6 +34,7 @@ public class IndicatorExample {
 
 		var indicator = new Indicator(win.title, "indicator-messages",
 				                      IndicatorCategory.APPLICATION_STATUS);
+		if (!(indicator is Indicator)) return -1;
 
 		indicator.set_status(IndicatorStatus.ACTIVE);
 		indicator.set_attention_icon("indicator-messages-new");
