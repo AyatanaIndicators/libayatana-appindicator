@@ -8,7 +8,7 @@
 <link rel="up" href="ch01.html" title="Base Classes for Applications">
 <link rel="prev" href="ch01.html" title="Base Classes for Applications">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -102,25 +102,20 @@ struct              <a class="link" href="libappindicator-app-indicator.html#App
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-set-secondary-activate-target" title="app_indicator_set_secondary_activate_target ()">app_indicator_set_secondary_activate_target</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="type">GtkWidget</span></a> *menuitem</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-id" title="app_indicator_get_id ()">app_indicator_get_id</a>   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-<a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory"><span class="returnvalue">AppIndicatorCategory</span></a>  <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-category" title="app_indicator_get_category ()">app_indicator_get_category</a>        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-id" title="app_indicator_get_id ()">app_indicator_get_id</a>                (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+<a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory"><span class="returnvalue">AppIndicatorCategory</span></a> <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-category" title="app_indicator_get_category ()">app_indicator_get_category</a>         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <a class="link" href="libappindicator-app-indicator.html#AppIndicatorStatus" title="enum AppIndicatorStatus"><span class="returnvalue">AppIndicatorStatus</span></a>  <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-status" title="app_indicator_get_status ()">app_indicator_get_status</a>            (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon" title="app_indicator_get_icon ()">app_indicator_get_icon</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon-desc" title="app_indicator_get_icon_desc ()">app_indicator_get_icon_desc</a>
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon" title="app_indicator_get_icon ()">app_indicator_get_icon</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon-desc" title="app_indicator_get_icon_desc ()">app_indicator_get_icon_desc</a>         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon-theme-path" title="app_indicator_get_icon_theme_path ()">app_indicator_get_icon_theme_path</a>   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon" title="app_indicator_get_attention_icon ()">app_indicator_get_attention_icon</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon-desc" title="app_indicator_get_attention_icon_desc ()">app_indicator_get_attention_icon_desc</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-icon-theme-path" title="app_indicator_get_icon_theme_path ()">app_indicator_get_icon_theme_path</a>
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon" title="app_indicator_get_attention_icon ()">app_indicator_get_attention_icon</a>
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-attention-icon-desc" title="app_indicator_get_attention_icon_desc ()">app_indicator_get_attention_icon_desc</a>
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-<a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a> (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label" title="app_indicator_get_label ()">app_indicator_get_label</a>
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label-guide" title="app_indicator_get_label_guide ()">app_indicator_get_label_guide</a>
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+<a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-menu" title="app_indicator_get_menu ()">app_indicator_get_menu</a>              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label" title="app_indicator_get_label ()">app_indicator_get_label</a>             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-label-guide" title="app_indicator_get_label_guide ()">app_indicator_get_label_guide</a>       (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>             <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-ordering-index" title="app_indicator_get_ordering_index ()">app_indicator_get_ordering_index</a>    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
-<a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *                      <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target" title="app_indicator_get_secondary_activate_target ()">app_indicator_get_secondary_activate_target</a>
+<a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *         <a class="link" href="libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target" title="app_indicator_get_secondary_activate_target ()">app_indicator_get_secondary_activate_target</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop" title="app_indicator_build_menu_from_desktop ()">app_indicator_build_menu_from_desktop</a>
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>,
@@ -335,7 +330,8 @@ String identifier for the <a class="link" href="libappindicator-app-indicator.ht
 <hr>
 <div class="refsect2">
 <a name="AppIndicatorCategory"></a><h3>enum AppIndicatorCategory</h3>
-<pre class="programlisting">typedef enum { /*&lt; prefix=APP_INDICATOR_CATEGORY &gt;*/
+<pre class="programlisting">typedef enum {
+ /*&lt; prefix=APP_INDICATOR_CATEGORY &gt;*/
 	APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*&lt; nick=ApplicationStatus &gt;*/
 	APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*&lt; nick=Communications &gt;*/
 	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES, /*&lt; nick=SystemServices &gt;*/
@@ -381,7 +377,8 @@ users can find indicators that are similar together.
 <hr>
 <div class="refsect2">
 <a name="AppIndicatorStatus"></a><h3>enum AppIndicatorStatus</h3>
-<pre class="programlisting">typedef enum { /*&lt; prefix=APP_INDICATOR_STATUS &gt;*/
+<pre class="programlisting">typedef enum {
+ /*&lt; prefix=APP_INDICATOR_STATUS &gt;*/
 	APP_INDICATOR_STATUS_PASSIVE, /*&lt; nick=Passive &gt;*/
 	APP_INDICATOR_STATUS_ACTIVE, /*&lt; nick=Active &gt;*/
 	APP_INDICATOR_STATUS_ATTENTION /*&lt; nick=NeedsAttention &gt;*/
@@ -938,7 +935,7 @@ Setting <em class="parameter"><code>menuitem</code></em> to <a href="http://libr
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-id"></a><h3>app_indicator_get_id ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_id   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_id                (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--id" title='The "id" property'><span class="type">"id"</span></a>.
 </p>
@@ -959,7 +956,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-category"></a><h3>app_indicator_get_category ()</h3>
-<pre class="programlisting"><a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory"><span class="returnvalue">AppIndicatorCategory</span></a>  app_indicator_get_category        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="libappindicator-app-indicator.html#AppIndicatorCategory" title="enum AppIndicatorCategory"><span class="returnvalue">AppIndicatorCategory</span></a> app_indicator_get_category         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--category" title='The "category" property'><span class="type">"category"</span></a>.
 </p>
@@ -1001,7 +998,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-icon"></a><h3>app_indicator_get_icon ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_icon (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_icon              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-name" title='The "icon-name" property'><span class="type">"icon-name"</span></a>.
 </p>
@@ -1022,8 +1019,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-icon-desc"></a><h3>app_indicator_get_icon_desc ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_icon_desc
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_icon_desc         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-desc" title='The "icon-desc" property'><span class="type">"icon-desc"</span></a>.
 </p>
@@ -1044,8 +1040,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-icon-theme-path"></a><h3>app_indicator_get_icon_theme_path ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_icon_theme_path
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_icon_theme_path   (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--icon-theme-path" title='The "icon-theme-path" property'><span class="type">"icon-theme-path"</span></a>.
 </p>
@@ -1066,8 +1061,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-attention-icon"></a><h3>app_indicator_get_attention_icon ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_attention_icon
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_attention_icon    (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--attention-icon-name" title='The "attention-icon-name" property'><span class="type">"attention-icon-name"</span></a>.
 </p>
@@ -1088,7 +1082,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-attention-icon-desc"></a><h3>app_indicator_get_attention_icon_desc ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_attention_icon_desc
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_attention_icon_desc
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--attention-icon-desc" title='The "attention-icon-desc" property'><span class="type">"attention-icon-desc"</span></a>.
@@ -1110,7 +1104,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-menu"></a><h3>app_indicator_get_menu ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *                        app_indicator_get_menu (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/GtkMenu.html"><span class="returnvalue">GtkMenu</span></a> *           app_indicator_get_menu              (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Gets the menu being used for this application indicator.
 Wrapper function for property <span class="type">"menu"</span>.
@@ -1133,8 +1127,7 @@ Wrapper function for property <span class="type">"menu"</span>.
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-label"></a><h3>app_indicator_get_label ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_label
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_label             (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label" title='The "label" property'><span class="type">"label"</span></a>.
 </p>
@@ -1155,8 +1148,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-label-guide"></a><h3>app_indicator_get_label_guide ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *                    app_indicator_get_label_guide
-                                                        (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *       app_indicator_get_label_guide       (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Wrapper function for property <a class="link" href="libappindicator-app-indicator.html#AppIndicator--label-guide" title='The "label-guide" property'><span class="type">"label-guide"</span></a>.
 </p>
@@ -1198,7 +1190,7 @@ Wrapper function for property <a class="link" href="libappindicator-app-indicato
 <hr>
 <div class="refsect2">
 <a name="app-indicator-get-secondary-activate-target"></a><h3>app_indicator_get_secondary_activate_target ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *                      app_indicator_get_secondary_activate_target
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gtk/GtkWidget.html"><span class="returnvalue">GtkWidget</span></a> *         app_indicator_get_secondary_activate_target
                                                         (<em class="parameter"><code><a class="link" href="libappindicator-app-indicator.html#AppIndicator"><span class="type">AppIndicator</span></a> *self</code></em>);</pre>
 <p>
 Gets the menuitem being called on secondary-activate event.
@@ -1581,6 +1573,6 @@ Signaled when the <a class="link" href="libappindicator-app-indicator.html#AppIn
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>
