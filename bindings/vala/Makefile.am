@@ -25,7 +25,7 @@ $(vapiprefix).deps:
 
 $(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
                     $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
-                    $(vapiprefix)-custom.vala \
+                    appindicator-0.1-custom.vala \
                     $(vapiprefix).deps
 	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
 	$< $(srcdir)/appindicator-0.1-custom.vala
