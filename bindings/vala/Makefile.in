@@ -302,6 +302,9 @@ top_srcdir = @top_srcdir@
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@vapi_DATA = $(vapiprefix).vapi $(vapiprefix).deps
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@DEPS = $(GTKVAPI)
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@CLEANFILES = $(vapi_DATA)
+EXTRA_DIST = \
+	appindicator-0.1-custom.vala
+
 all: all-recursive
 
 .SUFFIXES:
@@ -678,9 +681,10 @@ uninstall-am: uninstall-vapiDATA
 
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@$(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@                    $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@                    $(vapiprefix)-custom.vala \
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@                    $(vapiprefix).deps
 @HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
-@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	$<
+@HAVE_INTROSPECTION_TRUE@@HAVE_VAPIGEN_TRUE@	$< $(srcdir)/$(vapiprefix)-custom.vala
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

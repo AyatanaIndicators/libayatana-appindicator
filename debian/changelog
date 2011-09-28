@@ -1,3 +1,10 @@
+libappindicator (0.4.0-0ubuntu1~ppa1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Fix VAPI file for Vala bindings (LP: #789588)
+
+ -- Ted Gould <ted@ubuntu.com>  Wed, 28 Sep 2011 11:41:36 -0500
+
 libappindicator (0.3.91-0ubuntu1) oneiric; urgency=low
 
   * debian/rules:
