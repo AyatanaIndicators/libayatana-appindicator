@@ -79,25 +79,20 @@ struct              <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-secondary-activate-target">app_indicator_set_secondary_activate_target</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *menuitem</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-id">app_indicator_get_id</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-<link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link>  <link linkend="app-indicator-get-category">app_indicator_get_category</link>        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-id">app_indicator_get_id</link>                (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+<link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link> <link linkend="app-indicator-get-category">app_indicator_get_category</link>         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorStatus"><returnvalue>AppIndicatorStatus</returnvalue></link>  <link linkend="app-indicator-get-status">app_indicator_get_status</link>            (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon">app_indicator_get_icon</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon-desc">app_indicator_get_icon_desc</link>
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-icon">app_indicator_get_icon</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-icon-desc">app_indicator_get_icon_desc</link>         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-icon-theme-path">app_indicator_get_icon_theme_path</link>   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-attention-icon">app_indicator_get_attention_icon</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-attention-icon-desc">app_indicator_get_attention_icon_desc</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-icon-theme-path">app_indicator_get_icon_theme_path</link>
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-attention-icon">app_indicator_get_attention_icon</link>
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-attention-icon-desc">app_indicator_get_attention_icon_desc</link>
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-<link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        <link linkend="app-indicator-get-menu">app_indicator_get_menu</link> (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label">app_indicator_get_label</link>
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+<link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           <link linkend="app-indicator-get-menu">app_indicator_get_menu</link>              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label">app_indicator_get_label</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-label-guide">app_indicator_get_label_guide</link>       (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="guint32"><returnvalue>guint32</returnvalue></link>             <link linkend="app-indicator-get-ordering-index">app_indicator_get_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
-<link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *                      <link linkend="app-indicator-get-secondary-activate-target">app_indicator_get_secondary_activate_target</link>
+<link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *         <link linkend="app-indicator-get-secondary-activate-target">app_indicator_get_secondary_activate_target</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-build-menu-from-desktop">app_indicator_build_menu_from_desktop</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
@@ -280,7 +275,8 @@ String identifier for the <link linkend="AppIndicator-scroll-event"><type>"scrol
 <refsect2 id="AppIndicatorCategory" role="enum">
 <title>enum AppIndicatorCategory</title>
 <indexterm zone="AppIndicatorCategory"><primary>AppIndicatorCategory</primary></indexterm>
-<programlisting>typedef enum { /*&lt; prefix=APP_INDICATOR_CATEGORY &gt;*/
+<programlisting>typedef enum {
+ /*&lt; prefix=APP_INDICATOR_CATEGORY &gt;*/
 	APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*&lt; nick=ApplicationStatus &gt;*/
 	APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*&lt; nick=Communications &gt;*/
 	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES, /*&lt; nick=SystemServices &gt;*/
@@ -321,7 +317,8 @@ users can find indicators that are similar together.
 <refsect2 id="AppIndicatorStatus" role="enum">
 <title>enum AppIndicatorStatus</title>
 <indexterm zone="AppIndicatorStatus"><primary>AppIndicatorStatus</primary></indexterm>
-<programlisting>typedef enum { /*&lt; prefix=APP_INDICATOR_STATUS &gt;*/
+<programlisting>typedef enum {
+ /*&lt; prefix=APP_INDICATOR_STATUS &gt;*/
 	APP_INDICATOR_STATUS_PASSIVE, /*&lt; nick=Passive &gt;*/
 	APP_INDICATOR_STATUS_ACTIVE, /*&lt; nick=Active &gt;*/
 	APP_INDICATOR_STATUS_ATTENTION /*&lt; nick=NeedsAttention &gt;*/
@@ -704,7 +701,7 @@ Setting <parameter>menuitem</parameter> to <link linkend="NULL:CAPS"><literal>NU
 <refsect2 id="app-indicator-get-id" role="function">
 <title>app_indicator_get_id ()</title>
 <indexterm zone="app-indicator-get-id"><primary>app_indicator_get_id</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_id   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_id                (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--id"><type>"id"</type></link>.
 </para><variablelist role="params">
@@ -715,7 +712,7 @@ Wrapper function for property <link linkend="AppIndicator--id"><type>"id"</type>
 <refsect2 id="app-indicator-get-category" role="function">
 <title>app_indicator_get_category ()</title>
 <indexterm zone="app-indicator-get-category"><primary>app_indicator_get_category</primary></indexterm>
-<programlisting><link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link>  app_indicator_get_category        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting><link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link> app_indicator_get_category         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--category"><type>"category"</type></link>.
 </para><variablelist role="params">
@@ -737,7 +734,7 @@ Wrapper function for property <link linkend="AppIndicator--status"><type>"status
 <refsect2 id="app-indicator-get-icon" role="function">
 <title>app_indicator_get_icon ()</title>
 <indexterm zone="app-indicator-get-icon"><primary>app_indicator_get_icon</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_icon              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"icon-name"</type></link>.
 </para><variablelist role="params">
@@ -748,8 +745,7 @@ Wrapper function for property <link linkend="AppIndicator--icon-name"><type>"ico
 <refsect2 id="app-indicator-get-icon-desc" role="function">
 <title>app_indicator_get_icon_desc ()</title>
 <indexterm zone="app-indicator-get-icon-desc"><primary>app_indicator_get_icon_desc</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon_desc
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_icon_desc         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--icon-desc"><type>"icon-desc"</type></link>.
 </para><variablelist role="params">
@@ -760,8 +756,7 @@ Wrapper function for property <link linkend="AppIndicator--icon-desc"><type>"ico
 <refsect2 id="app-indicator-get-icon-theme-path" role="function">
 <title>app_indicator_get_icon_theme_path ()</title>
 <indexterm zone="app-indicator-get-icon-theme-path"><primary>app_indicator_get_icon_theme_path</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_icon_theme_path
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_icon_theme_path   (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--icon-theme-path"><type>"icon-theme-path"</type></link>.
 </para><variablelist role="params">
@@ -772,8 +767,7 @@ Wrapper function for property <link linkend="AppIndicator--icon-theme-path"><typ
 <refsect2 id="app-indicator-get-attention-icon" role="function">
 <title>app_indicator_get_attention_icon ()</title>
 <indexterm zone="app-indicator-get-attention-icon"><primary>app_indicator_get_attention_icon</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_attention_icon
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_attention_icon    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--attention-icon-name"><type>"attention-icon-name"</type></link>.
 </para><variablelist role="params">
@@ -784,7 +778,7 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-name">
 <refsect2 id="app-indicator-get-attention-icon-desc" role="function">
 <title>app_indicator_get_attention_icon_desc ()</title>
 <indexterm zone="app-indicator-get-attention-icon-desc"><primary>app_indicator_get_attention_icon_desc</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_attention_icon_desc
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_attention_icon_desc
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--attention-icon-desc"><type>"attention-icon-desc"</type></link>.
@@ -796,7 +790,7 @@ Wrapper function for property <link linkend="AppIndicator--attention-icon-desc">
 <refsect2 id="app-indicator-get-menu" role="function">
 <title>app_indicator_get_menu ()</title>
 <indexterm zone="app-indicator-get-menu"><primary>app_indicator_get_menu</primary></indexterm>
-<programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *                        app_indicator_get_menu (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting><link linkend="GtkMenu"><returnvalue>GtkMenu</returnvalue></link> *           app_indicator_get_menu              (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Gets the menu being used for this application indicator.
 Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</type></link>.
@@ -808,8 +802,7 @@ Wrapper function for property <link linkend="AppIndicator--menu"><type>"menu"</t
 <refsect2 id="app-indicator-get-label" role="function">
 <title>app_indicator_get_label ()</title>
 <indexterm zone="app-indicator-get-label"><primary>app_indicator_get_label</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_label
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_label             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--label"><type>"label"</type></link>.
 </para><variablelist role="params">
@@ -820,8 +813,7 @@ Wrapper function for property <link linkend="AppIndicator--label"><type>"label"<
 <refsect2 id="app-indicator-get-label-guide" role="function">
 <title>app_indicator_get_label_guide ()</title>
 <indexterm zone="app-indicator-get-label-guide"><primary>app_indicator_get_label_guide</primary></indexterm>
-<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *                    app_indicator_get_label_guide
-                                                        (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_label_guide       (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Wrapper function for property <link linkend="AppIndicator--label-guide"><type>"label-guide"</type></link>.
 </para><variablelist role="params">
@@ -843,7 +835,7 @@ Wrapper function for property <link linkend="AppIndicator--ordering-index"><type
 <refsect2 id="app-indicator-get-secondary-activate-target" role="function">
 <title>app_indicator_get_secondary_activate_target ()</title>
 <indexterm zone="app-indicator-get-secondary-activate-target"><primary>app_indicator_get_secondary_activate_target</primary></indexterm>
-<programlisting><link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *                      app_indicator_get_secondary_activate_target
+<programlisting><link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *         app_indicator_get_secondary_activate_target
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Gets the menuitem being called on secondary-activate event.
