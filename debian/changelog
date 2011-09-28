@@ -1,10 +1,15 @@
-libappindicator (0.3.91-0ubuntu1~ppa1) oneiric; urgency=low
+libappindicator (0.3.91-0ubuntu1) oneiric; urgency=low
 
+  * debian/rules:
+    - update the translations template after build, dh_translations doesn't 
+      work for builds out of the source directory
+
+  [ Ted Gould ]
   * New upstream release.
     * Secondary activate support
     * Better GIR file annotations
 
- -- Ted Gould <ted@ubuntu.com>  Thu, 11 Aug 2011 12:10:17 -0500
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 11 Aug 2011 21:19:26 +0200
 
 libappindicator (0.3.90-0ubuntu1) oneiric; urgency=low
 

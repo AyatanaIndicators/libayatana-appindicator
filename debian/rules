@@ -111,6 +111,7 @@ binary-predeb/libappindicator0.1-cil:: binary-fixup/libappindicator1
 common-binary-predeb-arch:: list-missing
 	dh_fixperms
 	dh_strip
+	cd po; intltool-update --pot --verbose
 
 clean::
 	rm -f configure-stamp*
