@@ -1523,13 +1523,10 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
 	gchar *longname = NULL;
 
-        GtkIconTheme *icon_theme;
+        GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
         if (self->priv->icon_theme_path != NULL)
         {
-                icon_theme = gtk_icon_theme_new();
-                gtk_icon_theme_prepend_search_path(icon_theme, self->priv->icon_theme_path);
-        } else {
-                icon_theme = gtk_icon_theme_get_default();
+                gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
         }
 
 	switch (app_indicator_get_status(self)) {
@@ -1563,9 +1560,6 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	if (longname) {
 		g_free(longname);
 	}
-        if (icon_theme != gtk_icon_theme_get_default()) {
-                g_object_unref(icon_theme);
-        }
 
 	return;
 }
