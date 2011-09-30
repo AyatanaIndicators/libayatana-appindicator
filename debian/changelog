@@ -1,3 +1,11 @@
+libappindicator (0.4.1-0ubuntu2) UNRELEASED; urgency=low
+
+  * src/app-indicator.c:
+    - fix fallback icon of the GtkStatusIcon (LP: #820080), cherry
+      pick of r221 from lp:libappindicator
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 30 Sep 2011 21:26:40 +0200
+
 libappindicator (0.4.1-0ubuntu1) oneiric; urgency=low
 
   [ Ted Gould ]
