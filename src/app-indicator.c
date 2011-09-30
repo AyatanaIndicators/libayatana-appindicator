@@ -1523,10 +1523,25 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
 	gchar *longname = NULL;
 
+        /* add the icon_theme_path once if needed */
         GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
         if (self->priv->icon_theme_path != NULL)
         {
-                gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
+                gchar **path;
+                gint n_elements, i;
+                gboolean found=FALSE;
+                gtk_icon_theme_get_search_path(icon_theme, &path, &n_elements);
+                for (i=0; i< n_elements || path[i] == NULL; i++)
+                {
+                        if(g_strcmp0(path[i], self->priv->icon_theme_path) == 0)
+                        {
+                                found=TRUE;
+                                break;
+                        }
+                }
+                if(!found) 
+                        gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
+                g_strfreev (path);
         }
 
 	switch (app_indicator_get_status(self)) {
