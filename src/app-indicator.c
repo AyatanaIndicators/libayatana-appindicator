@@ -1546,12 +1546,13 @@ status_icon_changes (AppIndicator * self, gpointer data)
 
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
+                /* hide first to avoid that the change is visible to the user */
+                gtk_status_icon_set_visible(icon, FALSE);
                 longname = append_panel_icon_suffix(app_indicator_get_icon(self));
                 if (gtk_icon_theme_has_icon (icon_theme, longname))
                          gtk_status_icon_set_from_icon_name(icon, longname);
                 else
                          gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
-		gtk_status_icon_set_visible(icon, FALSE);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
                 longname = append_panel_icon_suffix(app_indicator_get_icon(self));
