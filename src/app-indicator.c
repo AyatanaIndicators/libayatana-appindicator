@@ -1523,20 +1523,21 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
 	gchar *longname = NULL;
 
+        /* set longname only if its actually in the icon theme */
+        longname = append_panel_icon_suffix(app_indicator_get_icon(self));
+        if (gtk_icon_theme_has_icon (gtk_icon_theme_get_default(), longname))
+            gtk_status_icon_set_from_icon_name(icon, longname);
+        else
+           gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
-		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
 		gtk_status_icon_set_visible(icon, FALSE);
-		gtk_status_icon_set_from_icon_name(icon, longname);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-		longname = append_panel_icon_suffix(app_indicator_get_icon(self));
-		gtk_status_icon_set_from_icon_name(icon, longname);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-		longname = append_panel_icon_suffix(app_indicator_get_attention_icon(self));
-		gtk_status_icon_set_from_icon_name(icon, longname);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
