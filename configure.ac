@@ -189,6 +189,14 @@ PYGTK_CODEGEN="$PYTHON `$PKG_CONFIG --variable=codegendir pygtk-2.0`/codegen.py"
 AC_SUBST(PYGTK_CODEGEN)
 AC_MSG_RESULT($PYGTK_CODEGEN)
 
+#########################
+# Check if build tests
+#########################
+AC_ARG_ENABLE([tests],
+	AC_HELP_STRING([--disable-tests], [Disable tests]),,
+	[enable_tests=yes])
+AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" != "xno"])
+
 ###########################
 # Files
 ###########################
@@ -226,4 +234,5 @@ Libappindicator Configuration:
 
 	Prefix:        $prefix
 	GTK+ Version:  $with_gtk
+	Tests:         $enable_tests
 ])
