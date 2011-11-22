@@ -29,7 +29,7 @@ TARGET = \
 	$(DLLPOLICY1) \
 	$(POLICY1).config
 
-assemblydir = $(libdir)/cli/appindicator-sharp-0.1
+assemblydir = $(libdir)/mono/appindicator-sharp
 assembly_DATA = $(TARGET)
 
 CLEANFILES = \
