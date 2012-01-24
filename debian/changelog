@@ -1,3 +1,9 @@
+libappindicator (0.4.1-0ubuntu3) UNRELEASED; urgency=low
+
+  * no change rebuild for libindicator7
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Tue, 24 Jan 2012 12:58:34 -0500
+
 libappindicator (0.4.1-0ubuntu2) oneiric; urgency=low
 
   * src/app-indicator.c:
