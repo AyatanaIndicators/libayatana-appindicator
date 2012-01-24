@@ -19,7 +19,7 @@ pkgappindicator_PYTHON = __init__.py
 appindicatordir = $(pkgpyexecdir)/appindicator
 appindicator_LTLIBRARIES = _appindicator.la
 
-_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator -lpyglib-2.0-python2.6
+_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator
 _appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) -L$(top_builddir)/src/.libs -lappindicator
 _appindicator_la_SOURCES = appindicatormodule.c
 nodist__appindicator_la_SOURCES = appindicator.c
