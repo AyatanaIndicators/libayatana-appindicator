@@ -18,6 +18,7 @@ API_VERSION = 0.1
 DEB_CONFIGURE_EXTRA_FLAGS += --disable-scrollkeeper --enable-gtk-doc --enable-introspection
 
 configure-stamp-%:
+	dh_autoreconf
 	mkdir build-$*
 	cd build-$* && PYTHON=`which $*` \
 		$(DEB_CONFIGURE_SCRIPT) $(DEB_CONFIGURE_NORMAL_ARGS) --srcdir=..

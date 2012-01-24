@@ -1,6 +1,13 @@
 libappindicator (0.4.1-0ubuntu3) UNRELEASED; urgency=low
 
-  * no change rebuild for libindicator7
+  * rebuild for libindicator7
+  * bindings/python/Makefile.am
+    - Don't specify pyglib-2.0-python2.6 in LDFLAGS, it isn't needed and 
+      only works with python2.6
+  * debian/rules
+    - include autoreconf.mk
+  * debian/control
+    - added build dep on dh-autoreconf
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 24 Jan 2012 12:58:34 -0500
 
