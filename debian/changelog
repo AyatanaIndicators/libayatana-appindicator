@@ -1,15 +1,22 @@
-libappindicator (0.4.1-0ubuntu3) UNRELEASED; urgency=low
+libappindicator (0.4.1-0ubuntu4) UNRELEASED; urgency=low
 
   * rebuild for libindicator7
   * bindings/python/Makefile.am
-    - Don't specify pyglib-2.0-python2.6 in LDFLAGS, it isn't needed and 
-      only works with python2.6
+    - Don't specify pyglib-2.0-python2.6 in LDFLAGS
   * debian/rules
-    - include autoreconf.mk
+    - dhr_autoreconf
   * debian/control
     - added build dep on dh-autoreconf
+  * debian/libappindicator1.symbols, debian/libappindicator3-1.symbols
+    - added symbols
 
  -- Ken VanDine <ken.vandine@canonical.com>  Tue, 24 Jan 2012 12:58:34 -0500
+
+libappindicator (0.4.1-0ubuntu3) precise; urgency=low
+
+  * s/pyglib-2.0-python2.6/pyglib-2.0-python2.7/ for python bindings.
+
+ -- Adam Conrad <adconrad@ubuntu.com>  Sat, 03 Dec 2011 21:28:16 -0700
 
 libappindicator (0.4.1-0ubuntu2) oneiric; urgency=low
 

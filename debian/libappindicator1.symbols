@@ -12,7 +12,7 @@ libappindicator.so.1 libappindicator1 #MINVER#
  app_indicator_get_label_guide@Base 0.2.91
  app_indicator_get_menu@Base 0.2.91
  app_indicator_get_ordering_index@Base 0.2.91
- app_indicator_get_secondary_activate_target@Base 0.4.1
+ app_indicator_get_secondary_activate_target@Base 0.3.91
  app_indicator_get_status@Base 0.2.91
  app_indicator_get_type@Base 0.2.91
  app_indicator_new@Base 0.2.91
@@ -25,6 +25,6 @@ libappindicator.so.1 libappindicator1 #MINVER#
  app_indicator_set_label@Base 0.2.91
  app_indicator_set_menu@Base 0.2.91
  app_indicator_set_ordering_index@Base 0.2.91
- app_indicator_set_secondary_activate_target@Base 0.4.1
+ app_indicator_set_secondary_activate_target@Base 0.3.91
  app_indicator_set_status@Base 0.2.91
  app_indicator_status_get_type@Base 0.2.91
