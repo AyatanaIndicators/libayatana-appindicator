@@ -153,7 +153,25 @@ AC_SUBST(GAPI_CODEGEN)
 AC_PATH_PROG(GAPI_FIXUP, gapi2-fixup, no)
 AC_SUBST(GAPI_FIXUP)
 
-PKG_CHECK_MODULES(NUNIT, nunit >= 2.4.7)
+# Check for nunit
+AC_ARG_ENABLE([mono-test],
+	AC_HELP_STRING([--disable-mono-test], [Disable mono test]),,
+	[enable_mono_test=auto])
+
+if test x"$enable_mono_test" != x"no" ; then
+   PKG_CHECK_MODULES(NUNIT, nunit >= 2.4.7,
+      [have_nunit=yes],
+      [PKG_CHECK_MODULES(MONO_NUNIT, mono-nunit,
+         [have_nunit=yes],
+         [have_nunit=no])
+   ])
+   if test x${enable_mono_test} = xyes && test x${have_nunit} = xno; then
+     AC_MSG_ERROR([Mono test configured but nunit not found])
+   fi
+else
+   have_nunit=no
+fi
+AM_CONDITIONAL(BUILD_MONO_TEST, test x${have_nunit} = xyes)
 
 ###########################
 # Check to see if we're local
@@ -188,6 +206,14 @@ AC_MSG_CHECKING(for pygtk codegen)
 PYGTK_CODEGEN="$PYTHON `$PKG_CONFIG --variable=codegendir pygtk-2.0`/codegen.py"
 AC_SUBST(PYGTK_CODEGEN)
 AC_MSG_RESULT($PYGTK_CODEGEN)
+
+#########################
+# Check if build tests
+#########################
+AC_ARG_ENABLE([tests],
+	AC_HELP_STRING([--disable-tests], [Disable tests]),,
+	[enable_tests=yes])
+AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" != "xno"])
 
 ###########################
 # Files
@@ -226,4 +252,6 @@ Libappindicator Configuration:
 
 	Prefix:        $prefix
 	GTK+ Version:  $with_gtk
+	Tests:         $enable_tests
+	Mono tests:    $have_nunit
 ])

@@ -3,7 +3,9 @@ SUBDIRS = . examples
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = appindicator-sharp-0.1.pc
 
+if BUILD_MONO_TEST
 TEST = AppIndicator.Test.dll
+endif
 
 API = libappindicator-api.xml
 MIDDLE_API = libappindicator-api.middle
@@ -40,16 +42,24 @@ CLEANFILES = \
 	$(API) \
 	$(MIDDLE_API) \
 	$(RAW_API) \
-	$(TEST) \
 	$(DLLPOLICY) \
 	$(DLLPOLICY1) \
 	$(WRAPPER_FREE_BINDING) \
 	$(POLICY).config \
 	$(POLICY1).config
 
+if BUILD_MONO_TEST
+CLEANFILES += $(TEST) 
+endif
+
 DISTCLEANFILES = $(ASSEMBLY).config
+
+if BUILD_MONO_TEST
 TEST_SOURCES = TestIndicator.cs
+endif
+
 customs = ApplicationIndicator.custom
+
 EXTRA_DIST =					\
 	AssemblyInfo.cs \
 	$(RAW_API)				\
@@ -60,13 +70,19 @@ EXTRA_DIST =					\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
 	$(POLICY1).config.in \
-	$(customs)				\
-	$(TEST_SOURCES)
+	$(customs)
+
+if BUILD_MONO_TEST
+EXTRA_DIST += $(TEST_SOURCES)
+endif
 
 GACUTIL_FLAGS=-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
 
 references = $(GTK_SHARP_LIBS)
-test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
+
+if BUILD_MONO_TEST
+test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) $(MONO_NUNIT_LIBS) -r:$(ASSEMBLY)
+endif
 
 $(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
 	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
@@ -130,10 +146,12 @@ uninstall-local:
 	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
             $(GACUTIL) -u $(POLICY) $(GACUTIL_FLAGS) || exit 1;
 
+if BUILD_MONO_TEST
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
+endif
 
 $(POLICY).config: $(POLICY).config.in Makefile
 	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \
