@@ -78,6 +78,7 @@ struct _AppIndicatorPrivate {
 	GtkWidget            *sec_activate_target;
 	gboolean              sec_activate_enabled;
 	guint32               ordering_index;
+	gchar *               title;
 	gchar *               label;
 	gchar *               label_guide;
 	gchar *               accessible_desc;
@@ -575,6 +576,7 @@ app_indicator_init (AppIndicator *self)
 	priv->menu = NULL;
 	priv->menuservice = NULL;
 	priv->ordering_index = 0;
+	priv->title = NULL;
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
@@ -716,6 +718,11 @@ app_indicator_finalize (GObject *object)
 		priv->icon_theme_path = NULL;
 	}
 	
+	if (priv->title != NULL) {
+		g_free(priv->title);
+		priv->title = NULL;
+	}
+
 	if (priv->label != NULL) {
 		g_free(priv->label);
 		priv->label = NULL;
