@@ -123,10 +123,12 @@ test_libappindicator_init_set_props (void)
 
 	app_indicator_set_status(ci, APP_INDICATOR_STATUS_ACTIVE);
 	app_indicator_set_attention_icon(ci, "my-attention-name");
+	app_indicator_set_title(ci, "My Title");
 
 	g_assert(!g_strcmp0("my-id", app_indicator_get_id(ci)));
 	g_assert(!g_strcmp0("my-name", app_indicator_get_icon(ci)));
 	g_assert(!g_strcmp0("my-attention-name", app_indicator_get_attention_icon(ci)));
+	g_assert(!g_strcmp0("My Title", app_indicator_get_title(ci)));
 	g_assert(app_indicator_get_status(ci) == APP_INDICATOR_STATUS_ACTIVE);
 	g_assert(app_indicator_get_category(ci) == APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
