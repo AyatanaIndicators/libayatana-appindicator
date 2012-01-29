@@ -2203,6 +2203,9 @@ app_indicator_set_title (AppIndicator *self, const gchar * title)
 {
 	g_return_if_fail (IS_APP_INDICATOR (self));
 
+	g_object_set(G_OBJECT(self),
+	             PROP_TITLE_S, title == NULL ? "": title,
+	             NULL);
 
 	return;
 }
