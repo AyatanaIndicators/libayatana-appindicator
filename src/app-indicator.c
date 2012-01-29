@@ -878,7 +878,20 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 
 		  if (g_strcmp0(oldtitle, priv->title) != 0) {
-		    // signal_title_change(APP_INDICATOR(object));
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewTitle",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewTitle: %s", error->message);
+				g_error_free(error);
+			}
 		  }
 
 		  if (oldtitle != NULL) {
@@ -1104,6 +1117,8 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_string(priv->icon_name ? priv->icon_name : "");
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
 		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
+	} else if (g_strcmp0(property, "Title") == 0) {
+		return g_variant_new_string(priv->title ? priv->title : "");
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
 		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
