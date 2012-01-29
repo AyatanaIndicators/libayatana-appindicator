@@ -877,7 +877,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 			priv->title = NULL;
 		  }
 
-		  if (g_strcmp0(oldtitle, priv->title) != 0) {
+		  if (g_strcmp0(oldtitle, priv->title) != 0 && self->priv->connection != NULL) {
 			GError * error = NULL;
 
 			g_dbus_connection_emit_signal(self->priv->connection,
