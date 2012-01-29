@@ -128,7 +128,8 @@ enum {
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_DBUS_MENU_SERVER
+	PROP_DBUS_MENU_SERVER,
+	PROP_TITLE
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -145,6 +146,7 @@ enum {
 #define PROP_LABEL_GUIDE_S           "label-guide"
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
+#define PROP_TITLE_S                 "title"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -252,7 +254,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * AppIndicator:
+	 * AppIndicator:status:
 	 *
 	 * Whether the indicator is shown or requests attention. Defaults to
 	 * 'Passive'.
@@ -410,6 +412,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "The internal DBusmenu Server",
 	                                                     "DBusmenu server which is available for testing the application indicators.",
 	                                                     DBUSMENU_TYPE_SERVER,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+	 * AppIndicator:title:
+	 *
+	 * Provides a way to refer to this application indicator in a human
+	 * readable form.  This is used in the Unity desktop in the HUD as
+	 * the first part of the menu entries to distinguish them from the
+	 * focused application's entries.
+	 */
+	g_object_class_install_property(object_class,
+	                                PROP_TITLE,
+	                                g_param_spec_string (PROP_TITLE_S,
+	                                                     "Title of the application indicator",
+	                                                     "A human readable way to refer to this application indicator in the UI.",
+	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
@@ -837,17 +854,35 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
 
-		  if (g_strcmp0(oldlabel, priv->label) != 0) {
-		    signal_label_change(APP_INDICATOR(object));
-		  }
-
 		  if (priv->label != NULL && priv->label[0] == '\0') {
 		  	g_free(priv->label);
 			priv->label = NULL;
 		  }
 
+		  if (g_strcmp0(oldlabel, priv->label) != 0) {
+		    signal_label_change(APP_INDICATOR(object));
+		  }
+
 		  if (oldlabel != NULL) {
 		  	g_free(oldlabel);
+		  }
+		  break;
+		}
+		case PROP_TITLE: {
+		  gchar * oldtitle = priv->title;
+		  priv->title = g_value_dup_string(value);
+
+		  if (priv->title != NULL && priv->title[0] == '\0') {
+		  	g_free(priv->title);
+			priv->title = NULL;
+		  }
+
+		  if (g_strcmp0(oldtitle, priv->title) != 0) {
+		    // signal_title_change(APP_INDICATOR(object));
+		  }
+
+		  if (oldtitle != NULL) {
+		  	g_free(oldtitle);
 		  }
 		  break;
 		}
