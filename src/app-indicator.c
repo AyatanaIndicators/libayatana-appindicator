@@ -2127,6 +2127,30 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
 }
 
 /**
+ * app_indicator_set_title:
+ * @self: The #AppIndicator
+ * @title: (allow-none): Title of the app indicator
+ *
+ * Sets the title of the application indicator, or how it should be referred
+ * in a human readable form.  This string should be UTF-8 and localized as it
+ * expected that users will set it.
+ *
+ * In the Unity desktop the most prominate place that this is show will be
+ * in the HUD.  HUD listings for this application indicator will start with
+ * the title as the first part of the line for the menu items.
+ *
+ * Setting @title to %NULL removes the title.
+ */
+void
+app_indicator_set_title (AppIndicator *self, const gchar * title)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+
+	return;
+}
+
+/**
  * app_indicator_get_id:
  * @self: The #AppIndicator object to use
  *
@@ -2253,6 +2277,24 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
 
   return self->priv->att_accessible_desc;
 }
+
+/**
+ * app_indicator_get_title:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the title of the application indicator.  See the function
+ * app_indicator_set_title() for information on the title.
+ *
+ * Return value: The current title.
+ */
+const gchar *
+app_indicator_get_title (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	return NULL;
+}
+
 
 /**
  * app_indicator_get_menu:
