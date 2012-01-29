@@ -2352,7 +2352,7 @@ app_indicator_get_title (AppIndicator *self)
 {
 	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
-	return NULL;
+	return self->priv->title;
 }
 
 
