@@ -1011,6 +1011,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 			g_value_set_object(value, priv->menuservice);
 			break;
 
+		case PROP_TITLE:
+			g_value_set_string(value, priv->title);
+			break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
