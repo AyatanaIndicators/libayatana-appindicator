@@ -2196,7 +2196,7 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
  * in a human readable form.  This string should be UTF-8 and localized as it
  * expected that users will set it.
  *
- * In the Unity desktop the most prominate place that this is show will be
+ * In the Unity desktop the most prominent place that this is show will be
  * in the HUD.  HUD listings for this application indicator will start with
  * the title as the first part of the line for the menu items.
  *
