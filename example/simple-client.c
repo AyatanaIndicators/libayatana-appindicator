@@ -167,6 +167,7 @@ main (int argc, char ** argv)
     app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
     app_indicator_set_attention_icon_full(ci, "indicator-messages-new", "System Messages Icon Highlighted");
     app_indicator_set_label (ci, "1%", "100%");
+	app_indicator_set_title (ci, "Test Inidcator");
 
     g_signal_connect (ci, "scroll-event",
                       G_CALLBACK (scroll_event_cb), NULL);
