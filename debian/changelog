@@ -6,8 +6,9 @@ libappindicator (0.4.90-0ubuntu1~ppa1) UNRELEASED; urgency=low
     * Add title property (LP: #923971)
     * Don't specify pyglib-2.0-python2.6 in LDFLAGS
     * fix fallback icon of the GtkStatusIcon (LP: #820080)
+  * debian/control: Dbusmneu Dep to 0.5.90
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 03 Feb 2012 14:39:36 -0600
+ -- Ted Gould <ted@ubuntu.com>  Fri, 03 Feb 2012 14:50:33 -0600
 
 libappindicator (0.4.1-0ubuntu4) precise; urgency=low
 
