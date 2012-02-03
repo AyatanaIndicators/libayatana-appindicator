@@ -285,6 +285,8 @@ void                            app_indicator_set_ordering_index (AppIndicator  
                                                                   guint32             ordering_index);
 void                            app_indicator_set_secondary_activate_target (AppIndicator *self,
                                                                              GtkWidget    *menuitem);
+void                            app_indicator_set_title          (AppIndicator       *self,
+                                                                  const gchar        *title);
 
 /* Get properties */
 const gchar *                   app_indicator_get_id                   (AppIndicator *self);
@@ -295,6 +297,7 @@ const gchar *                   app_indicator_get_icon_desc            (AppIndic
 const gchar *                   app_indicator_get_icon_theme_path      (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon       (AppIndicator *self);
 const gchar *                   app_indicator_get_attention_icon_desc  (AppIndicator *self);
+const gchar *                   app_indicator_get_title                (AppIndicator *self);
 
 GtkMenu *                       app_indicator_get_menu                 (AppIndicator *self);
 const gchar *                   app_indicator_get_label                (AppIndicator *self);

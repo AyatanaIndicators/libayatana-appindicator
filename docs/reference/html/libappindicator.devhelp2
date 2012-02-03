@@ -42,6 +42,7 @@
     <keyword type="function" name="app_indicator_set_label ()" link="libappindicator-app-indicator.html#app-indicator-set-label"/>
     <keyword type="function" name="app_indicator_set_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-set-ordering-index"/>
     <keyword type="function" name="app_indicator_set_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-set-secondary-activate-target"/>
+    <keyword type="function" name="app_indicator_set_title ()" link="libappindicator-app-indicator.html#app-indicator-set-title"/>
     <keyword type="function" name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
     <keyword type="function" name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
     <keyword type="function" name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
@@ -55,6 +56,7 @@
     <keyword type="function" name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <keyword type="function" name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
     <keyword type="function" name="app_indicator_get_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target"/>
+    <keyword type="function" name="app_indicator_get_title ()" link="libappindicator-app-indicator.html#app-indicator-get-title"/>
     <keyword type="function" name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
     <keyword type="property" name="The &quot;attention-icon-desc&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-desc"/>
     <keyword type="property" name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
@@ -69,6 +71,7 @@
     <keyword type="property" name="The &quot;label-guide&quot; property" link="libappindicator-app-indicator.html#AppIndicator--label-guide"/>
     <keyword type="property" name="The &quot;ordering-index&quot; property" link="libappindicator-app-indicator.html#AppIndicator--ordering-index"/>
     <keyword type="property" name="The &quot;status&quot; property" link="libappindicator-app-indicator.html#AppIndicator--status"/>
+    <keyword type="property" name="The &quot;title&quot; property" link="libappindicator-app-indicator.html#AppIndicator--title"/>
     <keyword type="signal" name="The &quot;connection-changed&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-connection-changed"/>
     <keyword type="signal" name="The &quot;new-attention-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-attention-icon"/>
     <keyword type="signal" name="The &quot;new-icon&quot; signal" link="libappindicator-app-indicator.html#AppIndicator-new-icon"/>

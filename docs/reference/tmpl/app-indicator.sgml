@@ -271,6 +271,11 @@ AppIndicator
 
 </para>
 
+<!-- ##### ARG AppIndicator:title ##### -->
+<para>
+
+</para>
+
 <!-- ##### STRUCT AppIndicatorClass ##### -->
 <para>
 
@@ -419,6 +424,15 @@ AppIndicator
 @menuitem: 
 
 
+<!-- ##### FUNCTION app_indicator_set_title ##### -->
+<para>
+
+</para>
+
+@self: 
+@title: 
+
+
 <!-- ##### FUNCTION app_indicator_get_id ##### -->
 <para>
 
@@ -528,6 +542,15 @@ AppIndicator
 
 
 <!-- ##### FUNCTION app_indicator_get_secondary_activate_target ##### -->
+<para>
+
+</para>
+
+@self: 
+@Returns: 
+
+
+<!-- ##### FUNCTION app_indicator_get_title ##### -->
 <para>
 
 </para>

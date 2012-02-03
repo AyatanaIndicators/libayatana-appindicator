@@ -46,6 +46,7 @@
 <ANCHOR id="app-indicator-set-label" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-label">
 <ANCHOR id="app-indicator-set-ordering-index" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-ordering-index">
 <ANCHOR id="app-indicator-set-secondary-activate-target" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-secondary-activate-target">
+<ANCHOR id="app-indicator-set-title" href="libappindicator/libappindicator-app-indicator.html#app-indicator-set-title">
 <ANCHOR id="app-indicator-get-id" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-id">
 <ANCHOR id="app-indicator-get-category" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-category">
 <ANCHOR id="app-indicator-get-status" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-status">
@@ -59,6 +60,7 @@
 <ANCHOR id="app-indicator-get-label-guide" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-label-guide">
 <ANCHOR id="app-indicator-get-ordering-index" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-ordering-index">
 <ANCHOR id="app-indicator-get-secondary-activate-target" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target">
+<ANCHOR id="app-indicator-get-title" href="libappindicator/libappindicator-app-indicator.html#app-indicator-get-title">
 <ANCHOR id="app-indicator-build-menu-from-desktop" href="libappindicator/libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop">
 <ANCHOR id="libappindicator-app-indicator.property-details" href="libappindicator/libappindicator-app-indicator.html#libappindicator-app-indicator.property-details">
 <ANCHOR id="AppIndicator--attention-icon-desc" href="libappindicator/libappindicator-app-indicator.html#AppIndicator--attention-icon-desc">
@@ -74,6 +76,7 @@
 <ANCHOR id="AppIndicator--label-guide" href="libappindicator/libappindicator-app-indicator.html#AppIndicator--label-guide">
 <ANCHOR id="AppIndicator--ordering-index" href="libappindicator/libappindicator-app-indicator.html#AppIndicator--ordering-index">
 <ANCHOR id="AppIndicator--status" href="libappindicator/libappindicator-app-indicator.html#AppIndicator--status">
+<ANCHOR id="AppIndicator--title" href="libappindicator/libappindicator-app-indicator.html#AppIndicator--title">
 <ANCHOR id="libappindicator-app-indicator.signal-details" href="libappindicator/libappindicator-app-indicator.html#libappindicator-app-indicator.signal-details">
 <ANCHOR id="AppIndicator-connection-changed" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-connection-changed">
 <ANCHOR id="AppIndicator-new-attention-icon" href="libappindicator/libappindicator-app-indicator.html#AppIndicator-new-attention-icon">
