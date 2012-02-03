@@ -3,7 +3,9 @@ SUBDIRS = . examples
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = appindicator-sharp-0.1.pc
 
+if BUILD_MONO_TEST
 TEST = AppIndicator.Test.dll
+endif
 
 API = libappindicator-api.xml
 MIDDLE_API = libappindicator-api.middle
@@ -40,16 +42,24 @@ CLEANFILES = \
 	$(API) \
 	$(MIDDLE_API) \
 	$(RAW_API) \
-	$(TEST) \
 	$(DLLPOLICY) \
 	$(DLLPOLICY1) \
 	$(WRAPPER_FREE_BINDING) \
 	$(POLICY).config \
 	$(POLICY1).config
 
+if BUILD_MONO_TEST
+CLEANFILES += $(TEST) 
+endif
+
 DISTCLEANFILES = $(ASSEMBLY).config
+
+if BUILD_MONO_TEST
 TEST_SOURCES = TestIndicator.cs
+endif
+
 customs = ApplicationIndicator.custom
+
 EXTRA_DIST =					\
 	AssemblyInfo.cs \
 	$(RAW_API)				\
@@ -60,13 +70,19 @@ EXTRA_DIST =					\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
 	$(POLICY1).config.in \
-	$(customs)				\
-	$(TEST_SOURCES)
+	$(customs)
+
+if BUILD_MONO_TEST
+EXTRA_DIST += $(TEST_SOURCES)
+endif
 
 GACUTIL_FLAGS=-package $(ASSEMBLY_NAME) -root $(DESTDIR)$(prefix)/lib
 
 references = $(GTK_SHARP_LIBS)
-test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) -r:$(ASSEMBLY)
+
+if BUILD_MONO_TEST
+test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) $(MONO_NUNIT_LIBS) -r:$(ASSEMBLY)
+endif
 
 $(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
 	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
@@ -84,12 +100,14 @@ $(MIDDLE_API): $(METADATA) $(RAW_API)
 
 $(API): $(MIDDLE_API) Makefile.am
 	sed -e "s|PROP_ID_S|id|" \
+		-e "s|PROP_STATUS_S|Status|" \
 		-e "s|PROP_STATUS_S|status|" \
 		-e "s|PROP_CATEGORY_S|Category|" \
 		-e "s|PROP_CATEGORY_S|category|" \
 		-e "s|PROP_ICON_NAME_S|icon-name|" \
 		-e "s|PROP_ICON_DESC_S|IconDesc|" \
 		-e "s|PROP_ICON_DESC_S|icon-desc|" \
+		-e "s|PROP_ATTENTION_ICON_NAME_S|AttentionIconName|" \
 		-e "s|PROP_ATTENTION_ICON_NAME_S|attention-icon-name|" \
 		-e "s|PROP_ATTENTION_ICON_DESC_S|AttentionIconDesc|" \
 		-e "s|PROP_ATTENTION_ICON_DESC_S|attention-icon-desc|" \
@@ -101,6 +119,8 @@ $(API): $(MIDDLE_API) Makefile.am
 		-e "s|PROP_ORDERING_INDEX_S|ordering-index|" \
 		-e "s|PROP_DBUS_MENU_SERVER_S|DbusMenuServer|" \
 		-e "s|PROP_DBUS_MENU_SERVER_S|dbus-menu-server|" \
+		-e "s|PROP_TITLE_S|Title|" \
+		-e "s|PROP_TITLE_S|title|" \
 		$< > $@
 
 api_includes = $(GTK_SHARP_CFLAGS)
@@ -130,10 +150,12 @@ uninstall-local:
 	echo "$(GACUTIL) -u $(DLLPOLICY) $(GACUTIL_FLAGS)";  \
             $(GACUTIL) -u $(POLICY) $(GACUTIL_FLAGS) || exit 1;
 
+if BUILD_MONO_TEST
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
 all: $(TEST)
+endif
 
 $(POLICY).config: $(POLICY).config.in Makefile
 	sed -e "s|@ASSEMBLY_NAME@|$(ASSEMBLY_NAME)|" \

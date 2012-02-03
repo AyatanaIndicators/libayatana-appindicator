@@ -79,6 +79,8 @@ struct              <link linkend="AppIndicatorClass">AppIndicatorClass</link>;
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-secondary-activate-target">app_indicator_set_secondary_activate_target</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter><link linkend="GtkWidget"><type>GtkWidget</type></link> *menuitem</parameter>);
+<link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-set-title">app_indicator_set_title</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *title</parameter>);
 const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-id">app_indicator_get_id</link>                (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorCategory"><returnvalue>AppIndicatorCategory</returnvalue></link> <link linkend="app-indicator-get-category">app_indicator_get_category</link>         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="AppIndicatorStatus"><returnvalue>AppIndicatorStatus</returnvalue></link>  <link linkend="app-indicator-get-status">app_indicator_get_status</link>            (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
@@ -94,6 +96,7 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
 <link linkend="guint32"><returnvalue>guint32</returnvalue></link>             <link linkend="app-indicator-get-ordering-index">app_indicator_get_ordering_index</link>    (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="GtkWidget"><returnvalue>GtkWidget</returnvalue></link> *         <link linkend="app-indicator-get-secondary-activate-target">app_indicator_get_secondary_activate_target</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
+const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <link linkend="app-indicator-get-title">app_indicator_get_title</link>             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);
 <link linkend="void"><returnvalue>void</returnvalue></link>                <link linkend="app-indicator-build-menu-from-desktop">app_indicator_build_menu_from_desktop</link>
                                                         (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *desktop_file</parameter>,
@@ -123,6 +126,7 @@ const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       <lin
   &quot;<link linkend="AppIndicator--label-guide">label-guide</link>&quot;              <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
   &quot;<link linkend="AppIndicator--ordering-index">ordering-index</link>&quot;           <link linkend="guint"><type>guint</type></link>                 : Read / Write
   &quot;<link linkend="AppIndicator--status">status</link>&quot;                   <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
+  &quot;<link linkend="AppIndicator--title">title</link>&quot;                    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write
 </synopsis>
 </refsect1>
 <refsect1 id="libappindicator-app-indicator.signals" role="signal_proto">
@@ -365,8 +369,15 @@ Private Fields
 <indexterm zone="AppIndicator-struct"><primary>AppIndicator</primary></indexterm>
 <programlisting>typedef struct _AppIndicator AppIndicator;</programlisting>
 <para>
-Whether the indicator is shown or requests attention. Defaults to
-'Passive'.
+A application indicator represents the values that are needed to show a
+unique status in the panel for an application.  In general, applications
+should try to fit in the other indicators that are available on the
+panel before using this.  But, sometimes it is necissary.
+</para>
+<para>
+ Private fields
+<parameter>parent</parameter>: Parent object.
+<parameter>priv</parameter>: Internal data.
 </para></refsect2>
 <refsect2 id="AppIndicatorClass" role="struct">
 <title>struct AppIndicatorClass</title>
@@ -698,6 +709,29 @@ Setting <parameter>menuitem</parameter> to <link linkend="NULL:CAPS"><literal>NU
 <varlistentry><term><parameter>menuitem</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> to be activated on secondary activation. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-set-title" role="function">
+<title>app_indicator_set_title ()</title>
+<indexterm zone="app-indicator-set-title"><primary>app_indicator_set_title</primary></indexterm>
+<programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_title             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
+                                                         <parameter>const <link linkend="gchar"><type>gchar</type></link> *title</parameter>);</programlisting>
+<para>
+Sets the title of the application indicator, or how it should be referred
+in a human readable form.  This string should be UTF-8 and localized as it
+expected that users will set it.
+</para>
+<para>
+In the Unity desktop the most prominent place that this is show will be
+in the HUD.  HUD listings for this application indicator will start with
+the title as the first part of the line for the menu items.
+</para>
+<para>
+Setting <parameter>title</parameter> to <link linkend="NULL:CAPS"><literal>NULL</literal></link> removes the title.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&#160;:</term>
+<listitem><simpara>Title of the app indicator. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="app-indicator-get-id" role="function">
 <title>app_indicator_get_id ()</title>
 <indexterm zone="app-indicator-get-id"><primary>app_indicator_get_id</primary></indexterm>
@@ -844,6 +878,18 @@ Gets the menuitem being called on secondary-activate event.
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none has been set. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2 id="app-indicator-get-title" role="function">
+<title>app_indicator_get_title ()</title>
+<indexterm zone="app-indicator-get-title"><primary>app_indicator_get_title</primary></indexterm>
+<programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_title             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
+<para>
+Gets the title of the application indicator.  See the function
+<link linkend="app-indicator-set-title"><function>app_indicator_set_title()</function></link> for information on the title.
+</para><variablelist role="params">
+<varlistentry><term><parameter>self</parameter>&#160;:</term>
+<listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current title.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2 id="app-indicator-build-menu-from-desktop" role="function">
 <title>app_indicator_build_menu_from_desktop ()</title>
 <indexterm zone="app-indicator-build-menu-from-desktop"><primary>app_indicator_build_menu_from_desktop</primary></indexterm>
@@ -977,7 +1023,20 @@ in case you do, this is the way.
 <refsect2 id="AppIndicator--status" role="property"><title>The <literal>&quot;status&quot;</literal> property</title>
 <indexterm zone="AppIndicator--status"><primary>AppIndicator:status</primary></indexterm>
 <programlisting>  &quot;status&quot;                   <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
-<para>Whether the indicator is shown or requests attention. Defaults to 'Passive'.</para><para>Default value: NULL</para>
+<para>
+Whether the indicator is shown or requests attention. Defaults to
+'Passive'.
+</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2 id="AppIndicator--title" role="property"><title>The <literal>&quot;title&quot;</literal> property</title>
+<indexterm zone="AppIndicator--title"><primary>AppIndicator:title</primary></indexterm>
+<programlisting>  &quot;title&quot;                    <link linkend="gchar"><type>gchar</type></link>*                : Read / Write</programlisting>
+<para>
+Provides a way to refer to this application indicator in a human
+readable form.  This is used in the Unity desktop in the HUD as
+the first part of the menu entries to distinguish them from the
+focused application's entries.
+</para><para>Default value: NULL</para>
 </refsect2>
 
 </refsect1>

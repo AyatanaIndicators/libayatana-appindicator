@@ -4,8 +4,11 @@ SUBDIRS = \
       src		\
 	  bindings	\
 	  example	\
-	  tests		\
 	  docs
+
+if WANT_TESTS
+SUBDIRS += tests
+endif
 
 EXTRA_DIST = \
 	m4/introspection.m4 \

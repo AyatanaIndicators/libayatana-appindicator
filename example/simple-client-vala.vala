@@ -46,6 +46,7 @@ class SimpleClient {
 		ci.set_status(IndicatorStatus.ACTIVE);
 		ci.set_attention_icon("indicator-messages-new");
 		ci.set_label("1%", "100%");
+		ci.set_title("Test Indicator (vala)");
 
 		active = true;
 		can_haz_label = true;
