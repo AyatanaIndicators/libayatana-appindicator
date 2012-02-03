@@ -1,11 +1,42 @@
-libappindicator (0.4.1-0ubuntu1~ppa1) oneiric; urgency=low
+libappindicator (0.4.1-0ubuntu4) precise; urgency=low
 
-  * New upstream release (0.4.0).
+  * rebuild for libindicator7
+  * bindings/python/Makefile.am
+    - Don't specify pyglib-2.0-python2.6 in LDFLAGS
+  * debian/rules
+    - dhr_autoreconf
+  * debian/control
+    - added build dep on dh-autoreconf
+  * debian/libappindicator1.symbols, debian/libappindicator3-1.symbols
+    - added symbols
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 25 Jan 2012 09:49:38 -0500
+
+libappindicator (0.4.1-0ubuntu3) precise; urgency=low
+
+  * s/pyglib-2.0-python2.6/pyglib-2.0-python2.7/ for python bindings.
+
+ -- Adam Conrad <adconrad@ubuntu.com>  Sat, 03 Dec 2011 21:28:16 -0700
+
+libappindicator (0.4.1-0ubuntu2) oneiric; urgency=low
+
+  * src/app-indicator.c:
+    - fix fallback icon of the GtkStatusIcon (LP: #820080), cherry
+      pick of r221 from lp:libappindicator
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 30 Sep 2011 22:57:46 +0200
+
+libappindicator (0.4.1-0ubuntu1) oneiric; urgency=low
+
+  [ Ted Gould ]
+  * New upstream release.
     * Fix VAPI file for Vala bindings (LP: #789588)
-  * New upstream release (0.4.1).
-    * Fix build.
 
- -- Ted Gould <ted@ubuntu.com>  Wed, 28 Sep 2011 12:53:44 -0500
+  [ Ken VanDine ]
+  * debian/control
+    - build depend on valac-0.14
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 28 Sep 2011 14:41:38 -0400
 
 libappindicator (0.3.91-0ubuntu1) oneiric; urgency=low
 
