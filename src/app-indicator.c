@@ -78,6 +78,7 @@ struct _AppIndicatorPrivate {
 	GtkWidget            *sec_activate_target;
 	gboolean              sec_activate_enabled;
 	guint32               ordering_index;
+	gchar *               title;
 	gchar *               label;
 	gchar *               label_guide;
 	gchar *               accessible_desc;
@@ -127,7 +128,8 @@ enum {
 	PROP_LABEL,
 	PROP_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
-	PROP_DBUS_MENU_SERVER
+	PROP_DBUS_MENU_SERVER,
+	PROP_TITLE
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -144,6 +146,7 @@ enum {
 #define PROP_LABEL_GUIDE_S           "label-guide"
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
+#define PROP_TITLE_S                 "title"
 
 /* Private macro, shhhh! */
 #define APP_INDICATOR_GET_PRIVATE(o) \
@@ -251,7 +254,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY));
 
 	/**
-	 * AppIndicator:
+	 * AppIndicator:status:
 	 *
 	 * Whether the indicator is shown or requests attention. Defaults to
 	 * 'Passive'.
@@ -409,6 +412,21 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     "The internal DBusmenu Server",
 	                                                     "DBusmenu server which is available for testing the application indicators.",
 	                                                     DBUSMENU_TYPE_SERVER,
+	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+	/**
+	 * AppIndicator:title:
+	 *
+	 * Provides a way to refer to this application indicator in a human
+	 * readable form.  This is used in the Unity desktop in the HUD as
+	 * the first part of the menu entries to distinguish them from the
+	 * focused application's entries.
+	 */
+	g_object_class_install_property(object_class,
+	                                PROP_TITLE,
+	                                g_param_spec_string (PROP_TITLE_S,
+	                                                     "Title of the application indicator",
+	                                                     "A human readable way to refer to this application indicator in the UI.",
+	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/* Signals */
@@ -575,6 +593,7 @@ app_indicator_init (AppIndicator *self)
 	priv->menu = NULL;
 	priv->menuservice = NULL;
 	priv->ordering_index = 0;
+	priv->title = NULL;
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
@@ -716,6 +735,11 @@ app_indicator_finalize (GObject *object)
 		priv->icon_theme_path = NULL;
 	}
 	
+	if (priv->title != NULL) {
+		g_free(priv->title);
+		priv->title = NULL;
+	}
+
 	if (priv->label != NULL) {
 		g_free(priv->label);
 		priv->label = NULL;
@@ -830,17 +854,48 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  gchar * oldlabel = priv->label;
 		  priv->label = g_value_dup_string(value);
 
-		  if (g_strcmp0(oldlabel, priv->label) != 0) {
-		    signal_label_change(APP_INDICATOR(object));
-		  }
-
 		  if (priv->label != NULL && priv->label[0] == '\0') {
 		  	g_free(priv->label);
 			priv->label = NULL;
 		  }
 
+		  if (g_strcmp0(oldlabel, priv->label) != 0) {
+		    signal_label_change(APP_INDICATOR(object));
+		  }
+
 		  if (oldlabel != NULL) {
 		  	g_free(oldlabel);
+		  }
+		  break;
+		}
+		case PROP_TITLE: {
+		  gchar * oldtitle = priv->title;
+		  priv->title = g_value_dup_string(value);
+
+		  if (priv->title != NULL && priv->title[0] == '\0') {
+		  	g_free(priv->title);
+			priv->title = NULL;
+		  }
+
+		  if (g_strcmp0(oldtitle, priv->title) != 0 && self->priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal(self->priv->connection,
+										  NULL,
+										  self->priv->path,
+										  NOTIFICATION_ITEM_DBUS_IFACE,
+										  "NewTitle",
+										  NULL,
+										  &error);
+
+			if (error != NULL) {
+				g_warning("Unable to send signal for NewTitle: %s", error->message);
+				g_error_free(error);
+			}
+		  }
+
+		  if (oldtitle != NULL) {
+		  	g_free(oldtitle);
 		  }
 		  break;
 		}
@@ -956,6 +1011,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 			g_value_set_object(value, priv->menuservice);
 			break;
 
+		case PROP_TITLE:
+			g_value_set_string(value, priv->title);
+			break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -1062,6 +1121,8 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		return g_variant_new_string(priv->icon_name ? priv->icon_name : "");
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
 		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
+	} else if (g_strcmp0(property, "Title") == 0) {
+		return g_variant_new_string(priv->title ? priv->title : "");
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
 		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
@@ -2127,6 +2188,33 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
 }
 
 /**
+ * app_indicator_set_title:
+ * @self: The #AppIndicator
+ * @title: (allow-none): Title of the app indicator
+ *
+ * Sets the title of the application indicator, or how it should be referred
+ * in a human readable form.  This string should be UTF-8 and localized as it
+ * expected that users will set it.
+ *
+ * In the Unity desktop the most prominent place that this is show will be
+ * in the HUD.  HUD listings for this application indicator will start with
+ * the title as the first part of the line for the menu items.
+ *
+ * Setting @title to %NULL removes the title.
+ */
+void
+app_indicator_set_title (AppIndicator *self, const gchar * title)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	g_object_set(G_OBJECT(self),
+	             PROP_TITLE_S, title == NULL ? "": title,
+	             NULL);
+
+	return;
+}
+
+/**
  * app_indicator_get_id:
  * @self: The #AppIndicator object to use
  *
@@ -2253,6 +2341,24 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
 
   return self->priv->att_accessible_desc;
 }
+
+/**
+ * app_indicator_get_title:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the title of the application indicator.  See the function
+ * app_indicator_set_title() for information on the title.
+ *
+ * Return value: The current title.
+ */
+const gchar *
+app_indicator_get_title (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	return self->priv->title;
+}
+
 
 /**
  * app_indicator_get_menu:

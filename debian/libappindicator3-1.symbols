@@ -14,6 +14,7 @@ libappindicator3.so.1 libappindicator3-1 #MINVER#
  app_indicator_get_ordering_index@Base 0.2.92
  app_indicator_get_secondary_activate_target@Base 0.3.91
  app_indicator_get_status@Base 0.2.92
+ app_indicator_get_title@Base 0.4.90
  app_indicator_get_type@Base 0.2.92
  app_indicator_new@Base 0.2.92
  app_indicator_new_with_path@Base 0.2.92
@@ -27,4 +28,5 @@ libappindicator3.so.1 libappindicator3-1 #MINVER#
  app_indicator_set_ordering_index@Base 0.2.92
  app_indicator_set_secondary_activate_target@Base 0.3.91
  app_indicator_set_status@Base 0.2.92
+ app_indicator_set_title@Base 0.4.90
  app_indicator_status_get_type@Base 0.2.92

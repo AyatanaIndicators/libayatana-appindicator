@@ -34,6 +34,7 @@
       <property name="PROP_LABEL_GUIDE_S" cname="PROP_LABEL_GUIDE_S" type="gchar*" readable="true" writeable="true" />
       <property name="PROP_ORDERING_INDEX_S" cname="PROP_ORDERING_INDEX_S" type="guint" readable="true" writeable="true" />
       <property name="PROP_DBUS_MENU_SERVER_S" cname="PROP_DBUS_MENU_SERVER_S" type="DbusmenuServer" readable="true" writeable="true" />
+      <property name="PROP_TITLE_S" cname="PROP_TITLE_S" type="gchar*" readable="true" writeable="true" />
       <signal when="LAST" field_name="new_icon">
         <return-type type="void" />
         <parameters>
@@ -149,6 +150,9 @@
       <method name="GetStatus" cname="app_indicator_get_status">
         <return-type type="AppIndicatorStatus" />
       </method>
+      <method name="GetTitle" cname="app_indicator_get_title">
+        <return-type type="const-gchar*" />
+      </method>
       <method name="GetType" cname="app_indicator_get_type" shared="true">
         <return-type type="GType" />
       </method>
@@ -228,6 +232,12 @@
         <return-type type="void" />
         <parameters>
           <parameter type="AppIndicatorStatus" name="status" />
+        </parameters>
+      </method>
+      <method name="SetTitle" cname="app_indicator_set_title">
+        <return-type type="void" />
+        <parameters>
+          <parameter type="const-gchar*" name="title" />
         </parameters>
       </method>
     </object>

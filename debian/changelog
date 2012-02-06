@@ -1,3 +1,16 @@
+libappindicator (0.4.90-0ubuntu1~ppa1) precise; urgency=low
+
+  * New upstream release.
+    * Fix include with Dbusmenu 0.5.90
+    * Fix GTK3 include paths in pkgconfig file (LP: #869373)
+    * Add title property (LP: #923971)
+    * Don't specify pyglib-2.0-python2.6 in LDFLAGS
+    * fix fallback icon of the GtkStatusIcon (LP: #820080)
+  * debian/control: Dbusmneu Dep to 0.5.90
+  * deibna/*symbols: Updated to add [set|get]_title functions
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 03 Feb 2012 15:04:46 -0600
+
 libappindicator (0.4.1-0ubuntu4) precise; urgency=low
 
   * rebuild for libindicator7
