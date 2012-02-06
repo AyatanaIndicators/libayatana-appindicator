@@ -1,4 +1,4 @@
-libappindicator (0.4.90-0ubuntu1~ppa1) precise; urgency=low
+libappindicator (0.4.90-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release.
     * Fix include with Dbusmenu 0.5.90
