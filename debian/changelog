@@ -1,11 +1,11 @@
-libappindicator (0.4.90-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (0.4.90-0ubuntu2) precise; urgency=low
 
   * debian/control:
     - don't make libappindicator3-dev depends on libappindicator-dev
   * debian/libappindicator3-dev.install:
     - install the gtk3 include directory
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 07 Feb 2012 12:48:43 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Tue, 07 Feb 2012 12:50:15 +0100
 
 libappindicator (0.4.90-0ubuntu1) precise; urgency=low
 
