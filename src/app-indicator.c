@@ -2201,6 +2201,9 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
  * the title as the first part of the line for the menu items.
  *
  * Setting @title to %NULL removes the title.
+ *
+ * Since: 0.5
+ *
  */
 void
 app_indicator_set_title (AppIndicator *self, const gchar * title)
@@ -2350,6 +2353,9 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
  * app_indicator_set_title() for information on the title.
  *
  * Return value: The current title.
+ *
+ * Since: 0.5
+ *
  */
 const gchar *
 app_indicator_get_title (AppIndicator *self)
