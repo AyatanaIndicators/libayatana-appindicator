@@ -899,7 +899,7 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 
 		  if (priv->status_icon != NULL) {
-	        gtk_status_icon_set_title(priv->status_icon, priv->title);
+	        gtk_status_icon_set_title(priv->status_icon, priv->title ? priv->title : "");
 		  }
 		  break;
 		}
@@ -1515,7 +1515,10 @@ fallback (AppIndicator * self)
 	GtkStatusIcon * icon = gtk_status_icon_new();
 
 	gtk_status_icon_set_name(icon, app_indicator_get_id(self));
-	gtk_status_icon_set_title(icon, app_indicator_get_title(self));
+	const gchar * title = app_indicator_get_title(self);
+	if (title != NULL) {
+		gtk_status_icon_set_title(icon, title);
+	}
 	
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
 		G_CALLBACK(status_icon_status_wrapper), icon);
