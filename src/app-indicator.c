@@ -897,6 +897,10 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  if (oldtitle != NULL) {
 		  	g_free(oldtitle);
 		  }
+
+		  if (priv->status_icon != NULL) {
+	        gtk_status_icon_set_title(priv->status_icon, priv->title);
+		  }
 		  break;
 		}
 		case PROP_LABEL_GUIDE: {
