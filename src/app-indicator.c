@@ -1510,7 +1510,8 @@ fallback (AppIndicator * self)
 {
 	GtkStatusIcon * icon = gtk_status_icon_new();
 
-	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
+	gtk_status_icon_set_name(icon, app_indicator_get_id(self));
+	gtk_status_icon_set_title(icon, app_indicator_get_title(self));
 	
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
 		G_CALLBACK(status_icon_status_wrapper), icon);
