@@ -1632,9 +1632,7 @@ status_icon_changes (AppIndicator * self, gpointer data)
 				gtk_status_icon_set_from_icon_name(icon, icon_name);
 			}
 
-			if (longname) {
-				g_free(longname);
-			}
+			g_free(longname);
 		}
 	}
 
