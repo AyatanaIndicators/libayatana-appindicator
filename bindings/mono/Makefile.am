@@ -66,7 +66,7 @@ EXTRA_DIST =					\
 	$(METADATA)				\
 	appindicator-sharp-0.1.pc.in		\
 	appindicator-sharp.dll.config.in	\
-	app-indicator.sources.xml		\
+	app-indicator.sources.xml.in		\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
 	$(POLICY1).config.in \
@@ -85,13 +85,13 @@ test_references = $(GTK_SHARP_LIBS) $(NUNIT_LIBS) $(MONO_NUNIT_LIBS) -r:$(ASSEMB
 endif
 
 $(RAW_API): app-indicator.sources.xml $(WRAPPER_FREE_BINDING)
-	$(GAPI_PARSER) $(srcdir)/app-indicator.sources.xml
+	$(GAPI_PARSER) app-indicator.sources.xml
 
 $(WRAPPER_FREE_BINDING): $(WRAPPER_FREE_BINDING_SRC)
 	sed '/signals\[X_NEW_LABEL\] /,+6d' $(WRAPPER_FREE_BINDING_SRC) > $(WRAPPER_FREE_BINDING)
 
 $(MIDDLE_API): $(METADATA) $(RAW_API)
-	cp $(srcdir)/$(RAW_API) $(MIDDLE_API)
+	cp $(RAW_API) $(MIDDLE_API)
 	chmod u+w $(MIDDLE_API)
 	@if test -n '$(METADATA)'; then							\
 		echo "$(GAPI_FIXUP) --api=$(MIDDLE_API) --metadata=$(srcdir)/$(METADATA)"; 	\

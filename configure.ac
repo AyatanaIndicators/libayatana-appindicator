@@ -228,9 +228,11 @@ bindings/Makefile
 bindings/mono/Makefile
 bindings/mono/appindicator-sharp.dll.config
 bindings/mono/appindicator-sharp-0.1.pc
+bindings/mono/app-indicator.sources.xml
 bindings/mono/examples/Makefile
 bindings/mono/examples/indicator-example
 bindings/python/Makefile
+bindings/python/appindicator.override
 bindings/vala/Makefile
 bindings/vala/examples/Makefile
 tests/Makefile
