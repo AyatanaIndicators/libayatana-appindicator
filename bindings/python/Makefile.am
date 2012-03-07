@@ -25,16 +25,15 @@ _appindicator_la_SOURCES = appindicatormodule.c
 nodist__appindicator_la_SOURCES = appindicator.c
 
 CLEANFILES = appindicator.c
-EXTRA_DIST = appindicator.override appindicator-arg-types.py $(defs_DATA)
+EXTRA_DIST = appindicator.override.in appindicator-arg-types.py $(defs_DATA)
 appindicator.c: $(defs_DATA) appindicator.override
 
 %.c: %.defs
-	(cd $(srcdir) \
-	 && $(PYGTK_CODEGEN) \
+	($(PYGTK_CODEGEN) \
 		--register $(PYGTK_DEFSDIR)/gtk-types.defs \
 		--register $(PYGTK_DEFSDIR)/gdk-types.defs \
-		--load-types appindicator-arg-types.py \
+		--load-types $(srcdir)/appindicator-arg-types.py \
 	    --override $*.override \
-	    --prefix py$* $*.defs) > gen-$*.c \
+	    --prefix py$* $(srcdir)/$*.defs) > gen-$*.c \
 	 && cp gen-$*.c $*.c \
 	 && rm -f gen-$*.c
