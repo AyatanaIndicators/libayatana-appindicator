@@ -1,4 +1,4 @@
-libappindicator (0.4.91-0ubuntu1) UNRELEASED; urgency=low
+libappindicator (0.4.91-0ubuntu1) precise; urgency=low
 
   * debian/rules:
     - run make check during the build
@@ -12,7 +12,7 @@ libappindicator (0.4.91-0ubuntu1) UNRELEASED; urgency=low
     * Fix test suite to work with libindicator 0.4.93
     * Fix the mono binding properties
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 19:45:54 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 20:05:53 +0100
 
 libappindicator (0.4.90-0ubuntu2) precise; urgency=low
 
