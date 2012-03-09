@@ -118,7 +118,6 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libdbusmenu-glib-dev (>= 0.1.8),
          libdbus-glib-1-dev (>= 0.76),
-         libappindicator-dev (= ${binary:Version}),
          libappindicator3-1 (= ${binary:Version})
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
