@@ -1,3 +1,10 @@
+libappindicator (0.4.91-0ubuntu3) UNRELEASED; urgency=low
+
+  * debian/rules: build without make check until the builder environment
+    issues are sorted
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 21:36:36 +0100
+
 libappindicator (0.4.91-0ubuntu2) precise; urgency=low
 
   * debian/control: build-depends on dbus-test-runner
