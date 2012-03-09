@@ -709,9 +709,9 @@ Setting <parameter>menuitem</parameter> to <link linkend="NULL:CAPS"><literal>NU
 <varlistentry><term><parameter>menuitem</parameter>&#160;:</term>
 <listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> to be activated on secondary activation. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="app-indicator-set-title" role="function">
+<refsect2 id="app-indicator-set-title" role="function" condition="since:0.5">
 <title>app_indicator_set_title ()</title>
-<indexterm zone="app-indicator-set-title"><primary>app_indicator_set_title</primary></indexterm>
+<indexterm zone="app-indicator-set-title" role="0.5"><primary>app_indicator_set_title</primary></indexterm>
 <programlisting><link linkend="void"><returnvalue>void</returnvalue></link>                app_indicator_set_title             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>,
                                                          <parameter>const <link linkend="gchar"><type>gchar</type></link> *title</parameter>);</programlisting>
 <para>
@@ -731,7 +731,7 @@ Setting <parameter>title</parameter> to <link linkend="NULL:CAPS"><literal>NULL<
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link></simpara></listitem></varlistentry>
 <varlistentry><term><parameter>title</parameter>&#160;:</term>
 <listitem><simpara>Title of the app indicator. <emphasis role="annotation">[<acronym>allow-none</acronym>]</emphasis></simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</variablelist><para role="since">Since 0.5</para></refsect2>
 <refsect2 id="app-indicator-get-id" role="function">
 <title>app_indicator_get_id ()</title>
 <indexterm zone="app-indicator-get-id"><primary>app_indicator_get_id</primary></indexterm>
@@ -878,9 +878,9 @@ Gets the menuitem being called on secondary-activate event.
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>A <link linkend="GtkWidget"><type>GtkWidget</type></link> object or <link linkend="NULL:CAPS"><literal>NULL</literal></link> if none has been set. <emphasis role="annotation">[<acronym>transfer none</acronym>]</emphasis></simpara></listitem></varlistentry>
 </variablelist></refsect2>
-<refsect2 id="app-indicator-get-title" role="function">
+<refsect2 id="app-indicator-get-title" role="function" condition="since:0.5">
 <title>app_indicator_get_title ()</title>
-<indexterm zone="app-indicator-get-title"><primary>app_indicator_get_title</primary></indexterm>
+<indexterm zone="app-indicator-get-title" role="0.5"><primary>app_indicator_get_title</primary></indexterm>
 <programlisting>const <link linkend="gchar"><returnvalue>gchar</returnvalue></link> *       app_indicator_get_title             (<parameter><link linkend="AppIndicator"><type>AppIndicator</type></link> *self</parameter>);</programlisting>
 <para>
 Gets the title of the application indicator.  See the function
@@ -889,7 +889,7 @@ Gets the title of the application indicator.  See the function
 <varlistentry><term><parameter>self</parameter>&#160;:</term>
 <listitem><simpara>The <link linkend="AppIndicator"><type>AppIndicator</type></link> object to use</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis>&#160;:</term><listitem><simpara>The current title.</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</variablelist><para role="since">Since 0.5</para></refsect2>
 <refsect2 id="app-indicator-build-menu-from-desktop" role="function">
 <title>app_indicator_build_menu_from_desktop ()</title>
 <indexterm zone="app-indicator-build-menu-from-desktop"><primary>app_indicator_build_menu_from_desktop</primary></indexterm>

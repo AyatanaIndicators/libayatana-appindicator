@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE indexdiv PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<indexdiv>
+<indexdiv><title>I</title>
+<indexentry><primaryie linkends="app-indicator-get-title"><link linkend="app-indicator-get-title">app_indicator_get_title</link>, function in <link linkend="libappindicator-app-indicator">AppIndicator</link></primaryie></indexentry>
+<indexentry><primaryie linkends="app-indicator-set-title"><link linkend="app-indicator-set-title">app_indicator_set_title</link>, function in <link linkend="libappindicator-app-indicator">AppIndicator</link></primaryie></indexentry>
+</indexdiv>
+</indexdiv>

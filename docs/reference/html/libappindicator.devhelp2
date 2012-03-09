@@ -7,6 +7,7 @@
     </sub>
     <sub name="Object Hierarchy" link="object-tree.html"/>
     <sub name="API Index" link="api-index-full.html"/>
+    <sub name="API 0.5 Index" link="api-index-0-5.html"/>
     <sub name="Deprecated API Index" link="api-index-deprecated.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
@@ -42,7 +43,7 @@
     <keyword type="function" name="app_indicator_set_label ()" link="libappindicator-app-indicator.html#app-indicator-set-label"/>
     <keyword type="function" name="app_indicator_set_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-set-ordering-index"/>
     <keyword type="function" name="app_indicator_set_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-set-secondary-activate-target"/>
-    <keyword type="function" name="app_indicator_set_title ()" link="libappindicator-app-indicator.html#app-indicator-set-title"/>
+    <keyword type="function" name="app_indicator_set_title ()" link="libappindicator-app-indicator.html#app-indicator-set-title" since="0.5"/>
     <keyword type="function" name="app_indicator_get_id ()" link="libappindicator-app-indicator.html#app-indicator-get-id"/>
     <keyword type="function" name="app_indicator_get_category ()" link="libappindicator-app-indicator.html#app-indicator-get-category"/>
     <keyword type="function" name="app_indicator_get_status ()" link="libappindicator-app-indicator.html#app-indicator-get-status"/>
@@ -56,7 +57,7 @@
     <keyword type="function" name="app_indicator_get_label_guide ()" link="libappindicator-app-indicator.html#app-indicator-get-label-guide"/>
     <keyword type="function" name="app_indicator_get_ordering_index ()" link="libappindicator-app-indicator.html#app-indicator-get-ordering-index"/>
     <keyword type="function" name="app_indicator_get_secondary_activate_target ()" link="libappindicator-app-indicator.html#app-indicator-get-secondary-activate-target"/>
-    <keyword type="function" name="app_indicator_get_title ()" link="libappindicator-app-indicator.html#app-indicator-get-title"/>
+    <keyword type="function" name="app_indicator_get_title ()" link="libappindicator-app-indicator.html#app-indicator-get-title" since="0.5"/>
     <keyword type="function" name="app_indicator_build_menu_from_desktop ()" link="libappindicator-app-indicator.html#app-indicator-build-menu-from-desktop"/>
     <keyword type="property" name="The &quot;attention-icon-desc&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-desc"/>
     <keyword type="property" name="The &quot;attention-icon-name&quot; property" link="libappindicator-app-indicator.html#AppIndicator--attention-icon-name"/>
