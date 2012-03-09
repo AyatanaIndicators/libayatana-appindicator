@@ -5,20 +5,19 @@ Comment=This is only a test
 Exec=/usr/bin/false
 Terminal=false
 Type=Application
-X-Ayatana-Desktop-Shortcuts=Short1;Short2;Short3;
-TargetEnvironment=Test Program;
+Actions=Short1;Short2;Short3;
 
-[Short1 Shortcut Group]
+[Desktop Action Short1]
 Name=Shortcut 1
 Exec=/usr/bin/true
-TargetEnvironment=Test Program;
+OnlyShowIn=Test Program;
 
-[Short2 Shortcut Group]
+[Desktop Action Short2]
 Name=Shortcut 2
 Exec=/usr/bin/true
-TargetEnvironment=Test Program;
+OnlyShowIn=Test Program;
 
-[Short3 Shortcut Group]
+[Desktop Action Short3]
 Name=Shortcut 3
 Exec=/usr/bin/true
-TargetEnvironment=Test Program;
+OnlyShowIn=Test Program;
