@@ -897,6 +897,10 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  if (oldtitle != NULL) {
 		  	g_free(oldtitle);
 		  }
+
+		  if (priv->status_icon != NULL) {
+		  	gtk_status_icon_set_title(priv->status_icon, priv->title ? priv->title : "");
+		  }
 		  break;
 		}
 		case PROP_LABEL_GUIDE: {
@@ -1510,7 +1514,11 @@ fallback (AppIndicator * self)
 {
 	GtkStatusIcon * icon = gtk_status_icon_new();
 
-	gtk_status_icon_set_title(icon, app_indicator_get_id(self));
+	gtk_status_icon_set_name(icon, app_indicator_get_id(self));
+	const gchar * title = app_indicator_get_title(self);
+	if (title != NULL) {
+		gtk_status_icon_set_title(icon, title);
+	}
 	
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
 		G_CALLBACK(status_icon_status_wrapper), icon);
@@ -1582,60 +1590,58 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
-	gchar *longname = NULL;
 
-        /* add the icon_theme_path once if needed */
-        GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-        if (self->priv->icon_theme_path != NULL)
-        {
-                gchar **path;
-                gint n_elements, i;
-                gboolean found=FALSE;
-                gtk_icon_theme_get_search_path(icon_theme, &path, &n_elements);
-                for (i=0; i< n_elements || path[i] == NULL; i++)
-                {
-                        if(g_strcmp0(path[i], self->priv->icon_theme_path) == 0)
-                        {
-                                found=TRUE;
-                                break;
-                        }
-                }
-                if(!found) 
-                        gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
-                g_strfreev (path);
-        }
+	/* add the icon_theme_path once if needed */
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+	if (self->priv->icon_theme_path != NULL) {
+		gchar **path;
+		gint n_elements, i;
+		gboolean found=FALSE;
+		gtk_icon_theme_get_search_path(icon_theme, &path, &n_elements);
+		for (i=0; i< n_elements || path[i] == NULL; i++) {
+			if(g_strcmp0(path[i], self->priv->icon_theme_path) == 0) {
+				found=TRUE;
+				break;
+			}
+		}
+		if(!found) {
+			gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
+		}
+		g_strfreev (path);
+	}
 
+	const gchar * icon_name = NULL;
 	switch (app_indicator_get_status(self)) {
 	case APP_INDICATOR_STATUS_PASSIVE:
-                /* hide first to avoid that the change is visible to the user */
-                gtk_status_icon_set_visible(icon, FALSE);
-                longname = append_panel_icon_suffix(app_indicator_get_icon(self));
-                if (gtk_icon_theme_has_icon (icon_theme, longname))
-                         gtk_status_icon_set_from_icon_name(icon, longname);
-                else
-                         gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		/* hide first to avoid that the change is visible to the user */
+		gtk_status_icon_set_visible(icon, FALSE);
+		icon_name = app_indicator_get_icon(self);
 		break;
 	case APP_INDICATOR_STATUS_ACTIVE:
-                longname = append_panel_icon_suffix(app_indicator_get_icon(self));
-                if (gtk_icon_theme_has_icon (icon_theme, longname))
-                         gtk_status_icon_set_from_icon_name(icon, longname);
-                else
-                         gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		icon_name = app_indicator_get_icon(self);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	case APP_INDICATOR_STATUS_ATTENTION:
-                /* get the _attention_ icon here */
-                longname = append_panel_icon_suffix(app_indicator_get_attention_icon(self));
-                if (gtk_icon_theme_has_icon (icon_theme, longname))
-                         gtk_status_icon_set_from_icon_name(icon, longname);
-                else
-                         gtk_status_icon_set_from_icon_name(icon, app_indicator_get_icon(self));
+		/* get the _attention_ icon here */
+		icon_name = app_indicator_get_attention_icon(self);
 		gtk_status_icon_set_visible(icon, TRUE);
 		break;
 	};
 
-	if (longname) {
-		g_free(longname);
+	if (icon_name != NULL) {
+		if (g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+			gtk_status_icon_set_from_file(icon, icon_name);
+		} else {
+			gchar *longname = append_panel_icon_suffix(icon_name);
+
+			if (longname != NULL && gtk_icon_theme_has_icon (icon_theme, longname)) {
+				gtk_status_icon_set_from_icon_name(icon, longname);
+			} else {
+				gtk_status_icon_set_from_icon_name(icon, icon_name);
+			}
+
+			g_free(longname);
+		}
 	}
 
 	return;
@@ -2201,6 +2207,9 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
  * the title as the first part of the line for the menu items.
  *
  * Setting @title to %NULL removes the title.
+ *
+ * Since: 0.5
+ *
  */
 void
 app_indicator_set_title (AppIndicator *self, const gchar * title)
@@ -2350,6 +2359,9 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
  * app_indicator_set_title() for information on the title.
  *
  * Return value: The current title.
+ *
+ * Since: 0.5
+ *
  */
 const gchar *
 app_indicator_get_title (AppIndicator *self)

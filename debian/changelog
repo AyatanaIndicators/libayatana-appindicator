@@ -1,3 +1,15 @@
+libappindicator (0.4.91-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    * Set name and title in fallback status item (LP: #885080)
+    * Fix build in non-source dir cases (LP: #931764)
+    * Use file names for icons in fallback mode (LP: #875770)
+    * Add since declarations to documentation
+    * Fix test suite to work with libindicator 0.4.93
+    * Fix the mono binding properties
+
+ -- Ted Gould <ted@ubuntu.com>  Fri, 09 Mar 2012 12:17:14 -0600
+
 libappindicator (0.4.90-0ubuntu2) precise; urgency=low
 
   * debian/control:
