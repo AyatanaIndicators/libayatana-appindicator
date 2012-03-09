@@ -8,7 +8,7 @@
   <bookinfo>
     <title>libappindicator Reference Manual</title>
     <releaseinfo>
-      for libappindicator 0.4.90
+      for libappindicator 0.4.91
     </releaseinfo>
   </bookinfo>
 
@@ -24,6 +24,10 @@
   <index id="api-index-full">
     <title>API Index</title>
     <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-0-5">
+    <title>API 0.5 Index</title>
+    <xi:include href="xml/api-index-0.5.xml"><xi:fallback /></xi:include>
   </index>
   <index id="api-index-deprecated">
     <title>Deprecated API Index</title>

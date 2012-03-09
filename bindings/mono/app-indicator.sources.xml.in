@@ -1,0 +1,12 @@
+<gapi-parser-input>
+	<api filename="libappindicator-api.raw">
+		<library name="appindicator.dll">
+			<namespace name="AppIndicator">
+				<file>@top_builddir@/bindings/mono/app-indicator.c</file>
+				<file>@top_builddir@/src/app-indicator-enum-types.c</file>
+				<file>@top_builddir@/src/app-indicator-enum-types.h</file>
+				<file>@top_srcdir@/src/app-indicator.h</file>
+			</namespace>
+		</library>
+	</api>
+</gapi-parser-input>
