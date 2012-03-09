@@ -1,8 +1,8 @@
-libappindicator (0.4.91-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (0.4.91-0ubuntu2) precise; urgency=low
 
   * debian/control: build-depends on dbus-test-runner
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 21:11:50 +0100
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 21:13:24 +0100
 
 libappindicator (0.4.91-0ubuntu1) precise; urgency=low
 
