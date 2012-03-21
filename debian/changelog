@@ -1,5 +1,22 @@
-libappindicator (0.4.91-0ubuntu1~ppa1) precise; urgency=low
+libappindicator (0.4.91-0ubuntu3) precise; urgency=low
 
+  * debian/rules: build without make check until the builder environment
+    issues are sorted
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 21:47:53 +0100
+
+libappindicator (0.4.91-0ubuntu2) precise; urgency=low
+
+  * debian/control: build-depends on dbus-test-runner
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 21:13:24 +0100
+
+libappindicator (0.4.91-0ubuntu1) precise; urgency=low
+
+  * debian/rules:
+    - run make check during the build
+
+  [ Ted Gould ]
   * New upstream release.
     * Set name and title in fallback status item (LP: #885080)
     * Fix build in non-source dir cases (LP: #931764)
@@ -8,7 +25,7 @@ libappindicator (0.4.91-0ubuntu1~ppa1) precise; urgency=low
     * Fix test suite to work with libindicator 0.4.93
     * Fix the mono binding properties
 
- -- Ted Gould <ted@ubuntu.com>  Fri, 09 Mar 2012 12:17:14 -0600
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 09 Mar 2012 20:05:53 +0100
 
 libappindicator (0.4.90-0ubuntu2) precise; urgency=low
 

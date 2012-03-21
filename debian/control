@@ -32,7 +32,8 @@ Build-Depends: debhelper (>= 7.0),
                gir1.2-gtk-2.0,
                gir1.2-gtk-3.0,
                dh-autoreconf,
-               valac-0.14
+               valac-0.14,
+               dbus-test-runner
 Standards-Version: 3.9.1
 Homepage: https://launchpad.net/libappindicator
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/libappindicator/ubuntu
