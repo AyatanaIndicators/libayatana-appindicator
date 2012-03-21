@@ -1,11 +1,12 @@
 libappindicator (0.4.92-0ubuntu1) precise; urgency=low
 
+  [ Charles Kerr ]
   * New upstream release.
     * Fix a Coverity PW.BRANCH_PAST_INITIALIZATION error (LP: #957471)
     * Fix FTB bug from ambiguity between Glib.Menu and Gtk.Menu in the Vala code
   * debian/control: Updating to valac-0.16
 
- -- Charles Kerr <charles.kerr@canonical.com>  Wed, 21 Mar 2012 16:35:56 -0500
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 21 Mar 2012 18:19:17 -0400
 
 libappindicator (0.4.91-0ubuntu3) precise; urgency=low
 
