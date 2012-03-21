@@ -926,11 +926,8 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  break;
 
 		case PROP_DBUS_MENU_SERVER:
-			if (priv->menuservice != NULL) {
-				g_object_unref (priv->menuservice);
-			}
-			gpointer val = g_value_dup_object(value);
-			priv->menuservice = DBUSMENU_SERVER(val);
+			g_clear_object (&priv->menuservice);
+			priv->menuservice = DBUSMENU_SERVER (g_value_dup_object(value));
 			break;
 
         default:
