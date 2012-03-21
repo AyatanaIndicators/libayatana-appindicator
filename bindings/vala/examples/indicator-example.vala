@@ -39,16 +39,16 @@ public class IndicatorExample {
 		indicator.set_status(IndicatorStatus.ACTIVE);
 		indicator.set_attention_icon("indicator-messages-new");
 
-		var menu = new Menu();
+		var menu = new Gtk.Menu();
 
-		var item = new MenuItem.with_label("Foo");
+		var item = new Gtk.MenuItem.with_label("Foo");
 		item.activate.connect(() => {
 			indicator.set_status(IndicatorStatus.ATTENTION);
 		});
 		item.show();
 		menu.append(item);
 
-		var bar = item = new MenuItem.with_label("Bar");
+		var bar = item = new Gtk.MenuItem.with_label("Bar");
 		item.show();
 		item.activate.connect(() => {
 			indicator.set_status(IndicatorStatus.ACTIVE);

@@ -30,7 +30,7 @@ static int main(string[] args) {
 }
 
 class SimpleClient {
-	Menu menu;
+	Gtk.Menu menu;
 	Indicator ci;
 	int percentage;
 	bool active;
@@ -56,24 +56,24 @@ class SimpleClient {
 		widget.set_sensitive(!widget.is_sensitive());
 	}
 
-	private void append_submenu(MenuItem item) {
-		var menu = new Menu();
-		MenuItem mi;
+	private void append_submenu(Gtk.MenuItem item) {
+		var menu = new Gtk.Menu();
+		Gtk.MenuItem mi;
 
-		mi = new MenuItem.with_label("Sub 1");
+		mi = new Gtk.MenuItem.with_label("Sub 1");
 		menu.append(mi);
 		mi.activate.connect(() => { print("Sub1\n"); });
 
-		MenuItem prev_mi = mi;
-		mi = new MenuItem.with_label("Sub 2");
+		Gtk.MenuItem prev_mi = mi;
+		mi = new Gtk.MenuItem.with_label("Sub 2");
 		menu.append(mi);
 		mi.activate.connect(() => { toggle_sensitivity(prev_mi); });
 
-		mi = new MenuItem.with_label("Sub 3");
+		mi = new Gtk.MenuItem.with_label("Sub 3");
 		menu.append(mi);
 		mi.activate.connect(() => { print("Sub3\n"); });
 
-		mi = new MenuItem.with_label("Toggle Attention");
+		mi = new Gtk.MenuItem.with_label("Toggle Attention");
 		menu.append(mi);
 		mi.activate.connect(() => {
 			if (ci.get_status() == IndicatorStatus.ATTENTION)
@@ -88,7 +88,7 @@ class SimpleClient {
 		item.set_submenu(menu);
 	}
 
-	private void label_toggle(MenuItem item) {
+	private void label_toggle(Gtk.MenuItem item) {
 		can_haz_label = !can_haz_label;
 
 		if (can_haz_label) {
@@ -114,28 +114,28 @@ class SimpleClient {
 			return true;
 		});
 
-		menu = new Menu();
+		menu = new Gtk.Menu();
 		var chk = new CheckMenuItem.with_label("1");
 		chk.activate.connect(() => { print("1\n"); });
 		menu.append(chk);
 		chk.show();
 
-		var radio = new RadioMenuItem.with_label(new SList<RadioMenuItem>(), "2");
+		var radio = new Gtk.RadioMenuItem.with_label(new SList<RadioMenuItem>(), "2");
 		radio.activate.connect(() => { print("2\n"); });
 		menu.append(radio);
 		radio.show();
 
-		var submenu = new MenuItem.with_label("3");
+		var submenu = new Gtk.MenuItem.with_label("3");
 		menu.append(submenu);
 		append_submenu(submenu);
 		submenu.show();
 
-		var toggle_item = new MenuItem.with_label("Toggle 3");
+		var toggle_item = new Gtk.MenuItem.with_label("Toggle 3");
 		toggle_item.activate.connect(() => { toggle_sensitivity(submenu); });
 		menu.append(toggle_item);
 		toggle_item.show();
 
-		var imgitem = new ImageMenuItem.from_stock(Stock.NEW, null);
+		var imgitem = new Gtk.ImageMenuItem.from_stock(Stock.NEW, null);
 		imgitem.activate.connect(() => {
 			Image img = (Image) imgitem.get_image();
 			img.set_from_stock(Stock.OPEN, IconSize.MENU);
@@ -143,7 +143,7 @@ class SimpleClient {
 		menu.append(imgitem);
 		imgitem.show();
 
-		var att = new MenuItem.with_label("Get Attention");
+		var att = new Gtk.MenuItem.with_label("Get Attention");
 		att.activate.connect(() => {
 			if (active) {
 				ci.set_status(IndicatorStatus.ATTENTION);
@@ -158,13 +158,13 @@ class SimpleClient {
 		menu.append(att);
 		att.show();
 
-		var show = new MenuItem.with_label("Show Label");
+		var show = new Gtk.MenuItem.with_label("Show Label");
 		label_toggle(show);
 		show.activate.connect(() => { label_toggle(show); });
 		menu.append(show);
 		show.show();
 
-		var icon = new CheckMenuItem.with_label("Set Local Icon");
+		var icon = new Gtk.CheckMenuItem.with_label("Set Local Icon");
 		icon.activate.connect(() => {
 			if (icon.get_active()) {
 				ci.set_icon("simple-client-test-icon.png");
