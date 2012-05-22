@@ -1,3 +1,11 @@
+libappindicator (0.4.92-0ubuntu2) quantal; urgency=low
+
+  * [Evgeni Golov]
+  * debian/rules:
+    - Use autoreconf.mk instead of running dh_autoreconf by hand
+
+ -- Robert Ancell <robert.ancell@canonical.com>  Wed, 23 May 2012 10:19:17 +1200
+
 libappindicator (0.4.92-0ubuntu1) precise; urgency=low
 
   [ Charles Kerr ]
