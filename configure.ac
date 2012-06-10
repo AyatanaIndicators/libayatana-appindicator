@@ -106,10 +106,11 @@ AM_CONDITIONAL(HAVE_VALAC, [test "x$VALAC" != "x"])
 
 MONO_REQUIRED_VERSION=1.0
 PKG_CHECK_MODULES(MONO_DEPENDENCY, mono >= $MONO_REQUIRED_VERSION, has_mono=true, has_mono=false)
+AM_CONDITIONAL(HAS_MONO, [test "x$has_mono" = "xtrue"])
 
 AC_PATH_PROG(AL, al, no)
 if test "x$AL" = "xno" ; then
-   AC_MSG_ERROR([No al tool found.  You need to install Mono.])
+   AC_MSG_NOTICE([No al tool found.  You need to install Mono.])
 fi
 
 if test "x$has_mono" = "xtrue" ; then
@@ -126,12 +127,12 @@ if test "x$has_mono" = "xtrue" ; then
 fi
 
 if test "x$CSC" = "xno" ; then
-   AC_MSG_ERROR([No Mono compiler found.])
+   AC_MSG_NOTICE([No Mono compiler found.])
 fi
 
 AC_PATH_PROG(GACUTIL, gacutil, no)
 if test "x$GACUTIL" = "xno" ; then
-   AC_MSG_ERROR([No gacutil tool found])
+   AC_MSG_NOTICE([No gacutil tool found])
 fi
 
 AC_SUBST(RUNTIME)
@@ -143,9 +144,9 @@ AC_SUBST(GENERATED_SOURCES)
 
 GLIB_SHARP_REQ_VERSION=2.12.1
 GTK_SHARP_REQ_VERSION=2.12
-PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 >= $GTK_SHARP_REQ_VERSION)
+PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 >= $GTK_SHARP_REQ_VERSION, has_gtksharp=true, has_gtksharp=false)
 
-PKG_CHECK_MODULES(GAPI, gapi-2.0 >= $GLIB_SHARP_REQ_VERSION)
+PKG_CHECK_MODULES(GAPI, gapi-2.0 >= $GLIB_SHARP_REQ_VERSION, has_gapi=true, has_gapi=false)
 AC_PATH_PROG(GAPI_PARSER, gapi2-parser, no)
 AC_SUBST(GAPI_PARSER)
 AC_PATH_PROG(GAPI_CODEGEN, gapi2-codegen, no)
@@ -238,12 +239,6 @@ src/Makefile
 src/appindicator-0.1.pc
 src/appindicator3-0.1.pc
 bindings/Makefile
-bindings/mono/Makefile
-bindings/mono/appindicator-sharp.dll.config
-bindings/mono/appindicator-sharp-0.1.pc
-bindings/mono/app-indicator.sources.xml
-bindings/mono/examples/Makefile
-bindings/mono/examples/indicator-example
 bindings/python/Makefile
 bindings/python/appindicator.override
 bindings/vala/Makefile
@@ -255,6 +250,18 @@ docs/reference/Makefile
 docs/reference/version.xml
 docs/reference/libappindicator-docs.sgml
 ])
+
+if test "x$has_mono" = "xtrue" ; then
+    AC_CONFIG_FILES([
+    bindings/mono/Makefile
+    bindings/mono/appindicator-sharp.dll.config
+    bindings/mono/appindicator-sharp-0.1.pc
+    bindings/mono/app-indicator.sources.xml
+    bindings/mono/examples/Makefile
+    bindings/mono/examples/indicator-example
+    ])
+fi
+
 AC_OUTPUT
 
 ###########################
@@ -267,6 +274,7 @@ Libappindicator Configuration:
 
 	Prefix:        $prefix
 	GTK+ Version:  $with_gtk
+	Mono:          $has_mono
 	Tests:         $enable_tests
 	Mono tests:    $have_nunit
 	gcov:	       $use_gcov
