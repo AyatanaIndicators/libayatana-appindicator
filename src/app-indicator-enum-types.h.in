@@ -44,7 +44,7 @@ G_END_DECLS
 /*** END file-tail ***/
 
 /*** BEGIN file-production ***/
-/* Enumerations from file: "@filename@" */
+/* Enumerations from file: "@basename@" */
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
