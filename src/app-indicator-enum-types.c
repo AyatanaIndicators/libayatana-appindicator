@@ -31,7 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include "app-indicator-enum-types.h"
 
-#include "./app-indicator.h"
+#include "app-indicator.h"
 /**
 	app_indicator_category_get_type:
 

@@ -32,7 +32,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 /*** END file-header ***/
 
 /*** BEGIN file-production ***/
-#include "@filename@"
+#include "@basename@"
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
