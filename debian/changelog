@@ -1,8 +1,8 @@
-libappindicator (12.10.0-0ubuntu1) UNRELEASED; urgency=low
+libappindicator (12.10.0-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 11 Jul 2012 21:08:17 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Wed, 11 Jul 2012 21:19:53 +0200
 
 libappindicator (0.4.92-0ubuntu2) quantal; urgency=low
 
