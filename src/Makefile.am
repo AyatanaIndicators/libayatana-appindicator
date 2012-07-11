@@ -68,12 +68,14 @@ libappindicator_la_SOURCES = \
 	gen-notification-watcher.xml.c
 
 libappindicator_la_LDFLAGS = \
+	$(COVERAGE_LDFLAGS) \
 	-version-info 1:0:0 \
 	-no-undefined \
 	-export-symbols-regex "^[^_d].*"
 
 libappindicator_la_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
+	$(COVERAGE_CFLAGS) \
 	-Wall -Werror \
 	-DG_LOG_DOMAIN=\"libappindicator\"
 

@@ -36,7 +36,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 G_BEGIN_DECLS
 
-/* Enumerations from file: "./app-indicator.h" */
+/* Enumerations from file: "app-indicator.h" */
 GType app_indicator_category_get_type (void) G_GNUC_CONST;
 #define APP_INDICATOR_TYPE_INDICATOR_CATEGORY (app_indicator_category_get_type())
 

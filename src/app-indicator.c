@@ -1123,7 +1123,18 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
 		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
 	} else if (g_strcmp0(property, "Title") == 0) {
-		return g_variant_new_string(priv->title ? priv->title : "");
+		const gchar * output = NULL;
+		if (priv->title == NULL) {
+			const gchar * name = g_get_application_name();
+			if (name != NULL) {
+				output = name;
+			} else {
+				output = "";
+			}
+		} else {
+			output = priv->title;
+		}
+		return g_variant_new_string(output);
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
 		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
