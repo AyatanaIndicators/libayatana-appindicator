@@ -23,7 +23,7 @@
 */
 
 namespace AppIndicator {
-  [CCode (type_check_function = "IS_APP_INDICATOR")]
+  [CCode (type_check_function = "IS_APP_INDICATOR", type_id = "app_indicator_get_type ()")]
   public class Indicator : GLib.Object {
   }
 }
