@@ -33,7 +33,7 @@ Build-Depends: debhelper (>= 7.0),
                gir1.2-gtk-3.0,
                dh-autoreconf,
                valac-0.16,
-               dbus-test-runner
+               dbus-test-runner,
 Standards-Version: 3.9.1
 Homepage: https://launchpad.net/libappindicator
 Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/libappindicator/ubuntu
@@ -46,8 +46,8 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${python:Depends},
          libappindicator1 (= ${binary:Version}),
-         python-gobject
-Provides: ${python:Provides}
+         python-gobject,
+Provides: ${python:Provides},
 Description: Python bindings for libappindicator
  This package provides Python bindings so that you can use libappindicator from 
  a Python program.
@@ -56,8 +56,8 @@ Package: libappindicator1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
-         ${misc:Depends}
-Recommends: indicator-application (>= 0.2.93)
+         ${misc:Depends},
+Recommends: indicator-application (>= 0.2.93),
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -70,7 +70,7 @@ Replaces: gir1.0-appindicator-0.1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
-         ${gir:Depends}
+         ${gir:Depends},
 Description: Typelib files for libappindicator1.
  .
  This package can be used by other packages using the GIRepository format
@@ -83,7 +83,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libdbusmenu-glib-dev (>= 0.1.8),
          libdbus-glib-1-dev (>= 0.76),
-         libappindicator1 (= ${binary:Version})
+         libappindicator1 (= ${binary:Version}),
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -93,7 +93,7 @@ Description: Application Indicators
 Package: libappindicator-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends},
 Description:  Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -104,8 +104,8 @@ Package: libappindicator3-1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
-         ${misc:Depends}
-Recommends: indicator-application (>= 0.2.93)
+         ${misc:Depends},
+Recommends: indicator-application (>= 0.2.93),
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -119,7 +119,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libdbusmenu-glib-dev (>= 0.1.8),
          libdbus-glib-1-dev (>= 0.76),
-         libappindicator3-1 (= ${binary:Version})
+         libappindicator3-1 (= ${binary:Version}),
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -130,7 +130,7 @@ Package: gir1.2-appindicator3-0.1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
-         ${gir:Depends}
+         ${gir:Depends},
 Description: Typelib files for libappindicator3-1.
  .
  This package can be used by other packages using the GIRepository format
@@ -140,12 +140,12 @@ Package: libappindicator0.1-cil
 Section: cli-mono
 Architecture: all
 Replaces: libappindicator0-cil (<= 0.0.19-0ubuntu4),
-          libappindicator0.0-cil (<= 0.2.0-0ubuntu4)
-Conflicts: libappindicator0-cil (<= 0.0.19-0ubuntu4)
-Provides: libappindicator0.0-cil
+          libappindicator0.0-cil (<= 0.2.0-0ubuntu4),
+Conflicts: libappindicator0-cil (<= 0.0.19-0ubuntu4),
+Provides: libappindicator0.0-cil,
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         ${cli:Depends}
+         ${cli:Depends},
 Description: CLI bindings for libappindicator
  This package provides the appindicator-sharp assembly that allows CLI (.NET)
  programs to take menus from applications and place them in the panel.
@@ -155,12 +155,12 @@ Description: CLI bindings for libappindicator
 Package: libappindicator0.1-cil-dev
 Section: libdevel
 Architecture: all
-Replaces: libappindicator-cil-dev (<= 0.0.19-0ubuntu4)
-Conflicts: libappindicator-cil-dev (<= 0.0.19-0ubuntu4)
+Replaces: libappindicator-cil-dev (<= 0.0.19-0ubuntu4),
+Conflicts: libappindicator-cil-dev (<= 0.0.19-0ubuntu4),
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${cli:Depends},
-         libappindicator0.1-cil (= ${binary:Version})
+         libappindicator0.1-cil (= ${binary:Version}),
 Description: Application Indicators
  A library and indicator to take menus from applications and place them in
  the panel.
