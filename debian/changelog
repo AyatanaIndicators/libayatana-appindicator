@@ -3,6 +3,7 @@ libappindicator (12.10.0-0ubuntu2) UNRELEASED; urgency=low
   * debian/control:
     - Update style: use trailing commas at the end of dependency lists.
     - Reorganize Build-Depends for clarity.
+    - Bump Build-Depends on debhelper to (>= 9).
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Mon, 26 Nov 2012 11:02:18 -0500
 
