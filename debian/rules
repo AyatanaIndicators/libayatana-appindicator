@@ -10,6 +10,8 @@ CONFIGURE_FLAGS_gtk3 = --with-gtk=3 --enable-gtk-doc=no
 
 export CSC=/usr/bin/mono-csc
 
+export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
+
 CFLAGS += -fPIC
 
 %:

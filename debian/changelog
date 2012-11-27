@@ -10,6 +10,7 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
   * debian/compat: bump to compat level 9.
   * debian/rules:
     - Convert from cdbs to debhelper 9.
+    - Add and export DPKG_GENSYMBOLS_CHECK_LEVEL.
   * debian/*.install:
     - Update paths for multiarch and for use with dh9 (remove debian/tmp...)
 
