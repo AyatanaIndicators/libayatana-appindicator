@@ -5,6 +5,7 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
     - Reorganize Build-Depends for clarity.
     - Bump Build-Depends on debhelper to (>= 9).
     - Drop Build-Depends on cdbs.
+    - Drop old Conflicts, Replaces, Provides for old unsupported upgrade paths.
   * debian/compat: bump to compat level 9.
   * debian/rules:
     - Convert from cdbs to debhelper 9.
