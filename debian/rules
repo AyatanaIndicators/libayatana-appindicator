@@ -65,6 +65,18 @@ override_dh_install:
 	dh_install -plibappindicator0.1-cil --fail-missing --sourcedir=debian/tmp/gtk2
 	dh_install -plibappindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2
 
+override_dh_auto_test: $(FLAVORS:%=dotest-%)
+
+dotest-%:
+	dh_auto_test --builddirectory=build/$*
+
+dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
+	# GTK2 flavor test was run on a per-python-version basis.
+
+dotestgtk2-%:
+	PYTHON=`which $*` \
+		dh_auto_test --builddirectory=build/gtk2
+
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf build
