@@ -1,1 +1,1 @@
-debian/tmp/usr/lib/libappindicator3.so.*
+usr/lib/*/libappindicator3.so.*
