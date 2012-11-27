@@ -35,7 +35,11 @@ Build-Depends: debhelper (>= 9),
                valac-0.16,
 Standards-Version: 3.9.1
 Homepage: https://launchpad.net/libappindicator
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-desktop/libappindicator/ubuntu
+# If you aren't a member of ~indicator-applet-developers but need to upload
+# packaging changes, just go ahead.  ~indicator-applet-developers will notice
+# and sync up the code again.
+Vcs-Bzr: https://code.launchpad.net/~indicator-applet-developers/libappindicator/trunk.13.04
+Vcs-Browser: https://bazaar.launchpad.net/~indicator-applet-developers/libappindicator/trunk.13.04/files
 
 Package: python-appindicator
 Section: python
