@@ -17,6 +17,9 @@ CFLAGS += -fPIC
 %:
 	dh $@ --with autoreconf,python2,cli,gir
 
+override_dh_autoreconf:
+	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
+
 override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
 
 doconfigure-%:

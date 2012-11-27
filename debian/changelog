@@ -11,6 +11,7 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
   * debian/rules:
     - Convert from cdbs to debhelper 9.
     - Add and export DPKG_GENSYMBOLS_CHECK_LEVEL.
+    - Override dh_autoreconf to run autogen.sh and not call configure.
   * debian/*.install:
     - Update paths for multiarch and for use with dh9 (remove debian/tmp...)
 
