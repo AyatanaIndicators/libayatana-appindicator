@@ -1,4 +1,4 @@
-libappindicator (12.10.0-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
 
   * debian/control:
     - Update style: use trailing commas at the end of dependency lists.
@@ -6,6 +6,8 @@ libappindicator (12.10.0-0ubuntu2) UNRELEASED; urgency=low
     - Bump Build-Depends on debhelper to (>= 9).
     - Drop Build-Depends on cdbs.
   * debian/compat: bump to compat level 9.
+  * debian/rules:
+    - Convert from cdbs to debhelper 9.
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Mon, 26 Nov 2012 11:02:18 -0500
 
