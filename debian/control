@@ -58,6 +58,7 @@ Description: Python bindings for libappindicator
 Package: libappindicator1
 Section: libs
 Architecture: any
+Pre-Depends: multiarch-support,
 Depends: ${shlibs:Depends},
          ${misc:Depends},
 Recommends: indicator-application (>= 0.2.93),
@@ -104,6 +105,7 @@ Description:  Application Indicators
 Package: libappindicator3-1
 Section: libs
 Architecture: any
+Pre-Depends: multiarch-support,
 Depends: ${shlibs:Depends},
          ${misc:Depends},
 Recommends: indicator-application (>= 0.2.93),
