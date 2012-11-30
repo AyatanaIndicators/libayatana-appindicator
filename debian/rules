@@ -41,8 +41,8 @@ dobuild-gtk2: $(PY_VERSIONS:%=dobuildgtk2-%)
 	# GTK2 flavor build was run on a per-python-version basis.
 
 dobuildgtk2-%:
-	#PYTHON=`which $*` \
-	#	dh_auto_build --builddirectory=build/gtk2
+	PYTHON=`which $*` \
+		dh_auto_build --builddirectory=build/gtk2
 
 override_dh_auto_install: $(FLAVORS:%=doinstall-%)
 
@@ -68,14 +68,14 @@ override_dh_install:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
-	dh_auto_test --builddirectory=build/$*
+	#dh_auto_test --builddirectory=build/$*
 
 dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
 	# GTK2 flavor test was run on a per-python-version basis.
 
 dotestgtk2-%:
-	PYTHON=`which $*` \
-		dh_auto_test --builddirectory=build/gtk2
+	#PYTHON=`which $*` \
+	#	dh_auto_test --builddirectory=build/gtk2
 
 override_dh_auto_clean:
 	dh_auto_clean
