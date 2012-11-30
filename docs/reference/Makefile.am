@@ -102,7 +102,7 @@ GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_srcdir)/src -I$(top_srcdir)/src $(LIBRARY_
 GTKDOC_LIBS=$(top_builddir)/src/$(APPINDICATORLIB) $(LIBRARY_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
-include $(top_srcdir)/gtk-doc.local.make
+include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
@@ -113,13 +113,11 @@ EXTRA_DIST += version.xml.in libappindicator-docs.sgml.in
 # for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
 #DISTCLEANFILES +=
 
-# Comment this out if you want your docs-status tested during 'make check'
-TESTS = gtkdoc-in-srcdir
-
-gtkdoc-in-srcdir: Makefile.am
-	@echo "#!/bin/sh" > $@
-	@echo "cd \"$(srcdir)\"" >> $@
-	@echo "$(GTKDOC_CHECK)" >> $@
-	@chmod +x $@
-DISTCLEANFILES = gtkdoc-in-srcdir
-
+# Comment this out if you want 'make check' to test you doc status
+# and run some sanity checks
+if ENABLE_GTK_DOC
+ TESTS_ENVIRONMENT = cd $(srcdir) && \
+   DOC_MODULE=$(DOC_MODULE) DOC_MAIN_SGML_FILE=$(DOC_MAIN_SGML_FILE) \
+   SRCDIR=$(abs_srcdir) BUILDDIR=$(abs_builddir)
+#TESTS = $(GTKDOC_CHECK)
+endif
