@@ -41,8 +41,8 @@ dobuild-gtk2: $(PY_VERSIONS:%=dobuildgtk2-%)
 	# GTK2 flavor build was run on a per-python-version basis.
 
 dobuildgtk2-%:
-	PYTHON=`which $*` \
-		dh_auto_build --builddirectory=build/gtk2
+	#PYTHON=`which $*` \
+	#	dh_auto_build --builddirectory=build/gtk2
 
 override_dh_auto_install: $(FLAVORS:%=doinstall-%)
 
