@@ -18,7 +18,7 @@ CFLAGS += -fPIC
 	dh $@ --with autoreconf,python2,cli,gir
 
 # Note: No cli here so that the pbuilder stuff works
-override_dh_clean:
+clean:
 	dh_clean
 
 override_dh_autoreconf:
