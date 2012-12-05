@@ -1,0 +1,166 @@
+Source: libappindicator
+Section: gnome
+Priority: optional
+XS-Python-Version: all
+Maintainer: Ubuntu Desktop Team <ubuntu-desktop@lists.ubuntu.com>
+Build-Depends: debhelper (>= 9),
+               dh-autoreconf,
+               quilt,
+               python-all-dev,
+               cli-common-dev (>= 0.5.7),
+               gobject-introspection,
+               intltool,
+               gnome-doc-utils,
+               gtk-doc-tools,
+               libnunit-cil-dev,
+               dbus-test-runner,
+               xvfb,
+               valac-0.16,
+               mono-devel (>= 2.4.3),
+               libgtk-3-dev (>= 2.91.3),
+               libgtk2.0-dev (>= 2.12.0),
+               python-gtk2-dev,
+               gtk-sharp2-gapi,
+               libgtk2.0-cil-dev,
+               libdbus-glib-1-dev (>= 0.82),
+               libindicate-dev (>= 0.2.0),
+               libindicate-gtk-dev (>= 0.2.0),
+               libindicator-dev (>= 0.3.90),
+               libindicator3-dev (>= 0.3.90),
+               libdbusmenu-glib-dev (>= 0.5.90),
+               libdbusmenu-gtk-dev (>= 0.5.90),
+               libdbusmenu-gtk3-dev (>= 0.5.90),
+               libgirepository1.0-dev,
+               gir1.2-glib-2.0,
+               gir1.2-gtk-2.0,
+               gir1.2-gtk-3.0,
+Standards-Version: 3.9.1
+Homepage: https://launchpad.net/libappindicator
+# If you aren't a member of ~indicator-applet-developers but need to upload
+# packaging changes, just go ahead.  ~indicator-applet-developers will notice
+# and sync up the code again.
+Vcs-Bzr: https://code.launchpad.net/~indicator-applet-developers/libappindicator/trunk.13.04
+Vcs-Browser: https://bazaar.launchpad.net/~indicator-applet-developers/libappindicator/trunk.13.04/files
+
+Package: python-appindicator
+Section: python
+Architecture: any
+XB-Python-Version: ${python:Versions}
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         ${python:Depends},
+         libappindicator1 (= ${binary:Version}),
+         python-gobject,
+Provides: ${python:Provides},
+Description: Python bindings for libappindicator
+ This package provides Python bindings so that you can use libappindicator from 
+ a Python program.
+
+Package: libappindicator1
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support,
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Recommends: indicator-application (>= 0.2.93),
+Description: Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains shared libraries to be used by applications.
+
+Package: gir1.2-appindicator-0.1
+Section: libs
+Architecture: any
+Depends: ${misc:Depends},
+         ${gir:Depends},
+Description: Typelib files for libappindicator1.
+ .
+ This package can be used by other packages using the GIRepository format
+ to generate dynamic bindings.
+
+Package: libappindicator-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-glib-dev (>= 0.1.8),
+         libdbus-glib-1-dev (>= 0.76),
+         libappindicator1 (= ${binary:Version}),
+Description: Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains files that are needed to build applications.
+
+Package: libappindicator-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends},
+Description:  Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains developer documentation.
+
+Package: libappindicator3-1
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support,
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Recommends: indicator-application (>= 0.2.93),
+Description: Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains shared libraries to be used by applications.
+
+Package: libappindicator3-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libdbusmenu-glib-dev (>= 0.1.8),
+         libdbus-glib-1-dev (>= 0.76),
+         libappindicator3-1 (= ${binary:Version}),
+Description: Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains files that are needed to build applications.
+
+Package: gir1.2-appindicator3-0.1
+Section: libs
+Architecture: any
+Depends: ${misc:Depends},
+         ${gir:Depends},
+Description: Typelib files for libappindicator3-1.
+ .
+ This package can be used by other packages using the GIRepository format
+ to generate dynamic bindings.
+
+Package: libappindicator0.1-cil
+Section: cli-mono
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         ${cli:Depends},
+Description: CLI bindings for libappindicator
+ This package provides the appindicator-sharp assembly that allows CLI (.NET)
+ programs to take menus from applications and place them in the panel.
+ .
+ This package contains assemblies to be used by applications.
+
+Package: libappindicator0.1-cil-dev
+Section: libdevel
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         ${cli:Depends},
+         libappindicator0.1-cil (= ${binary:Version}),
+Description: Application Indicators
+ A library and indicator to take menus from applications and place them in
+ the panel.
+ .
+ This package contains files that are needed to build applications.

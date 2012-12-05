@@ -1,0 +1,83 @@
+#!/usr/bin/make -f
+
+FLAVORS = gtk2 gtk3
+PY_VERSIONS = $(shell pyversions --requested debian/control)
+API_VERSION = 0.1
+
+CONFIGURE_COMMON_FLAGS = --disable-scrollkeeper --enable-introspection
+CONFIGURE_FLAGS_gtk2 = --with-gtk=2 --enable-gtk-doc
+CONFIGURE_FLAGS_gtk3 = --with-gtk=3 --enable-gtk-doc=no
+
+export CSC=/usr/bin/mono-csc
+
+export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
+
+CFLAGS += -fPIC
+
+%:
+	dh $@ --with autoreconf,python2,cli,gir
+
+override_dh_autoreconf:
+	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
+
+override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
+
+doconfigure-%:
+	dh_auto_configure --builddirectory=build/$* -- $(CONFIGURE_FLAGS_$*) $(CONFIGURE_COMMON_FLAGS)
+
+doconfigure-gtk2: $(PY_VERSIONS:%=doconfiguregtk2-%)
+	# GTK2 flavor configure was run on a per-python-version basis.
+
+doconfiguregtk2-%:
+	PYTHON=`which $*` \
+		dh_auto_configure --builddirectory=build/gtk2 -- $(CONFIGURE_FLAGS_gtk2) $(CONFIGURE_COMMON_FLAGS)
+
+override_dh_auto_build: $(FLAVORS:%=dobuild-%)
+
+dobuild-%:
+	dh_auto_build --builddirectory=build/$*
+
+dobuild-gtk2: $(PY_VERSIONS:%=dobuildgtk2-%)
+	# GTK2 flavor build was run on a per-python-version basis.
+
+dobuildgtk2-%:
+	PYTHON=`which $*` \
+		dh_auto_build --builddirectory=build/gtk2
+
+override_dh_auto_install: $(FLAVORS:%=doinstall-%)
+
+doinstall-%:
+	dh_auto_install --builddirectory=build/$* --destdir=debian/tmp/$*
+
+override_dh_install:
+	find debian/tmp -name \*.la -exec rm {} \;
+	find debian/tmp -name \*.a -exec rm {} \;
+	rm -rf debian/tmp/*/usr/lib/mono
+	rm -rf debian/tmp/*/usr/share/vala/vapi/appindicator*-0.1.deps
+	dh_install -ppython-appindicator --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibappindicator1 --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -pgir1.2-appindicator-0.1 --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibappindicator-dev --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibappindicator-doc --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibappindicator3-1 --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_install -plibappindicator3-dev --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_install -pgir1.2-appindicator3-0.1 --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_install -plibappindicator0.1-cil --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibappindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2
+
+override_dh_auto_test: $(FLAVORS:%=dotest-%)
+
+dotest-%:
+	#dh_auto_test --builddirectory=build/$*
+
+dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
+	# GTK2 flavor test was run on a per-python-version basis.
+
+dotestgtk2-%:
+	#PYTHON=`which $*` \
+	#	dh_auto_test --builddirectory=build/gtk2
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf build
+
