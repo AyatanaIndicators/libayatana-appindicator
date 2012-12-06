@@ -74,6 +74,7 @@ override_dh_auto_test: $(FLAVORS:%=dotest-%)
 dotest-%:
 	#
 	# Not running the gtk-doc tests to check that the documentation is complete...
+	# See bug (LP: #1083425)
 	#
 	dh_auto_test --builddirectory=build/$* -- -C tests
 
@@ -84,6 +85,7 @@ dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
 dotestgtk2-%:
 	#
 	# Not running the gtk-doc tests to check that the documentation is complete...
+	# See bug (LP: #1083425)
 	#
 	PYTHON=`which $*` \
 		dh_auto_test --builddirectory=build/gtk2 -- -C tests
