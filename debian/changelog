@@ -18,6 +18,8 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
     - Temporarily disable gtk-doc completeness tests until they can be fixed.
   * debian/*.install:
     - Update paths for multiarch and for use with dh9 (remove debian/tmp...)
+  * Fix gtkdoc tests and building of the documentation given a separate build
+    directory.
 
  -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Mon, 26 Nov 2012 11:02:18 -0500
 
