@@ -15,7 +15,6 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
     - Add and export DPKG_GENSYMBOLS_CHECK_LEVEL.
     - Override dh_autoreconf to run autogen.sh and not call configure.
     - Override dh_auto_test to run tests per-flavor.
-    - Temporarily disable gtk-doc completeness tests until they can be fixed.
   * debian/*.install:
     - Update paths for multiarch and for use with dh9 (remove debian/tmp...)
   * Fix gtkdoc tests and building of the documentation given a separate build
