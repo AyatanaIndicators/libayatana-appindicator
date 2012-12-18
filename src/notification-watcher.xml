@@ -15,13 +15,6 @@
 		<method name="RegisterStatusNotifierHost">
 			<arg type="s" name="service" direction="in" />
 		</method>
-		<method name="XAyatanaRegisterNotificationApprover">
-		    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
-			<!-- The path where to find the approver interface -->
-			<arg type="o" name="path" direction="in" />
-			<!-- List of categories to approve, none represents all -->
-			<arg type="as" name="categories" direction="in" />
-		</method>
 
 <!-- Signals -->
 		<signal name="StatusNotifierItemRegistered">
