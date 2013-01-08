@@ -72,6 +72,8 @@ override_dh_install:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
+	ps -ef
+	env
 	dh_auto_test --builddirectory=build/$* --
 
 
@@ -79,6 +81,8 @@ dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
 	# GTK2 flavor test was run on a per-python-version basis.
 
 dotestgtk2-%:
+	ps -ef
+	env
 	PYTHON=`which $*` \
 		dh_auto_test --builddirectory=build/gtk2 --
 

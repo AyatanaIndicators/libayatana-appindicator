@@ -1,4 +1,4 @@
-libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
+libappindicator (12.10.9-0ubuntu1~mtrudel1) raring; urgency=low
 
   * debian/control:
     - Update style: use trailing commas at the end of dependency lists.
