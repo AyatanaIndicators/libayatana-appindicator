@@ -20,6 +20,7 @@ CFLAGS += -fPIC
 # Note: No cli here so that the pbuilder stuff works
 clean:
 	dh_clean
+	dh_autoreconf_clean
 
 override_dh_autoreconf:
 	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
