@@ -109,8 +109,6 @@ kill_func (gpointer userdata)
 gint
 main (gint argc, gchar * argv[])
 {
-	g_type_init();
-
 	GError * error = NULL;
 	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (error != NULL) {

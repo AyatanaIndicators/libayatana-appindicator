@@ -31,8 +31,6 @@ static GMainLoop * mainloop = NULL;
 int
 main (int argc, char ** argv)
 {
-	g_type_init();
-
 	DbusmenuServer * dms = dbusmenu_server_new("/menu");
 	DbusmenuMenuitem * dmi = dbusmenu_menuitem_new();
 	dbusmenu_menuitem_property_set(dmi, "label", "Bob");

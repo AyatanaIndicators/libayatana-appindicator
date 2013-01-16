@@ -58,8 +58,6 @@ kill_func (gpointer userdata)
 int
 main (int argv, char ** argc)
 {
-	g_type_init();
-
 	g_debug("Waiting to init.");
 
 
