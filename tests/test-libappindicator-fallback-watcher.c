@@ -77,6 +77,7 @@ main (int argv, char ** argc)
 	while (!has_owner && owner_count < 10000) {
 		org_freedesktop_DBus_name_has_owner(bus_proxy, "org.test", &has_owner, NULL);
 		owner_count++;
+		g_usleep(500000);
 	}
 
 	if (owner_count == 10000) {
@@ -104,7 +105,7 @@ main (int argv, char ** argc)
 
 	/* This is the final kill function.  It really shouldn't happen
 	   unless we get an error. */
-	g_timeout_add(2000, kill_func, NULL);
+	g_timeout_add_seconds(20, kill_func, NULL);
 
 	g_debug("Entering Mainloop");
 
