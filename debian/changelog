@@ -1,3 +1,9 @@
+libappindicator (12.10.1-0ubuntu2) UNRELEASED; urgency=low
+
+  * acinclude.m4: Fix python multi-arch include issues. 
+
+ -- Chris J Arges <chris.j.arges@canonical.com>  Thu, 17 Jan 2013 15:25:28 -0600
+
 libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
 
   * debian/control:
