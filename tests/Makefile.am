@@ -137,6 +137,8 @@ test_libappindicator_fallback_item_LDADD = \
 
 test-libappindicator-fallback: test-libappindicator-fallback-watcher test-libappindicator-fallback-item Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export DISPLAY= >> $@
+	@echo killall at-spi2-registryd >> $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ./test-libappindicator-fallback-item --task-name Item >> $@
 	@chmod +x $@
@@ -152,6 +154,8 @@ HTML_REPORT  = libappindicator-check-results.html
 
 libappindicator-tests: libappindicator-tests-gtester Makefile.am
 	@echo "#!/bin/bash" > $@
+	@echo export DISPLAY= >> $@
+	@echo killall at-spi2-registryd >> $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo export UBUNTU_MENUPROXY= >> $@
 	@echo $(DBUS_RUNNER) --task ./libappindicator-tests-gtester >> $@
@@ -170,6 +174,8 @@ DBUS_RUNNER=dbus-test-runner --dbus-config /usr/share/dbus-test-runner/session.c
 
 test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator-dbus-server Makefile.am
 	@echo "#!/bin/bash" > test-libappindicator-dbus
+	@echo export DISPLAY= >> $@
+	@echo killall at-spi2-registryd >> $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-dbus-client --task-name Client --task ./test-libappindicator-dbus-server --task-name Server --ignore-return >> test-libappindicator-dbus
 	@chmod +x test-libappindicator-dbus
@@ -179,6 +185,8 @@ XFAIL_TESTS = test-libappindicator-dbus
 
 test-libappindicator-status: test-libappindicator-status-client test-libappindicator-status-server Makefile.am
 	@echo "#!/bin/bash" > test-libappindicator-status
+	@echo export DISPLAY= >> $@
+	@echo killall at-spi2-registryd >> $@
 	@echo . $(srcdir)/run-xvfb.sh >> $@
 	@echo $(DBUS_RUNNER) --task ./test-libappindicator-status-client --task-name Client --task ./test-libappindicator-status-server --task-name Server --ignore-return >> test-libappindicator-status
 	@chmod +x test-libappindicator-status

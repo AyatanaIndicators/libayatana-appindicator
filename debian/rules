@@ -20,6 +20,7 @@ CFLAGS += -fPIC
 # Note: No cli here so that the pbuilder stuff works
 clean:
 	dh_clean
+	dh_autoreconf_clean
 
 override_dh_autoreconf:
 	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
@@ -72,14 +73,19 @@ override_dh_install:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
-	#dh_auto_test --builddirectory=build/$*
+	ps -ef
+	env
+	dh_auto_test --builddirectory=build/$* --
+
 
 dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
 	# GTK2 flavor test was run on a per-python-version basis.
 
 dotestgtk2-%:
-	#PYTHON=`which $*` \
-	#	dh_auto_test --builddirectory=build/gtk2
+	ps -ef
+	env
+	PYTHON=`which $*` \
+		dh_auto_test --builddirectory=build/gtk2 --
 
 override_dh_auto_clean:
 	dh_auto_clean

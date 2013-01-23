@@ -33,7 +33,7 @@ PKG_PROG_PKG_CONFIG
 # GTK Doc
 ###########################
 
-GTK_DOC_CHECK([1.9])
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
 
 
 ###########################
