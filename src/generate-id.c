@@ -65,5 +65,5 @@ _generate_id (const AppIndicatorCategory catenum, const gchar * id)
 		}
 	}
 
-	return (((((category * 256) + first) * 256) + second) * 256) + third;
+	return (((((category << 8) + first) << 8) + second) << 8) + third;
 }

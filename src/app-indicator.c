@@ -1886,20 +1886,14 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 	gboolean changed = FALSE;
 
 	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
-		if (self->priv->attention_icon_name) {
-			g_free (self->priv->attention_icon_name);
-		}
-
-		self->priv->attention_icon_name = g_strdup(icon_name);
+		g_free (self->priv->attention_icon_name);
+		self->priv->attention_icon_name = g_strdup (icon_name);
 		changed = TRUE;
 	}
 
 	if (g_strcmp0(self->priv->att_accessible_desc, icon_desc) != 0) {
-		if (self->priv->att_accessible_desc) {
-			g_free (self->priv->att_accessible_desc);
-		}
-
-		self->priv->att_accessible_desc = g_strdup(icon_name);
+		g_free (self->priv->att_accessible_desc);
+		self->priv->att_accessible_desc = g_strdup (icon_desc);
 		changed = TRUE;
 	}
 
@@ -1910,12 +1904,12 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 			GError * error = NULL;
 
 			g_dbus_connection_emit_signal(self->priv->connection,
-										  NULL,
-										  self->priv->path,
-										  NOTIFICATION_ITEM_DBUS_IFACE,
-										  "NewAttentionIcon",
-										  NULL,
-										  &error);
+			                              NULL,
+			                              self->priv->path,
+			                              NOTIFICATION_ITEM_DBUS_IFACE,
+			                              "NewAttentionIcon",
+			                              NULL,
+			                              &error);
 
 			if (error != NULL) {
 				g_warning("Unable to send signal for NewAttentionIcon: %s", error->message);

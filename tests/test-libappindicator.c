@@ -28,6 +28,16 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 
+static gboolean
+allow_warnings (const gchar *log_domain, GLogLevelFlags log_level,
+                const gchar *message, gpointer user_data)
+{
+	// By default, gtest will fail a test on even a warning message.
+	// But since some of our sub-libraries are noisy (especially at-spi2),
+	// only fail on critical or worse.
+	return ((log_level & G_LOG_LEVEL_MASK) <= G_LOG_LEVEL_CRITICAL);
+}
+
 void
 test_libappindicator_prop_signals_status_helper (AppIndicator * ci, gchar * status, gboolean * signalactivated)
 {
@@ -45,6 +55,8 @@ test_libappindicator_prop_signals_helper (AppIndicator * ci, gboolean * signalac
 void
 test_libappindicator_prop_signals (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
         AppIndicator * ci = app_indicator_new ("test-app-indicator",
                                                "indicator-messages",
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -115,6 +127,8 @@ test_libappindicator_prop_signals (void)
 void
 test_libappindicator_init_set_props (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
         AppIndicator * ci = app_indicator_new ("my-id",
                                                "my-name",
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -139,6 +153,8 @@ test_libappindicator_init_set_props (void)
 void
 test_libappindicator_init_with_props (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
         AppIndicator * ci = app_indicator_new ("my-id",
                                                "my-name",
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -161,6 +177,8 @@ test_libappindicator_init_with_props (void)
 void
 test_libappindicator_init (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
         AppIndicator * ci = app_indicator_new ("my-id", "my-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 	g_assert(ci != NULL);
 	g_object_unref(G_OBJECT(ci));
@@ -170,6 +188,8 @@ test_libappindicator_init (void)
 void
 test_libappindicator_set_label (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
 	AppIndicator * ci = app_indicator_new ("my-id",
 	                                       "my-name",
 	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -232,6 +252,8 @@ test_libappindicator_set_label (void)
 void
 test_libappindicator_set_menu (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
 	AppIndicator * ci = app_indicator_new ("my-id",
 	                                       "my-name",
 	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -301,6 +323,8 @@ label_signals_check (void)
 void
 test_libappindicator_label_signals (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
 	gint label_signals_count = 0;
 	AppIndicator * ci = app_indicator_new ("my-id",
 	                                       "my-name",
@@ -352,6 +376,8 @@ test_libappindicator_label_signals (void)
 void
 test_libappindicator_desktop_menu (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
 	AppIndicator * ci = app_indicator_new ("my-id-desktop-menu",
 	                                       "my-name",
 	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
@@ -388,6 +414,8 @@ test_libappindicator_desktop_menu (void)
 void
 test_libappindicator_desktop_menu_bad (void)
 {
+	g_test_log_set_fatal_handler (allow_warnings, NULL);
+
 	AppIndicator * ci = app_indicator_new ("my-id-desktop-menu-bad",
 	                                       "my-name",
 	                                       APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
