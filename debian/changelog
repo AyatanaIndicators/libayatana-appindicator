@@ -1,4 +1,4 @@
-libappindicator (12.10.1-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
   * debian/control:
@@ -24,7 +24,11 @@ libappindicator (12.10.1-0ubuntu2) UNRELEASED; urgency=low
   [ Chris J Arges ]
   * acinclude.m4: Fix python multi-arch include issues. 
 
- -- Chris J Arges <chris.j.arges@canonical.com>  Thu, 17 Jan 2013 15:25:28 -0600
+  [ Mathieu Trudel-Lapierre ]
+  * Automatic snapshot from revision 245 (bootstrap):
+    - Fix Vala classes not being able to inherit from Indicator (LP: #1065310)
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Mon, 04 Feb 2013 15:00:29 -0500
 
 libappindicator (12.10.0-0ubuntu1) quantal; urgency=low
 
