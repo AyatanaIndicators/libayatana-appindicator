@@ -1,4 +1,4 @@
-libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
+libappindicator (12.10.1daily13.02.13-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
   * debian/control:
@@ -28,7 +28,30 @@ libappindicator (12.10.1-0ubuntu1) UNRELEASED; urgency=low
   * Automatic snapshot from revision 245 (bootstrap):
     - Fix Vala classes not being able to inherit from Indicator (LP: #1065310)
 
- -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Mon, 04 Feb 2013 15:00:29 -0500
+  [ Charles Kerr ]
+  * indicators call deprecated glib function g_type_init() (LP:
+    #1103087)
+  * test-libappindicator-status fails with "Toggle count: 99" (LP:
+    #1109128)
+  * Coverity COPY_PASTE_ERROR - CID 10969 (LP: #1102595)
+  * libappindicator-docs.sgml missing links (LP: #1083425)
+  * Coverity INTEGER_OVERFLOW - CID 10970 (LP: #1102589)
+
+  [ Charles Kerr <charles.kerr@canonical.com>, Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>, Michael Terry ]
+  * indicators call deprecated glib function g_type_init() (LP:
+    #1103087)
+  * test-libappindicator-status fails with "Toggle count: 99" (LP:
+    #1109128)
+  * Coverity INTEGER_OVERFLOW - CID 10970 (LP: #1102589)
+  * Coverity COPY_PASTE_ERROR - CID 10969 (LP: #1102595)
+
+  [ Mathieu Trudel-Lapierre ]
+  * Can't inherit from AppIndicator.Indicator in Vala (LP: #1065310)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 250
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Wed, 13 Feb 2013 02:02:41 +0000
 
 libappindicator (12.10.0-0ubuntu1) quantal; urgency=low
 
