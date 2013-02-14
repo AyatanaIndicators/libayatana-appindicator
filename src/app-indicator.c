@@ -611,14 +611,14 @@ app_indicator_init (AppIndicator *self)
 	priv->sec_activate_target = NULL;
 	priv->sec_activate_enabled = FALSE;
 
+	self->priv = priv;
+
 	/* Start getting the session bus */
 	g_object_ref(self); /* ref for the bus creation callback */
 	g_bus_get(G_BUS_TYPE_SESSION, NULL, bus_creation, self);
 
 	g_signal_connect(G_OBJECT(gtk_icon_theme_get_default()),
 		"changed", G_CALLBACK(theme_changed_cb), self);
-
-	self->priv = priv;
 
 	return;
 }
