@@ -1,3 +1,23 @@
+libappindicator (12.10.1daily13.02.15-0ubuntu1) raring; urgency=low
+
+  [ Charles Kerr ]
+  * Race condition in app_indicator_init() causes application crash (LP:
+    #1122596)
+
+  [ Iain Lane ]
+  * [raring] Python appindicators broken by the latest libappindicator
+    update (12.10.1daily13.02.13-0ubuntu1) with "ERROR:root:Could not
+    find any typelib for AppIndicator3" (LP: #1124941)
+
+  [ John Vert ]
+  * Race condition in app_indicator_init() causes application crash (LP:
+    #1122596)
+
+  [ Automatic PS uploader ]
+  * Automatic snapshot from revision 253
+
+ -- Automatic PS uploader <ps-jenkins@lists.canonical.com>  Fri, 15 Feb 2013 07:46:54 +0000
+
 libappindicator (12.10.1daily13.02.13-0ubuntu1) raring; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
