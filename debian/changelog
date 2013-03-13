@@ -1,9 +1,13 @@
-libappindicator (12.10.1daily13.02.15-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (12.10.1daily13.03.13-0ubuntu1) raring; urgency=low
 
+  [ Sebastien Bacher ]
   * stop build-depending on libindicate, it's deprecated and not used
     there
 
- -- Sebastien Bacher <seb128@ubuntu.com>  Mon, 11 Mar 2013 13:59:16 +0100
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 255
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 13 Mar 2013 02:02:14 +0000
 
 libappindicator (12.10.1daily13.02.15-0ubuntu1) raring; urgency=low
 
