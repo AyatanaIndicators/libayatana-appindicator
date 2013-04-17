@@ -7,6 +7,12 @@ libappindicator (12.10.1daily13.04.13-0ubuntu2) UNRELEASED; urgency=low
 
  -- Iain Lane <iain.lane@canonical.com>  Wed, 10 Apr 2013 12:57:58 +0100
 
+libappindicator (12.10.1daily13.03.13-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/rules: drop the clean target, it's superfluous.
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Tue, 09 Apr 2013 16:04:00 -0400
+
 libappindicator (12.10.1daily13.03.13-0ubuntu1) raring; urgency=low
 
   [ Sebastien Bacher ]
