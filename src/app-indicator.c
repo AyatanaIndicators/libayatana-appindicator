@@ -2479,7 +2479,7 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 
 	g_return_if_fail(priv->shorties != NULL);
 
-	indicator_desktop_shortcuts_nick_exec(priv->shorties, nick);
+	indicator_desktop_shortcuts_nick_exec_with_context(priv->shorties, nick, NULL);
 
 	return;
 }
