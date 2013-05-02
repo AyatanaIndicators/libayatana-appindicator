@@ -1,17 +1,44 @@
-libappindicator (12.10.1daily13.04.13-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (12.10.1daily13.04.15-0ubuntu2) UNRELEASED; urgency=low
 
+  * debian/rules: drop the "clean" target, it's superfluous.
+
+ -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Tue, 09 Apr 2013 16:06:45 -0400
+
+libappindicator (12.10.1daily13.04.15-0ubuntu1) raring; urgency=low
+
+  * Automatic snapshot from revision 258
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 15 Apr 2013 02:02:56 +0000
+
+libappindicator (12.10.1daily13.04.12-0ubuntu1) raring; urgency=low
+
+  [ Iain Lane ]
   * Install appindicator-sharp's pcfile into /usr/share/pkgconfig as this is
     an arch:all package and library. Update the assemblydir variable in this
     pcfile to refer to the correct location for the library instead of an
     incorrect multiarch directory.
 
- -- Iain Lane <iain.lane@canonical.com>  Wed, 10 Apr 2013 12:57:58 +0100
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 258
 
-libappindicator (12.10.1daily13.03.13-0ubuntu2) UNRELEASED; urgency=low
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 12 Apr 2013 02:03:18 +0000
 
-  * debian/rules: drop the clean target, it's superfluous.
+libappindicator (12.10.1daily13.04.09-0ubuntu1) raring; urgency=low
 
- -- Mathieu Trudel-Lapierre <mathieu-tl@ubuntu.com>  Tue, 09 Apr 2013 16:04:00 -0400
+  * Automatic snapshot from revision 258
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 09 Apr 2013 02:02:28 +0000
+
+libappindicator (12.10.1daily13.04.08-0ubuntu1) raring; urgency=low
+
+  [ Mathieu Trudel-Lapierre ]
+  * debian/rules: reverse the order of dh_clean and dh_autoreconf_clean,
+    this fixes issues where clean removes files used by dh_autoreconf_clean.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 257
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 08 Apr 2013 02:02:59 +0000
 
 libappindicator (12.10.1daily13.03.13-0ubuntu1) raring; urgency=low
 
