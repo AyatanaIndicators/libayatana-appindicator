@@ -116,18 +116,8 @@ EXTRA_DIST += version.xml.in libappindicator-docs.sgml.in
 # Comment this out if you want 'make check' to test you doc status
 # and run some sanity checks
 if ENABLE_GTK_DOC
- TESTS_ENVIRONMENT = cd $(srcdir) && \
+TESTS_ENVIRONMENT = cd $(srcdir) && \
    DOC_MODULE=$(DOC_MODULE) DOC_MAIN_SGML_FILE=$(DOC_MAIN_SGML_FILE) \
    SRCDIR=$(abs_srcdir) BUILDDIR=$(abs_builddir)
-
-TESTS = gtkdoc-in-srcdir
-
-gtkdoc-in-srcdir: Makefile.am
-	@echo "#!/bin/sh" > $@
-	@echo "cd \"$(srcdir)\"" >> $@
-	@echo "$(GTKDOC_CHECK)" >> $@
-	@chmod +x $@
-
-DISTCLEANFILES = gtkdoc-in-srcdir
-
+TESTS = $(GTKDOC_CHECK)
 endif
