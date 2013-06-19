@@ -1,3 +1,17 @@
+libappindicator (12.10.1daily13.06.19-0ubuntu1) saucy; urgency=low
+
+  [ Ted Gould ]
+  * Making gtk-doc check run in the current source directory.
+
+  [ Marco Trevisan (Treviño) ]
+  * NotificationWatcher interface has not anymore the
+    XAyatanaRegisterNotificationApprover method.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 264
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Jun 2013 02:01:55 +0000
+
 libappindicator (12.10.1daily13.05.02-0ubuntu1) saucy; urgency=low
 
   [ Mathieu Trudel-Lapierre ]
