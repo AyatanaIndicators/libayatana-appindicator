@@ -1,3 +1,9 @@
+libappindicator (12.10.1+13.10.20130920-0ubuntu1) saucy; urgency=low
+
+  * Automatic snapshot from revision 266
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 20 Sep 2013 10:17:40 +0000
+
 libappindicator (12.10.1daily13.06.19-0ubuntu1) saucy; urgency=low
 
   [ Ted Gould ]
