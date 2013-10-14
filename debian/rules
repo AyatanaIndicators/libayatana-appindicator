@@ -4,7 +4,14 @@ FLAVORS = gtk2 gtk3
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 API_VERSION = 0.1
 
+DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
 CONFIGURE_COMMON_FLAGS = --disable-scrollkeeper --enable-introspection
+ifneq (,$(filter $(DEB_HOST_ARCH),arm64))
+  CONFIGURE_COMMON_FLAGS += --disable-mono-test
+else
+  dh_extra_args = ,cli
+endif
 CONFIGURE_FLAGS_gtk2 = --with-gtk=2 --enable-gtk-doc
 CONFIGURE_FLAGS_gtk3 = --with-gtk=3 --enable-gtk-doc=no
 
@@ -15,7 +22,7 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
 CFLAGS += -fPIC
 
 %:
-	dh $@ --with autoreconf,python2,cli,gir
+	dh $@ --with autoreconf,python2,gir$(dh_extra_args)
 
 override_dh_autoreconf:
 	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
