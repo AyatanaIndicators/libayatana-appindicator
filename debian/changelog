@@ -1,7 +1,6 @@
-libappindicator (12.10.1+13.10.20130920-0ubuntu2) UNRELEASED; urgency=low
+libappindicator (12.10.1+13.10.20130920-0ubuntu2) saucy; urgency=low
 
-  * Don't build the mono bindings on AArch64, not available. (LP:
-    #1239474)
+  * Don't build the mono bindings on AArch64, not available.
 
  -- Matthias Klose <doko@ubuntu.com>  Mon, 14 Oct 2013 01:47:10 +0200
 
