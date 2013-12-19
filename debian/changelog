@@ -1,3 +1,11 @@
+libappindicator (12.10.1+13.10.20130920-0ubuntu3) trusty; urgency=medium
+
+  * Build with -Wno-error=deprecated-declarations.
+  * Don't build the mono bindings on ppc64el, not available.
+  * Disable building the example, vala build error.
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu, 19 Dec 2013 13:50:03 +0100
+
 libappindicator (12.10.1+13.10.20130920-0ubuntu2) saucy; urgency=low
 
   * Don't build the mono bindings on AArch64, not available.
