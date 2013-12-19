@@ -3,8 +3,10 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 SUBDIRS = \
       src		\
 	  bindings	\
-	  example	\
 	  docs
+
+# FIXME: Disabled, vala error
+#	  example	
 
 if WANT_TESTS
 SUBDIRS += tests
