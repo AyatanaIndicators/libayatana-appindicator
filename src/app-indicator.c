@@ -526,7 +526,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	 * AppIndicator::scroll-event:
 	 * @arg0: The #AppIndicator object
 	 * @arg1: How many steps the scroll wheel has taken
-	 * @arg2: (type Gdk.ScrollDirection) Which direction the wheel went in
+	 * @arg2: (type Gdk.ScrollDirection): Which direction the wheel went in
 	 *
 	 * Signaled when the #AppIndicator receives a scroll event.
 	 */
@@ -536,7 +536,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  G_STRUCT_OFFSET (AppIndicatorClass, scroll_event),
 	                                  NULL, NULL,
 	                                  _application_service_marshal_VOID__INT_UINT,
-	                                  G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
+	                                  G_TYPE_NONE, 2, G_TYPE_INT, GDK_TYPE_SCROLL_DIRECTION);
 
 	/* DBus interfaces */
 	if (item_node_info == NULL) {
@@ -1064,7 +1064,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 	GVariant * retval = NULL;
 
 	if (g_strcmp0(method, "Scroll") == 0) {
-		guint direction;
+		GdkScrollDirection direction;
 		gint delta;
 		const gchar *orientation;
 
