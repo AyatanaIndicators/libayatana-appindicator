@@ -1,3 +1,9 @@
+libappindicator (12.10.1+13.10.20130920-0ubuntu4) trusty; urgency=medium
+
+  * Rebuild to drop files installed into /usr/share/pyshared.
+
+ -- Matthias Klose <doko@ubuntu.com>  Sun, 23 Feb 2014 13:48:02 +0000
+
 libappindicator (12.10.1+13.10.20130920-0ubuntu3) trusty; urgency=medium
 
   * Build with -Wno-error=deprecated-declarations.
