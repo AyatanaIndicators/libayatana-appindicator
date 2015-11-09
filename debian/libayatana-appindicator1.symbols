@@ -1,4 +1,4 @@
-libappindicator.so.1 libappindicator1 #MINVER#
+libayatana-appindicator.so.1 libayatana-appindicator1 #MINVER#
  app_indicator_build_menu_from_desktop@Base 0.2.91
  app_indicator_category_get_type@Base 0.2.91
  app_indicator_get_attention_icon@Base 0.2.91

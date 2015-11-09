@@ -6,9 +6,9 @@
 ]>
 <book id="index">
   <bookinfo>
-    <title>libappindicator Reference Manual</title>
+    <title>libayatana-appindicator Reference Manual</title>
     <releaseinfo>
-      for libappindicator @VERSION@
+      for libayatana-appindicator @VERSION@
     </releaseinfo>
   </bookinfo>
 

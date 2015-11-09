@@ -1,4 +1,4 @@
-# Python bindings for libappindicator.
+# Python bindings for libayatana-appindicator.
 # 
 # Copyright 2009 Canonical Ltd.
 # 

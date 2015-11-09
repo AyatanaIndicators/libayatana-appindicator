@@ -5,10 +5,10 @@ AUTOMAKE_OPTIONS = 1.6
 
 if USE_GTK3
 VER=3
-APPINDICATORLIB = libappindicator3.la
+APPINDICATORLIB = libayatana-appindicator3.la
 else
 VER=
-APPINDICATORLIB = libappindicator.la
+APPINDICATORLIB = libayatana-appindicator.la
 endif
 
 # This is a blank Makefile.am for using gtk-doc.
@@ -17,7 +17,7 @@ endif
 # of using the various options.
 
 # The name of the module, e.g. 'glib'.
-DOC_MODULE=libappindicator
+DOC_MODULE=libayatana-appindicator
 
 # Uncomment for versioned docs and specify the version of the module, e.g. '2'.
 #DOC_MODULE_VERSION=2
@@ -106,7 +106,7 @@ include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += version.xml.in libappindicator-docs.sgml.in
+EXTRA_DIST += version.xml.in libayatana-appindicator-docs.sgml.in
 
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
@@ -121,3 +121,5 @@ TESTS_ENVIRONMENT = cd $(srcdir) && \
   SRCDIR=$(abs_srcdir) BUILDDIR=$(abs_builddir)
 #TESTS = $(GTKDOC_CHECK)
 endif
+
+DISTCLEANFILES = Makefile.in

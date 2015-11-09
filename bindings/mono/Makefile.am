@@ -1,18 +1,18 @@
 SUBDIRS = . examples
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = appindicator-sharp-0.1.pc
+pkgconfig_DATA = ayatana-appindicator-sharp-0.1.pc
 
 if BUILD_MONO_TEST
-TEST = AppIndicator.Test.dll
+TEST = AyatanaAppIndicator.Test.dll
 endif
 
-API = libappindicator-api.xml
-MIDDLE_API = libappindicator-api.middle
-RAW_API = libappindicator-api.raw
-METADATA = libappindicator-api.metadata
-ASSEMBLY_NAME = appindicator-sharp
-ASSEMBLY_VERSION = 0.2.0.0
+API = libayatana-appindicator-api.xml
+MIDDLE_API = libayatana-appindicator-api.middle
+RAW_API = libayatana-appindicator-api.raw
+METADATA = libayatana-appindicator-api.metadata
+ASSEMBLY_NAME = ayatana-appindicator-sharp
+ASSEMBLY_VERSION = 0.5.0.0
 ASSEMBLY = $(ASSEMBLY_NAME).dll
 POLICY = policy.$(POLICY_VERSION).$(ASSEMBLY_NAME)
 POLICY_VERSION = 0.0
@@ -31,7 +31,7 @@ TARGET = \
 	$(DLLPOLICY1) \
 	$(POLICY1).config
 
-assemblydir = $(libdir)/cli/appindicator-sharp-0.1
+assemblydir = $(libdir)/cli/ayatana-appindicator-sharp-0.1
 assembly_DATA = $(TARGET)
 
 CLEANFILES = \
@@ -55,7 +55,7 @@ endif
 DISTCLEANFILES = $(ASSEMBLY).config
 
 if BUILD_MONO_TEST
-TEST_SOURCES = TestIndicator.cs
+TEST_SOURCES = TestAyatanaIndicator.cs
 endif
 
 customs = ApplicationIndicator.custom
@@ -64,8 +64,8 @@ EXTRA_DIST =					\
 	AssemblyInfo.cs \
 	$(RAW_API)				\
 	$(METADATA)				\
-	appindicator-sharp-0.1.pc.in		\
-	appindicator-sharp.dll.config.in	\
+	ayatana-appindicator-sharp-0.1.pc.in		\
+	ayatana-appindicator-sharp.dll.config.in	\
 	app-indicator.sources.xml.in		\
 	$(ASSEMBLY_NAME).snk			\
 	$(POLICY).config.in \
@@ -173,3 +173,5 @@ $(POLICY1).config: $(POLICY1).config.in Makefile
 
 $(DLLPOLICY1): $(POLICY1).config $(ASSEMBLY_NAME).snk Makefile
 	$(AL) -link:$(POLICY1).config -out:$(DLLPOLICY1) -keyfile:$(srcdir)/$(ASSEMBLY_NAME).snk
+
+DISTCLEANFILES += Makefile.in

@@ -20,11 +20,11 @@
 using System;
 using GLib;
 using Gtk;
-using AppIndicator;
+using AyatanaAppIndicator;
 
 using NUnit.Framework;
 
-namespace Ayatana.AppIndicator.Test
+namespace Ayatana.AyatanaAppIndicator.Test
 {
         [TestFixture]
         public class IndicatorTest
@@ -44,7 +44,7 @@ namespace Ayatana.AppIndicator.Test
 
                         Console.WriteLine ("Init()");
 
-                        indicator = new ApplicationIndicator ("my-id", "my-name", Category.ApplicationStatus);
+                        indicator = new ApplicationIndicator ("my-id", "my-name", AppIndicatorCategory.ApplicationStatus);
 
                         Console.WriteLine ("Created indicator");
 
@@ -60,7 +60,7 @@ namespace Ayatana.AppIndicator.Test
 
                         Assert.AreEqual (indicator.IconName, "my-name");
                         Assert.AreEqual (indicator.ID, "my-id");
-                        Assert.AreEqual (indicator.Status, Category.ApplicationStatus);
+                        Assert.AreEqual (indicator.AppIndicatorStatus, AppIndicatorCategory.ApplicationStatus);
 
                         Console.WriteLine ("End..");
                 }
@@ -70,10 +70,10 @@ namespace Ayatana.AppIndicator.Test
                 {
                         Console.WriteLine ("TestSetProperties");
 
-                        indicator.Status = Status.Attention;
+                        indicator.AppIndicatorStatus = AppIndicatorStatus.Attention;
                         indicator.AttentionIconName = "my-attention-name";
 
-                        Assert.AreEqual (indicator.Status, Status.Attention);
+                        Assert.AreEqual (indicator.AppIndicatorStatus, AppIndicatorStatus.Attention);
                         Assert.AreEqual (indicator.AttentionIconName, "my-attention-name");
 
                         Console.WriteLine ("End..");

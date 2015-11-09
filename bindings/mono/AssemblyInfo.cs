@@ -20,11 +20,11 @@
 using System.Reflection;
 
 [assembly: AssemblyTitle ("Application Indicators")]
-[assembly: AssemblyDescription ("Ubuntu Application Indicators")]
+[assembly: AssemblyDescription ("Ayatana Application Indicators")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("Canonical, Ltd.")]
-[assembly: AssemblyProduct ("Ubuntu")]
-[assembly: AssemblyCopyright ("© 2010 Canonical, Ltd.")]
+[assembly: AssemblyCompany ("Ayatana Project")]
+[assembly: AssemblyProduct ("Ayatana AppIndicators")]
+[assembly: AssemblyCopyright ("© 2010 Canonical, Ltd.; © 2015 Mike Gabriel")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
-[assembly: AssemblyVersion ("0.2")]
+[assembly: AssemblyVersion ("0.5.0.0")]

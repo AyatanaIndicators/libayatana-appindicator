@@ -1,9 +1,10 @@
-AC_INIT([libappindicator],
-        [12.10.0],
-        [http://bugs.launchpad.net/libappindicator],
-        [libappindicator],
-        [http://launchpad.net/libappindicator])
-AC_COPYRIGHT([Copyright 2009, 2010 Canonical])
+AC_INIT([libayatana-appindicator],
+        [0.5.0],
+        [https://github.com/ArcticaProject/libayatana-appindicator/issues],
+        [libayatana-appindicator],
+        [https://github.com/ArcticaProject/libayatana-appindicator])
+AC_COPYRIGHT([Copyright 2009, 2010 Canonical
+Copyright 2015, Arctica Project])
 
 AC_PREREQ([2.64])
 
@@ -19,6 +20,7 @@ AM_SILENT_RULES([yes])
 # Check for programs
 AC_PROG_CC
 AM_PROG_CC_C_O
+AM_PROG_AR
 
 # Initialize libtool
 LT_PREREQ([2.2])
@@ -44,7 +46,7 @@ GTK_REQUIRED_VERSION=2.18
 GTK3_REQUIRED_VERSION=2.91
 GLIB_REQUIRED_VERSION=2.35.4
 GIO_REQUIRED_VERSION=2.26
-INDICATOR_REQUIRED_VERSION=0.4.93
+INDICATOR_REQUIRED_VERSION=0.6.0
 DBUSMENUGTK_REQUIRED_VERSION=0.5.90
 DBUS_GLIB_REQUIRED_VERSION=0.82
 
@@ -57,7 +59,7 @@ AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
-                                     indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                     ayatana-indicator3-0.4 >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk3-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
          AC_DEFINE(HAVE_GTK3, 1, [whether gtk3 is available])
         ],
@@ -65,7 +67,7 @@ AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-2.0 >= $GTK_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
                                      gio-2.0 >= $GIO_REQUIRED_VERSION
-                                     indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
+                                     ayatana-indicator-0.4 >= $INDICATOR_REQUIRED_VERSION
                                      dbusmenu-gtk-0.4 >= $DBUSMENUGTK_REQUIRED_VERSION)
         ],
       [AC_MSG_FAILURE([Value for --with-gtk was neither 2 nor 3])]
@@ -236,11 +238,11 @@ AC_SUBST(COVERAGE_LDFLAGS)
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
-src/appindicator-0.1.pc
-src/appindicator3-0.1.pc
+src/ayatana-appindicator-0.1.pc
+src/ayatana-appindicator3-0.1.pc
 bindings/Makefile
 bindings/python/Makefile
-bindings/python/appindicator.override
+bindings/python/ayatana_appindicator.override
 bindings/vala/Makefile
 bindings/vala/examples/Makefile
 tests/Makefile
@@ -248,17 +250,17 @@ example/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/version.xml
-docs/reference/libappindicator-docs.sgml
+docs/reference/libayatana-appindicator-docs.sgml
 ])
 
 if test "x$has_mono" = "xtrue" ; then
     AC_CONFIG_FILES([
     bindings/mono/Makefile
-    bindings/mono/appindicator-sharp.dll.config
-    bindings/mono/appindicator-sharp-0.1.pc
+    bindings/mono/ayatana-appindicator-sharp.dll.config
+    bindings/mono/ayatana-appindicator-sharp-0.1.pc
     bindings/mono/app-indicator.sources.xml
     bindings/mono/examples/Makefile
-    bindings/mono/examples/indicator-example
+    bindings/mono/examples/ayatana-indicator-example
     ])
 fi
 
@@ -270,7 +272,7 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([
 
-Libappindicator Configuration:
+libayatana-appindicator Configuration:
 
 	Prefix:        $prefix
 	GTK+ Version:  $with_gtk

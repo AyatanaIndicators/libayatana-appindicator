@@ -16,25 +16,26 @@ VER=
 endif
 
 vapidir = $(datadir)/vala/vapi
-vapiprefix = appindicator$(VER)-0.1
+vapiprefix = ayatana-appindicator$(VER)-0.1
 vapi_DATA = $(vapiprefix).vapi $(vapiprefix).deps
 DEPS = $(GTKVAPI)
 
 $(vapiprefix).deps:
 	echo $(DEPS) > $@
 
-$(vapiprefix).vapi: $(top_builddir)/src/AppIndicator$(VER)-0.1.gir \
-                    $(top_builddir)/src/AppIndicator$(VER)-0.1.metadata \
-                    appindicator-0.1-custom.vala \
+$(vapiprefix).vapi: $(top_builddir)/src/AyatanaAppIndicator$(VER)-0.1.gir \
+                    $(top_builddir)/src/AyatanaAppIndicator$(VER)-0.1.metadata \
+                    ayatana-appindicator-0.1-custom.vala \
                     $(vapiprefix).deps
 	$(VALA_API_GEN) --library=$(vapiprefix) --girdir=$(srcdir)/src \
-	$< $(srcdir)/appindicator-0.1-custom.vala
+	$< $(srcdir)/ayatana-appindicator-0.1-custom.vala
 	
 
 CLEANFILES = $(vapi_DATA)
+DISTCLEANFILES = Makefile.in
 
 endif
 endif
 
 EXTRA_DIST = \
-	appindicator-0.1-custom.vala
+	ayatana-appindicator-0.1-custom.vala

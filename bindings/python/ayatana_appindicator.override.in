@@ -1,5 +1,5 @@
 /*
-Python bindings for libappindicator.
+Python bindings for libayatana-appindicator.
 
 Copyright 2009 Canonical Ltd.
 
@@ -59,7 +59,7 @@ _appindicator_add_constants(PyObject *module, const gchar *strip_prefix)
                 PyErr_Print();
 }
 %%
-modulename appindicator
+modulename ayatana_appindicator
 %%
 import gobject.GObject as PyGObject_Type
 import gtk.Menu as PyGtkMenu_Type

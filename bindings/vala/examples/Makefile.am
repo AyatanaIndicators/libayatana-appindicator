@@ -4,36 +4,37 @@ else
 VER=
 endif
 
-VALAFILES = indicator-example.vala
+VALAFILES = ayatana-indicator-example.vala
 EXTRA_DIST = $(VALAFILES)
 
 VALAFLAGS = \
-	--pkg appindicator$(VER)-0.1 \
+	--pkg ayatana-appindicator$(VER)-0.1 \
 	--vapidir=$(top_builddir)/bindings/vala \
 	--save-temps
 
 if HAVE_VALAC
 
-BUILT_SOURCES = indicator-example.c
+BUILT_SOURCES = ayatana-indicator-example.c
 
-indicator-example.c: $(VALAFILES) Makefile.am
+ayatana-indicator-example.c: $(VALAFILES) Makefile.am
 	$(VALAC) $(VALAFLAGS) -C $< -o $@
-	$(SED) -i "s|#include\s*<\s*libappindicator/app-indicator.h\s*>||g" $@
+	$(SED) -i "s|#include\s*<\s*libayatana-appindicator/app-indicator.h\s*>||g" $@
 
-nodist_indicator_example_SOURCES = indicator-example.c
-indicator_example_CFLAGS = \
+nodist_ayatana_indicator_example_SOURCES = ayatana-indicator-example.c
+ayatana_indicator_example_CFLAGS = \
 	$(LIBRARY_CFLAGS) \
 	-Wall \
 	-I$(top_srcdir)/src \
 	-include $(top_srcdir)/src/app-indicator.h
-indicator_example_LDADD = \
+ayatana_indicator_example_LDADD = \
 	$(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator$(VER).la
+	$(top_builddir)/src/libayatana-appindicator$(VER).la
 
-check_PROGRAMS = indicator-example
+check_PROGRAMS = ayatana-indicator-example
 
 CLEANFILES = \
 	*.c \
-	indicator-example
+	ayatana-indicator-example
+DISTCLEANFILES = Makefile.in
 
 endif

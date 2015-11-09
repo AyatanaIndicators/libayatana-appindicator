@@ -18,7 +18,7 @@
  */
 
 using Gtk;
-using AppIndicator;
+using AyatanaAppIndicator;
 
 public class IndicatorExample
 {
@@ -36,9 +36,9 @@ public class IndicatorExample
 
                 ApplicationIndicator indicator = new ApplicationIndicator ("Example",
                                                                            "applications-microblogging-panel",
-                                                                           Category.ApplicationStatus);
+                                                                           AppIndicatorCategory.ApplicationStatus);
 
-                indicator.Status = Status.Attention;
+                indicator.AppIndicatorStatus = AppIndicatorStatus.Attention;
 
                 Menu menu = new Menu ();
                 var foo = new MenuItem ("Foo");

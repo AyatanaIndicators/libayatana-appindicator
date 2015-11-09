@@ -1,16 +1,16 @@
-[DllImport ("appindicator.dll")]
+[DllImport ("ayatana-appindicator.dll")]
 static extern int app_indicator_get_status (IntPtr i);
 
-[DllImport ("appindicator.dll")]
+[DllImport ("ayatana-appindicator.dll")]
 static extern int app_indicator_get_category (IntPtr i);
 
-[DllImport ("appindicator.dll")]
+[DllImport ("ayatana-appindicator.dll")]
 static extern void app_indicator_set_status (IntPtr i, int s);
 
         [GLib.Property ("status")]
-        public Status Status {
+        public AppIndicatorStatus AppIndicatorStatus {
                get {
-                   return (Status) app_indicator_get_status (Handle);
+                   return (AppIndicatorStatus) app_indicator_get_status (Handle);
                }
 
                set {
@@ -19,8 +19,8 @@ static extern void app_indicator_set_status (IntPtr i, int s);
         }
 
         [GLib.Property ("category")]
-        public Category Category {
+        public AppIndicatorCategory AppIndicatorCategory {
                get {
-                   return (Category) app_indicator_get_category (Handle);
+                   return (AppIndicatorCategory) app_indicator_get_category (Handle);
                }
         }

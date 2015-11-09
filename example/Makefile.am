@@ -5,6 +5,7 @@ VER=
 endif
 
 CLEANFILES =
+DISTCLEANFILES = Makefile Makefile.in .deps/
 EXTRA_DIST = 
 
 check_PROGRAMS = \
@@ -27,7 +28,7 @@ simple_client_CFLAGS = \
 
 simple_client_LDADD = \
 	$(LIBRARY_LIBS) \
-	$(top_builddir)/src/libappindicator$(VER).la
+	$(top_builddir)/src/libayatana-appindicator$(VER).la
 
 EXTRA_DIST += \
 	simple-client-test-icon.png
@@ -44,7 +45,7 @@ VALAFLAGS = \
 BUILT_SOURCES = simple-client-vala.c
 simple-client-vala.c: $(srcdir)/simple-client-vala.vala
 	$(VALAC) $(VALAFLAGS) -C $< -o $@
-	$(SED) -i "s|#include\s*<\s*libappindicator/app-indicator.h\s*>||g" $@
+	$(SED) -i "s|#include\s*<\s*libayatana-appindicator/app-indicator.h\s*>||g" $@
 
 simple_client_vala_SOURCES = simple-client-vala.c
 simple_client_vala_CFLAGS = \
@@ -59,3 +60,4 @@ endif
 
 EXTRA_DIST += \
 	simple-client-vala.vala
+

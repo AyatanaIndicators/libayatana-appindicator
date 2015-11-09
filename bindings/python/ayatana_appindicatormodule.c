@@ -1,11 +1,13 @@
 /*
-Python bindings for libappindicator.
+Python bindings for libayatana-appindicator.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2015 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 
 Authors:
     Eitan Isaacson <eitan@ascender.com>
     Neil Jagdish Patel <neil.patel@canonical.com>
+    Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 
 This program is free software: you can redistribute it and/or modify it 
 under the terms of either or both of the following licenses:
@@ -37,13 +39,13 @@ init_appindicator(void)
 		
 		init_pygobject ();
 		
-		m = Py_InitModule ("_appindicator", pyappindicator_functions);
+		m = Py_InitModule ("_ayatana_appindicator", pyappindicator_functions);
 		d = PyModule_GetDict (m);
 		
 		pyappindicator_register_classes (d);
 
 		_appindicator_add_constants (m, "APP_INDICATOR_");
 		if (PyErr_Occurred ()) {
-				Py_FatalError ("can't initialise module appindicator");
+				Py_FatalError ("can't initialise module ayatana_appindicator");
 		}
 }

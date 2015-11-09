@@ -1,10 +1,10 @@
 defsdir = $(datadir)/pygtk/2.0/defs
-defs_DATA = appindicator.defs
+defs_DATA = ayatana_appindicator.defs
 
 #CFLAGS = -Wall -Werror
 INCLUDES = \
 		-I$(top_srcdir)/src \
-        -DG_LOG_DOMAIN=\"appindicator-python\" \
+        -DG_LOG_DOMAIN=\"ayatana-appindicator-python\" \
         -DDATADIR=\"$(datadir)\" \
         -DLIBDIR=\"$(libdir)\" \
         $(APPINDICATOR_PYTHON_CFLAGS) \
@@ -13,20 +13,21 @@ INCLUDES = \
 pkgpythondir = $(pyexecdir)
 pkgpyexecdir = $(pyexecdir)
 
-pkgappindicatordir = $(pkgpythondir)/appindicator
+pkgappindicatordir = $(pkgpythondir)/ayatana_appindicator
 pkgappindicator_PYTHON = __init__.py
 
-appindicatordir = $(pkgpyexecdir)/appindicator
-appindicator_LTLIBRARIES = _appindicator.la
+appindicatordir = $(pkgpyexecdir)/ayatana_appindicator
+appindicator_LTLIBRARIES = _ayatana_appindicator.la
 
-_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator
-_appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) -L$(top_builddir)/src/.libs -lappindicator
-_appindicator_la_SOURCES = appindicatormodule.c
-nodist__appindicator_la_SOURCES = appindicator.c
+_ayatana_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator
+_ayatana_appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) -L$(top_builddir)/src/.libs -layatana-appindicator
+_ayatana_appindicator_la_SOURCES = ayatana_appindicatormodule.c
+nodist__ayatana_appindicator_la_SOURCES = ayatana_appindicator.c
 
-CLEANFILES = appindicator.c
-EXTRA_DIST = appindicator.override.in appindicator-arg-types.py $(defs_DATA)
-appindicator.c: $(defs_DATA) appindicator.override
+CLEANFILES = ayatana_appindicator.c
+DISTCLEANFILES = Makefile.in
+EXTRA_DIST = ayatana_appindicator.override.in appindicator-arg-types.py $(defs_DATA)
+ayatana_appindicator.c: $(defs_DATA) ayatana_appindicator.override
 
 %.c: %.defs
 	($(PYGTK_CODEGEN) \

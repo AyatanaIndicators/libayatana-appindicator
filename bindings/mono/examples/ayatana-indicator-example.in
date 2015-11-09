@@ -1,0 +1,2 @@
+#!/bin/sh
+MONO_PATH=@top_builddir@/bindings/mono @top_builddir@/bindings/mono/examples/AyatanaIndicatorExample.exe

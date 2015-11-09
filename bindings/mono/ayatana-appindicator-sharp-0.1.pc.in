@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+assemblies_dir=${prefix}/lib/cli/ayatana-appindicator-sharp-0.1
+
+Name: ayatana-appindicator-sharp
+Description: application indicators for .NET
+Version: @VERSION@
+Libraries: ${assemblies_dir}/ayatana-appindicator-sharp.dll ${assemblies_dir}/ayatana-appindicator-sharp.dll.config
+Requires: gtk-sharp-2.0
+Cflags:
+Libs: -r:${assemblies_dir}/ayatana-appindicator-sharp.dll

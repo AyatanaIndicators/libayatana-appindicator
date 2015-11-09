@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+bindir=@bindir@
+includedir=@includedir@
+
+Cflags: -I${includedir}/libayatana-appindicator-0.1
+Requires: dbusmenu-glib-0.4 gtk+-2.0
+Libs: -L${libdir} -layatana-appindicator
+
+Name: ayatana-appindicator-0.1
+Description: Ayatana Application Indicators
+Version: @VERSION@
+
