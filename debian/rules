@@ -86,6 +86,8 @@ dotestgtk2-%:
 	env
 	PYTHON=`which $*` \
 		dh_auto_test --builddirectory=build/gtk2 --
+	# View test's log file for better debugging of problems when built in clean chroots.
+	if [ -e tests/test-suite.log ]; then cat tests/test-suite.log; fi
 
 override_dh_auto_clean:
 	dh_auto_clean
