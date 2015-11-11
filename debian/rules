@@ -75,23 +75,23 @@ override_dh_install:
 override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
-	mkdir -p `pwd`/debian/tmphome
-	HOME=`pwd`/debian/tmphome dh_auto_test dh_auto_test --builddirectory=build/$* -- || true
+	mkdir -p $(CURDIR)/debian/tmphome
+	HOME=$(CURDIR)/debian/tmphome dh_auto_test dh_auto_test --builddirectory=build/$* -- || true
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/$*/tests/test-suite.log ]; then cat build/$*/tests/test-suite.log; fi
-	rm -Rf `pwd`/debian/tmphome
+	rm -Rf $(CURDIR)/debian/tmphome
 
 
 dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
 	# GTK2 flavor test was run on a per-python-version basis.
 
 dotestgtk2-%:
-	mkdir -p `pwd`/debian/tmphome
+	mkdir -p $(CURDIR)/debian/tmphome
 	PYTHON=`which $*` \
-		HOME=`pwd`/debian/tmphome dh_auto_test --builddirectory=build/gtk2 -- || true
+		HOME=$(CURDIR)/debian/tmphome dh_auto_test --builddirectory=build/gtk2 -- || true
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/gtk2/tests/test-suite.log ]; then cat build/gtk2/tests/test-suite.log; fi
-	rm -Rf `pwd`/debian/tmphome
+	rm -Rf $(CURDIR)/debian/tmphome
 
 override_dh_auto_clean:
 	dh_auto_clean
