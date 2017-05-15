@@ -2066,6 +2066,7 @@ get_snap_prefix ()
 static gchar *
 append_snap_prefix (const gchar *path)
 {
+	gint i;
 	gchar real_path[PATH_MAX];
 	const gchar *snap = get_snap_prefix ();
 
@@ -2079,8 +2080,19 @@ append_snap_prefix (const gchar *path)
 			return NULL;
 		}
 
-		if (g_str_has_prefix (path, snap)) {
+		if (g_str_has_prefix (path, snap) ||
+			g_str_has_prefix (path, g_get_home_dir ()) ||
+			g_str_has_prefix (path, g_get_user_cache_dir ()) ||
+			g_str_has_prefix (path, g_get_user_config_dir ()) ||
+			g_str_has_prefix (path, g_get_user_data_dir ()) ||
+			g_str_has_prefix (path, g_get_user_runtime_dir ())) {
 			return g_strdup (path);
+		}
+
+		for (i = 0; i < G_USER_N_DIRECTORIES; ++ i) {
+			if (g_str_has_prefix (path, g_get_user_special_dir (i))) {
+				return g_strdup (path);
+			}
 		}
 
 		return g_build_path (G_DIR_SEPARATOR_S, snap, path, NULL);
