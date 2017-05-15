@@ -104,7 +104,7 @@ class SimpleClient {
 			print(@"Got scroll event! delta: $delta, direction: $direction\n");
 		});
 
-		Timeout.add_seconds(1, () => {
+		GLib.Timeout.add_seconds(1, () => {
 			percentage = (percentage + 1) % 100;
 			if (can_haz_label) {
 				ci.set_label(@"$(percentage+1)%", "");

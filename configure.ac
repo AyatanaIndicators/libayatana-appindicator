@@ -123,7 +123,7 @@ if test "x$has_mono" = "xtrue" ; then
       RUNTIME=mono
    fi
 
-   AC_PATH_PROG(CSC, gmcs, no)
+   AC_PATH_PROG(CSC, mono-csc, no)
    LIB_PREFIX=.so
    LIB_SUFFIX=
 fi

@@ -38,6 +38,8 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <libayatana-indicator/indicator-desktop-shortcuts.h>
 
+#include <stdlib.h>
+
 #include "app-indicator.h"
 #include "app-indicator-enum-types.h"
 #include "application-service-marshal.h"
@@ -71,8 +73,11 @@ struct _AppIndicatorPrivate {
 	AppIndicatorCategory  category;
 	AppIndicatorStatus    status;
 	gchar                *icon_name;
+	gchar                *absolute_icon_name;
 	gchar                *attention_icon_name;
+	gchar                *absolute_attention_icon_name;
 	gchar                *icon_theme_path;
+	gchar                *absolute_icon_theme_path;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
 	GtkWidget            *sec_activate_target;
@@ -190,6 +195,8 @@ static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
 static gchar * append_panel_icon_suffix (const gchar * icon_name);
+static gchar * get_real_theme_path (AppIndicator * self);
+static gchar * append_snap_prefix (const gchar * path);
 static void theme_changed_cb (GtkIconTheme * theme, gpointer user_data);
 static void sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent, gpointer   user_data);
 static GVariant * bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data);
@@ -389,7 +396,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                                              "An additional place to look for icon names that may be installed by the application.",
                                                              NULL,
                                                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT));
-	
+
 	/**
 	 * AppIndicator:connected:
 	 * 
@@ -640,6 +647,7 @@ static void
 app_indicator_init (AppIndicator *self)
 {
 	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
+	self->priv = priv;
 
 	priv->id = NULL;
 	priv->clean_id = NULL;
@@ -648,6 +656,7 @@ app_indicator_init (AppIndicator *self)
 	priv->icon_name = NULL;
 	priv->attention_icon_name = NULL;
 	priv->icon_theme_path = NULL;
+	priv->absolute_icon_theme_path = get_real_theme_path (self);
 	priv->menu = NULL;
 	priv->menuservice = NULL;
 	priv->ordering_index = 0;
@@ -675,8 +684,6 @@ app_indicator_init (AppIndicator *self)
 	                                     (GBusNameAppearedCallback) name_appeared_handler,
 	                                     (GBusNameVanishedCallback) name_vanished_handler,
 	                                     self, NULL);
-
-	self->priv = priv;
 
 	/* Start getting the session bus */
 	g_object_ref(self); /* ref for the bus creation callback */
@@ -794,16 +801,31 @@ app_indicator_finalize (GObject *object)
 		priv->icon_name = NULL;
 	}
 
+	if (priv->absolute_icon_name != NULL) {
+		g_free(priv->absolute_icon_name);
+		priv->absolute_icon_name = NULL;
+	}
+
 	if (priv->attention_icon_name != NULL) {
 		g_free(priv->attention_icon_name);
 		priv->attention_icon_name = NULL;
+	}
+
+	if (priv->absolute_attention_icon_name != NULL) {
+		g_free(priv->absolute_attention_icon_name);
+		priv->absolute_attention_icon_name = NULL;
 	}
 
 	if (priv->icon_theme_path != NULL) {
 		g_free(priv->icon_theme_path);
 		priv->icon_theme_path = NULL;
 	}
-	
+
+	if (priv->absolute_icon_theme_path != NULL) {
+		g_free(priv->absolute_icon_theme_path);
+		priv->absolute_icon_theme_path = NULL;
+	}
+
 	if (priv->title != NULL) {
 		g_free(priv->title);
 		priv->title = NULL;
@@ -1188,8 +1210,14 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), priv->status);
 		return g_variant_new_string(enum_value->value_nick ? enum_value->value_nick : "");
 	} else if (g_strcmp0(property, "IconName") == 0) {
+		if (priv->absolute_icon_name) {
+			return g_variant_new_string(priv->absolute_icon_name);
+		}
 		return g_variant_new_string(priv->icon_name ? priv->icon_name : "");
 	} else if (g_strcmp0(property, "AttentionIconName") == 0) {
+		if (priv->absolute_attention_icon_name) {
+			return g_variant_new_string(priv->absolute_attention_icon_name);
+		}
 		return g_variant_new_string(priv->attention_icon_name ? priv->attention_icon_name : "");
 	} else if (g_strcmp0(property, "Title") == 0) {
 		const gchar * output = NULL;
@@ -1205,6 +1233,9 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 		}
 		return g_variant_new_string(output);
 	} else if (g_strcmp0(property, "IconThemePath") == 0) {
+		if (priv->absolute_icon_theme_path) {
+			return g_variant_new_string(priv->absolute_icon_theme_path);
+		}
 		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
 		if (priv->menuservice != NULL) {
@@ -1571,19 +1602,23 @@ status_icon_changes (AppIndicator * self, gpointer data)
 
 	/* add the icon_theme_path once if needed */
 	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-	if (self->priv->icon_theme_path != NULL) {
+	const gchar *theme_path = self->priv->absolute_icon_theme_path ?
+	                            self->priv->absolute_icon_theme_path :
+	                            self->priv->icon_theme_path;
+
+	if (theme_path != NULL) {
 		gchar **path;
 		gint n_elements, i;
 		gboolean found=FALSE;
 		gtk_icon_theme_get_search_path(icon_theme, &path, &n_elements);
 		for (i=0; i< n_elements || path[i] == NULL; i++) {
-			if(g_strcmp0(path[i], self->priv->icon_theme_path) == 0) {
+			if(g_strcmp0(path[i], theme_path) == 0) {
 				found=TRUE;
 				break;
 			}
 		}
 		if(!found) {
-			gtk_icon_theme_append_search_path(icon_theme, self->priv->icon_theme_path);
+			gtk_icon_theme_append_search_path(icon_theme, theme_path);
 		}
 		g_strfreev (path);
 	}
@@ -1607,8 +1642,12 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	};
 
 	if (icon_name != NULL) {
+		gchar *snapped_icon = append_snap_prefix(icon_name);
+
 		if (g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
 			gtk_status_icon_set_from_file(icon, icon_name);
+		} else if (snapped_icon && g_file_test(snapped_icon, G_FILE_TEST_EXISTS)) {
+			gtk_status_icon_set_from_file(icon, snapped_icon);
 		} else {
 			gchar *longname = append_panel_icon_suffix(icon_name);
 
@@ -1620,6 +1659,8 @@ status_icon_changes (AppIndicator * self, gpointer data)
 
 			g_free(longname);
 		}
+
+		g_free(snapped_icon);
 	}
 
 	return;
@@ -1633,7 +1674,7 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
 	GtkMenu * menu = app_indicator_get_menu(APP_INDICATOR(data));
 	if (menu == NULL)
 		return;
-	
+
 	gtk_menu_popup(menu,
 	               NULL, /* Parent Menu */
 	               NULL, /* Parent item */
@@ -1681,7 +1722,7 @@ append_panel_icon_suffix (const gchar *icon_name)
            	long_name = g_strdup (icon_name);
         }
 
-	return long_name;	
+	return long_name;
 }
 
 static gboolean
@@ -1858,6 +1899,14 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
 		g_free (self->priv->attention_icon_name);
 		self->priv->attention_icon_name = g_strdup (icon_name);
+
+		g_free(self->priv->absolute_attention_icon_name);
+		self->priv->absolute_attention_icon_name = NULL;
+
+		if (icon_name && icon_name[0] == '/') {
+			self->priv->absolute_attention_icon_name = append_snap_prefix (icon_name);
+		}
+
 		changed = TRUE;
 	}
 
@@ -1933,6 +1982,14 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 		}
 
 		self->priv->icon_name = g_strdup(icon_name);
+
+		g_free(self->priv->absolute_icon_name);
+		self->priv->absolute_icon_name = NULL;
+
+		if (icon_name && icon_name[0] == '/') {
+			self->priv->absolute_icon_name = append_snap_prefix (icon_name);
+		}
+
 		changed = TRUE;
 	}
 
@@ -1994,6 +2051,54 @@ app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * 
 	return;
 }
 
+static const gchar *
+get_snap_prefix ()
+{
+	const gchar *snap = g_getenv ("SNAP");
+	return (snap && *snap != '\0') ? snap : NULL;
+}
+
+static gchar *
+append_snap_prefix (const gchar *path)
+{
+	gchar real_path[PATH_MAX];
+	const gchar *snap = get_snap_prefix ();
+
+	if (snap != NULL && path != NULL) {
+		if (realpath (path, real_path) != NULL) {
+			path = real_path;
+		}
+
+		if (g_str_has_prefix (path, "/tmp/")) {
+			g_warning ("Using '/tmp' paths in SNAP environment will lead to unreadable resources");
+			return NULL;
+		}
+
+		if (g_str_has_prefix (path, snap)) {
+			return g_strdup (path);
+		}
+
+		return g_build_path (G_DIR_SEPARATOR_S, snap, path, NULL);
+	}
+
+	return NULL;
+}
+
+static gchar *
+get_real_theme_path (AppIndicator * self)
+{
+	const gchar *theme_path = self->priv->icon_theme_path;
+	gchar *snapped_path = append_snap_prefix (theme_path);
+
+	if (snapped_path != NULL) {
+		return snapped_path;
+	} else if (get_snap_prefix ()) {
+		return g_build_path (G_DIR_SEPARATOR_S, g_get_user_data_dir (), "icons", NULL);
+	}
+
+	return NULL;
+}
+
 /**
  * app_indicator_set_icon_theme_path:
  * @self: The #AppIndicator object to use
@@ -2012,9 +2117,15 @@ app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_p
 
 		self->priv->icon_theme_path = g_strdup(icon_theme_path);
 
+		g_free (self->priv->absolute_icon_theme_path);
+		self->priv->absolute_icon_theme_path = get_real_theme_path (self);
+
 		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, self->priv->icon_theme_path, TRUE);
 
 		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+			const gchar *theme_path = self->priv->absolute_icon_theme_path ?
+										self->priv->absolute_icon_theme_path :
+										self->priv->icon_theme_path;
 			GError * error = NULL;
 
 			g_dbus_connection_emit_signal(self->priv->connection,
@@ -2022,7 +2133,7 @@ app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_p
 										  self->priv->path,
 										  NOTIFICATION_ITEM_DBUS_IFACE,
 										  "NewIconThemePath",
-										  g_variant_new("(s)", self->priv->icon_theme_path),
+										  g_variant_new("(s)", theme_path ? theme_path : ""),
 										  &error);
 
 			if (error != NULL) {
