@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PKG_NAME="libappindicator"
+PKG_NAME="libayatana-appindicator"
 
 which mate-autogen || {
 	echo "You need mate-common from https://git.mate-desktop.org/mate-common"
