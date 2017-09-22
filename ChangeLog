@@ -1,6 +1,21 @@
-2017-05-22 16:16:06 +0200 Mike Gabriel (6107a7a)
+2017-09-23 01:15:41 +0200 Mike Gabriel (f684bb8)
 
-	* release 0.5.0 (HEAD -> master, release-builds)
+	* release 0.5.1 (HEAD -> master)
+
+2017-09-23 01:01:33 +0200 Mike Gabriel (8a97153)
+
+	* Python2 bindings: Fix import ayatana_appindicator failure by
+          correctly adding the ayatana namespace. (origin/master)
+
+2017-09-23 00:23:52 +0200 Mike Gabriel (75d83e0)
+
+	* docs/reference/Makefile.am: Drop option --nogtkinit from
+          SCANGOBJ_OPTIONS. Has been long deprecated in scangobj and
+          been removed in gtk-doc (>= 1.26).
+
+2017-05-22 16:16:06 +0200 Mike Gabriel (73a2c16)
+
+	* release 0.5.0 (tag: 0.5.0, origin/release-builds, release-builds)
 
 2017-05-22 16:15:50 +0200 Mike Gabriel (bd7789c)
 
@@ -9,7 +24,7 @@
 2017-05-15 11:56:26 +0200 Marco Trevisan (Treviño) (0f55cbb)
 
 	* app-indicator: don't append the snap prefix if the icon is saved in
-          a well known readable path (origin/master)
+          a well known readable path
 
 2017-05-15 11:55:14 +0200 Marco Trevisan (Treviño) (20e557b)
 
@@ -120,9 +135,8 @@
 
 2014-11-10 16:30:06 +0000 CI bot (bf7bc28)
 
-	* Releasing 12.10.1+15.04.20141110-0ubuntu1 (tag:
-          12.10.1+15.04.20141110-0ubuntu1,
-          refs/bzr/origin/tags/12.10.1+15.04.20141110-0ubuntu1,
+	* Releasing 12.10.1+15.04.20141110-0ubuntu1
+          (refs/bzr/origin/tags/12.10.1+15.04.20141110-0ubuntu1,
           refs/bzr/origin/heads/master)
 
 2014-11-10 16:29:51 +0000 Lars Uebernickel (9cb1df0)
@@ -584,8 +598,8 @@
 
 2012-07-11 21:19:57 +0200 Sebastien Bacher (09ddb17)
 
-	* releasing version 12.10.0-0ubuntu1 (tag: 12.10.0-0ubuntu1,
-          refs/bzr/origin/tags/12.10.0-0ubuntu1)
+	* releasing version 12.10.0-0ubuntu1
+          (refs/bzr/origin/tags/12.10.0-0ubuntu1)
 
 2012-07-11 21:19:21 +0200 Sebastien Bacher (63a49ad)
 
@@ -593,13 +607,12 @@
 
 2012-07-11 21:08:16 +0200 Sebastien Bacher (dfefc88)
 
-	* Import upstream version 12.10.0 (tag: upstream-12.10.0,
-          refs/bzr/origin/tags/upstream-12.10.0)
+	* Import upstream version 12.10.0
+          (refs/bzr/origin/tags/upstream-12.10.0)
 
 2012-07-11 12:28:57 -0500 Charles Kerr (f2744fa)
 
-	* bump version to 12.10.0 (tag: 12.10.0,
-          refs/bzr/origin/tags/12.10.0)
+	* bump version to 12.10.0 (refs/bzr/origin/tags/12.10.0)
 
 2012-06-18 14:55:21 -0500 Charles Kerr (ad488df)
 
@@ -685,8 +698,8 @@
 
 2012-03-21 16:23:18 -0500 Charles Kerr (812ded8)
 
-	* Import upstream version 0.4.92 (tag: upstream-0.4.92,
-          refs/bzr/origin/tags/upstream-0.4.92)
+	* Import upstream version 0.4.92
+          (refs/bzr/origin/tags/upstream-0.4.92)
 
 2012-03-21 16:22:33 -0500 Charles Kerr (03fa072)
 
@@ -773,8 +786,8 @@
 
 2012-03-09 12:08:33 -0600 Ted Gould (b681b75)
 
-	* Import upstream version 0.4.91 (tag: upstream-0.4.91,
-          refs/bzr/origin/tags/upstream-0.4.91)
+	* Import upstream version 0.4.91
+          (refs/bzr/origin/tags/upstream-0.4.91)
 
 2012-03-09 12:08:15 -0600 Ted Gould (e602f2a)
 
@@ -904,8 +917,8 @@
 
 2012-02-03 14:37:56 -0600 Ted Gould (7256c18)
 
-	* Import upstream version 0.4.90 (tag: upstream-0.4.90,
-          refs/bzr/origin/tags/upstream-0.4.90)
+	* Import upstream version 0.4.90
+          (refs/bzr/origin/tags/upstream-0.4.90)
 
 2012-02-03 14:36:59 -0600 Ted Gould (6516e72)
 
@@ -1127,8 +1140,7 @@
 
 2011-09-28 12:45:50 -0500 Ted Gould (334e44d)
 
-	* Import upstream version 0.4.1 (tag: upstream-0.4.1,
-          refs/bzr/origin/tags/upstream-0.4.1)
+	* Import upstream version 0.4.1 (refs/bzr/origin/tags/upstream-0.4.1)
 
 2011-09-28 12:41:09 -0500 Ted Gould (a011977)
 
@@ -1157,8 +1169,7 @@
 
 2011-09-28 11:02:34 -0500 Ted Gould (e57397e)
 
-	* Import upstream version 0.4.0 (tag: upstream-0.4.0,
-          refs/bzr/origin/tags/upstream-0.4.0)
+	* Import upstream version 0.4.0 (refs/bzr/origin/tags/upstream-0.4.0)
 
 2011-09-28 11:02:10 -0500 Ted Gould (b5c8bb4)
 
@@ -1207,8 +1218,8 @@
 
 2011-08-11 12:02:16 -0500 Ted Gould (8c352cd)
 
-	* Import upstream version 0.3.91 (tag: upstream-0.3.91,
-          refs/bzr/origin/tags/upstream-0.3.91)
+	* Import upstream version 0.3.91
+          (refs/bzr/origin/tags/upstream-0.3.91)
 
 2011-08-11 12:01:52 -0500 Ted Gould (1a48342)
 
@@ -1303,8 +1314,8 @@
 
 2011-07-07 15:13:58 -0500 Ted Gould (fc03ef7)
 
-	* Import upstream version 0.3.90 (tag: upstream-0.3.90,
-          refs/bzr/origin/tags/upstream-0.3.90)
+	* Import upstream version 0.3.90
+          (refs/bzr/origin/tags/upstream-0.3.90)
 
 2011-07-07 14:45:18 -0500 Ted Gould (bf95161)
 
@@ -1388,8 +1399,7 @@
 
 2011-03-23 15:33:37 -0500 Ted Gould (010b25c)
 
-	* Import upstream version 0.3.0 (tag: upstream-0.3.0,
-          refs/bzr/origin/tags/upstream-0.3.0)
+	* Import upstream version 0.3.0 (refs/bzr/origin/tags/upstream-0.3.0)
 
 2011-03-23 15:33:17 -0500 Ted Gould (5b6331c)
 
@@ -1422,8 +1432,8 @@
 
 2011-03-16 13:36:07 -0500 Ted Gould (bf797a9)
 
-	* Import upstream version 0.2.99 (tag: upstream-0.2.99,
-          refs/bzr/origin/tags/upstream-0.2.99)
+	* Import upstream version 0.2.99
+          (refs/bzr/origin/tags/upstream-0.2.99)
 
 2011-03-16 13:35:43 -0500 Ted Gould (e1790a2)
 
@@ -1461,8 +1471,8 @@
 
 2011-03-10 12:34:12 -0600 Ted Gould (1f0b4c1)
 
-	* Import upstream version 0.2.98 (tag: upstream-0.2.98,
-          refs/bzr/origin/tags/upstream-0.2.98)
+	* Import upstream version 0.2.98
+          (refs/bzr/origin/tags/upstream-0.2.98)
 
 2011-03-10 12:28:53 -0600 Ted Gould (0f9fc0f)
 
@@ -1509,8 +1519,8 @@
 
 2011-03-03 13:33:18 -0600 Ted Gould (56d9374)
 
-	* Import upstream version 0.2.97 (tag: upstream-0.2.97,
-          refs/bzr/origin/tags/upstream-0.2.97)
+	* Import upstream version 0.2.97
+          (refs/bzr/origin/tags/upstream-0.2.97)
 
 2011-03-03 13:32:42 -0600 Ted Gould (70d5440)
 
@@ -1590,8 +1600,8 @@
 
 2011-02-24 16:01:21 -0600 Ted Gould (7a1564e)
 
-	* Import upstream version 0.2.96 (tag: upstream-0.2.96,
-          refs/bzr/origin/tags/upstream-0.2.96)
+	* Import upstream version 0.2.96
+          (refs/bzr/origin/tags/upstream-0.2.96)
 
 2011-02-24 16:01:13 -0600 Ted Gould (dd6a451)
 
@@ -1717,8 +1727,8 @@
 
 2011-02-10 22:24:39 -0600 Ted Gould (596f48a)
 
-	* Import upstream version 0.2.95 (tag: upstream-0.2.95,
-          refs/bzr/origin/tags/upstream-0.2.95)
+	* Import upstream version 0.2.95
+          (refs/bzr/origin/tags/upstream-0.2.95)
 
 2011-02-10 22:22:11 -0600 Ted Gould (1c384cd)
 
@@ -1777,8 +1787,8 @@
 
 2011-02-10 15:28:13 -0600 Ted Gould (2c23d4b)
 
-	* Import upstream version 0.2.94 (tag: upstream-0.2.94,
-          refs/bzr/origin/tags/upstream-0.2.94)
+	* Import upstream version 0.2.94
+          (refs/bzr/origin/tags/upstream-0.2.94)
 
 2011-02-10 15:25:39 -0600 Ted Gould (e5b56ec)
 
@@ -1807,8 +1817,8 @@
 
 2011-02-10 14:47:52 -0600 Ted Gould (18d8992)
 
-	* Import upstream version 0.2.93 (tag: upstream-0.2.93,
-          refs/bzr/origin/tags/upstream-0.2.93)
+	* Import upstream version 0.2.93
+          (refs/bzr/origin/tags/upstream-0.2.93)
 
 2011-02-10 14:47:29 -0600 Ted Gould (6def775)
 
@@ -1982,8 +1992,8 @@
 
 2011-01-27 22:23:52 -0500 Ken VanDine (93d52e4)
 
-	* Import upstream version 0.2.92 (tag: upstream-0.2.92,
-          refs/bzr/origin/tags/upstream-0.2.92)
+	* Import upstream version 0.2.92
+          (refs/bzr/origin/tags/upstream-0.2.92)
 
 2011-01-27 14:58:37 -0600 Ted Gould (0ab2c93)
 
@@ -2082,8 +2092,8 @@
 
 2011-01-13 20:43:26 -0600 Ken VanDine (be00d00)
 
-	* Import upstream version 0.2.91.1 (tag: upstream-0.2.91.1,
-          refs/bzr/origin/tags/upstream-0.2.91.1)
+	* Import upstream version 0.2.91.1
+          (refs/bzr/origin/tags/upstream-0.2.91.1)
 
 2011-01-13 20:23:53 -0600 Ken VanDine (8cf0c2e)
 
@@ -2100,8 +2110,8 @@
 
 2011-01-13 19:52:25 -0600 Sebastien Bacher (79f9e4c)
 
-	* Import upstream version 0.2.91 (tag: upstream-0.2.91,
-          refs/bzr/origin/tags/upstream-0.2.91)
+	* Import upstream version 0.2.91
+          (refs/bzr/origin/tags/upstream-0.2.91)
 
 2011-01-13 18:28:17 -0600 Ken VanDine (57fd55e)
 
@@ -2130,9 +2140,8 @@
 
 2011-01-12 15:55:46 -0600 Ken VanDine (7c301f7)
 
-	* Fixed pkgconfig files to require dbusmenu-glib-0.4 (tag:
-          upstream-0.2.90+r175,
-          refs/bzr/origin/tags/upstream-0.2.90+r175)
+	* Fixed pkgconfig files to require dbusmenu-glib-0.4
+          (refs/bzr/origin/tags/upstream-0.2.90+r175)
 
 2011-01-12 09:04:12 -0600 Ken VanDine (0092f8a)
 
@@ -2336,8 +2345,8 @@
 
 2010-12-07 20:46:33 -0600 Ted Gould (a413eba)
 
-	* Import upstream version 0.2.90 (tag: upstream-0.2.90,
-          refs/bzr/origin/tags/upstream-0.2.90)
+	* Import upstream version 0.2.90
+          (refs/bzr/origin/tags/upstream-0.2.90)
 
 2010-12-07 20:44:44 -0600 Ted Gould (12d94d3)
 
@@ -2763,8 +2772,7 @@
 
 2010-09-22 11:14:11 -0500 Ted Gould (f5e7b8e)
 
-	* Import upstream version 0.2.9 (tag: upstream-0.2.9,
-          refs/bzr/origin/tags/upstream-0.2.9)
+	* Import upstream version 0.2.9 (refs/bzr/origin/tags/upstream-0.2.9)
 
 2010-09-22 11:13:14 -0500 Ted Gould (fe08c86)
 
@@ -2877,8 +2885,7 @@
 
 2010-09-15 14:46:09 -0500 Ted Gould (c876d26)
 
-	* Import upstream version 0.2.8 (tag: upstream-0.2.8,
-          refs/bzr/origin/tags/upstream-0.2.8)
+	* Import upstream version 0.2.8 (refs/bzr/origin/tags/upstream-0.2.8)
 
 2010-09-15 14:41:06 -0500 Ted Gould (a4dc11a)
 
@@ -2940,8 +2947,7 @@
 
 2010-09-09 12:54:08 -0500 Ted Gould (b6d9801)
 
-	* Import upstream version 0.2.7 (tag: upstream-0.2.7,
-          refs/bzr/origin/tags/upstream-0.2.7)
+	* Import upstream version 0.2.7 (refs/bzr/origin/tags/upstream-0.2.7)
 
 2010-09-09 12:52:35 -0500 Ted Gould (b39568d)
 
@@ -2983,8 +2989,7 @@
 
 2010-08-26 14:50:16 -0500 Ted Gould (17e7865)
 
-	* Import upstream version 0.2.6 (tag: upstream-0.2.6,
-          refs/bzr/origin/tags/upstream-0.2.6)
+	* Import upstream version 0.2.6 (refs/bzr/origin/tags/upstream-0.2.6)
 
 2010-08-26 14:49:40 -0500 Ted Gould (7b3e58b)
 
@@ -3039,8 +3044,7 @@
 
 2010-08-19 13:57:51 -0500 Ted Gould (101c8ff)
 
-	* Import upstream version 0.2.5 (tag: upstream-0.2.5,
-          refs/bzr/origin/tags/upstream-0.2.5)
+	* Import upstream version 0.2.5 (refs/bzr/origin/tags/upstream-0.2.5)
 
 2010-08-19 13:56:53 -0500 Ted Gould (b51c1de)
 
@@ -3195,8 +3199,7 @@
 
 2010-08-12 13:52:34 -0500 Ted Gould (0d7fd31)
 
-	* Import upstream version 0.2.4 (tag: upstream-0.2.4,
-          refs/bzr/origin/tags/upstream-0.2.4)
+	* Import upstream version 0.2.4 (refs/bzr/origin/tags/upstream-0.2.4)
 
 2010-08-12 13:40:00 -0500 Ted Gould (d81670c)
 
@@ -3951,8 +3954,7 @@
 
 2010-07-15 10:20:14 -0500 Ted Gould (863cd1c)
 
-	* Import upstream version 0.2.3 (tag: upstream-0.2.3,
-          refs/bzr/origin/tags/upstream-0.2.3)
+	* Import upstream version 0.2.3 (refs/bzr/origin/tags/upstream-0.2.3)
 
 2010-07-15 10:18:23 -0500 Ted Gould (17dea09)
 
@@ -4110,8 +4112,7 @@
 
 2010-07-08 10:22:02 -0500 Ted Gould (44880df)
 
-	* Import upstream version 0.2.2 (tag: upstream-0.2.2,
-          refs/bzr/origin/tags/upstream-0.2.2)
+	* Import upstream version 0.2.2 (refs/bzr/origin/tags/upstream-0.2.2)
 
 2010-07-08 10:08:02 -0500 Ted Gould (a627c07)
 
@@ -4181,8 +4182,7 @@
 
 2010-06-21 14:13:54 -0500 Ted Gould (3439224)
 
-	* Import upstream version 0.2.1 (tag: upstream-0.2.1,
-          refs/bzr/origin/tags/upstream-0.2.1)
+	* Import upstream version 0.2.1 (refs/bzr/origin/tags/upstream-0.2.1)
 
 2010-06-21 14:06:07 -0500 Ted Gould (20f0c1d)
 
@@ -4542,8 +4542,7 @@
 
 2010-06-03 13:55:11 -0500 Ted Gould (0f7ba97)
 
-	* Import upstream version 0.2.0 (tag: upstream-0.2.0,
-          refs/bzr/origin/tags/upstream-0.2.0)
+	* Import upstream version 0.2.0 (refs/bzr/origin/tags/upstream-0.2.0)
 
 2010-06-03 13:54:41 -0500 Ted Gould (d3216b9)
 
@@ -4592,8 +4591,8 @@
 
 2010-05-20 21:56:58 -0500 Ted Gould (84e75c6)
 
-	* Import upstream version 0.0.21 (tag: upstream-0.0.21,
-          refs/bzr/origin/tags/upstream-0.0.21)
+	* Import upstream version 0.0.21
+          (refs/bzr/origin/tags/upstream-0.0.21)
 
 2010-05-20 21:56:52 -0500 Ted Gould (2cbdb9f)
 
@@ -4620,8 +4619,8 @@
 
 2010-05-20 21:34:54 -0500 Ted Gould (9b028d9)
 
-	* Import upstream version 0.0.20 (tag: upstream-0.0.20,
-          refs/bzr/origin/tags/upstream-0.0.20)
+	* Import upstream version 0.0.20
+          (refs/bzr/origin/tags/upstream-0.0.20)
 
 2010-05-20 21:32:24 -0500 Ted Gould (bdec505)
 
@@ -4827,8 +4826,8 @@
 
 2010-04-01 15:49:35 -0500 Ted Gould (d005a22)
 
-	* Import upstream version 0.0.19 (tag: upstream-0.0.19,
-          refs/bzr/origin/tags/upstream-0.0.19)
+	* Import upstream version 0.0.19
+          (refs/bzr/origin/tags/upstream-0.0.19)
 
 2010-04-01 15:49:14 -0500 Ted Gould (70600e1)
 
@@ -4940,8 +4939,7 @@
 
 2010-03-25 11:52:35 -0500 Ted Gould (9919c5e)
 
-	* 0.0.18 (tag: upstream-0.0.18, tag: 0.0.18,
-          refs/bzr/origin/tags/upstream-0.0.18,
+	* 0.0.18 (tag: 0.0.18, refs/bzr/origin/tags/upstream-0.0.18,
           refs/bzr/origin/tags/0.0.18)
 
 2010-03-25 11:52:24 -0500 Ted Gould (b4e1960)
