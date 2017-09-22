@@ -19,7 +19,7 @@ pkgappindicator_PYTHON = __init__.py
 appindicatordir = $(pkgpyexecdir)/ayatana_appindicator
 appindicator_LTLIBRARIES = _ayatana_appindicator.la
 
-_ayatana_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_appindicator
+_ayatana_appindicator_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_ayatana_appindicator
 _ayatana_appindicator_la_LIBADD = $(APPINDICATOR_PYTHON_LIBS) -L$(top_builddir)/src/.libs -layatana-appindicator
 _ayatana_appindicator_la_SOURCES = ayatana_appindicatormodule.c
 nodist__ayatana_appindicator_la_SOURCES = ayatana_appindicator.c

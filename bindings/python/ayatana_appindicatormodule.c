@@ -29,20 +29,20 @@ License version 3 and version 2.1 along with this program.  If not, see
 */
 #include <pygobject.h>
  
-void pyappindicator_register_classes (PyObject *d); 
-extern PyMethodDef pyappindicator_functions[];
+void pyayatana_appindicator_register_classes (PyObject *d);
+extern PyMethodDef pyayatana_appindicator_functions[];
 
 DL_EXPORT(void)
-init_appindicator(void)
+init_ayatana_appindicator(void)
 {
 		PyObject *m, *d;
 		
 		init_pygobject ();
 		
-		m = Py_InitModule ("_ayatana_appindicator", pyappindicator_functions);
+		m = Py_InitModule ("_ayatana_appindicator", pyayatana_appindicator_functions);
 		d = PyModule_GetDict (m);
 		
-		pyappindicator_register_classes (d);
+		pyayatana_appindicator_register_classes (d);
 
 		_appindicator_add_constants (m, "APP_INDICATOR_");
 		if (PyErr_Occurred ()) {
