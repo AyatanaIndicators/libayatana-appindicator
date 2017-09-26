@@ -44,7 +44,7 @@ init_ayatana_appindicator(void)
 		
 		pyayatana_appindicator_register_classes (d);
 
-		_appindicator_add_constants (m, "APP_INDICATOR_");
+		_ayatana_appindicator_add_constants (m, "APP_INDICATOR_");
 		if (PyErr_Occurred ()) {
 				Py_FatalError ("can't initialise module ayatana_appindicator");
 		}
