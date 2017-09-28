@@ -154,7 +154,7 @@ if BUILD_MONO_TEST
 $(TEST): $(ASSEMBLY) $(TEST_SOURCES)
 	$(CSC) -out:$(TEST) -target:library $(test_references) $(srcdir)/$(TEST_SOURCES)
 
-all: $(TEST)
+check: $(TEST)
 endif
 
 $(POLICY).config: $(POLICY).config.in Makefile
