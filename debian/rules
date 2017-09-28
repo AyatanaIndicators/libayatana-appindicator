@@ -7,7 +7,7 @@ API_VERSION = 0.1
 DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 CONFIGURE_COMMON_FLAGS = --disable-scrollkeeper --enable-introspection
-ifneq (,$(filter $(DEB_HOST_ARCH),arm64 ppc64el))
+ifeq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64))
   CONFIGURE_COMMON_FLAGS += --disable-mono-test
 else
   dh_extra_args = ,cli
