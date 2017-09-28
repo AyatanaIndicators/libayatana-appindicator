@@ -3,7 +3,7 @@ Section: gnome
 Priority: optional
 XS-Python-Version: all
 Maintainer: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper (>= 10),
                dh-autoreconf,
                python-all-dev,
                at-spi2-core,
