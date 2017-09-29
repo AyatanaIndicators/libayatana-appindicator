@@ -24,7 +24,7 @@ Build-Depends: debhelper (>= 10),
                python-gtk2-dev,
                procps,
                gtk-sharp2-gapi [amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64],
-               libgtk2.0-cil-dev [amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64]
+               libgtk2.0-cil-dev [amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64],
                libdbus-glib-1-dev (>= 0.82),
                libayatana-indicator-dev (>= 0.6.0-0~),
                libayatana-indicator3-dev (>= 0.6.0-0~),
