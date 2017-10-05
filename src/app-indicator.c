@@ -31,6 +31,9 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include "config.h"
 #endif
 
+#define _GNU_SOURCE
+#include <stdlib.h>
+
 #include <libdbusmenu-glib/menuitem.h>
 #include <libdbusmenu-glib/server.h>
 #include <libdbusmenu-gtk/client.h>
@@ -2067,35 +2070,33 @@ static gchar *
 append_snap_prefix (const gchar *path)
 {
 	gint i;
-	gchar real_path[PATH_MAX];
 	const gchar *snap = get_snap_prefix ();
+	g_autofree gchar *canon_path = NULL;
 
 	if (snap != NULL && path != NULL) {
-		if (realpath (path, real_path) != NULL) {
-			path = real_path;
-		}
+		canon_path = canonicalize_file_name(path);
 
-		if (g_str_has_prefix (path, "/tmp/")) {
+		if (g_str_has_prefix (canon_path, "/tmp/")) {
 			g_warning ("Using '/tmp' paths in SNAP environment will lead to unreadable resources");
 			return NULL;
 		}
 
-		if (g_str_has_prefix (path, snap) ||
-			g_str_has_prefix (path, g_get_home_dir ()) ||
-			g_str_has_prefix (path, g_get_user_cache_dir ()) ||
-			g_str_has_prefix (path, g_get_user_config_dir ()) ||
-			g_str_has_prefix (path, g_get_user_data_dir ()) ||
-			g_str_has_prefix (path, g_get_user_runtime_dir ())) {
-			return g_strdup (path);
+		if (g_str_has_prefix (canon_path, snap) ||
+			g_str_has_prefix (canon_path, g_get_home_dir ()) ||
+			g_str_has_prefix (canon_path, g_get_user_cache_dir ()) ||
+			g_str_has_prefix (canon_path, g_get_user_config_dir ()) ||
+			g_str_has_prefix (canon_path, g_get_user_data_dir ()) ||
+			g_str_has_prefix (canon_path, g_get_user_runtime_dir ())) {
+			return g_strdup (canon_path);
 		}
 
 		for (i = 0; i < G_USER_N_DIRECTORIES; ++ i) {
-			if (g_str_has_prefix (path, g_get_user_special_dir (i))) {
-				return g_strdup (path);
+			if (g_str_has_prefix (canon_path, g_get_user_special_dir (i))) {
+				return g_strdup (canon_path);
 			}
 		}
 
-		return g_build_path (G_DIR_SEPARATOR_S, snap, path, NULL);
+		return g_build_path (G_DIR_SEPARATOR_S, snap, canon_path, NULL);
 	}
 
 	return NULL;
