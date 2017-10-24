@@ -233,15 +233,14 @@ struct _AppIndicatorClass {
 
 /**
  * AppIndicator:
- * 
- * A application indicator represents the values that are needed to show a
+ * parent: Parent object.
+ * priv: Internal data.
+ *
+ * An application indicator represents the values that are needed to show a
  * unique status in the panel for an application.  In general, applications
  * should try to fit in the other indicators that are available on the
  * panel before using this.  But, sometimes it is necissary.
  *
- *  Private fields
- * @parent: Parent object.
- * @priv: Internal data.
  */
 struct _AppIndicator {
 	GObject parent;
