@@ -40,7 +40,7 @@ typedef PyObject* (*to_pyobject_func) (gpointer data);
 #define APP_TYPE_INDICATOR APP_INDICATOR_TYPE
 
 void
-_appindicator_add_constants(PyObject *module, const gchar *strip_prefix)
+_ayatana_appindicator_add_constants(PyObject *module, const gchar *strip_prefix)
 {
 #ifdef VERSION
         PyModule_AddStringConstant(module, "__version__", VERSION);

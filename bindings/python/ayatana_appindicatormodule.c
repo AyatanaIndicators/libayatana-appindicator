@@ -31,6 +31,7 @@ License version 3 and version 2.1 along with this program.  If not, see
  
 void pyayatana_appindicator_register_classes (PyObject *d);
 extern PyMethodDef pyayatana_appindicator_functions[];
+void _ayatana_appindicator_add_constants(PyObject *m, const gchar *s);
 
 DL_EXPORT(void)
 init_ayatana_appindicator(void)
