@@ -1,6 +1,11 @@
 #!/usr/bin/make -f
 
 FLAVORS = gtk2 gtk3
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
 PY_VERSIONS = $(shell pyversions --requested debian/control)
 API_VERSION = 0.1
 

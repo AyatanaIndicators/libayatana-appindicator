@@ -1,12 +1,13 @@
 Source: libayatana-appindicator
-Section: gnome
+Section: libs
 Priority: optional
 XS-Python-Version: all
 Maintainer: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 Build-Depends: debhelper (>= 9),
                dh-autoreconf,
-               python-all-dev,
                dh-python,
+               dpkg-dev (>= 1.16.1.1),
+               python-all-dev,
                at-spi2-core,
                cli-common-dev (>= 0.8~) [amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64],
                gobject-introspection,
