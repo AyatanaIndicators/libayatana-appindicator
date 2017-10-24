@@ -1,11 +1,119 @@
-2017-09-23 01:15:41 +0200 Mike Gabriel (f684bb8)
+2017-10-24 17:33:05 +0200 Mike Gabriel (a2d16e2)
 
-	* release 0.5.1 (HEAD -> master)
+	* release 0.5.2 (HEAD -> master)
+
+2017-10-24 17:32:48 +0200 Mike Gabriel (82f779a)
+
+	* debian/source/format: Explicitly set to source format 1.0.
+
+2017-10-24 17:32:21 +0200 Mike Gabriel (34f4291)
+
+	* debian/upstream/signing-key.asc: Add upstream signing key.
+
+2017-10-24 17:31:02 +0200 Mike Gabriel (5f9176e)
+
+	* debian/control: Use Github repo in Vcs-*: URL fields.
+
+2017-10-24 17:05:15 +0200 Mike Gabriel (f8fccd9)
+
+	* debian/control: Bump Standards-Version: to 4.1.1. No changes
+          needed.
+
+2017-10-24 17:04:48 +0200 Mike Gabriel (7a4fb33)
+
+	* debian/control: Fix Homepage: URL.
+
+2017-10-24 17:03:54 +0200 Mike Gabriel (eff5282)
+
+	* debian/*.install: Adapt .typelib installation paths (to
+          multi-arch).
+
+2017-10-24 17:02:58 +0200 Mike Gabriel (eb9d5a1)
+
+	* debian/control: Various adaptation to SYNOPSIS and LONG_DESCRIPTION
+          fields.
+
+2017-10-24 17:02:11 +0200 Mike Gabriel (6a978fc)
+
+	* debian/rules: Only dh_install cil packages on architectures that
+          support Mono.
+
+2017-10-24 17:01:45 +0200 Mike Gabriel (906c9a4)
+
+	* debian/rules: Enable all hardening flags.
+
+2017-10-24 17:01:07 +0200 Mike Gabriel (3a09566)
+
+	* debian/copyright: Adopt from official Debian package (slightly
+          modified).
+
+2017-10-24 16:46:32 +0200 Mike Gabriel (af533aa)
+
+	* debian/rules: White space fix.
+
+2017-10-24 16:40:50 +0200 Mike Gabriel (c3c9e79)
+
+	* API documentation: Suppress some warnings being thrown.
+
+2017-10-24 16:40:20 +0200 Mike Gabriel (d89dee1)
+
+	* python2 bindings: Finally avoid implicit declaration for
+          (_ayatana)_appindicator_add_constants() function symbol.
+
+2017-10-06 22:37:17 +0200 Mike Gabriel (024cc53)
+
+	* debian/control: Add to B-D: dh-python.
+
+2017-10-05 14:30:20 +0200 Mike Gabriel (bc7f683)
+
+	* src/app-indicator.c: Avoid usage of PATH_MAX macro. Fixes FTBFS on
+          Debian GNU/Hurd. (origin/master)
+
+2017-09-29 16:42:17 +0200 Mike Gabriel (c17c300)
+
+	* Revert "debian/{control,compat}: Bump DH version level to 10 (and
+          bump B-D to >= 10)."
+
+2017-09-29 15:47:11 +0200 Mike Gabriel (4388914)
+
+	* post-release project name fix in debian/changelog
+
+2017-09-29 15:10:06 +0200 Mike Gabriel (0303c95)
+
+	* debian/control: Add missing , at EOL under B-D.
+
+2017-09-28 07:35:28 +0200 Mike Gabriel (9164fa6)
+
+	* debian/{control,rules}: Update supported host architectures.
+
+2017-09-28 07:32:47 +0200 Mike Gabriel (9c19888)
+
+	* debian/{control,compat}: Bump DH version level to 10 (and bump B-D
+          to >= 10).
+
+2017-09-28 07:31:46 +0200 Mike Gabriel (65e8d53)
+
+	* bindings/mono/Makefile.am: Don't run tests on all targets, only on
+          check target. Fixes FTBFS when built parallely.
+
+2017-09-26 21:09:20 +0200 Mike Gabriel (303ab50)
+
+	* debian/changelog: Post-release fix in date string of 0.5.0 release
+          stanza.
+
+2017-09-26 20:45:55 +0200 Mike Gabriel (ee1719a)
+
+	* bindings/python: Yet another 'ayatana' namespace fix for the
+          Python2 bindings.
+
+2017-09-23 01:15:41 +0200 Mike Gabriel (c3dc683)
+
+	* release 0.5.1 (tag: 0.5.1)
 
 2017-09-23 01:01:33 +0200 Mike Gabriel (8a97153)
 
 	* Python2 bindings: Fix import ayatana_appindicator failure by
-          correctly adding the ayatana namespace. (origin/master)
+          correctly adding the ayatana namespace.
 
 2017-09-23 00:23:52 +0200 Mike Gabriel (75d83e0)
 
