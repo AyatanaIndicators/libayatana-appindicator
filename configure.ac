@@ -177,13 +177,6 @@ fi
 AM_CONDITIONAL(BUILD_MONO_TEST, test x${have_nunit} = xyes)
 
 ###########################
-# Check to see if we're local
-###########################
-
-with_localinstall="no"
-AC_ARG_ENABLE(localinstall, AS_HELP_STRING([--enable-localinstall], [install all of the files localy instead of system directories (for distcheck)]), with_localinstall=$enableval, with_localinstall=no)
-
-###########################
 # Python
 ###########################
 
