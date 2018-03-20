@@ -1,6 +1,18 @@
-2017-10-24 17:33:05 +0200 Mike Gabriel (a2d16e2)
+2018-03-20 11:25:55 +0100 Mike Gabriel (949bf30)
 
-	* release 0.5.2 (HEAD -> master)
+	* release 0.5.3 (HEAD -> master, tag: 0.5.3)
+
+2018-03-20 09:36:41 +0000 Mike Gabriel (b14ba33)
+
+	* src/app-indicator.c: Type cast assignments from g_object_ref().
+
+2017-10-26 19:15:44 +0200 Mike Gabriel (d4b1697)
+
+	* {configure.ac,Makefile.am}: Drop distcheck features.
+
+2017-10-24 17:33:05 +0200 Mike Gabriel (a081ea2)
+
+	* release 0.5.2 (tag: 0.5.2)
 
 2017-10-24 17:32:48 +0200 Mike Gabriel (82f779a)
 
@@ -67,7 +79,7 @@
 2017-10-05 14:30:20 +0200 Mike Gabriel (bc7f683)
 
 	* src/app-indicator.c: Avoid usage of PATH_MAX macro. Fixes FTBFS on
-          Debian GNU/Hurd. (origin/master)
+          Debian GNU/Hurd.
 
 2017-09-29 16:42:17 +0200 Mike Gabriel (c17c300)
 
@@ -123,7 +135,7 @@
 
 2017-05-22 16:16:06 +0200 Mike Gabriel (73a2c16)
 
-	* release 0.5.0 (tag: 0.5.0, origin/release-builds, release-builds)
+	* release 0.5.0 (tag: 0.5.0)
 
 2017-05-22 16:15:50 +0200 Mike Gabriel (bd7789c)
 
@@ -244,8 +256,6 @@
 2014-11-10 16:30:06 +0000 CI bot (bf7bc28)
 
 	* Releasing 12.10.1+15.04.20141110-0ubuntu1
-          (refs/bzr/origin/tags/12.10.1+15.04.20141110-0ubuntu1,
-          refs/bzr/origin/heads/master)
 
 2014-11-10 16:29:51 +0000 Lars Uebernickel (9cb1df0)
 
@@ -707,7 +717,6 @@
 2012-07-11 21:19:57 +0200 Sebastien Bacher (09ddb17)
 
 	* releasing version 12.10.0-0ubuntu1
-          (refs/bzr/origin/tags/12.10.0-0ubuntu1)
 
 2012-07-11 21:19:21 +0200 Sebastien Bacher (63a49ad)
 
@@ -716,11 +725,10 @@
 2012-07-11 21:08:16 +0200 Sebastien Bacher (dfefc88)
 
 	* Import upstream version 12.10.0
-          (refs/bzr/origin/tags/upstream-12.10.0)
 
 2012-07-11 12:28:57 -0500 Charles Kerr (f2744fa)
 
-	* bump version to 12.10.0 (refs/bzr/origin/tags/12.10.0)
+	* bump version to 12.10.0
 
 2012-06-18 14:55:21 -0500 Charles Kerr (ad488df)
 
@@ -747,8 +755,7 @@
 
 2012-05-23 10:42:43 +1200 Robert Ancell (f480157)
 
-	* releasing version 0.4.92-0ubuntu2 (tag: 0.4.92-0ubuntu2,
-          refs/bzr/origin/tags/0.4.92-0ubuntu2)
+	* releasing version 0.4.92-0ubuntu2 (tag: 0.4.92-0ubuntu2)
 
 2012-05-22 08:17:53 +0200 unknown (8d0330b)
 
@@ -790,8 +797,7 @@
 
 2012-03-21 16:36:01 -0500 Charles Kerr (ea6700d)
 
-	* releasing version 0.4.92-0ubuntu1 (tag: 0.4.92-0ubuntu1,
-          refs/bzr/origin/tags/0.4.92-0ubuntu1)
+	* releasing version 0.4.92-0ubuntu1 (tag: 0.4.92-0ubuntu1)
 
 2012-03-21 16:32:19 -0500 Charles Kerr (61c3e01)
 
@@ -807,7 +813,6 @@
 2012-03-21 16:23:18 -0500 Charles Kerr (812ded8)
 
 	* Import upstream version 0.4.92
-          (refs/bzr/origin/tags/upstream-0.4.92)
 
 2012-03-21 16:22:33 -0500 Charles Kerr (03fa072)
 
@@ -815,7 +820,7 @@
 
 2012-03-21 13:12:00 -0500 Charles Kerr (d4b572c)
 
-	* 0.4.92 (tag: 0.4.92, refs/bzr/origin/tags/0.4.92)
+	* 0.4.92 (tag: 0.4.92)
 
 2012-03-21 13:11:07 -0500 Charles Kerr (a0f8c26)
 
@@ -844,8 +849,7 @@
 
 2012-03-09 21:47:59 +0100 Sebastien Bacher (73331d6)
 
-	* releasing version 0.4.91-0ubuntu3 (tag: 0.4.91-0ubuntu3,
-          refs/bzr/origin/tags/0.4.91-0ubuntu3)
+	* releasing version 0.4.91-0ubuntu3 (tag: 0.4.91-0ubuntu3)
 
 2012-03-09 21:47:45 +0100 Sebastien Bacher (ac1487a)
 
@@ -854,8 +858,7 @@
 
 2012-03-09 21:13:36 +0100 Sebastien Bacher (25c5aef)
 
-	* releasing version 0.4.91-0ubuntu2 (tag: 0.4.91-0ubuntu2,
-          refs/bzr/origin/tags/0.4.91-0ubuntu2)
+	* releasing version 0.4.91-0ubuntu2 (tag: 0.4.91-0ubuntu2)
 
 2012-03-09 21:12:49 +0100 Sebastien Bacher (593ee90)
 
@@ -863,8 +866,7 @@
 
 2012-03-09 20:06:00 +0100 Sebastien Bacher (1ae63e0)
 
-	* releasing version 0.4.91-0ubuntu1 (tag: 0.4.91-0ubuntu1,
-          refs/bzr/origin/tags/0.4.91-0ubuntu1)
+	* releasing version 0.4.91-0ubuntu1 (tag: 0.4.91-0ubuntu1)
 
 2012-03-09 20:05:47 +0100 Sebastien Bacher (55b03b4)
 
@@ -895,7 +897,6 @@
 2012-03-09 12:08:33 -0600 Ted Gould (b681b75)
 
 	* Import upstream version 0.4.91
-          (refs/bzr/origin/tags/upstream-0.4.91)
 
 2012-03-09 12:08:15 -0600 Ted Gould (e602f2a)
 
@@ -903,7 +904,7 @@
 
 2012-03-09 12:01:42 -0600 Ted Gould (f95bf78)
 
-	* 0.4.91 (tag: 0.4.91, refs/bzr/origin/tags/0.4.91)
+	* 0.4.91 (tag: 0.4.91)
 
 2012-03-09 12:01:32 -0600 Ted Gould (244c436)
 
@@ -975,8 +976,7 @@
 
 2012-02-07 12:50:21 +0100 Sebastien Bacher (fe1d218)
 
-	* releasing version 0.4.90-0ubuntu2 (tag: 0.4.90-0ubuntu2,
-          refs/bzr/origin/tags/0.4.90-0ubuntu2)
+	* releasing version 0.4.90-0ubuntu2 (tag: 0.4.90-0ubuntu2)
 
 2012-02-07 12:50:09 +0100 Sebastien Bacher (36ed779)
 
@@ -986,8 +986,7 @@
 
 2012-02-06 16:26:58 -0500 Ken VanDine (d351a75)
 
-	* releasing version 0.4.90-0ubuntu1 (tag: 0.4.90-0ubuntu1,
-          refs/bzr/origin/tags/0.4.90-0ubuntu1)
+	* releasing version 0.4.90-0ubuntu1 (tag: 0.4.90-0ubuntu1)
 
 2012-02-06 14:53:02 -0500 Ken VanDine (86b6eae)
 
@@ -1026,7 +1025,6 @@
 2012-02-03 14:37:56 -0600 Ted Gould (7256c18)
 
 	* Import upstream version 0.4.90
-          (refs/bzr/origin/tags/upstream-0.4.90)
 
 2012-02-03 14:36:59 -0600 Ted Gould (6516e72)
 
@@ -1034,8 +1032,7 @@
 
 2012-02-03 13:40:14 -0600 Ted Gould (4ccb5d7)
 
-	* Fixing some of the properties in the mono bindings (tag: 0.4.90,
-          refs/bzr/origin/tags/0.4.90)
+	* Fixing some of the properties in the mono bindings (tag: 0.4.90)
 
 2012-02-03 13:31:38 -0600 Ted Gould (53fbf0d)
 
@@ -1134,8 +1131,7 @@
 
 2012-01-25 09:50:46 -0500 Ken VanDine (996677f)
 
-	* releasing version 0.4.1-0ubuntu4 (tag: 0.4.1-0ubuntu4,
-          refs/bzr/origin/tags/0.4.1-0ubuntu4)
+	* releasing version 0.4.1-0ubuntu4 (tag: 0.4.1-0ubuntu4)
 
 2012-01-24 22:12:54 -0500 Ken VanDine (9055ae0)
 
@@ -1185,8 +1181,7 @@
 
 2011-09-30 23:00:11 +0200 Michael Vogt (b1064de)
 
-	* releasing version 0.4.1-0ubuntu2 (tag: 0.4.1-0ubuntu2,
-          refs/bzr/origin/tags/0.4.1-0ubuntu2)
+	* releasing version 0.4.1-0ubuntu2 (tag: 0.4.1-0ubuntu2)
 
 2011-09-30 22:57:27 +0200 Michael Vogt (e669e2d)
 
@@ -1228,8 +1223,7 @@
 
 2011-09-28 14:57:38 -0400 Ken VanDine (ba84fd6)
 
-	* releasing version 0.4.1-0ubuntu1 (tag: 0.4.1-0ubuntu1,
-          refs/bzr/origin/tags/0.4.1-0ubuntu1)
+	* releasing version 0.4.1-0ubuntu1 (tag: 0.4.1-0ubuntu1)
 
 2011-09-28 14:22:30 -0400 Ken VanDine (641031f)
 
@@ -1248,11 +1242,11 @@
 
 2011-09-28 12:45:50 -0500 Ted Gould (334e44d)
 
-	* Import upstream version 0.4.1 (refs/bzr/origin/tags/upstream-0.4.1)
+	* Import upstream version 0.4.1
 
 2011-09-28 12:41:09 -0500 Ted Gould (a011977)
 
-	* 0.4.1 (tag: 0.4.1, refs/bzr/origin/tags/0.4.1)
+	* 0.4.1 (tag: 0.4.1)
 
 2011-09-28 12:34:03 -0500 Ted Gould (1c49e53)
 
@@ -1277,7 +1271,7 @@
 
 2011-09-28 11:02:34 -0500 Ted Gould (e57397e)
 
-	* Import upstream version 0.4.0 (refs/bzr/origin/tags/upstream-0.4.0)
+	* Import upstream version 0.4.0
 
 2011-09-28 11:02:10 -0500 Ted Gould (b5c8bb4)
 
@@ -1285,7 +1279,7 @@
 
 2011-09-28 10:57:58 -0500 Ted Gould (e527e64)
 
-	* 0.4.0 (tag: 0.4.0, refs/bzr/origin/tags/0.4.0)
+	* 0.4.0 (tag: 0.4.0)
 
 2011-09-28 10:57:50 -0500 Ted Gould (9826036)
 
@@ -1301,8 +1295,7 @@
 
 2011-08-11 21:19:31 +0200 Sebastien Bacher (2d4793a)
 
-	* releasing version 0.3.91-0ubuntu1 (tag: 0.3.91-0ubuntu1,
-          refs/bzr/origin/tags/0.3.91-0ubuntu1)
+	* releasing version 0.3.91-0ubuntu1 (tag: 0.3.91-0ubuntu1)
 
 2011-08-11 21:19:20 +0200 Sebastien Bacher (8c1f764)
 
@@ -1327,7 +1320,6 @@
 2011-08-11 12:02:16 -0500 Ted Gould (8c352cd)
 
 	* Import upstream version 0.3.91
-          (refs/bzr/origin/tags/upstream-0.3.91)
 
 2011-08-11 12:01:52 -0500 Ted Gould (1a48342)
 
@@ -1335,7 +1327,7 @@
 
 2011-08-11 11:58:08 -0500 Ted Gould (1bfe91a)
 
-	* 0.3.91 (tag: 0.3.91, refs/bzr/origin/tags/0.3.91)
+	* 0.3.91 (tag: 0.3.91)
 
 2011-07-22 14:04:23 -0500 Ted Gould (ba1f3a6)
 
@@ -1408,8 +1400,7 @@
 
 2011-07-08 13:58:16 +0200 Sebastien Bacher (90aa5af)
 
-	* releasing version 0.3.90-0ubuntu1 (tag: 0.3.90-0ubuntu1,
-          refs/bzr/origin/tags/0.3.90-0ubuntu1)
+	* releasing version 0.3.90-0ubuntu1 (tag: 0.3.90-0ubuntu1)
 
 2011-07-07 15:21:58 -0500 Ted Gould (7b75269)
 
@@ -1423,11 +1414,10 @@
 2011-07-07 15:13:58 -0500 Ted Gould (fc03ef7)
 
 	* Import upstream version 0.3.90
-          (refs/bzr/origin/tags/upstream-0.3.90)
 
 2011-07-07 14:45:18 -0500 Ted Gould (bf95161)
 
-	* 0.3.90 (tag: 0.3.90, refs/bzr/origin/tags/0.3.90)
+	* 0.3.90 (tag: 0.3.90)
 
 2011-07-07 14:45:12 -0500 Ted Gould (15fccc9)
 
@@ -1448,13 +1438,11 @@
 2011-07-05 16:19:25 -0400 Michael Terry (8693295)
 
 	* No change rebuild to depend on libdbusmenu-gtk4 (instead of -gtk3)
-          LP: #803667 (tag: 0.3.0-0ubuntu3,
-          refs/bzr/origin/tags/0.3.0-0ubuntu3)
+          LP: #803667 (tag: 0.3.0-0ubuntu3)
 
 2011-06-21 17:51:41 +0100 Colin Watson (c6d8437)
 
-	* releasing version 0.3.0-0ubuntu2 (tag: 0.3.0-0ubuntu2,
-          refs/bzr/origin/tags/0.3.0-0ubuntu2)
+	* releasing version 0.3.0-0ubuntu2 (tag: 0.3.0-0ubuntu2)
 
 2011-06-21 17:49:41 +0100 Colin Watson (cde0e9c)
 
@@ -1493,8 +1481,7 @@
 
 2011-03-23 17:31:03 -0400 Ken VanDine (b0772a8)
 
-	* releasing version 0.3.0-0ubuntu1 (tag: 0.3.0-0ubuntu1,
-          refs/bzr/origin/tags/0.3.0-0ubuntu1)
+	* releasing version 0.3.0-0ubuntu1 (tag: 0.3.0-0ubuntu1)
 
 2011-03-23 15:50:58 -0500 Ted Gould (d536601)
 
@@ -1507,7 +1494,7 @@
 
 2011-03-23 15:33:37 -0500 Ted Gould (010b25c)
 
-	* Import upstream version 0.3.0 (refs/bzr/origin/tags/upstream-0.3.0)
+	* Import upstream version 0.3.0
 
 2011-03-23 15:33:17 -0500 Ted Gould (5b6331c)
 
@@ -1515,7 +1502,7 @@
 
 2011-03-23 15:08:56 -0500 Ted Gould (0ed4513)
 
-	* 0.3.0 (tag: 0.3.0, refs/bzr/origin/tags/0.3.0)
+	* 0.3.0 (tag: 0.3.0)
 
 2011-03-23 15:07:58 -0500 Ted Gould (8974a7f)
 
@@ -1527,8 +1514,7 @@
 
 2011-03-16 15:52:31 -0400 Ken VanDine (30a29c6)
 
-	* releasing version 0.2.99-0ubuntu1 (tag: 0.2.99-0ubuntu1,
-          refs/bzr/origin/tags/0.2.99-0ubuntu1)
+	* releasing version 0.2.99-0ubuntu1 (tag: 0.2.99-0ubuntu1)
 
 2011-03-16 13:41:59 -0500 Ted Gould (0988693)
 
@@ -1541,7 +1527,6 @@
 2011-03-16 13:36:07 -0500 Ted Gould (bf797a9)
 
 	* Import upstream version 0.2.99
-          (refs/bzr/origin/tags/upstream-0.2.99)
 
 2011-03-16 13:35:43 -0500 Ted Gould (e1790a2)
 
@@ -1549,7 +1534,7 @@
 
 2011-03-16 13:29:08 -0500 Ted Gould (f321aae)
 
-	* 0.2.99 (tag: 0.2.99, refs/bzr/origin/tags/0.2.99)
+	* 0.2.99 (tag: 0.2.99)
 
 2011-03-14 20:51:36 -0500 Ted Gould (dae2422)
 
@@ -1561,8 +1546,7 @@
 
 2011-03-10 15:55:01 -0500 Ken VanDine (c50e0ff)
 
-	* releasing version 0.2.98-0ubuntu1 (tag: 0.2.98-0ubuntu1,
-          refs/bzr/origin/tags/0.2.98-0ubuntu1)
+	* releasing version 0.2.98-0ubuntu1 (tag: 0.2.98-0ubuntu1)
 
 2011-03-10 13:36:02 -0600 Ted Gould (38951a7)
 
@@ -1580,11 +1564,10 @@
 2011-03-10 12:34:12 -0600 Ted Gould (1f0b4c1)
 
 	* Import upstream version 0.2.98
-          (refs/bzr/origin/tags/upstream-0.2.98)
 
 2011-03-10 12:28:53 -0600 Ted Gould (0f9fc0f)
 
-	* 0.2.98 (tag: 0.2.98, refs/bzr/origin/tags/0.2.98)
+	* 0.2.98 (tag: 0.2.98)
 
 2011-03-10 12:28:45 -0600 Ted Gould (29f8630)
 
@@ -1605,8 +1588,7 @@
 
 2011-03-03 17:20:11 -0500 Ken VanDine (007331a)
 
-	* releasing version 0.2.97-0ubuntu1 (tag: 0.2.97-0ubuntu1,
-          refs/bzr/origin/tags/0.2.97-0ubuntu1)
+	* releasing version 0.2.97-0ubuntu1 (tag: 0.2.97-0ubuntu1)
 
 2011-03-03 13:42:12 -0600 Ted Gould (be0a541)
 
@@ -1628,7 +1610,6 @@
 2011-03-03 13:33:18 -0600 Ted Gould (56d9374)
 
 	* Import upstream version 0.2.97
-          (refs/bzr/origin/tags/upstream-0.2.97)
 
 2011-03-03 13:32:42 -0600 Ted Gould (70d5440)
 
@@ -1636,7 +1617,7 @@
 
 2011-03-03 13:28:53 -0600 Ted Gould (4490e2e)
 
-	* 0.2.97 (tag: 0.2.97, refs/bzr/origin/tags/0.2.97)
+	* 0.2.97 (tag: 0.2.97)
 
 2011-03-02 22:38:08 -0600 Ted Gould (4a277c7)
 
@@ -1652,8 +1633,7 @@
 
 2011-02-28 23:37:40 -0500 Ken VanDine (fe59d57)
 
-	* releasing version 0.2.96-0ubuntu4 (tag: 0.2.96-0ubuntu4,
-          refs/bzr/origin/tags/0.2.96-0ubuntu4)
+	* releasing version 0.2.96-0ubuntu4 (tag: 0.2.96-0ubuntu4)
 
 2011-02-28 23:34:45 -0500 Ken VanDine (6c5c047)
 
@@ -1664,7 +1644,7 @@
 
 	* * debian/patches/update-defs.patch:   - Fix crash when importing
           appindicator from Python (LP: #724917). (tag:
-          0.2.96-0ubuntu3, refs/bzr/origin/tags/0.2.96-0ubuntu3)
+          0.2.96-0ubuntu3)
 
 2011-02-28 23:01:16 +0600 Артём Попов (160c776)
 
@@ -1680,8 +1660,7 @@
 	* * debian/control, debian/rules:   - Add quilt *
           debian/patches/disconnect-from-theme.patch:   - Fix crash
           when switching themes by disconnecting a signal from    
-          the theme on dispose.  LP: #708188 (tag: 0.2.96-0ubuntu2,
-          refs/bzr/origin/tags/0.2.96-0ubuntu2)
+          the theme on dispose.  LP: #708188 (tag: 0.2.96-0ubuntu2)
 
 2011-02-26 19:04:45 +0600 Артём Попов (8669272)
 
@@ -1693,8 +1672,7 @@
 
 2011-02-24 22:15:21 -0500 Ken VanDine (5f97e91)
 
-	* releasing version 0.2.96-0ubuntu1 (tag: 0.2.96-0ubuntu1,
-          refs/bzr/origin/tags/0.2.96-0ubuntu1)
+	* releasing version 0.2.96-0ubuntu1 (tag: 0.2.96-0ubuntu1)
 
 2011-02-24 16:06:46 -0600 Ted Gould (22fbdf6)
 
@@ -1709,7 +1687,6 @@
 2011-02-24 16:01:21 -0600 Ted Gould (7a1564e)
 
 	* Import upstream version 0.2.96
-          (refs/bzr/origin/tags/upstream-0.2.96)
 
 2011-02-24 16:01:13 -0600 Ted Gould (dd6a451)
 
@@ -1717,7 +1694,7 @@
 
 2011-02-24 15:42:23 -0600 Ted Gould (d634d56)
 
-	* 0.2.96 (tag: 0.2.96, refs/bzr/origin/tags/0.2.96)
+	* 0.2.96 (tag: 0.2.96)
 
 2011-02-24 15:34:16 -0600 Ted Gould (ce7b22d)
 
@@ -1792,8 +1769,7 @@
 
 2011-02-17 15:43:16 -0500 Ken VanDine (eef1472)
 
-	* releasing version 0.2.95-0ubuntu2 (tag: 0.2.95-0ubuntu2,
-          refs/bzr/origin/tags/0.2.95-0ubuntu2)
+	* releasing version 0.2.95-0ubuntu2 (tag: 0.2.95-0ubuntu2)
 
 2011-02-16 16:54:15 -0600 Ted Gould (abccdd7)
 
@@ -1810,8 +1786,7 @@
 
 2011-02-11 10:34:20 -0500 Ken VanDine (a83d65c)
 
-	* releasing version 0.2.95-0ubuntu1 (tag: 0.2.95-0ubuntu1,
-          refs/bzr/origin/tags/0.2.95-0ubuntu1)
+	* releasing version 0.2.95-0ubuntu1 (tag: 0.2.95-0ubuntu1)
 
 2011-02-11 10:14:54 -0500 Ken VanDine (26b9521)
 
@@ -1836,11 +1811,10 @@
 2011-02-10 22:24:39 -0600 Ted Gould (596f48a)
 
 	* Import upstream version 0.2.95
-          (refs/bzr/origin/tags/upstream-0.2.95)
 
 2011-02-10 22:22:11 -0600 Ted Gould (1c384cd)
 
-	* 0.2.95 (tag: 0.2.95, refs/bzr/origin/tags/0.2.95)
+	* 0.2.95 (tag: 0.2.95)
 
 2011-02-10 22:18:21 -0600 Ted Gould (4044f92)
 
@@ -1896,11 +1870,10 @@
 2011-02-10 15:28:13 -0600 Ted Gould (2c23d4b)
 
 	* Import upstream version 0.2.94
-          (refs/bzr/origin/tags/upstream-0.2.94)
 
 2011-02-10 15:25:39 -0600 Ted Gould (e5b56ec)
 
-	* 0.2.94 (tag: 0.2.94, refs/bzr/origin/tags/0.2.94)
+	* 0.2.94 (tag: 0.2.94)
 
 2011-02-10 15:25:15 -0600 Ted Gould (cd7daed)
 
@@ -1926,7 +1899,6 @@
 2011-02-10 14:47:52 -0600 Ted Gould (18d8992)
 
 	* Import upstream version 0.2.93
-          (refs/bzr/origin/tags/upstream-0.2.93)
 
 2011-02-10 14:47:29 -0600 Ted Gould (6def775)
 
@@ -1938,7 +1910,7 @@
 
 2011-02-10 14:14:30 -0600 Ted Gould (23a4650)
 
-	* 0.2.93 (tag: 0.2.93, refs/bzr/origin/tags/0.2.93)
+	* 0.2.93 (tag: 0.2.93)
 
 2011-02-10 14:10:12 -0600 Ted Gould (409fc00)
 
@@ -1959,8 +1931,7 @@
 
 2011-02-08 22:50:44 -0500 Ken VanDine (a9d343c)
 
-	* releasing version 0.2.92-0ubuntu2 (tag: 0.2.92-0ubuntu2,
-          refs/bzr/origin/tags/0.2.92-0ubuntu2)
+	* releasing version 0.2.92-0ubuntu2 (tag: 0.2.92-0ubuntu2)
 
 2011-02-08 22:49:37 -0500 Ken VanDine (37a5403)
 
@@ -2095,13 +2066,11 @@
 
 2011-01-27 22:34:15 -0500 Ken VanDine (b7ad7ae)
 
-	* releasing version 0.2.92-0ubuntu1 (tag: 0.2.92-0ubuntu1,
-          refs/bzr/origin/tags/0.2.92-0ubuntu1)
+	* releasing version 0.2.92-0ubuntu1 (tag: 0.2.92-0ubuntu1)
 
 2011-01-27 22:23:52 -0500 Ken VanDine (93d52e4)
 
 	* Import upstream version 0.2.92
-          (refs/bzr/origin/tags/upstream-0.2.92)
 
 2011-01-27 14:58:37 -0600 Ted Gould (0ab2c93)
 
@@ -2117,7 +2086,7 @@
 
 2011-01-27 14:43:30 -0600 Ted Gould (19c543f)
 
-	* 0.2.92 (tag: 0.2.92, refs/bzr/origin/tags/0.2.92)
+	* 0.2.92 (tag: 0.2.92)
 
 2011-01-27 14:42:46 -0600 Ted Gould (3e812be)
 
@@ -2195,22 +2164,19 @@
 
 2011-01-13 20:46:19 -0600 Ken VanDine (62f943d)
 
-	* releasing version 0.2.91.1-0ubuntu1 (tag: 0.2.91.1-0ubuntu1,
-          refs/bzr/origin/tags/0.2.91.1-0ubuntu1)
+	* releasing version 0.2.91.1-0ubuntu1 (tag: 0.2.91.1-0ubuntu1)
 
 2011-01-13 20:43:26 -0600 Ken VanDine (be00d00)
 
 	* Import upstream version 0.2.91.1
-          (refs/bzr/origin/tags/upstream-0.2.91.1)
 
 2011-01-13 20:23:53 -0600 Ken VanDine (8cf0c2e)
 
-	* com.canonical rename (tag: 0.2.91.1, refs/bzr/origin/tags/0.2.91.1)
+	* com.canonical rename (tag: 0.2.91.1)
 
 2011-01-13 20:14:53 -0600 Sebastien Bacher (db379ab)
 
-	* releasing version 0.2.91-0ubuntu1 (tag: 0.2.91-0ubuntu1,
-          refs/bzr/origin/tags/0.2.91-0ubuntu1)
+	* releasing version 0.2.91-0ubuntu1 (tag: 0.2.91-0ubuntu1)
 
 2011-01-13 20:05:12 -0600 Ken VanDine (cf693f9)
 
@@ -2219,7 +2185,6 @@
 2011-01-13 19:52:25 -0600 Sebastien Bacher (79f9e4c)
 
 	* Import upstream version 0.2.91
-          (refs/bzr/origin/tags/upstream-0.2.91)
 
 2011-01-13 18:28:17 -0600 Ken VanDine (57fd55e)
 
@@ -2249,7 +2214,6 @@
 2011-01-12 15:55:46 -0600 Ken VanDine (7c301f7)
 
 	* Fixed pkgconfig files to require dbusmenu-glib-0.4
-          (refs/bzr/origin/tags/upstream-0.2.90+r175)
 
 2011-01-12 09:04:12 -0600 Ken VanDine (0092f8a)
 
@@ -2267,13 +2231,11 @@
 
 2010-12-16 10:10:13 -0500 Ken VanDine (54c9e64)
 
-	* releasing version 0.2.90-0ubuntu4 (tag: 0.2.90-0ubuntu4,
-          refs/bzr/origin/tags/0.2.90-0ubuntu4)
+	* releasing version 0.2.90-0ubuntu4 (tag: 0.2.90-0ubuntu4)
 
 2010-12-10 18:04:32 -0500 Ken VanDine (2437d4b)
 
-	* releasing version 0.2.90+r175-0ubuntu1 (tag: 0.2.90+r175-0ubuntu1,
-          refs/bzr/origin/tags/0.2.90+r175-0ubuntu1)
+	* releasing version 0.2.90+r175-0ubuntu1 (tag: 0.2.90+r175-0ubuntu1)
 
 2010-12-10 16:38:00 -0500 Ken VanDine (29871df)
 
@@ -2282,8 +2244,7 @@
 
 2010-12-09 12:56:54 -0500 Ken VanDine (6e9fee7)
 
-	* releasing version 0.2.90-0ubuntu3 (tag: 0.2.90-0ubuntu3,
-          refs/bzr/origin/tags/0.2.90-0ubuntu3)
+	* releasing version 0.2.90-0ubuntu3 (tag: 0.2.90-0ubuntu3)
 
 2010-12-08 16:52:57 -0600 Ted Gould (fdec9f2)
 
@@ -2317,7 +2278,7 @@
 
 2010-12-08 15:58:39 -0600 Ted Gould (6698a1a)
 
-	* 0.2.91 (tag: 0.2.91, refs/bzr/origin/tags/0.2.91)
+	* 0.2.91 (tag: 0.2.91)
 
 2010-12-08 15:58:26 -0600 Ted Gould (a4e9c0e)
 
@@ -2372,8 +2333,7 @@
 
 2010-12-08 13:10:00 -0500 Ken VanDine (a227646)
 
-	* releasing version 0.2.90-0ubuntu2 (tag: 0.2.90-0ubuntu2,
-          refs/bzr/origin/tags/0.2.90-0ubuntu2)
+	* releasing version 0.2.90-0ubuntu2 (tag: 0.2.90-0ubuntu2)
 
 2010-12-08 11:04:50 -0600 Ted Gould (b35ed0d)
 
@@ -2423,8 +2383,7 @@
 
 2010-12-08 04:47:55 -0500 Ken VanDine (1860f39)
 
-	* releasing version 0.2.90-0ubuntu1 (tag: 0.2.90-0ubuntu1,
-          refs/bzr/origin/tags/0.2.90-0ubuntu1)
+	* releasing version 0.2.90-0ubuntu1 (tag: 0.2.90-0ubuntu1)
 
 2010-12-08 04:27:50 -0500 Ken VanDine (be69a42)
 
@@ -2454,11 +2413,10 @@
 2010-12-07 20:46:33 -0600 Ted Gould (a413eba)
 
 	* Import upstream version 0.2.90
-          (refs/bzr/origin/tags/upstream-0.2.90)
 
 2010-12-07 20:44:44 -0600 Ted Gould (12d94d3)
 
-	* 0.2.90 (tag: 0.2.90, refs/bzr/origin/tags/0.2.90)
+	* 0.2.90 (tag: 0.2.90)
 
 2010-12-07 16:55:03 -0600 Ted Gould (eef3316)
 
@@ -2845,8 +2803,7 @@
 
 2010-09-22 20:01:06 +0200 Didier Roche (853fe81)
 
-	* releasing version 0.2.9-0ubuntu1 (tag: 0.2.9-0ubuntu1,
-          refs/bzr/origin/tags/0.2.9-0ubuntu1)
+	* releasing version 0.2.9-0ubuntu1 (tag: 0.2.9-0ubuntu1)
 
 2010-09-22 19:58:13 +0200 Didier Roche (2b4effa)
 
@@ -2880,11 +2837,11 @@
 
 2010-09-22 11:14:11 -0500 Ted Gould (f5e7b8e)
 
-	* Import upstream version 0.2.9 (refs/bzr/origin/tags/upstream-0.2.9)
+	* Import upstream version 0.2.9
 
 2010-09-22 11:13:14 -0500 Ted Gould (fe08c86)
 
-	* 0.2.9 (tag: 0.2.9, refs/bzr/origin/tags/0.2.9)
+	* 0.2.9 (tag: 0.2.9)
 
 2010-09-21 17:02:21 -0500 Ted Gould (7a891ca)
 
@@ -2978,8 +2935,7 @@
 
 2010-09-15 17:08:47 -0400 Ken VanDine (fee0915)
 
-	* releasing version 0.2.8-0ubuntu1 (tag: 0.2.8-0ubuntu1,
-          refs/bzr/origin/tags/0.2.8-0ubuntu1)
+	* releasing version 0.2.8-0ubuntu1 (tag: 0.2.8-0ubuntu1)
 
 2010-09-15 15:05:18 -0500 Ted Gould (b8eb440)
 
@@ -2993,11 +2949,11 @@
 
 2010-09-15 14:46:09 -0500 Ted Gould (c876d26)
 
-	* Import upstream version 0.2.8 (refs/bzr/origin/tags/upstream-0.2.8)
+	* Import upstream version 0.2.8
 
 2010-09-15 14:41:06 -0500 Ted Gould (a4dc11a)
 
-	* 0.2.8 (tag: 0.2.8, refs/bzr/origin/tags/0.2.8)
+	* 0.2.8 (tag: 0.2.8)
 
 2010-09-15 14:38:44 -0500 Ted Gould (859281b)
 
@@ -3037,8 +2993,7 @@
 
 2010-09-09 16:36:24 -0400 Ken VanDine (d7a7c77)
 
-	* releasing version 0.2.7-0ubuntu1 (tag: 0.2.7-0ubuntu1,
-          refs/bzr/origin/tags/0.2.7-0ubuntu1)
+	* releasing version 0.2.7-0ubuntu1 (tag: 0.2.7-0ubuntu1)
 
 2010-09-09 13:00:40 -0500 Ted Gould (4054bd4)
 
@@ -3055,11 +3010,11 @@
 
 2010-09-09 12:54:08 -0500 Ted Gould (b6d9801)
 
-	* Import upstream version 0.2.7 (refs/bzr/origin/tags/upstream-0.2.7)
+	* Import upstream version 0.2.7
 
 2010-09-09 12:52:35 -0500 Ted Gould (b39568d)
 
-	* 0.2.7 (tag: 0.2.7, refs/bzr/origin/tags/0.2.7)
+	* 0.2.7 (tag: 0.2.7)
 
 2010-09-09 12:50:35 -0500 Ted Gould (1f5808c)
 
@@ -3080,8 +3035,7 @@
 
 2010-09-02 20:29:32 -0400 Ken VanDine (5e8e9f5)
 
-	* releasing version 0.2.6-0ubuntu1 (tag: 0.2.6-0ubuntu1,
-          refs/bzr/origin/tags/0.2.6-0ubuntu1)
+	* releasing version 0.2.6-0ubuntu1 (tag: 0.2.6-0ubuntu1)
 
 2010-08-26 14:56:29 -0500 Ted Gould (d3dcecf)
 
@@ -3097,11 +3051,11 @@
 
 2010-08-26 14:50:16 -0500 Ted Gould (17e7865)
 
-	* Import upstream version 0.2.6 (refs/bzr/origin/tags/upstream-0.2.6)
+	* Import upstream version 0.2.6
 
 2010-08-26 14:49:40 -0500 Ted Gould (7b3e58b)
 
-	* 0.2.6 (tag: 0.2.6, refs/bzr/origin/tags/0.2.6)
+	* 0.2.6 (tag: 0.2.6)
 
 2010-08-25 13:33:43 -0500 Ted Gould (166096e)
 
@@ -3139,8 +3093,7 @@
 
 2010-08-19 16:18:05 -0400 Ken VanDine (6e18a72)
 
-	* releasing version 0.2.5-0ubuntu1 (tag: 0.2.5-0ubuntu1,
-          refs/bzr/origin/tags/0.2.5-0ubuntu1)
+	* releasing version 0.2.5-0ubuntu1 (tag: 0.2.5-0ubuntu1)
 
 2010-08-19 14:00:07 -0500 Ted Gould (618737a)
 
@@ -3152,11 +3105,11 @@
 
 2010-08-19 13:57:51 -0500 Ted Gould (101c8ff)
 
-	* Import upstream version 0.2.5 (refs/bzr/origin/tags/upstream-0.2.5)
+	* Import upstream version 0.2.5
 
 2010-08-19 13:56:53 -0500 Ted Gould (b51c1de)
 
-	* 0.2.5 (tag: 0.2.5, refs/bzr/origin/tags/0.2.5)
+	* 0.2.5 (tag: 0.2.5)
 
 2010-08-19 13:56:42 -0500 Ted Gould (ced1792)
 
@@ -3291,8 +3244,7 @@
 
 2010-08-12 16:32:18 -0400 Ken VanDine (2840a6f)
 
-	* releasing version 0.2.4-0ubuntu1 (tag: 0.2.4-0ubuntu1,
-          refs/bzr/origin/tags/0.2.4-0ubuntu1)
+	* releasing version 0.2.4-0ubuntu1 (tag: 0.2.4-0ubuntu1)
 
 2010-08-12 13:57:20 -0500 Ted Gould (2368f53)
 
@@ -3307,11 +3259,11 @@
 
 2010-08-12 13:52:34 -0500 Ted Gould (0d7fd31)
 
-	* Import upstream version 0.2.4 (refs/bzr/origin/tags/upstream-0.2.4)
+	* Import upstream version 0.2.4
 
 2010-08-12 13:40:00 -0500 Ted Gould (d81670c)
 
-	* 0.2.4 (tag: 0.2.4, refs/bzr/origin/tags/0.2.4)
+	* 0.2.4 (tag: 0.2.4)
 
 2010-08-12 09:48:11 -0500 Ted Gould (47aa858)
 
@@ -3539,8 +3491,7 @@
 
 2010-08-11 11:07:58 +0200 Sebastien Bacher (77beaba)
 
-	* releasing version 0.2.3-0ubuntu2 (tag: 0.2.3-0ubuntu2,
-          refs/bzr/origin/tags/0.2.3-0ubuntu2)
+	* releasing version 0.2.3-0ubuntu2 (tag: 0.2.3-0ubuntu2)
 
 2010-08-10 21:27:10 -0500 Ted Gould (3d26f16)
 
@@ -4049,8 +4000,7 @@
 
 2010-07-15 12:12:19 -0400 Ken VanDine (38feb55)
 
-	* releasing version 0.2.3-0ubuntu1 (tag: 0.2.3-0ubuntu1,
-          refs/bzr/origin/tags/0.2.3-0ubuntu1)
+	* releasing version 0.2.3-0ubuntu1 (tag: 0.2.3-0ubuntu1)
 
 2010-07-15 10:22:37 -0500 Ted Gould (8faa8b6)
 
@@ -4062,11 +4012,11 @@
 
 2010-07-15 10:20:14 -0500 Ted Gould (863cd1c)
 
-	* Import upstream version 0.2.3 (refs/bzr/origin/tags/upstream-0.2.3)
+	* Import upstream version 0.2.3
 
 2010-07-15 10:18:23 -0500 Ted Gould (17dea09)
 
-	* 0.2.3 (tag: 0.2.3, refs/bzr/origin/tags/0.2.3)
+	* 0.2.3 (tag: 0.2.3)
 
 2010-07-13 11:02:08 -0500 Ted Gould (76c177b)
 
@@ -4207,8 +4157,7 @@
 
 2010-07-08 18:26:25 +0200 Sebastien Bacher (22da24c)
 
-	* releasing version 0.2.2-0ubuntu1 (tag: 0.2.2-0ubuntu1,
-          refs/bzr/origin/tags/0.2.2-0ubuntu1)
+	* releasing version 0.2.2-0ubuntu1 (tag: 0.2.2-0ubuntu1)
 
 2010-07-08 10:28:29 -0500 Ted Gould (8ce01c5)
 
@@ -4220,11 +4169,11 @@
 
 2010-07-08 10:22:02 -0500 Ted Gould (44880df)
 
-	* Import upstream version 0.2.2 (refs/bzr/origin/tags/upstream-0.2.2)
+	* Import upstream version 0.2.2
 
 2010-07-08 10:08:02 -0500 Ted Gould (a627c07)
 
-	* 0.2.2 (tag: 0.2.2, refs/bzr/origin/tags/0.2.2)
+	* 0.2.2 (tag: 0.2.2)
 
 2010-07-07 14:23:37 -0500 Ted Gould (cf31f2f)
 
@@ -4257,8 +4206,7 @@
 
 2010-06-22 09:31:46 +0200 Didier Roche (711cb0b)
 
-	* releasing version 0.2.1-0ubuntu1 (tag: 0.2.1-0ubuntu1,
-          refs/bzr/origin/tags/0.2.1-0ubuntu1)
+	* releasing version 0.2.1-0ubuntu1 (tag: 0.2.1-0ubuntu1)
 
 2010-06-21 16:57:36 -0400 Ken VanDine (90a5410)
 
@@ -4290,11 +4238,11 @@
 
 2010-06-21 14:13:54 -0500 Ted Gould (3439224)
 
-	* Import upstream version 0.2.1 (refs/bzr/origin/tags/upstream-0.2.1)
+	* Import upstream version 0.2.1
 
 2010-06-21 14:06:07 -0500 Ted Gould (20f0c1d)
 
-	* 0.2.1 (tag: 0.2.1, refs/bzr/origin/tags/0.2.1)
+	* 0.2.1 (tag: 0.2.1)
 
 2010-06-21 14:04:56 -0500 Ted Gould (458ad9a)
 
@@ -4582,13 +4530,11 @@
 
 2010-06-08 11:03:40 +0200 Sebastien Bacher (52ebd17)
 
-	* releasing version 0.2.0-0ubuntu2 (tag: 0.2.0-0ubuntu2,
-          refs/bzr/origin/tags/0.2.0-0ubuntu2)
+	* releasing version 0.2.0-0ubuntu2 (tag: 0.2.0-0ubuntu2)
 
 2010-06-07 18:09:38 +0200 Sebastien Bacher (0fb6915)
 
-	* releasing version 0.2.0-0ubuntu1 (tag: 0.2.0-0ubuntu1,
-          refs/bzr/origin/tags/0.2.0-0ubuntu1)
+	* releasing version 0.2.0-0ubuntu1 (tag: 0.2.0-0ubuntu1)
 
 2010-06-04 08:59:10 -0400 Ken VanDine (83ea782)
 
@@ -4650,7 +4596,7 @@
 
 2010-06-03 13:55:11 -0500 Ted Gould (0f7ba97)
 
-	* Import upstream version 0.2.0 (refs/bzr/origin/tags/upstream-0.2.0)
+	* Import upstream version 0.2.0
 
 2010-06-03 13:54:41 -0500 Ted Gould (d3216b9)
 
@@ -4658,7 +4604,7 @@
 
 2010-06-03 13:28:54 -0500 Ted Gould (27fe45b)
 
-	* 0.2.0 (tag: 0.2.0, refs/bzr/origin/tags/0.2.0)
+	* 0.2.0 (tag: 0.2.0)
 
 2010-06-01 11:10:26 -0500 Ted Gould (3651994)
 
@@ -4700,7 +4646,6 @@
 2010-05-20 21:56:58 -0500 Ted Gould (84e75c6)
 
 	* Import upstream version 0.0.21
-          (refs/bzr/origin/tags/upstream-0.0.21)
 
 2010-05-20 21:56:52 -0500 Ted Gould (2cbdb9f)
 
@@ -4708,7 +4653,7 @@
 
 2010-05-20 21:54:21 -0500 Ted Gould (6fcbfe5)
 
-	* 0.0.21 (tag: 0.0.21, refs/bzr/origin/tags/0.0.21)
+	* 0.0.21 (tag: 0.0.21)
 
 2010-05-20 21:52:14 -0500 Ted Gould (38c5c10)
 
@@ -4728,7 +4673,6 @@
 2010-05-20 21:34:54 -0500 Ted Gould (9b028d9)
 
 	* Import upstream version 0.0.20
-          (refs/bzr/origin/tags/upstream-0.0.20)
 
 2010-05-20 21:32:24 -0500 Ted Gould (bdec505)
 
@@ -4736,7 +4680,7 @@
 
 2010-05-20 21:16:58 -0500 Ted Gould (cd4c6e0)
 
-	* 0.0.20 (tag: 0.0.20, refs/bzr/origin/tags/0.0.20)
+	* 0.0.20 (tag: 0.0.20)
 
 2010-05-20 20:22:24 -0500 Ted Gould (20a976b)
 
@@ -4792,8 +4736,7 @@
 
 2010-05-20 17:05:15 +0200 Sebastien Bacher (3096e10)
 
-	* releasing version 0.0.19-0ubuntu5 (tag: 0.0.19-0ubuntu5,
-          refs/bzr/origin/tags/0.0.19-0ubuntu5)
+	* releasing version 0.0.19-0ubuntu5 (tag: 0.0.19-0ubuntu5)
 
 2010-05-20 08:41:36 -0400 Ken VanDine (1e43a91)
 
@@ -4858,8 +4801,7 @@
 
 2010-04-21 11:01:20 +0200 Sebastien Bacher (86518f0)
 
-	* releasing version 0.0.19-0ubuntu4 (tag: 0.0.19-0ubuntu4,
-          refs/bzr/origin/tags/0.0.19-0ubuntu4)
+	* releasing version 0.0.19-0ubuntu4 (tag: 0.0.19-0ubuntu4)
 
 2010-04-16 17:24:51 -0500 Ted Gould (04a9942)
 
@@ -4871,8 +4813,7 @@
 
 2010-04-14 23:20:45 +0200 Sebastien Bacher (4f93e61)
 
-	* releasing version 0.0.19-0ubuntu3 (tag: 0.0.19-0ubuntu3,
-          refs/bzr/origin/tags/0.0.19-0ubuntu3)
+	* releasing version 0.0.19-0ubuntu3 (tag: 0.0.19-0ubuntu3)
 
 2010-04-14 11:53:50 -0500 Ted Gould (d15e362)
 
@@ -4893,8 +4834,7 @@
 
 2010-04-14 16:34:25 +0200 Sebastien Bacher (73b7491)
 
-	* releasing version 0.0.19-0ubuntu2 (tag: 0.0.19-0ubuntu2,
-          refs/bzr/origin/tags/0.0.19-0ubuntu2)
+	* releasing version 0.0.19-0ubuntu2 (tag: 0.0.19-0ubuntu2)
 
 2010-04-14 08:43:40 -0500 Ted Gould (d38c39a)
 
@@ -4918,8 +4858,7 @@
 
 2010-04-01 23:41:58 +0200 Sebastien Bacher (40b74a1)
 
-	* releasing version 0.0.19-0ubuntu1 (tag: 0.0.19-0ubuntu1,
-          refs/bzr/origin/tags/0.0.19-0ubuntu1)
+	* releasing version 0.0.19-0ubuntu1 (tag: 0.0.19-0ubuntu1)
 
 2010-04-01 15:56:06 -0500 Ted Gould (734b874)
 
@@ -4935,7 +4874,6 @@
 2010-04-01 15:49:35 -0500 Ted Gould (d005a22)
 
 	* Import upstream version 0.0.19
-          (refs/bzr/origin/tags/upstream-0.0.19)
 
 2010-04-01 15:49:14 -0500 Ted Gould (70600e1)
 
@@ -4943,7 +4881,7 @@
 
 2010-04-01 15:46:22 -0500 Ted Gould (1fbc5af)
 
-	* 0.0.19 (tag: 0.0.19, refs/bzr/origin/tags/0.0.19)
+	* 0.0.19 (tag: 0.0.19)
 
 2010-04-01 15:23:58 -0500 Ted Gould (2ee85c2)
 
@@ -5005,8 +4943,7 @@
 
 2010-03-30 10:10:25 +0200 Sebastien Bacher (fd1ec3c)
 
-	* releasing version 0.0.18-0ubuntu1 (tag: 0.0.18-0ubuntu1,
-          refs/bzr/origin/tags/0.0.18-0ubuntu1)
+	* releasing version 0.0.18-0ubuntu1 (tag: 0.0.18-0ubuntu1)
 
 2010-03-29 22:14:04 -0400 Ken VanDine (64eef1a)
 
@@ -5047,8 +4984,7 @@
 
 2010-03-25 11:52:35 -0500 Ted Gould (9919c5e)
 
-	* 0.0.18 (tag: 0.0.18, refs/bzr/origin/tags/upstream-0.0.18,
-          refs/bzr/origin/tags/0.0.18)
+	* 0.0.18 (tag: 0.0.18)
 
 2010-03-25 11:52:24 -0500 Ted Gould (b4e1960)
 
@@ -5091,8 +5027,7 @@
 
 2010-03-18 23:38:10 +0100 Sebastien Bacher (05da30c)
 
-	* releasing version 0.0.17-0ubuntu1 (tag: 0.0.17-0ubuntu1,
-          refs/bzr/origin/tags/0.0.17-0ubuntu1)
+	* releasing version 0.0.17-0ubuntu1 (tag: 0.0.17-0ubuntu1)
 
 2010-03-18 15:19:33 -0400 Ken VanDine (5581a39)
 
@@ -5120,7 +5055,7 @@
 
 2010-03-18 12:57:22 -0500 Ted Gould (42de500)
 
-	* 0.0.17 (tag: 0.0.17, refs/bzr/origin/tags/0.0.17)
+	* 0.0.17 (tag: 0.0.17)
 
 2010-03-17 10:18:48 -0500 Ted Gould (65febbd)
 
@@ -5143,8 +5078,7 @@
 
 2010-03-15 16:45:26 +0100 Sebastien Bacher (ddee75a)
 
-	* releasing version 0.0.16-0ubuntu2 (tag: 0.0.16-0ubuntu2,
-          refs/bzr/origin/tags/0.0.16-0ubuntu2)
+	* releasing version 0.0.16-0ubuntu2 (tag: 0.0.16-0ubuntu2)
 
 2010-03-15 09:37:40 -0500 Ted Gould (c88bf0b)
 
@@ -5157,8 +5091,7 @@
 
 2010-03-11 23:48:08 +0100 Sebastien Bacher (04fecf2)
 
-	* releasing version 0.0.16-0ubuntu1 (tag: 0.0.16-0ubuntu1,
-          refs/bzr/origin/tags/0.0.16-0ubuntu1)
+	* releasing version 0.0.16-0ubuntu1 (tag: 0.0.16-0ubuntu1)
 
 2010-03-11 16:22:08 -0600 Ted Gould (0be5c8b)
 
@@ -5181,7 +5114,7 @@
 
 2010-03-11 16:15:07 -0600 Ted Gould (bf1f152)
 
-	* 0.0.16 (tag: 0.0.16, refs/bzr/origin/tags/0.0.16)
+	* 0.0.16 (tag: 0.0.16)
 
 2010-03-11 16:13:48 -0600 Ted Gould (1720ce3)
 
@@ -5224,8 +5157,7 @@
 
 2010-03-04 23:49:51 +0100 Sebastien Bacher (8dcf6e3)
 
-	* releasing version 0.0.15-0ubuntu1 (tag: 0.0.15-0ubuntu1,
-          refs/bzr/origin/tags/0.0.15-0ubuntu1)
+	* releasing version 0.0.15-0ubuntu1 (tag: 0.0.15-0ubuntu1)
 
 2010-03-04 11:42:42 -0600 Ted Gould (3174368)
 
@@ -5239,7 +5171,7 @@
 
 2010-03-04 11:38:08 -0600 Ted Gould (fa72360)
 
-	* 0.0.15 (tag: 0.0.15, refs/bzr/origin/tags/0.0.15)
+	* 0.0.15 (tag: 0.0.15)
 
 2010-03-02 14:31:37 -0600 Ted Gould (588e856)
 
@@ -5269,8 +5201,7 @@
 
 2010-02-25 23:06:25 +0100 Sebastien Bacher (55be444)
 
-	* releasing version 0.0.14-0ubuntu1 (tag: 0.0.14-0ubuntu1,
-          refs/bzr/origin/tags/0.0.14-0ubuntu1)
+	* releasing version 0.0.14-0ubuntu1 (tag: 0.0.14-0ubuntu1)
 
 2010-02-25 17:02:28 -0500 Ken VanDine (089972e)
 
@@ -5310,7 +5241,7 @@
 
 2010-02-25 15:06:06 -0600 Ted Gould (bc5b940)
 
-	* 0.0.14 (tag: 0.0.14, refs/bzr/origin/tags/0.0.14)
+	* 0.0.14 (tag: 0.0.14)
 
 2010-02-25 15:03:58 -0600 Ted Gould (ddbb7c0)
 
@@ -5351,8 +5282,7 @@
 
 2010-02-23 17:52:35 +0100 Sebastien Bacher (b42f475)
 
-	* releasing version 0.0.13-0ubuntu8 (tag: 0.0.13-0ubuntu8,
-          refs/bzr/origin/tags/0.0.13-0ubuntu8)
+	* releasing version 0.0.13-0ubuntu8 (tag: 0.0.13-0ubuntu8)
 
 2010-02-23 10:30:30 -0600 Ted Gould (1d1afe2)
 
@@ -5455,8 +5385,7 @@
 
 2010-02-22 17:50:42 +0100 Sebastien Bacher (d0087bc)
 
-	* releasing version 0.0.13-0ubuntu7 (tag: 0.0.13-0ubuntu7,
-          refs/bzr/origin/tags/0.0.13-0ubuntu7)
+	* releasing version 0.0.13-0ubuntu7 (tag: 0.0.13-0ubuntu7)
 
 2010-02-22 10:25:37 -0600 Ted Gould (e5612de)
 
@@ -5488,8 +5417,7 @@
 
 2010-02-19 18:52:46 +0100 Martin Pitt (05db164)
 
-	* releasing version 0.0.13-0ubuntu6 (tag: 0.0.13-0ubuntu6,
-          refs/bzr/origin/tags/0.0.13-0ubuntu6)
+	* releasing version 0.0.13-0ubuntu6 (tag: 0.0.13-0ubuntu6)
 
 2010-02-19 12:26:04 -0500 Ken VanDine (5308b54)
 
@@ -5512,8 +5440,7 @@
 
 2010-02-19 17:55:41 +0100 Martin Pitt (494d1b1)
 
-	* releasing version 0.0.13-0ubuntu5 (tag: 0.0.13-0ubuntu5,
-          refs/bzr/origin/tags/0.0.13-0ubuntu5)
+	* releasing version 0.0.13-0ubuntu5 (tag: 0.0.13-0ubuntu5)
 
 2010-02-19 11:53:37 -0500 Ken VanDine (d90b4c3)
 
@@ -5542,8 +5469,7 @@
 
 2010-02-17 23:18:23 +0100 Sebastien Bacher (2ac7533)
 
-	* releasing version 0.0.13-0ubuntu4 (tag: 0.0.13-0ubuntu4,
-          refs/bzr/origin/tags/0.0.13-0ubuntu4)
+	* releasing version 0.0.13-0ubuntu4 (tag: 0.0.13-0ubuntu4)
 
 2010-02-17 16:04:09 -0600 Cody Russell (715d752)
 
@@ -5571,8 +5497,7 @@
 
 2010-02-16 16:23:53 +0100 Sebastien Bacher (60b206c)
 
-	* releasing version 0.0.13-0ubuntu3 (tag: 0.0.13-0ubuntu3,
-          refs/bzr/origin/tags/0.0.13-0ubuntu3)
+	* releasing version 0.0.13-0ubuntu3 (tag: 0.0.13-0ubuntu3)
 
 2010-02-12 16:10:26 -0600 Ted Gould (2cc377b)
 
@@ -5616,8 +5541,7 @@
 
 2010-02-12 17:17:08 +0100 Sebastien Bacher (be1ce77)
 
-	* releasing version 0.0.13-0ubuntu2 (tag: 0.0.13-0ubuntu2,
-          refs/bzr/origin/tags/0.0.13-0ubuntu2)
+	* releasing version 0.0.13-0ubuntu2 (tag: 0.0.13-0ubuntu2)
 
 2010-02-11 23:12:57 -0600 Ted Gould (a98fd45)
 
@@ -5629,8 +5553,7 @@
 
 2010-02-11 14:44:24 -0500 Ken VanDine (4102c4d)
 
-	* releasing version 0.0.13-0ubuntu1 (tag: 0.0.13-0ubuntu1,
-          refs/bzr/origin/tags/0.0.13-0ubuntu1)
+	* releasing version 0.0.13-0ubuntu1 (tag: 0.0.13-0ubuntu1)
 
 2010-02-11 10:41:56 -0600 Ted Gould (f7b909c)
 
@@ -5648,7 +5571,7 @@
 
 2010-02-11 10:19:50 -0600 Ted Gould (14abe9a)
 
-	* 0.0.13 (tag: 0.0.13, refs/bzr/origin/tags/0.0.13)
+	* 0.0.13 (tag: 0.0.13)
 
 2010-02-11 08:41:13 -0600 Ted Gould (0e783eb)
 
@@ -5704,8 +5627,7 @@
 
 2010-02-08 19:25:26 -0500 Ken VanDine (c9d339f)
 
-	* releasing version 0.0.12-0ubuntu1 (tag: 0.0.12-0ubuntu1,
-          refs/bzr/origin/tags/0.0.12-0ubuntu1)
+	* releasing version 0.0.12-0ubuntu1 (tag: 0.0.12-0ubuntu1)
 
 2010-02-08 10:01:46 -0600 Ted Gould (b881da9)
 
@@ -5721,7 +5643,7 @@
 
 2010-02-08 09:51:25 -0600 Ted Gould (fb4952b)
 
-	* 0.0.12 (tag: 0.0.12, refs/bzr/origin/tags/0.0.12)
+	* 0.0.12 (tag: 0.0.12)
 
 2010-02-08 09:35:16 -0600 Ted Gould (c21b71a)
 
@@ -5867,8 +5789,7 @@
 
 2010-02-04 17:45:52 -0800 Sebastien Bacher (b8830e1)
 
-	* releasing version 0.0.11-0ubuntu1 (tag: 0.0.11-0ubuntu1,
-          refs/bzr/origin/tags/0.0.11-0ubuntu1)
+	* releasing version 0.0.11-0ubuntu1 (tag: 0.0.11-0ubuntu1)
 
 2010-02-04 16:47:49 -0800 Ted Gould (5bd2875)
 
@@ -5886,7 +5807,7 @@
 
 2010-02-04 16:27:28 -0800 Ted Gould (f8ab455)
 
-	* 0.0.11 (tag: 0.0.11, refs/bzr/origin/tags/0.0.11)
+	* 0.0.11 (tag: 0.0.11)
 
 2010-02-04 16:24:28 -0800 Ted Gould (8808bcb)
 
@@ -5989,13 +5910,11 @@
 
 2010-01-21 16:38:43 -0500 Ken VanDine (10c9c76)
 
-	* releasing version 0.0.10-0ubuntu2 (tag: 0.0.10-0ubuntu2,
-          refs/bzr/origin/tags/0.0.10-0ubuntu2)
+	* releasing version 0.0.10-0ubuntu2 (tag: 0.0.10-0ubuntu2)
 
 2010-01-21 16:07:55 -0500 Ken VanDine (6ac376a)
 
-	* releasing version 0.0.10-0ubuntu1 (tag: 0.0.10-0ubuntu1,
-          refs/bzr/origin/tags/0.0.10-0ubuntu1)
+	* releasing version 0.0.10-0ubuntu1 (tag: 0.0.10-0ubuntu1)
 
 2010-01-21 14:21:04 -0600 Ted Gould (f25e2f0)
 
@@ -6030,7 +5949,7 @@
 
 2010-01-21 14:08:59 -0600 Ted Gould (bb106d1)
 
-	* 0.0.10 (tag: 0.0.10, refs/bzr/origin/tags/0.0.10)
+	* 0.0.10 (tag: 0.0.10)
 
 2010-01-21 14:01:10 -0600 Ted Gould (2377df3)
 
@@ -6188,13 +6107,11 @@
 
 2010-01-19 22:57:32 +0100 Sebastien Bacher (6b648fd)
 
-	* releasing version 0.0.9-0ubuntu3 (tag: 0.0.9-0ubuntu3,
-          refs/bzr/origin/tags/0.0.9-0ubuntu3)
+	* releasing version 0.0.9-0ubuntu3 (tag: 0.0.9-0ubuntu3)
 
 2010-01-19 20:53:16 +0100 Sebastien Bacher (92c127a)
 
-	* releasing version 0.0.9-0ubuntu2 (tag: 0.0.9-0ubuntu2,
-          refs/bzr/origin/tags/0.0.9-0ubuntu2)
+	* releasing version 0.0.9-0ubuntu2 (tag: 0.0.9-0ubuntu2)
 
 2010-01-19 13:38:27 -0600 Ted Gould (f8da1e7)
 
@@ -6332,7 +6249,7 @@
 
 2010-01-14 10:36:02 -0600 Ted Gould (f0104e1)
 
-	* 0.0.9 (tag: 0.0.9, refs/bzr/origin/tags/0.0.9)
+	* 0.0.9 (tag: 0.0.9)
 
 2010-01-14 10:31:26 -0600 Ted Gould (e43ee66)
 
@@ -6562,7 +6479,7 @@
 
 2010-01-12 09:00:07 -0600 Ted Gould (abd41dd)
 
-	* 0.0.8 (tag: 0.0.8, refs/bzr/origin/tags/0.0.8)
+	* 0.0.8 (tag: 0.0.8)
 
 2010-01-12 08:56:42 -0600 Cody Russell (6fe9571)
 
@@ -6739,7 +6656,7 @@
 
 2010-01-08 15:57:53 -0600 Ted Gould (5787ec0)
 
-	* 0.0.7 (tag: 0.0.7, refs/bzr/origin/tags/0.0.7)
+	* 0.0.7 (tag: 0.0.7)
 
 2010-01-08 15:54:43 -0600 Ted Gould (a7e0e79)
 
@@ -7144,7 +7061,7 @@
 
 2009-12-17 14:42:30 -0600 Ted Gould (7eb8f46)
 
-	* 0.0.6 (tag: 0.0.6, refs/bzr/origin/tags/0.0.6)
+	* 0.0.6 (tag: 0.0.6)
 
 2009-12-17 14:40:34 -0600 Ted Gould (f789e13)
 
@@ -7183,7 +7100,7 @@
 
 2009-12-17 13:13:28 -0600 Ted Gould (6d8c312)
 
-	* 0.0.5 (tag: 0.0.5, refs/bzr/origin/tags/0.0.5)
+	* 0.0.5 (tag: 0.0.5)
 
 2009-12-17 13:07:50 -0600 Ken VanDine (6a7f7db)
 
@@ -7382,8 +7299,7 @@
 
 2009-12-14 22:47:42 +0100 Sebastien Bacher (add48dd)
 
-	* releasing version 0.0.4-0ubuntu1 (tag: 0.0.4-0ubuntu1,
-          refs/bzr/origin/tags/0.0.4-0ubuntu1)
+	* releasing version 0.0.4-0ubuntu1 (tag: 0.0.4-0ubuntu1)
 
 2009-12-14 11:25:49 -0600 Ted Gould (0d66efa)
 
@@ -7502,7 +7418,7 @@
 
 2009-12-11 10:34:49 -0600 Ted Gould (d303893)
 
-	* 0.0.4 (tag: 0.0.4, refs/bzr/origin/tags/0.0.4)
+	* 0.0.4 (tag: 0.0.4)
 
 2009-12-11 10:32:56 -0600 Cody Russell (5fe114e)
 
@@ -7571,8 +7487,7 @@
 
 2009-12-10 23:48:32 +0100 Sebastien Bacher (c5ceaf1)
 
-	* releasing version 0.0.3-0ubuntu1 (tag: 0.0.3-0ubuntu1,
-          refs/bzr/origin/tags/0.0.3-0ubuntu1)
+	* releasing version 0.0.3-0ubuntu1 (tag: 0.0.3-0ubuntu1)
 
 2009-12-10 17:31:13 -0500 Ken VanDine (4358884)
 
@@ -7641,7 +7556,7 @@
 
 2009-12-10 13:18:44 -0600 Ted Gould (6b3e25f)
 
-	* 0.0.3 (tag: 0.0.3, refs/bzr/origin/tags/0.0.3)
+	* 0.0.3 (tag: 0.0.3)
 
 2009-12-10 09:57:32 -0600 Ken Vandine (dc31293)
 
@@ -7839,8 +7754,7 @@
 
 2009-12-04 14:46:17 -0600 Ted Gould (2906ee4)
 
-	* Increasing to version 0.0.2 (tag: 0.0.2,
-          refs/bzr/origin/tags/0.0.2)
+	* Increasing to version 0.0.2 (tag: 0.0.2)
 
 2009-12-04 13:04:33 -0600 Ted Gould (fe16a24)
 
@@ -8318,8 +8232,7 @@
 
 2009-11-02 21:41:22 -0600 Ted Gould (88be27c)
 
-	* releasing version 0.0.1-0ubuntu2 (tag: 0.0.1-0ubuntu2,
-          refs/bzr/origin/tags/0.0.1-0ubuntu2)
+	* releasing version 0.0.1-0ubuntu2 (tag: 0.0.1-0ubuntu2)
 
 2009-11-02 21:39:38 -0600 Ted Gould (9d043e6)
 
