@@ -60,7 +60,6 @@ Package: libayatana-appindicator1
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-Recommends: ayatana-indicator-application (>= 0.2.93),
 Description: Ayatana Application Indicators (GTK-2+ version)
  A library and indicator to take menus from applications and place them in
  the panel.
@@ -110,7 +109,6 @@ Package: libayatana-appindicator3-1
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-Recommends: ayatana-indicator-application (>= 0.2.93),
 Description: Ayatana Application Indicators (GTK-3+ version)
  A library and indicator to take menus from applications and place them in
  the panel.
