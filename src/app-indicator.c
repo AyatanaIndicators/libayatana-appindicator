@@ -68,7 +68,7 @@ License version 3 and version 2.1 along with this program.  If not, see
  * All of the private data in an instance of an application indicator.
  *
  */
-struct _AppIndicatorPrivate {
+typedef struct {
 	/*< Private >*/
 	/* Properties */
 	gchar                *id;
@@ -107,7 +107,7 @@ struct _AppIndicatorPrivate {
 
 	/* Might be used */
 	IndicatorDesktopShortcuts * shorties;
-};
+} AppIndicatorPrivate;
 
 /* Signals Stuff */
 enum {
@@ -159,10 +159,6 @@ enum {
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
 #define PROP_TITLE_S                 "title"
 
-/* Private macro, shhhh! */
-#define APP_INDICATOR_GET_PRIVATE(o) \
-                             (G_TYPE_INSTANCE_GET_PRIVATE ((o), APP_INDICATOR_TYPE, AppIndicatorPrivate))
-
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
 
@@ -213,17 +209,19 @@ static const GDBusInterfaceVTable item_interface_table = {
 };
 
 /* GObject type */
-G_DEFINE_TYPE (AppIndicator, app_indicator, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (AppIndicator, app_indicator, G_TYPE_OBJECT);
 
 static void
 watcher_ready_cb (GObject      *source_object,
                   GAsyncResult *res,
                   gpointer      user_data)
 {
-	AppIndicator *self = (AppIndicator *) user_data;
+	AppIndicator *self = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
+
 	GError *error = NULL;
 
-	self->priv->watcher_proxy = g_dbus_proxy_new_finish (res, &error);
+	priv->watcher_proxy = g_dbus_proxy_new_finish (res, &error);
 
 	if (error) {
 		start_fallback_timer (self, FALSE);
@@ -243,9 +241,10 @@ name_appeared_handler (GDBusConnection *connection,
                        const gchar     *name_owner,
                        gpointer         user_data)
 {
-	AppIndicator *self = (AppIndicator *) user_data;
+	AppIndicator *self = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
-	g_dbus_proxy_new (self->priv->connection,
+	g_dbus_proxy_new (priv->connection,
 	                  G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
 	                  G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
 	                  watcher_interface_info,
@@ -262,9 +261,10 @@ name_vanished_handler (GDBusConnection *connection,
                        const gchar     *name,
                        gpointer         user_data)
 {
-	AppIndicator *self = (AppIndicator *) user_data;
+	AppIndicator *self = APP_INDICATOR(user_data);
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
-	g_clear_object (&self->priv->watcher_proxy);
+	g_clear_object (&priv->watcher_proxy);
 
 	/* Emit the AppIndicator::connection-changed signal*/
 	g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
@@ -276,8 +276,6 @@ static void
 app_indicator_class_init (AppIndicatorClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (AppIndicatorPrivate));
 
 	/* Clean up */
 	object_class->dispose = app_indicator_dispose;
@@ -649,8 +647,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 static void
 app_indicator_init (AppIndicator *self)
 {
-	AppIndicatorPrivate * priv = APP_INDICATOR_GET_PRIVATE(self);
-	self->priv = priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	priv->id = NULL;
 	priv->clean_id = NULL;
@@ -704,7 +701,7 @@ static void
 app_indicator_dispose (GObject *object)
 {
 	AppIndicator *self = APP_INDICATOR (object);
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	if (priv->shorties != NULL) {
 		g_object_unref(G_OBJECT(priv->shorties));
@@ -783,7 +780,7 @@ static void
 app_indicator_finalize (GObject *object)
 {
 	AppIndicator * self = APP_INDICATOR(object);
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	if (priv->status != APP_INDICATOR_STATUS_PASSIVE) {
 		g_warning("Finalizing Application Status with the status set to: %d", priv->status);
@@ -870,7 +867,7 @@ static void
 app_indicator_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
 {
         AppIndicator *self = APP_INDICATOR (object);
-        AppIndicatorPrivate *priv = self->priv;
+        AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
         GEnumValue *enum_val;
 
         switch (prop_id) {
@@ -971,12 +968,12 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 			priv->title = NULL;
 		  }
 
-		  if (g_strcmp0(oldtitle, priv->title) != 0 && self->priv->connection != NULL) {
+		  if (g_strcmp0(oldtitle, priv->title) != 0 && priv->connection != NULL) {
 			GError * error = NULL;
 
-			g_dbus_connection_emit_signal(self->priv->connection,
+			g_dbus_connection_emit_signal(priv->connection,
 										  NULL,
-										  self->priv->path,
+										  priv->path,
 										  NOTIFICATION_ITEM_DBUS_IFACE,
 										  "NewTitle",
 										  NULL,
@@ -1042,7 +1039,7 @@ static void
 app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
 {
         AppIndicator *self = APP_INDICATOR (object);
-        AppIndicatorPrivate *priv = self->priv;
+        AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
         GEnumValue *enum_value;
 
         switch (prop_id) {
@@ -1139,7 +1136,8 @@ bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data)
 	}
 
 	AppIndicator * app = APP_INDICATOR(user_data);
-	app->priv->connection = connection;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
+	priv->connection = connection;
 
 	/* If the connection was blocking the exporting of the
 	   object this function will export everything. */
@@ -1159,7 +1157,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 	g_return_if_fail(IS_APP_INDICATOR(user_data));
 
 	AppIndicator * app = APP_INDICATOR(user_data);
-	AppIndicatorPrivate * priv = app->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
 	GVariant * retval = NULL;
 
 	if (g_strcmp0(method, "Scroll") == 0) {
@@ -1205,10 +1203,10 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(user_data), NULL);
 	AppIndicator * app = APP_INDICATOR(user_data);
-	AppIndicatorPrivate *priv = app->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(app);
 
 	if (g_strcmp0(property, "Id") == 0) {
-		return g_variant_new_string(app->priv->id ? app->priv->id : "");
+		return g_variant_new_string(priv->id ? priv->id : "");
 	} else if (g_strcmp0(property, "Category") == 0) {
         GEnumValue *enum_value;
 		enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_CATEGORY), priv->category);
@@ -1277,7 +1275,7 @@ static gboolean
 signal_label_change_idle (gpointer user_data)
 {
 	AppIndicator * self = (AppIndicator *)user_data;
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	gchar * label = priv->label != NULL ? priv->label : "";
 	gchar * guide = priv->label_guide != NULL ? priv->label_guide : "";
@@ -1311,7 +1309,7 @@ signal_label_change_idle (gpointer user_data)
 static void
 signal_label_change (AppIndicator * self)
 {
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	/* don't set it twice */
 	if (priv->label_change_idle != 0) {
@@ -1328,7 +1326,7 @@ signal_label_change (AppIndicator * self)
 static void
 check_connect (AppIndicator *self)
 {
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	/* Do we have a connection? */
 	if (priv->connection == NULL) return;
@@ -1410,7 +1408,7 @@ register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
 
 	g_return_if_fail(IS_APP_INDICATOR(user_data));
 	AppIndicator * app = APP_INDICATOR(user_data);
-	AppIndicatorPrivate * priv = app->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
 
 	/* Emit the AppIndicator::connection-changed signal*/
     g_signal_emit (app, signals[CONNECTION_CHANGED], 0, TRUE);
@@ -1446,7 +1444,7 @@ static void
 start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 {
 	g_return_if_fail(IS_APP_INDICATOR(self));
-	AppIndicatorPrivate * priv = APP_INDICATOR(self)->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	if (priv->fallback_timer != 0) {
 		/* The timer is set, let's just be happy with the one
@@ -1475,7 +1473,8 @@ fallback_timer_expire (gpointer data)
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
 
-	AppIndicatorPrivate * priv = APP_INDICATOR(data)->priv;
+        AppIndicator * app = APP_INDICATOR(data);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
 	AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(data);
 
 	if (priv->status_icon == NULL) {
@@ -1502,7 +1501,7 @@ theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
 	g_signal_emit (user_data, signals[NEW_ICON], 0, TRUE);
 
 	AppIndicator * self = (AppIndicator *)user_data;
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
 	if (priv->dbus_registration != 0 && priv->connection != NULL) {
 		GError * error = NULL;
@@ -1579,7 +1578,7 @@ middle_click_wrapper (GtkWidget *status_icon, GdkEventButton *event, gpointer da
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
 	AppIndicator * app = APP_INDICATOR(data);
-	AppIndicatorPrivate *priv = app->priv;
+	AppIndicatorPrivate *priv = app_indicator_get_instance_private(app);
 
 	if (event->button == 2 && event->type == GDK_BUTTON_RELEASE) {
 		GtkAllocation alloc;
@@ -1607,12 +1606,13 @@ static void
 status_icon_changes (AppIndicator * self, gpointer data)
 {
 	GtkStatusIcon * icon = GTK_STATUS_ICON(data);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	/* add the icon_theme_path once if needed */
 	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-	const gchar *theme_path = self->priv->absolute_icon_theme_path ?
-	                            self->priv->absolute_icon_theme_path :
-	                            self->priv->icon_theme_path;
+	const gchar *theme_path = priv->absolute_icon_theme_path ?
+	                            priv->absolute_icon_theme_path :
+	                            priv->icon_theme_path;
 
 	if (theme_path != NULL) {
 		gchar **path;
@@ -1737,14 +1737,15 @@ static gboolean
 widget_is_menu_child(AppIndicator * self, GtkWidget *child)
 {
 	g_return_val_if_fail(IS_APP_INDICATOR(self), FALSE);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-	if (!self->priv->menu) return FALSE;
+	if (!priv->menu) return FALSE;
 	if (!child) return FALSE;
 
 	GtkWidget *parent;
 
 	while ((parent = gtk_widget_get_parent(child))) {
-		if (parent == self->priv->menu)
+		if (parent == priv->menu)
 			return TRUE;
 
 		if (GTK_IS_MENU(parent))
@@ -1761,8 +1762,9 @@ sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent,
                                    gpointer data)
 {
 	g_return_if_fail(IS_APP_INDICATOR(data));
-	AppIndicator *self = data;
-	self->priv->sec_activate_enabled = widget_is_menu_child(self, menuitem);
+	AppIndicator *self = APP_INDICATOR(data);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+	priv->sec_activate_enabled = widget_is_menu_child(self, menuitem);
 }
 
 
@@ -1845,19 +1847,20 @@ void
 app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 {
 	g_return_if_fail (IS_APP_INDICATOR (self));
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-	if (self->priv->status != status) {
+	if (priv->status != status) {
 		GEnumValue *value = g_enum_get_value ((GEnumClass *) g_type_class_ref (APP_INDICATOR_TYPE_INDICATOR_STATUS), status);
 
-		self->priv->status = status;
+		priv->status = status;
 		g_signal_emit (self, signals[NEW_STATUS], 0, value->value_nick);
 
-		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			GError * error = NULL;
 
-			g_dbus_connection_emit_signal(self->priv->connection,
+			g_dbus_connection_emit_signal(priv->connection,
 										  NULL,
-										  self->priv->path,
+										  priv->path,
 										  NOTIFICATION_ITEM_DBUS_IFACE,
 										  "NewStatus",
 										  g_variant_new("(s)", value->value_nick),
@@ -1904,35 +1907,37 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 	g_return_if_fail (icon_name != NULL);
 	gboolean changed = FALSE;
 
-	if (g_strcmp0 (self->priv->attention_icon_name, icon_name) != 0) {
-		g_free (self->priv->attention_icon_name);
-		self->priv->attention_icon_name = g_strdup (icon_name);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-		g_free(self->priv->absolute_attention_icon_name);
-		self->priv->absolute_attention_icon_name = NULL;
+	if (g_strcmp0 (priv->attention_icon_name, icon_name) != 0) {
+		g_free (priv->attention_icon_name);
+		priv->attention_icon_name = g_strdup (icon_name);
+
+		g_free(priv->absolute_attention_icon_name);
+		priv->absolute_attention_icon_name = NULL;
 
 		if (icon_name && icon_name[0] == '/') {
-			self->priv->absolute_attention_icon_name = append_snap_prefix (icon_name);
+			priv->absolute_attention_icon_name = append_snap_prefix (icon_name);
 		}
 
 		changed = TRUE;
 	}
 
-	if (g_strcmp0(self->priv->att_accessible_desc, icon_desc) != 0) {
-		g_free (self->priv->att_accessible_desc);
-		self->priv->att_accessible_desc = g_strdup (icon_desc);
+	if (g_strcmp0(priv->att_accessible_desc, icon_desc) != 0) {
+		g_free (priv->att_accessible_desc);
+		priv->att_accessible_desc = g_strdup (icon_desc);
 		changed = TRUE;
 	}
 
 	if (changed) {
 		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
 
-		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			GError * error = NULL;
 
-			g_dbus_connection_emit_signal(self->priv->connection,
+			g_dbus_connection_emit_signal(priv->connection,
 			                              NULL,
-			                              self->priv->path,
+			                              priv->path,
 			                              NOTIFICATION_ITEM_DBUS_IFACE,
 			                              "NewAttentionIcon",
 			                              NULL,
@@ -1984,41 +1989,43 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 	g_return_if_fail (icon_name != NULL);
 	gboolean changed = FALSE;
 
-	if (g_strcmp0 (self->priv->icon_name, icon_name) != 0) {
-		if (self->priv->icon_name) {
-			g_free (self->priv->icon_name);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+
+	if (g_strcmp0 (priv->icon_name, icon_name) != 0) {
+		if (priv->icon_name) {
+			g_free (priv->icon_name);
 		}
 
-		self->priv->icon_name = g_strdup(icon_name);
+		priv->icon_name = g_strdup(icon_name);
 
-		g_free(self->priv->absolute_icon_name);
-		self->priv->absolute_icon_name = NULL;
+		g_free(priv->absolute_icon_name);
+		priv->absolute_icon_name = NULL;
 
 		if (icon_name && icon_name[0] == '/') {
-			self->priv->absolute_icon_name = append_snap_prefix (icon_name);
+			priv->absolute_icon_name = append_snap_prefix (icon_name);
 		}
 
 		changed = TRUE;
 	}
 
-	if (g_strcmp0(self->priv->accessible_desc, icon_desc) != 0) {
-		if (self->priv->accessible_desc != NULL) {
-			g_free(self->priv->accessible_desc);
+	if (g_strcmp0(priv->accessible_desc, icon_desc) != 0) {
+		if (priv->accessible_desc != NULL) {
+			g_free(priv->accessible_desc);
 		}
 
-		self->priv->accessible_desc = g_strdup(icon_desc);
+		priv->accessible_desc = g_strdup(icon_desc);
 		changed = TRUE;
 	}
 
 	if (changed) {
 		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
 
-		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
+		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			GError * error = NULL;
 
-			g_dbus_connection_emit_signal(self->priv->connection,
+			g_dbus_connection_emit_signal(priv->connection,
 										  NULL,
-										  self->priv->path,
+										  priv->path,
 										  NOTIFICATION_ITEM_DBUS_IFACE,
 										  "NewIcon",
 										  NULL,
@@ -2105,7 +2112,9 @@ append_snap_prefix (const gchar *path)
 static gchar *
 get_real_theme_path (AppIndicator * self)
 {
-	const gchar *theme_path = self->priv->icon_theme_path;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+
+	const gchar *theme_path = priv->icon_theme_path;
 	gchar *snapped_path = append_snap_prefix (theme_path);
 
 	if (snapped_path != NULL) {
@@ -2128,27 +2137,28 @@ void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
 	g_return_if_fail (IS_APP_INDICATOR (self));
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-	if (g_strcmp0 (self->priv->icon_theme_path, icon_theme_path) != 0) {
-		if (self->priv->icon_theme_path != NULL)
-			g_free(self->priv->icon_theme_path);
+	if (g_strcmp0 (priv->icon_theme_path, icon_theme_path) != 0) {
+		if (priv->icon_theme_path != NULL)
+			g_free(priv->icon_theme_path);
 
-		self->priv->icon_theme_path = g_strdup(icon_theme_path);
+		priv->icon_theme_path = g_strdup(icon_theme_path);
 
-		g_free (self->priv->absolute_icon_theme_path);
-		self->priv->absolute_icon_theme_path = get_real_theme_path (self);
+		g_free (priv->absolute_icon_theme_path);
+		priv->absolute_icon_theme_path = get_real_theme_path (self);
 
-		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, self->priv->icon_theme_path, TRUE);
+		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, priv->icon_theme_path, TRUE);
 
-		if (self->priv->dbus_registration != 0 && self->priv->connection != NULL) {
-			const gchar *theme_path = self->priv->absolute_icon_theme_path ?
-										self->priv->absolute_icon_theme_path :
-										self->priv->icon_theme_path;
+		if (priv->dbus_registration != 0 && priv->connection != NULL) {
+			const gchar *theme_path = priv->absolute_icon_theme_path ?
+										priv->absolute_icon_theme_path :
+										priv->icon_theme_path;
 			GError * error = NULL;
 
-			g_dbus_connection_emit_signal(self->priv->connection,
+			g_dbus_connection_emit_signal(priv->connection,
 										  NULL,
-										  self->priv->path,
+										  priv->path,
 										  NOTIFICATION_ITEM_DBUS_IFACE,
 										  "NewIconThemePath",
 										  g_variant_new("(s)", theme_path ? theme_path : ""),
@@ -2170,10 +2180,9 @@ app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_p
 static void
 setup_dbusmenu (AppIndicator *self)
 {
-	AppIndicatorPrivate *priv;
 	DbusmenuMenuitem *root = NULL;
 
-	priv = self->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	if (priv->menu) {
 		root = dbusmenu_gtk_parse_menu_structure(priv->menu);
@@ -2209,13 +2218,12 @@ setup_dbusmenu (AppIndicator *self)
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 {
-  AppIndicatorPrivate *priv;
-
   g_return_if_fail (IS_APP_INDICATOR (self));
   g_return_if_fail (GTK_IS_MENU (menu));
-  g_return_if_fail (self->priv->clean_id != NULL);
 
-  priv = self->priv;
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+
+  g_return_if_fail (priv->clean_id != NULL);
 
   if (priv->menu != NULL)
     {
@@ -2250,7 +2258,9 @@ app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 {
 	g_return_if_fail (IS_APP_INDICATOR (self));
 
-	self->priv->ordering_index = ordering_index;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+
+	priv->ordering_index = ordering_index;
 
 	return;
 }
@@ -2273,7 +2283,7 @@ void
 app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menuitem)
 {
 	g_return_if_fail (IS_APP_INDICATOR (self));
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	if (priv->sec_activate_target) {
 		g_signal_handlers_disconnect_by_func (priv->sec_activate_target,
@@ -2336,8 +2346,9 @@ const gchar *
 app_indicator_get_id (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->id;
+  return priv->id;
 }
 
 /**
@@ -2352,8 +2363,9 @@ AppIndicatorCategory
 app_indicator_get_category (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->category;
+  return priv->category;
 }
 
 /**
@@ -2368,8 +2380,9 @@ AppIndicatorStatus
 app_indicator_get_status (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), APP_INDICATOR_STATUS_PASSIVE);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->status;
+  return priv->status;
 }
 
 /**
@@ -2384,8 +2397,9 @@ const gchar *
 app_indicator_get_icon (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->icon_name;
+  return priv->icon_name;
 }
 
 /**
@@ -2400,8 +2414,9 @@ const gchar *
 app_indicator_get_icon_desc (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->accessible_desc;
+  return priv->accessible_desc;
 }
 
 /**
@@ -2416,8 +2431,9 @@ const gchar *
 app_indicator_get_icon_theme_path (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->icon_theme_path;
+  return priv->icon_theme_path;
 }
 
 /**
@@ -2432,8 +2448,9 @@ const gchar *
 app_indicator_get_attention_icon (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->attention_icon_name;
+  return priv->attention_icon_name;
 }
 
 /**
@@ -2448,8 +2465,9 @@ const gchar *
 app_indicator_get_attention_icon_desc (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->att_accessible_desc;
+  return priv->att_accessible_desc;
 }
 
 /**
@@ -2468,8 +2486,8 @@ const gchar *
 app_indicator_get_title (AppIndicator *self)
 {
 	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
-
-	return self->priv->title;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
+	return priv->title;
 }
 
 
@@ -2485,11 +2503,9 @@ app_indicator_get_title (AppIndicator *self)
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)
 {
-	AppIndicatorPrivate *priv;
-
 	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
 
-	priv = self->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	return GTK_MENU(priv->menu);
 }
@@ -2506,8 +2522,9 @@ const gchar *
 app_indicator_get_label (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->label;
+  return priv->label;
 }
 
 /**
@@ -2522,8 +2539,9 @@ const gchar *
 app_indicator_get_label_guide (AppIndicator *self)
 {
   g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-  return self->priv->label_guide;
+  return priv->label_guide;
 }
 
 /**
@@ -2538,11 +2556,12 @@ guint32
 app_indicator_get_ordering_index (AppIndicator *self)
 {
 	g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-	if (self->priv->ordering_index == 0) {
-		return _generate_id(self->priv->category, self->priv->id);
+	if (priv->ordering_index == 0) {
+		return _generate_id(priv->category, priv->id);
 	} else {
-		return self->priv->ordering_index;
+		return priv->ordering_index;
 	}
 }
 
@@ -2558,8 +2577,9 @@ GtkWidget *
 app_indicator_get_secondary_activate_target (AppIndicator *self)
 {
 	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
-	return GTK_WIDGET(self->priv->sec_activate_target);
+	return GTK_WIDGET(priv->sec_activate_target);
 }
 
 #define APP_INDICATOR_SHORTY_NICK "app-indicator-shorty-nick"
@@ -2574,7 +2594,7 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 
 	g_return_if_fail(IS_APP_INDICATOR(user_data));
 	AppIndicator * self = APP_INDICATOR(user_data);
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	g_return_if_fail(priv->shorties != NULL);
 
@@ -2596,7 +2616,7 @@ void
 app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
 {
 	g_return_if_fail(IS_APP_INDICATOR(self));
-	AppIndicatorPrivate *priv = self->priv;
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	/* Build a new shortcuts object */
 	if (priv->shorties != NULL) {

@@ -158,7 +158,6 @@ typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
 
 typedef struct _AppIndicator        AppIndicator;
 typedef struct _AppIndicatorClass   AppIndicatorClass;
-typedef struct _AppIndicatorPrivate AppIndicatorPrivate;
 
 /**
  * AppIndicatorClass:
@@ -244,9 +243,6 @@ struct _AppIndicatorClass {
  */
 struct _AppIndicator {
 	GObject parent;
-
-	/*< Private >*/
-	AppIndicatorPrivate *priv;
 };
 
 /* GObject Stuff */
