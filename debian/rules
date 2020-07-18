@@ -25,7 +25,7 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
 CFLAGS += -fPIC
 
 %:
-	dh $@ --with autoreconf,python2,gir$(dh_extra_args)
+	dh $@ --with autoreconf,gir$(dh_extra_args)
 
 override_dh_autoreconf:
 	NOCONFIGURE=1 dh_autoreconf ./autogen.sh
@@ -64,7 +64,6 @@ override_dh_install:
 	find debian/tmp -name \*.a -exec rm {} \;
 	rm -rf debian/tmp/*/usr/lib/mono
 	rm -rf debian/tmp/*/usr/share/vala/vapi/ayatana-appindicator*-0.1.deps
-	dh_install -ppython-ayatana-appindicator --fail-missing --sourcedir=debian/tmp/gtk2
 	dh_install -plibayatana-appindicator1 --fail-missing --sourcedir=debian/tmp/gtk2
 	dh_install -pgir1.2-ayatanaappindicator-0.1 --fail-missing --sourcedir=debian/tmp/gtk2
 	dh_install -plibayatana-appindicator-dev --fail-missing --sourcedir=debian/tmp/gtk2
