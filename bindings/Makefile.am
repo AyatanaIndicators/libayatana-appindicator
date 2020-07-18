@@ -3,7 +3,6 @@ SUBDIRS =	\
 	vala
 else
 SUBDIRS =		\
-	python		\
 	vala
 endif
 
