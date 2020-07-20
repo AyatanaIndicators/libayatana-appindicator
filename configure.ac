@@ -234,8 +234,6 @@ src/Makefile
 src/ayatana-appindicator-0.1.pc
 src/ayatana-appindicator3-0.1.pc
 bindings/Makefile
-bindings/python/Makefile
-bindings/python/ayatana_appindicator.override
 bindings/vala/Makefile
 bindings/vala/examples/Makefile
 tests/Makefile
