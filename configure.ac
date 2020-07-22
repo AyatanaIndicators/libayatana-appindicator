@@ -176,33 +176,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_MONO_TEST, test x${have_nunit} = xyes)
 
-###########################
-# Python
-###########################
-
-PYGTK_REQUIRED=2.14.0
-PYGOBJECT_REQUIRED=0.22
-
-AM_PATH_PYTHON(2.3.5)
-AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
-
-PKG_CHECK_MODULES(APPINDICATOR_PYTHON,
-                  [
-					pygtk-2.0 >= $PYGTK_REQUIRED
-					gtk+-2.0 >= $GTK_REQUIRED_VERSION
-					pygobject-2.0 >= $PYGOBJECT_REQUIRED
-                  ])
-
-AC_MSG_CHECKING(for pygtk defs)
-PYGTK_DEFSDIR=`$PKG_CONFIG --variable=defsdir pygtk-2.0`
-AC_SUBST(PYGTK_DEFSDIR)
-AC_MSG_RESULT($PYGTK_DEFSDIR)
-
-AC_MSG_CHECKING(for pygtk codegen)
-PYGTK_CODEGEN="$PYTHON `$PKG_CONFIG --variable=codegendir pygtk-2.0`/codegen.py"
-AC_SUBST(PYGTK_CODEGEN)
-AC_MSG_RESULT($PYGTK_CODEGEN)
-
 #########################
 # Check if build tests
 #########################
