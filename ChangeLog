@@ -1,6 +1,60 @@
-2019-11-11 19:13:01 +0100 Mike Gabriel (7d9a2e5)
+2020-07-23 08:33:14 +0200 Mike Gabriel
 
-	* release 0.5.4 (HEAD -> master, tag: 0.5.4)
+	* release 0.5.5 (HEAD -> master, tag: 0.5.5)
+
+2020-07-23 08:11:05 +0200 Mike Gabriel (c11784b)
+
+	* debian/rules: Explicitly set XDG_CACHE_HOME during unit tests, too.
+          Hope this amends the dconf errors spotted lately.
+
+2020-07-23 08:09:15 +0200 Mike Gabriel (91ec65e)
+
+	* debian/rules: Fix dh_auto_test call in dotest-%: target.
+
+2020-07-23 08:08:54 +0200 Mike Gabriel (71dfd0a)
+
+	* debian/control: Drop R³ field again, it causes FTBFS on Ubuntu
+          bionic in their version of dh_makeclilibs.
+
+2020-07-23 07:49:13 +0200 Mike Gabriel (05ebffc)
+
+	* debian/rules: Drop more Python2 build stuff, esp. references to
+          Py2-version specific builds.
+
+2020-07-23 07:48:47 +0200 Mike Gabriel (1c48b44)
+
+	* debian/changelog: Fix typo in previous changelog stanza's date.
+
+2020-07-22 21:48:38 +0200 Mike Gabriel (50e147a)
+
+	* configure.ac: Drop Python section that configured the build for
+          Python2 bindings.
+
+2020-07-20 13:15:38 +0200 Mike Gabriel (6af5e32)
+
+	* configure.ac: No more reference to Python2 ayatana_appindicator
+          bindings.
+
+2020-07-19 00:07:07 +0200 Mike Gabriel (7373261)
+
+	* debian/rules: Drop reference to python2 build of remove bin:pkg
+          python-ayatana-appindicator.
+
+2020-07-18 17:10:36 +0200 Mike Gabriel (43dc072)
+
+	* debian/control: Port over changes from official Debian packaging.
+
+2020-07-18 17:09:55 +0200 Mike Gabriel (8c4c6db)
+
+	* bindings/pyton: Drop Python2/Gtk-2 bindings.
+
+2020-07-18 17:08:41 +0200 Mike Gabriel (eb5ffbb)
+
+	* debian/*: Drop Python2 binding support.
+
+2019-11-11 19:13:01 +0100 Mike Gabriel (5ca235f)
+
+	* release 0.5.4 (tag: 0.5.4)
 
 2019-08-29 18:12:10 +0000 Mike Gabriel (e7acaf9)
 

@@ -1,5 +1,5 @@
 AC_INIT([libayatana-appindicator],
-        [0.5.4],
+        [0.5.5],
         [https://github.com/ArcticaProject/libayatana-appindicator/issues],
         [libayatana-appindicator],
         [https://github.com/ArcticaProject/libayatana-appindicator])

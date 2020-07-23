@@ -1,0 +1,41 @@
+Overview of changes in libayatana-appindicator 0.5.5
+
+  - Drop Python2 support.
+
+Overview of changes in libayatana-appindicator 0.5.4
+
+  - Drop deprecated g_type_class_add_private Glib-2.0 API calls.
+
+Overview of changes in libayatana-appindicator 0.5.3
+
+  - src/app-indicator.c: Type cast assignments from g_object_ref().
+  - Drop distcheck features
+
+Overview of changes in libayatana-appindicator 0.5.2
+
+  - python2 bindings: Finally avoid implicit declaration for
+    (_ayatana)_appindicator_add_constants() function symbol.
+  - API documentation: Suppress some warnings being thrown.
+  - src/app-indicator.c: Avoid usage of PATH_MAX macro. Fixes
+    FTBFS on Debian GNU/Hurd.
+  - bindings/mono/Makefile.am: Don't run tests on all targets,
+    only on check target. Fixes FTBFS when built parallely.
+  - bindings/python: Yet another 'ayatana' namespace fix for the
+    Python2 bindings.
+
+Overview of changes in libayatana-appindicator 0.5.1
+
+  - Python2 bindings: Fix import ayatana_appindicator failure by
+    correctly adding the ayatana namespace.
+  - docs/reference/Makefile.am: Drop option --nogtkinit from
+    SCANGOBJ_OPTIONS.
+  - AppIndicator: fix icon and theme paths when running in $SNAP
+    environment.
+  - Handle watcher service appearing and disappearing.
+  - Make test-simple-app really working.
+  - src/dbus-shared.h: Fix copy+paste flaw for
+    INDICATOR_APPLICATION_DBUS_OBJ.
+
+Overview of changes in libayatana-appindicator 0.5.0
+
+  - Fork from Ubuntu's libappindicator project.
