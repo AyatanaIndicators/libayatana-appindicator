@@ -1,15 +1,14 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/architecture.mk
+
 FLAVORS = gtk2 gtk3
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
-PY_VERSIONS = $(shell pyversions --requested debian/control)
 API_VERSION = 0.1
-
-DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 CONFIGURE_COMMON_FLAGS = --disable-scrollkeeper --enable-introspection
 ifeq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64))
@@ -35,24 +34,10 @@ override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
 doconfigure-%:
 	dh_auto_configure --builddirectory=build/$* -- $(CONFIGURE_FLAGS_$*) $(CONFIGURE_COMMON_FLAGS)
 
-doconfigure-gtk2: $(PY_VERSIONS:%=doconfiguregtk2-%)
-	# GTK2 flavor configure was run on a per-python-version basis.
-
-doconfiguregtk2-%:
-	PYTHON=`which $*` \
-		dh_auto_configure --builddirectory=build/gtk2 -- $(CONFIGURE_FLAGS_gtk2) $(CONFIGURE_COMMON_FLAGS)
-
 override_dh_auto_build: $(FLAVORS:%=dobuild-%)
 
 dobuild-%:
 	dh_auto_build --builddirectory=build/$*
-
-dobuild-gtk2: $(PY_VERSIONS:%=dobuildgtk2-%)
-	# GTK2 flavor build was run on a per-python-version basis.
-
-dobuildgtk2-%:
-	PYTHON=`which $*` \
-		dh_auto_build --builddirectory=build/gtk2
 
 override_dh_auto_install: $(FLAVORS:%=doinstall-%)
 
@@ -80,21 +65,9 @@ override_dh_auto_test: $(FLAVORS:%=dotest-%)
 
 dotest-%:
 	mkdir -p $(CURDIR)/debian/tmphome
-	HOME=$(CURDIR)/debian/tmphome dh_auto_test dh_auto_test --builddirectory=build/$* -- || true
+	export HOME=$(CURDIR)/debian/tmphome && dh_auto_test dh_auto_test --builddirectory=build/$* -- || true
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/$*/tests/test-suite.log ]; then cat build/$*/tests/test-suite.log; fi
-	rm -Rf $(CURDIR)/debian/tmphome
-
-
-dotest-gtk2: $(PY_VERSIONS:%=dotestgtk2-%)
-	# GTK2 flavor test was run on a per-python-version basis.
-
-dotestgtk2-%:
-	mkdir -p $(CURDIR)/debian/tmphome
-	PYTHON=`which $*` \
-		HOME=$(CURDIR)/debian/tmphome dh_auto_test --builddirectory=build/gtk2 -- || true
-	# View test's log file for better debugging of problems when built in clean chroots.
-	if [ -e build/gtk2/tests/test-suite.log ]; then cat build/gtk2/tests/test-suite.log; fi
 	rm -Rf $(CURDIR)/debian/tmphome
 
 override_dh_auto_clean:
