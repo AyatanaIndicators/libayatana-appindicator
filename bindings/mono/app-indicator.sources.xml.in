@@ -1,12 +1,12 @@
 <gapi-parser-input>
-	<api filename="libayatana-appindicator-api.raw">
-		<library name="ayatana-appindicator.dll">
-			<namespace name="AyatanaAppIndicator">
-				<file>@top_builddir@/bindings/mono/app-indicator.c</file>
-				<file>@top_builddir@/src/app-indicator-enum-types.c</file>
-				<file>@top_builddir@/src/app-indicator-enum-types.h</file>
-				<file>@top_srcdir@/src/app-indicator.h</file>
-			</namespace>
-		</library>
-	</api>
+    <api filename="libayatana-appindicator-api.raw">
+        <library name="ayatana-appindicator.dll">
+            <namespace name="AyatanaAppIndicator">
+                <file>@REL_SRC@src/app-indicator.c</file>
+                <file>@REL_BIN@src/app-indicator-enum-types.c</file>
+                <file>@REL_BIN@src/app-indicator-enum-types.h</file>
+                <file>@REL_SRC@src/app-indicator.h</file>
+            </namespace>
+        </library>
+    </api>
 </gapi-parser-input>
