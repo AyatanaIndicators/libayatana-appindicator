@@ -8,7 +8,7 @@
   <bookinfo>
     <title>libayatana-appindicator Reference Manual</title>
     <releaseinfo>
-      for libayatana-appindicator @VERSION@
+      for libayatana-appindicator @PROJECT_VERSION@
     </releaseinfo>
   </bookinfo>
 
