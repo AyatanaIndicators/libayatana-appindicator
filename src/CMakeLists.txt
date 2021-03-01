@@ -21,6 +21,11 @@ elseif (FLAVOUR_GTK2)
     set (gtk_girver "Gtk-2.0")
 endif()
 
+set(GIR_SOURCES
+    app-indicator.c
+    app-indicator.h
+)
+
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/lib${ayatana_appindicator_gtkver}-0.1/libayatana-appindicator")
 
 # ayatana-appindicator{,3}-0.1.pc
@@ -131,16 +136,24 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}.so.
 
 # AyatanaAppIndicator{,3}-0.1.gir
 
+add_custom_command(
+    TARGET "${ayatana_appindicator_gtkver}" PRE_BUILD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND
+    ${CMAKE_COMMAND}
+    -E copy
+    ${GIR_SOURCES}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 find_package(GObjectIntrospection REQUIRED)
 
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir"
     DEPENDS "${ayatana_appindicator_gtkver}"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND
     ${INTROSPECTION_SCANNER}
-    app-indicator.c ${HEADERS}
-    --add-include-path=${CMAKE_CURRENT_BINARY_DIR}
+    ${GIR_SOURCES}
     --c-include=libayatana-appindicator/app-indicator.h
     --symbol-prefix=app
     --identifier-prefix=App
@@ -172,3 +185,9 @@ add_custom_command(
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/girepository-1.0")
 
 add_custom_target(src ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib")
+
+# app-indicator-version.h
+
+configure_file(app-indicator-version.h.in app-indicator-version.h @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/app-indicator-version.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/lib${ayatana_appindicator_gtkver}-0.1/libayatana-appindicator")
