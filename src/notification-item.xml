@@ -11,6 +11,7 @@
 		<property name="AttentionIconName" type="s" access="read" />
 		<property name="AttentionAccessibleDesc" type="s" access="read" />
 		<property name="Title" type="s" access="read" />
+		<property name="ToolTip" type="(sa(iiay)ss)" access="read" />
 		<!-- An additional path to add to the theme search path
 		     to find the icons specified above. -->
 		<property name="IconThemePath" type="s" access="read" />
@@ -48,6 +49,8 @@
 			<arg type="s" name="guide" direction="out" />
 		</signal>
 		<signal name="NewTitle">
+		</signal>
+		<signal name="NewToolTip">
 		</signal>
 
 	</interface>
