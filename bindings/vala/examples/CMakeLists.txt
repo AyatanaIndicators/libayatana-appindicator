@@ -12,6 +12,7 @@ add_custom_command(
     --vapidir=${CMAKE_BINARY_DIR}/bindings/vala
     -C ayatana-indicator-example.vala
     --metadatadir "${CMAKE_SOURCE_DIR}/src"
+    --includedir="${CMAKE_BINARY_DIR}/src"
     --directory=${CMAKE_CURRENT_BINARY_DIR}
 )
 
