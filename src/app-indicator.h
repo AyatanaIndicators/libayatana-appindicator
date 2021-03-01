@@ -32,6 +32,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <gtk/gtk.h>
 
+#define APP_INDICATOR_INSIDE
+#include "app-indicator-version.h"
+#undef  APP_INDICATOR_INSIDE
+
 G_BEGIN_DECLS
 
 /**
