@@ -168,7 +168,7 @@ TESTS += libappindicator-tests
 DISTCLEANFILES += $(XML_REPORT) $(HTML_REPORT) libappindicator-tests-gtester
 
 
-DBUS_RUNNER=dbus-test-runner -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf
+DBUS_RUNNER=dbus-test-runner --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf
 
 test-libappindicator-dbus: test-libappindicator-dbus-client test-libappindicator-dbus-server Makefile.am
 	@echo "#!/bin/bash" > test-libappindicator-dbus
