@@ -61,14 +61,18 @@ override_dh_install:
 	    dh_install -plibayatana-appindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2; \
 	fi
 
-override_dh_auto_test: $(FLAVORS:%=dotest-%)
-
-dotest-%:
-	mkdir -p $(CURDIR)/debian/tmphome-$*
-	export HOME=$(CURDIR)/debian/tmphome-$* && dh_auto_test --no-parallel --builddirectory=build/$*
+override_dh_auto_test:
+	mkdir -p $(CURDIR)/debian/tmphome-gtk2
+	export HOME=$(CURDIR)/debian/tmphome-gtk2 && dh_auto_test --no-parallel --builddirectory=build/gtk2
 	# View test's log file for better debugging of problems when built in clean chroots.
-	if [ -e build/$*/tests/test-suite.log ]; then cat build/$*/tests/test-suite.log; fi
-	rm -Rf $(CURDIR)/debian/tmphome-$*
+	if [ -e build/gtk2/tests/test-suite.log ]; then cat build/gtk2/tests/test-suite.log; fi
+	rm -Rf $(CURDIR)/debian/tmphome-gtk2
+
+	mkdir -p $(CURDIR)/debian/tmphome-gtk3
+	export HOME=$(CURDIR)/debian/tmphome-gtk3 && dh_auto_test --no-parallel --builddirectory=build/gtk3
+	# View test's log file for better debugging of problems when built in clean chroots.
+	if [ -e build/gtk3/tests/test-suite.log ]; then cat build/gtk3/tests/test-suite.log; fi
+	rm -Rf $(CURDIR)/debian/tmphome-gtk3
 
 override_dh_auto_clean:
 	dh_auto_clean
