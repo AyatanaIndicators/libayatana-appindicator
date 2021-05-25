@@ -1,0 +1,164 @@
+#########################################################
+# THE FOLLOWING LINES IS USED BY docker-build
+##########################################################
+requires:
+  archlinux:
+    # Useful URL: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=libayatana-appindicator
+    - clang
+    - gcc
+    - git
+    - make
+    - startup-notification
+    - which
+    - cmake
+    - cmake-extras
+    - mate-common
+    - gtk3
+    - glib2
+    - libdbusmenu-gtk3
+    - dbus-glib
+    - gobject-introspection
+
+  debian:
+    # Useful URL: https://salsa.debian.org/debian-ayatana-team/libayatana-appindicator
+    - autopoint
+    - clang
+    - clang-tools
+    - g++
+    - cppcheck
+    - git
+    - cmake
+    - cmake-extras
+    - mate-common
+    - cli-common-dev
+    - gobject-introspection
+    - intltool
+    - gtk-doc-tools
+    - libxml2-utils
+    - libnunit-cil-dev
+    - dbus-test-runner
+    - xvfb
+    - valac
+    - mono-devel
+    - libglib2.0-dev
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - gtk-sharp2-gapi
+    - libgtk2.0-cil-dev
+    - libdbus-glib-1-dev
+    - libdbusmenu-glib-dev
+    - libdbusmenu-gtk3-dev
+    - libdbusmenu-gtk-dev
+    - libgirepository1.0-dev
+
+  ubuntu:
+    - autopoint
+    - clang
+    - clang-tools
+    - g++
+    - git
+    - cmake
+    - cmake-extras
+    - mate-common
+    - cli-common-dev
+    - gobject-introspection
+    - intltool
+    - gtk-doc-tools
+    - libxml2-utils
+    - libnunit-cil-dev
+    - dbus-test-runner
+    - xvfb
+    - valac
+    - mono-devel
+    - libglib2.0-dev
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - gtk-sharp2-gapi
+    - libgtk2.0-cil-dev
+    - libdbus-glib-1-dev
+    - libdbusmenu-glib-dev
+    - libdbusmenu-gtk3-dev
+    - libdbusmenu-gtk-dev
+    - libgirepository1.0-dev
+
+variables:
+  - 'CHECKERS="
+    -enable-checker deadcode.DeadStores
+    -enable-checker alpha.deadcode.UnreachableCode
+    -enable-checker alpha.core.CastSize
+    -enable-checker alpha.core.CastToStruct
+    -enable-checker alpha.core.IdenticalExpr
+    -enable-checker alpha.core.SizeofPtr
+    -enable-checker alpha.security.ArrayBoundV2
+    -enable-checker alpha.security.MallocOverflow
+    -enable-checker alpha.security.ReturnPtrRange
+    -enable-checker alpha.unix.SimpleStream
+    -enable-checker alpha.unix.cstring.BufferOverlap
+    -enable-checker alpha.unix.cstring.NotNullTerminated
+    -enable-checker alpha.unix.cstring.OutOfBounds
+    -enable-checker alpha.core.FixedAddr
+    -enable-checker security.insecureAPI.strcpy"'
+
+before_scripts:
+  - cd ${START_DIR}
+  - if [ ! -d ayatana-ido-build ]; then
+  -     git clone --depth 1 https://github.com/AyatanaIndicators/ayatana-ido.git ayatana-ido-build
+  - fi
+  - cd ayatana-ido-build
+  - cmake . -DCMAKE_INSTALL_PREFIX=/usr
+  - make
+  - make install
+  -
+  - cd ${START_DIR}
+  - if [ ! -d libayatana-indicator-build ]; then
+  -     git clone --depth 1 https://github.com/AyatanaIndicators/libayatana-indicator.git libayatana-indicator-build
+  - fi
+  - cd libayatana-indicator-build
+  - cmake . -DCMAKE_INSTALL_PREFIX=/usr
+  - make
+  - make install
+
+build_scripts:
+  - if [ ${DISTRO_NAME} == "debian" ];then
+  -     export CFLAGS+=" -Wsign-compare -Wunused-parameter"
+  -     cppcheck --enable=warning,style,performance,portability,information,missingInclude .
+  - fi
+  -
+  - if [ -e ./autogen.sh ]; then
+  -     NOCONFIGURE=1 ./autogen.sh
+  -     scan-build $CHECKERS ./configure --prefix=/usr --enable-gtk-doc --enable-compile-warnings=maximum
+  - elif [ -e ./CMakeLists.txt ]; then
+  -     if [ ${DISTRO_NAME} == "debian" ];then
+  -         scan-build $CHECKERS cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON
+  -     else
+  -         scan-build $CHECKERS cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON
+  -     fi
+  - else
+  -     exit 1
+  - fi
+  -
+  - if [ $CPU_COUNT -gt 1 ]; then
+  -     if [ ${DISTRO_NAME} == "debian" ];then
+  -         scan-build $CHECKERS --keep-cc --use-cc=clang --use-c++=clang++ -o html-report make -j $CPU_COUNT
+  -         make clean
+  -     fi
+  -     scan-build $CHECKERS --keep-cc -o html-report make -j $CPU_COUNT
+  - else
+  -     if [ ${DISTRO_NAME} == "debian" ];then
+  -         scan-build $CHECKERS --keep-cc --use-cc=clang --use-c++=clang++ -o html-report make
+  -         make clean
+  -     fi
+  -     scan-build $CHECKERS --keep-cc -o html-report make
+  - fi
+
+after_scripts:
+  - if [ ${BUILD_TYPE} == "scripts" ];then
+  -     XVFB_RUN="$(which xvfb-run || true)"
+  -     if [ ${DISTRO_NAME} == "debian" ];then
+  -         if [ -e ./autogen.sh ]; then
+  -             ${XVFB_RUN} make check
+  -         elif [ -e ./CMakeLists.txt ]; then
+  -             ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
+  -         fi
+  -     fi
+  - fi

@@ -52,9 +52,9 @@ DBUS_GLIB_REQUIRED_VERSION=0.82
 
 AC_ARG_WITH([gtk],
   [AS_HELP_STRING([--with-gtk],
-    [Which version of gtk to use @<:@default=2@:>@])],
+    [Which version of gtk to use @<:@default=3@:>@])],
   [],
-  [with_gtk=2])
+  [with_gtk=3])
 AS_IF([test "x$with_gtk" = x3],
         [PKG_CHECK_MODULES(LIBRARY,  gtk+-3.0 >= $GTK3_REQUIRED_VERSION
                                      glib-2.0 >= $GLIB_REQUIRED_VERSION
