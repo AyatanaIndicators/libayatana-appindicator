@@ -32,7 +32,7 @@ test_libappindicator_SOURCES = \
 test_libappindicator_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
 	-DSRCDIR="\"$(srcdir)\"" \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_LDADD = \
@@ -49,7 +49,7 @@ test_libappindicator_dbus_client_SOURCES = \
 
 test_libappindicator_dbus_client_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_client_LDADD = \
@@ -66,7 +66,7 @@ test_libappindicator_dbus_server_SOURCES = \
 
 test_libappindicator_dbus_server_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_dbus_server_LDADD = \
@@ -83,7 +83,7 @@ test_libappindicator_status_client_SOURCES = \
 
 test_libappindicator_status_client_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_client_LDADD = \
@@ -100,7 +100,7 @@ test_libappindicator_status_server_SOURCES = \
 
 test_libappindicator_status_server_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_status_server_LDADD = \
@@ -116,7 +116,7 @@ test_libappindicator_fallback_watcher_SOURCES = \
 
 test_libappindicator_fallback_watcher_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_watcher_LDADD = \
@@ -128,7 +128,7 @@ test_libappindicator_fallback_item_SOURCES = \
 
 test_libappindicator_fallback_item_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_libappindicator_fallback_item_LDADD = \
@@ -198,7 +198,7 @@ test_simple_app_SOURCES = \
 
 test_simple_app_CFLAGS = \
 	$(TESTDEPS_CFLAGS) $(LIBRARY_CFLAGS) \
-	-Wall -Werror -Wno-error=deprecated-declarations \
+	-Wall -Wno-error=deprecated-declarations \
 	-I$(top_srcdir)/src
 
 test_simple_app_LDADD = \
