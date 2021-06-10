@@ -1,12 +1,12 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-assemblies_dir=${prefix}/lib/cli/ayatana-appindicator-sharp-0.1
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+assemblies_dir=@CMAKE_INSTALL_FULL_LIBDIR@/cli/ayatana-appindicator-sharp3-0.1
 
 Name: ayatana-appindicator-sharp
 Description: application indicators for .NET
-Version: @VERSION@
+Version: @PROJECT_VERSION@
 Libraries: ${assemblies_dir}/ayatana-appindicator-sharp.dll ${assemblies_dir}/ayatana-appindicator-sharp.dll.config
-Requires: gtk-sharp-2.0
+Requires: gtk-sharp-3.0
 Cflags:
 Libs: -r:${assemblies_dir}/ayatana-appindicator-sharp.dll
