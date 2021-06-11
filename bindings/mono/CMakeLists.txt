@@ -1,12 +1,12 @@
-# ayatana-appindicator-sharp3-0.1.pc
+# ayatana-appindicator3-sharp-0.1.pc
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp3-0.1.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp3-0.1.pc" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp3-0.1.pc" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp-0.1.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp-0.1.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp-0.1.pc" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
 
-# ayatana-appindicator-sharp.dll.config
+# ayatana-appindicator3-sharp.dll.config
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp.dll.config" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp.dll.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp.dll.config" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp.dll.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
 
 # app-indicator.sources.xml
 
@@ -14,12 +14,12 @@ file(RELATIVE_PATH REL_BIN ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR})
 file(RELATIVE_PATH REL_SRC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.sources.xml.in" "${CMAKE_CURRENT_BINARY_DIR}/app-indicator.sources.xml" @ONLY)
 
-# libayatana-appindicator-api.raw
+# libayatana-appindicator3-api.raw
 
 find_program(GAPI3_PARSER gapi3-parser)
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.raw"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.raw"
     DEPENDS "src" "${CMAKE_CURRENT_BINARY_DIR}/app-indicator.sources.xml"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
@@ -27,30 +27,30 @@ add_custom_command(
     "${CMAKE_CURRENT_BINARY_DIR}/app-indicator.sources.xml"
 )
 
-# libayatana-appindicator-api.middle
+# libayatana-appindicator3-api.middle
 
 find_program(GAPI3_FIXUP gapi3-fixup)
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.middle"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.raw"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.middle"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.raw"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${CMAKE_COMMAND}
     -E copy
-    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.raw"
-    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.middle"
+    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.raw"
+    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.middle"
     COMMAND
     ${GAPI3_FIXUP}
-    --api=libayatana-appindicator-api.middle
-    --metadata="${CMAKE_CURRENT_SOURCE_DIR}/libayatana-appindicator-api.metadata"
+    --api=libayatana-appindicator3-api.middle
+    --metadata="${CMAKE_CURRENT_SOURCE_DIR}/libayatana-appindicator3-api.metadata"
 )
 
-# libayatana-appindicator-api.xml
+# libayatana-appindicator3-api.xml
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.xml"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.middle"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.xml"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.middle"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     VERBATIM
     COMMAND
@@ -77,7 +77,7 @@ add_custom_command(
     -e "s|PROP_DBUS_MENU_SERVER_S|dbus-menu-server|"
     -e "s|PROP_TITLE_S|Title|"
     -e "s|PROP_TITLE_S|title|"
-    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.middle" > "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.xml"
+    "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.middle" > "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.xml"
 )
 
 # AppIndicatorCategory.cs
@@ -108,23 +108,23 @@ add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ScrollEventHandler.cs"
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ConnectionChangedHandler.cs"
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/NewLabelHandler.cs"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator-api.xml"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3-api.xml"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${GAPI3_CODEGEN}
-    --generate libayatana-appindicator-api.xml
+    --generate libayatana-appindicator3-api.xml
     --outdir=${CMAKE_CURRENT_BINARY_DIR}
-    --assembly-name=ayatana-appindicator-sharp
+    --assembly-name=ayatana-appindicator3-sharp
     ${GTK_SHARP_3_0_INCLUDE_DIRS}
 )
 
-# ayatana-appindicator-sharp.dll
+# ayatana-appindicator3-sharp.dll
 
 pkg_check_modules(MONO REQUIRED mono>=5.18)
 find_program(MCS mcs)
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp.dll"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp.dll"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/GtkSharp/ObjectManager.cs"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/AppIndicatorCategory.cs"
     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/NewAttentionIconHandler.cs"
@@ -139,64 +139,64 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${MCS}
-    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp.snk"
+    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp.snk"
     -nowarn:0169,0612,0618
     -unsafe
-    -out:"${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp.dll"
+    -out:"${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp.dll"
     -target:library
     ${GTK_SHARP_3_0_LDFLAGS} "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/*.cs" "${CMAKE_CURRENT_BINARY_DIR}/GtkSharp/ObjectManager.cs" "${CMAKE_CURRENT_SOURCE_DIR}/AssemblyInfo.cs" "${CMAKE_CURRENT_SOURCE_DIR}/ApplicationIndicatorCustom.cs"
 )
 
 find_program(GACUTIL gacutil)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
-install(CODE "execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${GACUTIL} -i ${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp.dll -package ayatana-appindicator-sharp -root ${CMAKE_INSTALL_FULL_LIBDIR})")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
+install(CODE "execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${GACUTIL} -i ${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp.dll -package ayatana-appindicator3-sharp -root ${CMAKE_INSTALL_FULL_LIBDIR})")
 
-# policy.0.0.ayatana-appindicator-sharp.config
+# policy.0.0.ayatana-appindicator3-sharp.config
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/policy.0.0.ayatana-appindicator-sharp.config.in" "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.config" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/policy.0.0.ayatana-appindicator3-sharp.config.in" "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.config" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
 
-# policy.0.0.ayatana-appindicator-sharp.dll
-
-find_program(AL al)
-
-add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.dll"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator-sharp.dll"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMAND
-    ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.config"
-    -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.dll"
-    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp.snk"
-)
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
-install(CODE "execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${GACUTIL} -i ${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.dll -package ayatana-appindicator-sharp -root ${CMAKE_INSTALL_FULL_LIBDIR})")
-
-# policy.0.1.ayatana-appindicator-sharp.config
-
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/policy.0.1.ayatana-appindicator-sharp.config.in" "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.config" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
-
-# policy.0.1.ayatana-appindicator-sharp.dll
+# policy.0.0.ayatana-appindicator3-sharp.dll
 
 find_program(AL al)
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.dll"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator-sharp.dll"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.dll"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-sharp.dll"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.config"
-    -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.dll"
-    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator-sharp.snk"
+    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.config"
+    -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.dll"
+    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp.snk"
 )
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator-sharp3-0.1")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
+install(CODE "execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${GACUTIL} -i ${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.dll -package ayatana-appindicator3-sharp -root ${CMAKE_INSTALL_FULL_LIBDIR})")
 
-add_custom_target("bindings-mono" ALL DEPENDS "policy.0.1.ayatana-appindicator-sharp.dll")
+# policy.0.1.ayatana-appindicator3-sharp.config
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/policy.0.1.ayatana-appindicator3-sharp.config.in" "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.config" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.config" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
+
+# policy.0.1.ayatana-appindicator3-sharp.dll
+
+find_program(AL al)
+
+add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.dll"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.ayatana-appindicator3-sharp.dll"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND
+    ${AL}
+    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.config"
+    -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.dll"
+    -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-sharp.snk"
+)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.ayatana-appindicator3-sharp.dll" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/cli/ayatana-appindicator3-sharp-0.1")
+
+add_custom_target("bindings-mono" ALL DEPENDS "policy.0.1.ayatana-appindicator3-sharp.dll")
 
 if (ENABLE_TESTS)
     add_subdirectory(examples)
