@@ -11,6 +11,11 @@ set(SOURCES
     gen-notification-watcher.xml.c
 )
 
+set(GIR_SOURCES
+    app-indicator.c
+    app-indicator.h
+)
+
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/libayatana-appindicator3-0.1/libayatana-appindicator")
 
 # ayatana-appindicator3-0.1.pc
@@ -122,17 +127,25 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3.so.1.0.0" DE
 
 # AyatanaAppIndicator3-0.1.gir
 
+add_custom_command(
+    TARGET "ayatana-appindicator3" PRE_BUILD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND
+    ${CMAKE_COMMAND}
+    -E copy
+    ${GIR_SOURCES}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 find_package(GObjectIntrospection REQUIRED QUIET)
 
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir"
-    DEPENDS "ayatana-appindicator3"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS "ayatana-appindicator3" "${CMAKE_CURRENT_BINARY_DIR}/app-indicator-version.h"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${INTROSPECTION_SCANNER}
-    app-indicator.c ${HEADERS}
-    --add-include-path=${CMAKE_CURRENT_BINARY_DIR}
-    --c-include=libayatana-appindicator/app-indicator.h
+    ${GIR_SOURCES}
     --symbol-prefix=app
     --identifier-prefix=App
     --namespace=AyatanaAppIndicator3
@@ -164,3 +177,9 @@ add_custom_command(
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/girepository-1.0")
 
 add_custom_target(src ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib")
+
+# app-indicator-version.h
+
+configure_file(app-indicator-version.h.in app-indicator-version.h @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/app-indicator-version.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/libayatana-appindicator3-0.1/libayatana-appindicator")

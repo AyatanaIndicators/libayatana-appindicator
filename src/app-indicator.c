@@ -81,6 +81,10 @@ typedef struct {
 	gchar                *absolute_attention_icon_name;
 	gchar                *icon_theme_path;
 	gchar                *absolute_icon_theme_path;
+	gchar                *tooltip_icon_name;
+	gchar                *absolute_tooltip_icon_name;
+	gchar                *tooltip_title;
+	gchar                *tooltip_body;
 	DbusmenuServer       *menuservice;
 	GtkWidget            *menu;
 	GtkWidget            *sec_activate_target;
@@ -115,6 +119,7 @@ enum {
 	NEW_ATTENTION_ICON,
 	NEW_STATUS,
 	NEW_LABEL,
+	NEW_TOOLTIP,
 	CONNECTION_CHANGED,
 	NEW_ICON_THEME_PATH,
 	SCROLL_EVENT,
@@ -140,7 +145,10 @@ enum {
 	PROP_LABEL_GUIDE,
 	PROP_ORDERING_INDEX,
 	PROP_DBUS_MENU_SERVER,
-	PROP_TITLE
+	PROP_TITLE,
+	PROP_TOOLTIP_ICON_NAME,
+	PROP_TOOLTIP_TITLE,
+	PROP_TOOLTIP_BODY
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -158,6 +166,9 @@ enum {
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
 #define PROP_TITLE_S                 "title"
+#define PROP_TOOLTIP_ICON_NAME_S     "tooltip-icon-name"
+#define PROP_TOOLTIP_TITLE_S         "tooltip-title"
+#define PROP_TOOLTIP_BODY_S          "tooltip-body"
 
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
@@ -190,6 +201,7 @@ static void status_icon_status_wrapper (AppIndicator * self, const gchar * statu
 static gboolean scroll_event_wrapper(GtkWidget *status_icon, GdkEventScroll *event, gpointer user_data);
 static gboolean middle_click_wrapper(GtkWidget *status_icon, GdkEventButton *event, gpointer user_data);
 static void status_icon_changes (AppIndicator * self, gpointer data);
+static void tooltip_changes (AppIndicator * self, gpointer data);
 static void status_icon_activate (GtkStatusIcon * icon, gpointer data);
 static void status_icon_menu_activate (GtkStatusIcon *status_icon, guint button, guint activate_time, gpointer user_data);
 static void unfallback (AppIndicator * self, GtkStatusIcon * status_icon);
@@ -495,6 +507,57 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * AppIndicator:tooltip-icon-name:
+	 *
+	 * Specifies the name of an icon which may be shown in a tooltip
+	 * associated with the application indicator.
+	 *
+	 * Since: 0.6
+	 *
+	 */
+	g_object_class_install_property (object_class,
+	                                 PROP_TOOLTIP_ICON_NAME,
+	                                 g_param_spec_string (PROP_TOOLTIP_ICON_NAME_S,
+	                                                      "Name of the icon shown in the tooltip",
+	                                                      "An icon which may be shown in a tooltip associated with the application indicator.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * AppIndicator:tooltip-title:
+	 *
+	 * Specifies the title of a tooltip associated with the application
+	 * indicator.
+	 *
+	 * Since: 0.6
+	 *
+	 */
+	g_object_class_install_property (object_class,
+	                                 PROP_TOOLTIP_TITLE,
+	                                 g_param_spec_string (PROP_TOOLTIP_TITLE_S,
+	                                                      "Title of the tooltip",
+	                                                      "The title part of a tooltip associated with the application indicator.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * AppIndicator:tooltip-body:
+	 *
+	 * Specifies the body part of a tooltip associated with the application
+	 * indicator.
+	 *
+	 * Since: 0.6
+	 *
+	 */
+	g_object_class_install_property (object_class,
+	                                 PROP_TOOLTIP_BODY,
+	                                 g_param_spec_string (PROP_TOOLTIP_BODY_S,
+	                                                      "Text body of the tooltip",
+	                                                      "The text body of a tooltip assocaited with the application indicator.",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 	/* Signals */
 
 	/**
@@ -557,6 +620,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                    NULL, NULL,
 	                                    _application_service_marshal_VOID__STRING_STRING,
 	                                    G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+
+	/**
+	 * AppIndicator::new-tooltip:
+	 * @arg0: The #AppIndicator object
+	 *
+	 * Emitted when #AppIndicator:tooltip is changed.
+	 *
+	 * Since: 0.6
+	 *
+	 */
+	signals[NEW_TOOLTIP] = g_signal_new (APP_INDICATOR_SIGNAL_NEW_TOOLTIP,
+	                                     G_TYPE_FROM_CLASS (klass),
+	                                     G_SIGNAL_RUN_LAST,
+	                                     G_STRUCT_OFFSET (AppIndicatorClass, new_tooltip),
+	                                     NULL, NULL,
+	                                     g_cclosure_marshal_VOID__VOID,
+	                                     G_TYPE_NONE, 0, G_TYPE_NONE);
 
 	/**
 	 * AppIndicator::connection-changed:
@@ -664,6 +744,10 @@ app_indicator_init (AppIndicator *self)
 	priv->label = NULL;
 	priv->label_guide = NULL;
 	priv->label_change_idle = 0;
+	priv->tooltip_icon_name = NULL;
+	priv->absolute_tooltip_icon_name = NULL;
+	priv->tooltip_title = NULL;
+	priv->tooltip_body = NULL;
 
 	priv->connection = NULL;
 	priv->dbus_registration = 0;
@@ -851,6 +935,26 @@ app_indicator_finalize (GObject *object)
 		priv->att_accessible_desc = NULL;
 	}
 
+	if (priv->tooltip_icon_name != NULL) {
+		g_free(priv->tooltip_icon_name);
+		priv->tooltip_icon_name = NULL;
+	}
+
+	if (priv->absolute_tooltip_icon_name != NULL) {
+		g_free (priv->absolute_tooltip_icon_name);
+		priv->absolute_tooltip_icon_name = NULL;
+	}
+
+	if (priv->tooltip_title != NULL) {
+		g_free (priv->tooltip_title);
+		priv->tooltip_title = NULL;
+	}
+
+	if (priv->tooltip_body != NULL) {
+		g_free (priv->tooltip_body);
+		priv->tooltip_body = NULL;
+	}
+
 	if (priv->path != NULL) {
 		g_free(priv->path);
 		priv->path = NULL;
@@ -994,6 +1098,24 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
 		  }
 		  break;
 		}
+		case PROP_TOOLTIP_ICON_NAME:
+		  app_indicator_set_tooltip_full (APP_INDICATOR (object),
+										  g_value_get_string (value),
+										  priv->tooltip_title,
+										  priv->tooltip_body);
+		  break;
+		case PROP_TOOLTIP_TITLE:
+		  app_indicator_set_tooltip_full (APP_INDICATOR (object),
+										  priv->tooltip_icon_name,
+										  g_value_get_string (value),
+										  priv->tooltip_body);
+		  break;
+		case PROP_TOOLTIP_BODY:
+		  app_indicator_set_tooltip_full (APP_INDICATOR (object),
+										  priv->tooltip_icon_name,
+										  priv->tooltip_title,
+										  g_value_get_string (value));
+		  break;
 		case PROP_LABEL_GUIDE: {
 		  gchar * oldguide = priv->label_guide;
 		  priv->label_guide = g_value_dup_string(value);
@@ -1111,6 +1233,18 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 		case PROP_TITLE:
 			g_value_set_string(value, priv->title);
 			break;
+
+		case PROP_TOOLTIP_ICON_NAME:
+		  g_value_set_string(value, priv->tooltip_icon_name);
+		  break;
+
+		case PROP_TOOLTIP_TITLE:
+		  g_value_set_string(value, priv->tooltip_title);
+		  break;
+
+		case PROP_TOOLTIP_BODY:
+		  g_value_set_string(value, priv->tooltip_body);
+		  break;
 
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1243,6 +1377,22 @@ bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * 
 			return g_variant_new_string(priv->absolute_icon_theme_path);
 		}
 		return g_variant_new_string(priv->icon_theme_path ? priv->icon_theme_path : "");
+	} else if (g_strcmp0(property, "ToolTip") == 0) {
+		const gchar * icon = "";
+		if (priv->absolute_tooltip_icon_name != NULL) {
+			icon = priv->absolute_tooltip_icon_name;
+		} else if (priv->tooltip_icon_name != NULL) {
+			icon = priv->tooltip_icon_name;
+		}
+		const gchar * title = "";
+		if (priv->tooltip_title != NULL) {
+			title = priv->tooltip_title;
+		} else if (priv->title != NULL) {
+			title = priv->title;
+		}
+		GVariantBuilder builder;
+		g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(iiay)"));
+		return g_variant_new ("(sa(iiay)ss)", icon, &builder, title, priv->tooltip_body ? priv->tooltip_body : "");
 	} else if (g_strcmp0(property, "Menu") == 0) {
 		if (priv->menuservice != NULL) {
 			GValue strval = { 0 };
@@ -1542,8 +1692,11 @@ fallback (AppIndicator * self)
 		G_CALLBACK(status_icon_changes), icon);
 	g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON,
 		G_CALLBACK(status_icon_changes), icon);
+	g_signal_connect (G_OBJECT (self), APP_INDICATOR_SIGNAL_NEW_TOOLTIP,
+		G_CALLBACK (tooltip_changes), icon);
 
 	status_icon_changes(self, icon);
+	tooltip_changes (self, icon);
 
 	g_signal_connect(G_OBJECT(icon), "activate", G_CALLBACK(status_icon_activate), self);
 	g_signal_connect(G_OBJECT(icon), "popup-menu", G_CALLBACK(status_icon_menu_activate), self);
@@ -1672,6 +1825,56 @@ status_icon_changes (AppIndicator * self, gpointer data)
 	}
 
 	return;
+}
+
+static void
+extract_text (GMarkupParseContext *context, const gchar *text, gsize text_len, gpointer user_data, GError **error)
+{
+	GString * strbuf = user_data;
+	g_string_append_len (strbuf, text, (gssize)text_len);
+}
+
+/* Strip all XML markup tags and only preserve text nodes */
+static gchar *
+strip_markup (const gchar *markup)
+{
+	const GMarkupParser parser = { .text = extract_text };
+	GString * strbuf = g_string_new (NULL);
+	GMarkupParseContext * context = g_markup_parse_context_new (&parser, G_MARKUP_TREAT_CDATA_AS_TEXT, strbuf, NULL);
+	g_markup_parse_context_parse (context, markup, strlen (markup), NULL);
+	g_markup_parse_context_end_parse (context, NULL);
+	g_markup_parse_context_free (context);
+	return g_string_free (strbuf, FALSE);
+}
+
+/* This tracks changes to the tooltip associated with the app indicator */
+static void
+tooltip_changes (AppIndicator * self, gpointer data)
+{
+	GtkStatusIcon * icon = GTK_STATUS_ICON (data);
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	const gchar * title = (priv->tooltip_title != NULL) ? priv->tooltip_title : priv->title;
+	if (title == NULL) {
+		gtk_status_icon_set_tooltip_markup (icon, NULL);
+		return;
+	}
+	gchar * title_escaped = g_markup_escape_text (title, -1);
+
+	gchar * body_text = NULL;
+	if (priv->tooltip_body != NULL) {
+		body_text = strip_markup (priv->tooltip_body);
+	}
+
+	gchar * tooltip = g_strdup_printf ("<b>%s</b>%s%s",
+									   title_escaped,
+									   body_text != NULL ? "\n" : "",
+									   body_text != NULL ? body_text : "");
+	gtk_status_icon_set_tooltip_markup (icon, tooltip);
+
+	g_free (tooltip);
+	g_free (body_text);
+	g_free (title_escaped);
 }
 
 /* Handles the activate action by the status icon by showing
@@ -2039,6 +2242,137 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 	}
 
 	return;
+}
+
+/**
+ * app_indicator_set_tooltip_full:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The name of the icon shown in a tooltip.  Maps to AppIndicator:tooltip-icon-name.
+ * @title: The title shown in a tooltip.  Maps to AppIndicator:tooltip-title.
+ * @body: The text body shown in a tooltip.  Maps to AppIndicator:tooltip-body.
+ *
+ * This is a wrapper function for the #AppIndicator:tooltip-icon-name,
+ * #AppIndicator:tooltip-title and #AppIndicator:tooltip-body properties.
+ *
+ * Since: 0.6
+ *
+ */
+void
+app_indicator_set_tooltip_full (AppIndicator *self, const gchar *icon_name, const gchar *title, const gchar *body)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+	gboolean changed = FALSE;
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	if (g_strcmp0 (priv->icon_name, icon_name) != 0) {
+		g_free (priv->tooltip_icon_name);
+		priv->tooltip_icon_name = icon_name ? g_strdup (icon_name) : NULL;
+
+		g_free (priv->absolute_tooltip_icon_name);
+		priv->absolute_tooltip_icon_name = NULL;
+
+		if (icon_name && icon_name[0] == '/') {
+			priv->absolute_tooltip_icon_name = append_snap_prefix (icon_name);
+		}
+
+		changed = TRUE;
+	}
+
+	if (g_strcmp0 (priv->tooltip_title, title) != 0) {
+		g_free (priv->tooltip_title);
+		priv->tooltip_title = title ? g_strdup (title) : NULL;
+
+		changed = TRUE;
+	}
+
+	if (g_strcmp0 (priv->tooltip_body, body) != 0) {
+		g_free (priv->tooltip_body);
+		priv->tooltip_body = body ? g_strdup (body) : NULL;
+
+		changed = TRUE;
+	}
+
+	if (changed) {
+		g_signal_emit (self, signals[NEW_TOOLTIP], 0, TRUE);
+
+		if (priv->dbus_registration != 0 && priv->connection != NULL) {
+			GError * error = NULL;
+
+			g_dbus_connection_emit_signal (priv->connection,
+										   NULL,
+										   priv->path,
+										   NOTIFICATION_ITEM_DBUS_IFACE,
+										   "NewToolTip",
+										   NULL,
+										   &error);
+
+			if (error != NULL) {
+				g_warning ("Unable to send signal for NewToolTip: %s", error->message);
+				g_error_free (error);
+			}
+		}
+	}
+}
+
+/**
+ * app_indicator_set_tooltip_icon:
+ * @self: The #AppIndicator object to use
+ * @icon_name: The name of the icon shown in the tooltip.  Maps to AppIndicator:tooltip-icon-name.
+ *
+ * Sets the icon which may be shown in the tooltip of the application indicator.
+ *
+ * Since: 0.6
+ *
+ */
+void
+app_indicator_set_tooltip_icon (AppIndicator *self, const gchar *icon_name)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	app_indicator_set_tooltip_full (self, icon_name, priv->tooltip_title, priv->tooltip_body);
+}
+
+/**
+ * app_indicator_set_tooltip_title:
+ * @self: The #AppIndicator object to use
+ * @title: The title shown in a tooltip.  Maps to AppIndicator:tooltip-title.
+ *
+ * Sets the title part of a tooltip of the application indicator.
+ *
+ * Since: 0.6
+ *
+ */
+void
+app_indicator_set_tooltip_title (AppIndicator *self, const gchar *title)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	app_indicator_set_tooltip_full (self, priv->tooltip_icon_name, title, priv->tooltip_body);
+}
+
+/**
+ * app_indicator_set_tooltip_body:
+ * @self: The #AppIndicator object to use
+ * @body: The text body shown in a tooltip.  Maps to AppIndicator:tooltip-body.
+ *
+ * Sets the body part of a tooltip of the application indicator.
+ *
+ * Since: 0.6
+ *
+ */
+void
+app_indicator_set_tooltip_body (AppIndicator *self, const gchar *body)
+{
+	g_return_if_fail (IS_APP_INDICATOR (self));
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	app_indicator_set_tooltip_full (self, priv->tooltip_icon_name, priv->tooltip_title, body);
 }
 
 /**
@@ -2508,6 +2842,72 @@ app_indicator_get_menu (AppIndicator *self)
 	AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
 	return GTK_MENU(priv->menu);
+}
+
+/**
+ * app_indicator_get_tooltip_icon:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the tooltip icon name of the application indicator.  See the function
+ * app_indicator_set_tooltip_icon() for information on the tooltip icon name.
+ *
+ * Return value: The current tooltip icon name.
+ *
+ * Since: 0.6
+ *
+ */
+const gchar *
+app_indicator_get_tooltip_icon (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	return priv->tooltip_icon_name;
+}
+
+/**
+ * app_indicator_get_tooltip_title:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the tooltip title of the application indicator.  See the function
+ * app_indicator_set_tooltip_title() for information on the tooltip title.
+ *
+ * Return value: The current tooltip title.
+ *
+ * Since: 0.6
+ *
+ */
+const gchar *
+app_indicator_get_tooltip_title (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	return priv->tooltip_title;
+}
+
+/**
+ * app_indicator_get_tooltip_body:
+ * @self: The #AppIndicator object to use
+ *
+ * Gets the tooltip body of the application indicator.  See the function
+ * app_indicator_set_tooltip_body() for information on the tooltip body.
+ *
+ * Return value: The current tooltip text body.
+ *
+ * Since: 0.6
+ *
+ */
+const gchar *
+app_indicator_get_tooltip_body (AppIndicator *self)
+{
+	g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+
+	AppIndicatorPrivate * priv = app_indicator_get_instance_private (self);
+
+	return priv->tooltip_body;
 }
 
 /**

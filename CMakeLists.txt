@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
-project(libayatana-appindicator C)
+project(libayatana-appindicator
+    VERSION 0.5.90
+    LANGUAGES C
+)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "..." FORCE)
@@ -31,8 +34,6 @@ pkg_check_modules(PROJECT_DEPS REQUIRED ${DEPS})
 # Set global variables
 
 include(GNUInstallDirs)
-set(PROJECT_VERSION "0.5.90")
-set(PROJECT_NAME "libayatana-appindicator")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
@@ -45,6 +46,8 @@ else()
     set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wall")
 
 endif()
+
+add_compile_definitions(APP_INDICATOR_COMPILATION)
 
 # Make everything
 
