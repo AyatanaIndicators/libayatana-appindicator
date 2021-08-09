@@ -7,12 +7,11 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+# Options
+
 option(ENABLE_TESTS "Enable all tests and checks" OFF)
 option(ENABLE_COVERAGE "Enable coverage reports (includes enabling all tests and checks)" OFF)
-
-# Check for prerequisites
-
-set(DEPS glib-2.0>=2.58 ayatana-indicator3-0.4>=0.8.4 gtk+-3.0>=3.24 dbusmenu-gtk3-0.4)
+option(ENABLE_WERROR "Treat all build warnings as errors" OFF)
 
 if(ENABLE_COVERAGE)
     set(ENABLE_TESTS ON)
@@ -20,6 +19,15 @@ if(ENABLE_COVERAGE)
 else()
     set(CMAKE_BUILD_TYPE "Release")
 endif()
+
+if(ENABLE_WERROR)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+
+# Check for prerequisites
+
+set(DEPS glib-2.0>=2.58 ayatana-indicator3-0.4>=0.8.4 gtk+-3.0>=3.24 dbusmenu-gtk3-0.4)
 
 if(ENABLE_TESTS)
     set(DEPS ${DEPS} dbus-1>=1.12 dbus-glib-1>=0.82)
@@ -72,3 +80,4 @@ endif()
 
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "Unit tests: ${ENABLE_TESTS}")
+message(STATUS "Build with -Werror: ${ENABLE_WERROR}")
