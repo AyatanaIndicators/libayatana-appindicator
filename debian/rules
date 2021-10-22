@@ -66,13 +66,17 @@ override_dh_install:
 	
 override_dh_auto_test:
 	mkdir -p $(CURDIR)/debian/tmphome-gtk2
-	export HOME=$(CURDIR)/debian/tmphome-gtk2 && dh_auto_test --no-parallel --builddirectory=build/gtk2
+	export HOME=$(CURDIR)/debian/tmphome-gtk2 \
+	    && export XDG_DATA_HOME=$(CURDIR)/debian/tmphome-gtk2/.local/share \
+	    && dh_auto_test --no-parallel --builddirectory=build/gtk2
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/gtk2/tests/test-suite.log ]; then cat build/gtk2/tests/test-suite.log; fi
 	rm -Rf $(CURDIR)/debian/tmphome-gtk2
 
 	mkdir -p $(CURDIR)/debian/tmphome-gtk3
-	export HOME=$(CURDIR)/debian/tmphome-gtk3 && dh_auto_test --no-parallel --builddirectory=build/gtk3
+	export HOME=$(CURDIR)/debian/tmphome-gtk3 \
+	    && export XDG_DATA_HOME=$(CURDIR)/debian/tmphome-gtk3/.local/share \
+	    && dh_auto_test --no-parallel --builddirectory=build/gtk3
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/gtk3/tests/test-suite.log ]; then cat build/gtk3/tests/test-suite.log; fi
 	rm -Rf $(CURDIR)/debian/tmphome-gtk3
