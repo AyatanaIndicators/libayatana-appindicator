@@ -12,6 +12,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(ENABLE_TESTS "Enable all tests and checks" OFF)
 option(ENABLE_COVERAGE "Enable coverage reports (includes enabling all tests and checks)" OFF)
 option(ENABLE_WERROR "Treat all build warnings as errors" OFF)
+option(ENABLE_GTKDOC "Enable building GTK documentation" OFF)
 
 if(ENABLE_COVERAGE)
     set(ENABLE_TESTS ON)
@@ -58,7 +59,9 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(bindings)
-add_subdirectory(docs)
+if (ENABLE_GTKDOC)
+    add_subdirectory(docs)
+endif()
 
 if (ENABLE_TESTS)
 
@@ -81,3 +84,4 @@ endif()
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "Unit tests: ${ENABLE_TESTS}")
 message(STATUS "Build with -Werror: ${ENABLE_WERROR}")
+message(STATUS "API Documentation: ${ENABLE_GTKDOC}")
