@@ -5,13 +5,13 @@ namespace AyatanaAppIndicator
 {
     public partial class ApplicationIndicator : GLib.Object
     {
-        [DllImport ("ayatana-appindicator3.dll")]
+        [DllImport ("@ayatana_appindicator_gtkver@.dll")]
         static extern int app_indicator_get_status (IntPtr i);
 
-        [DllImport ("ayatana-appindicator3.dll")]
+        [DllImport ("@ayatana_appindicator_gtkver@.dll")]
         static extern int app_indicator_get_category (IntPtr i);
 
-        [DllImport ("ayatana-appindicator3.dll")]
+        [DllImport ("@ayatana_appindicator_gtkver@.dll")]
         static extern void app_indicator_set_status (IntPtr i, int s);
 
         [GLib.Property ("status")]
