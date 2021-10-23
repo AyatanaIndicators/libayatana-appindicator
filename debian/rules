@@ -2,8 +2,7 @@
 
 include /usr/share/dpkg/architecture.mk
 
-#FLAVORS = gtk2 gtk3
-FLAVORS = gtk3
+FLAVOURS = gtk3 gtk2
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -18,9 +17,8 @@ ifeq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 mipsel ppc64el s39
 else
   dh_extra_args = ,cli
 endif
-#CONFIGURE_FLAGS_gtk2 = -DENABLE_GTK2=ON -DENABLE_GTK_DOC=ON
-#CONFIGURE_FLAGS_gtk3 = -DENABLE_GTK3=ON -DENABLE_GTK_DOC=ON
-CONFIGURE_FLAGS_gtk3 =
+CONFIGURE_FLAGS_gtk2 = -DFLAVOUR_GTK2=ON -DENABLE_GTKDOC=OFF
+CONFIGURE_FLAGS_gtk3 = -DFLAVOUR_GTK3=ON -DENABLE_GTKDOC=ON
 
 export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
 
@@ -29,17 +27,17 @@ CFLAGS += -fPIC
 %:
 	dh $@ --with gir$(dh_extra_args)
 
-override_dh_auto_configure: $(FLAVORS:%=doconfigure-%)
+override_dh_auto_configure: $(FLAVOURS:%=doconfigure-%)
 
 doconfigure-%:
 	dh_auto_configure --builddirectory=build/$* -- $(CONFIGURE_FLAGS_$*) $(CONFIGURE_COMMON_FLAGS)
 
-override_dh_auto_build: $(FLAVORS:%=dobuild-%)
+override_dh_auto_build: $(FLAVOURS:%=dobuild-%)
 
 dobuild-%:
 	dh_auto_build --builddirectory=build/$*
 
-override_dh_auto_install: $(FLAVORS:%=doinstall-%)
+override_dh_auto_install: $(FLAVOURS:%=doinstall-%)
 
 doinstall-%:
 	dh_auto_install --builddirectory=build/$* --destdir=debian/tmp/$*
@@ -49,9 +47,9 @@ override_dh_install:
 	find debian/tmp -name \*.a -exec rm {} \;
 	rm -rf debian/tmp/*/usr/lib/mono
 	rm -rf debian/tmp/*/usr/share/vala/vapi/ayatana-appindicator*-0.1.deps
-	#dh_install -plibayatana-appindicator1 --fail-missing --sourcedir=debian/tmp/gtk2
-	#dh_install -pgir1.2-ayatanaappindicator-0.1 --fail-missing --sourcedir=debian/tmp/gtk2
-	#dh_install -plibayatana-appindicator-dev --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibayatana-appindicator1 --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -pgir1.2-ayatanaappindicator-0.1 --fail-missing --sourcedir=debian/tmp/gtk2
+	dh_install -plibayatana-appindicator-dev --fail-missing --sourcedir=debian/tmp/gtk2
 	dh_install -plibayatana-appindicator-doc --fail-missing --sourcedir=debian/tmp/gtk3
 	dh_install -plibayatana-appindicator3-1 --fail-missing --sourcedir=debian/tmp/gtk3
 	dh_install -plibayatana-appindicator3-dev --fail-missing --sourcedir=debian/tmp/gtk3
@@ -59,11 +57,10 @@ override_dh_install:
 	if echo amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 | grep -q $(DEB_HOST_ARCH); then \
 	    dh_install -plibayatana-appindicator3-0.1-cil --fail-missing --sourcedir=debian/tmp/gtk3; \
 	    dh_install -plibayatana-appindicator3-0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk3; \
+	    dh_install -plibayatana-appindicator0.1-cil --fail-missing --sourcedir=debian/tmp/gtk2; \
+	    dh_install -plibayatana-appindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2; \
 	fi
-	# these belong into above if clause, once GTK-2+ builds are possible again...
-	#  dh_install -plibayatana-appindicator0.1-cil --fail-missing --sourcedir=debian/tmp/gtk2; \
-	#  dh_install -plibayatana-appindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2; \
-	
+
 override_dh_auto_test:
 	mkdir -p $(CURDIR)/debian/tmphome-gtk3/.local/share
 	mkdir -p $(CURDIR)/debian/tmphome-gtk3/.cache
