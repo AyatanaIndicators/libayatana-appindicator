@@ -11,12 +11,22 @@ set(SOURCES
     gen-notification-watcher.xml.c
 )
 
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/libayatana-appindicator3-0.1/libayatana-appindicator")
+if (FLAVOUR_GTK3)
+    set (ayatana_appindicator_gtkver "ayatana-appindicator3")
+    set (ayatana_appindicator_girver "AyatanaAppIndicator3")
+    set (gtk_girver "Gtk-3.0")
+elseif (FLAVOUR_GTK2)
+    set (ayatana_appindicator_gtkver "ayatana-appindicator")
+    set (ayatana_appindicator_girver "AyatanaAppIndicator")
+    set (gtk_girver "Gtk-2.0")
+endif()
 
-# ayatana-appindicator3-0.1.pc
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/lib${ayatana_appindicator_gtkver}-0.1/libayatana-appindicator")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/ayatana-appindicator3-0.1.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-0.1.pc" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/ayatana-appindicator3-0.1.pc" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+# ayatana-appindicator{,3}-0.1.pc
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${ayatana_appindicator_gtkver}-0.1.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_gtkver}-0.1.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_gtkver}-0.1.pc" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
 
 # app-indicator-enum-types.h
 
@@ -32,7 +42,7 @@ add_custom_command(
     --output="${CMAKE_CURRENT_BINARY_DIR}/app-indicator-enum-types.h"
 )
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/app-indicator-enum-types.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/libayatana-appindicator3-0.1/libayatana-appindicator")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/app-indicator-enum-types.h" DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/lib${ayatana_appindicator_gtkver}-0.1/libayatana-appindicator")
 
 # app-indicator-enum-types.c
 
@@ -106,27 +116,27 @@ string(PREPEND GEN_NOTIFICATION_WATCHER_XML_C "const char * _notification_watche
 string(APPEND GEN_NOTIFICATION_WATCHER_XML_C "\;")
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/gen-notification-watcher.xml.c" ${GEN_NOTIFICATION_WATCHER_XML_C})
 
-# libayatana-appindicator3.so
+# libayatana-appindicator{,3}.so
 
 set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS ${COMPILE_FLAGS})
-add_library("ayatana-appindicator3" SHARED ${SOURCES})
-set_target_properties("ayatana-appindicator3" PROPERTIES VERSION 1.0.0 SOVERSION 1)
-target_compile_definitions("ayatana-appindicator3" PUBLIC G_LOG_DOMAIN="libayatana-appindicator")
-target_include_directories("ayatana-appindicator3" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
-target_include_directories("ayatana-appindicator3" PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories("ayatana-appindicator3" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries("ayatana-appindicator3" ${PROJECT_DEPS_LIBRARIES})
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3.so" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3.so.1" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator3.so.1.0.0" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+add_library("${ayatana_appindicator_gtkver}" SHARED ${SOURCES})
+set_target_properties("${ayatana_appindicator_gtkver}" PROPERTIES VERSION 1.0.0 SOVERSION 1)
+target_compile_definitions("${ayatana_appindicator_gtkver}" PUBLIC G_LOG_DOMAIN="libayatana-appindicator")
+target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
+target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries("${ayatana_appindicator_gtkver}" ${PROJECT_DEPS_LIBRARIES})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}.so" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}.so.1" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}.so.1.0.0" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
 
-# AyatanaAppIndicator3-0.1.gir
+# AyatanaAppIndicator{,3}-0.1.gir
 
 find_package(GObjectIntrospection REQUIRED QUIET)
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir"
-    DEPENDS "ayatana-appindicator3"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir"
+    DEPENDS "${ayatana_appindicator_gtkver}"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND
     ${INTROSPECTION_SCANNER}
@@ -135,32 +145,31 @@ add_custom_command(
     --c-include=libayatana-appindicator/app-indicator.h
     --symbol-prefix=app
     --identifier-prefix=App
-    --namespace=AyatanaAppIndicator3
+    --namespace=${ayatana_appindicator_girver}
     --nsversion=0.1
     --quiet
     --warn-all
     --include=GObject-2.0
-    --include=Gtk-3.0
+    --include=${gtk_girver}
     --library-path=${CMAKE_CURRENT_BINARY_DIR}
-    --library="ayatana-appindicator3"
-    --output "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir"
+    --library="${ayatana_appindicator_gtkver}"
+    --output "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir"
 )
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir" DESTINATION "${CMAKE_INSTALL_FULL_DATADIR}/gir-1.0")
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir" DESTINATION "${CMAKE_INSTALL_FULL_DATADIR}/gir-1.0")
-
-# AyatanaAppIndicator3-0.1.typelib
+# AyatanaAppIndicator{,3}-0.1.typelib
 
 add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${INTROSPECTION_COMPILER}
     --includedir=${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.gir
-    -o "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib"
+    ${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir
+    -o "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib"
 )
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/girepository-1.0")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/girepository-1.0")
 
-add_custom_target(src ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator3-0.1.typelib")
+add_custom_target(src ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.typelib")

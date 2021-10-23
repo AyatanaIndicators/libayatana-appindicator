@@ -28,7 +28,34 @@ endif()
 
 # Check for prerequisites
 
-set(DEPS glib-2.0>=2.58 ayatana-indicator3-0.4>=0.8.4 gtk+-3.0>=3.24 dbusmenu-gtk3-0.4)
+option(FLAVOUR_GTK2 "Build against GTK+-2.0" OFF)
+option(FLAVOUR_GTK3 "Build against GTK+-3.0" ON)
+
+if (FLAVOUR_GTK2)
+    set (FLAVOUR_GTK3 OFF)
+endif()
+if (FLAVOUR_GTK3)
+    set (FLAVOUR_GTK2 OFF)
+endif()
+
+set(DEPS glib-2.0>=2.58)
+
+if (FLAVOUR_GTK3)
+    set(DEPS
+        ${DEPS}
+        ayatana-indicator3-0.4>=0.8.4
+        gtk+-3.0>=3.24
+        dbusmenu-gtk3-0.4
+    )
+elseif (FLAVOUR_GTK2)
+    set(DEPS
+        ${DEPS}
+        ayatana-indicator-0.4>=0.8.4
+        gtk+-2.0>=2.18
+        dbusmenu-gtk-0.4
+    )
+endif()
+
 
 if(ENABLE_TESTS)
     set(DEPS ${DEPS} dbus-1>=1.12 dbus-glib-1>=0.82)
@@ -82,6 +109,8 @@ endif()
 # Display config info
 
 message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "GTK+-3.0 build: ${FLAVOUR_GTK3}")
+message(STATUS "GTK+-2.0 build: ${FLAVOUR_GTK2}")
 message(STATUS "Unit tests: ${ENABLE_TESTS}")
 message(STATUS "Build with -Werror: ${ENABLE_WERROR}")
 message(STATUS "API Documentation: ${ENABLE_GTKDOC}")

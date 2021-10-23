@@ -5,7 +5,7 @@ bindir=@bindir@
 includedir=@includedir@
 
 Cflags: -I${includedir}/libayatana-appindicator-0.1
-Requires: dbusmenu-glib-0.4 gtk+-2.0
+Requires: ayatana-indicator-0.4 dbusmenu-glib-0.4 gtk+-2.0
 Libs: -L${libdir} -layatana-appindicator
 
 Name: ayatana-appindicator-0.1

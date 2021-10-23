@@ -1,3 +1,8 @@
+if (FLAVOUR_GTK3)
+    set (ayatana_appindicator_gtkver "ayatana-appindicator3")
+elseif (FLAVOUR_GTK2)
+    set (ayatana_appindicator_gtkver "ayatana-appindicator")
+endif()
 
 # libayatana-appindicator-docs.sgml
 
@@ -49,6 +54,8 @@ add_custom_command(
 
 list(JOIN PROJECT_DEPS_INCLUDE_DIRS " -I" GTKDOC_SCANGOBJ_INCLUDE_DIRS)
 list(JOIN PROJECT_DEPS_LIBRARIES " -l" GTKDOC_SCANGOBJ_LIBRARIES)
+
+set (SCANGOBJ_AYATANA_APPINDICATOR "${ayatana_appindicator_gtkver}")
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/scangobj.sh.in" "${CMAKE_CURRENT_BINARY_DIR}/scangobj.sh")
 
@@ -228,6 +235,6 @@ add_custom_command(
 )
 
 set_source_files_properties("fixxref" PROPERTIES SYMBOLIC True)
-install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html/" DESTINATION "${CMAKE_INSTALL_FULL_DATADIR}/gtk-doc/html/libayatana-appindicator")
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html/" DESTINATION "${CMAKE_INSTALL_FULL_DATADIR}/gtk-doc/html/lib${ayatana_appindicator_gtkver}")
 
 add_custom_target("docs-references" ALL DEPENDS "fixxref")
