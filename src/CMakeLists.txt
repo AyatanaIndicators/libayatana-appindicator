@@ -132,7 +132,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}.so.
 
 # AyatanaAppIndicator{,3}-0.1.gir
 
-find_package(GObjectIntrospection REQUIRED QUIET)
+find_package(GObjectIntrospection REQUIRED)
 
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ayatana_appindicator_girver}-0.1.gir"
