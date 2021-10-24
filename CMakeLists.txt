@@ -58,13 +58,20 @@ elseif (FLAVOUR_GTK2)
     )
 endif()
 
-
 if(ENABLE_TESTS)
     set(DEPS ${DEPS} dbus-1>=1.12 dbus-glib-1>=0.82)
 endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PROJECT_DEPS REQUIRED ${DEPS})
+
+if (ENABLE_GTKDOC)
+    find_program (GTKDOC "gtk-doc")
+    if (NOT GTKDOC_FOUND)
+        message(WARNING "Building the gtk-doc API documentation is enabled, but the gtk-doc executable has not been found.  Disabling API documentation building, although requested.")
+        set (ENABLE_GTKDOC OFF)
+    endif()
+endif()
 
 # Set global variables
 
