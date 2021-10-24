@@ -67,7 +67,7 @@ pkg_check_modules(PROJECT_DEPS REQUIRED ${DEPS})
 
 if (ENABLE_GTKDOC)
     find_program (GTKDOC "gtkdoc-scan")
-    if (NOT GTKDOC_FOUND)
+    if (NOT GTKDOC)
         message(WARNING "Building the gtk-doc API documentation is enabled, but the gtkdoc-scan executable has not been found.  Disabling API documentation building, although requested.")
         set (ENABLE_GTKDOC OFF)
     endif()
