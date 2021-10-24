@@ -100,7 +100,7 @@ add_custom_command(
     COMMAND
     echo ". ${CMAKE_CURRENT_SOURCE_DIR}/run-xvfb.sh" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback"
     COMMAND
-    echo "${DBUS_TEST_RUNNER} -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback-item --task-name Item" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback"
+    echo "${DBUS_TEST_RUNNER} --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback-watcher --task-name Watcher --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback-item --task-name Item" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback"
     COMMAND
     chmod +x "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-fallback"
 )
@@ -122,7 +122,7 @@ add_custom_command(
     COMMAND
     echo ". ${CMAKE_CURRENT_SOURCE_DIR}/run-xvfb.sh" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus"
     COMMAND
-    echo "${DBUS_TEST_RUNNER} -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus-client --task-name Client --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus-server --task-name Server" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus"
+    echo "${DBUS_TEST_RUNNER} --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus-client --task-name Client --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus-server --task-name Server" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus"
     COMMAND
     chmod +x "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-dbus"
 )
@@ -144,7 +144,7 @@ add_custom_command(
     COMMAND
     echo ". ${CMAKE_CURRENT_SOURCE_DIR}/run-xvfb.sh" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status"
     COMMAND
-    echo "${DBUS_TEST_RUNNER} -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status-client --task-name Client --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status-server --task-name Server" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status"
+    echo "${DBUS_TEST_RUNNER} --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status-client --task-name Client --ignore-return --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status-server --task-name Server" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status"
     COMMAND
     chmod +x "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-status"
 )
@@ -180,7 +180,7 @@ add_custom_command(
     COMMAND
     echo ". ${CMAKE_CURRENT_SOURCE_DIR}/run-xvfb.sh" >> "${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests"
     COMMAND
-    echo "${DBUS_TEST_RUNNER} -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests-gtester" >> "${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests"
+    echo "${DBUS_TEST_RUNNER} --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests-gtester" >> "${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests"
     COMMAND
     chmod +x "${CMAKE_CURRENT_BINARY_DIR}/libappindicator-tests"
 )
