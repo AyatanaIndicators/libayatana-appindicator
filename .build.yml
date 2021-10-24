@@ -200,18 +200,14 @@ build_scripts:
   -     scan-build $CHECKERS --keep-cc -o html-report make
   -     cd -
   - fi
-
-after_scripts:
-  - if [ ${BUILD_TYPE} == "scripts" ];then
-  -     XVFB_RUN="$(which xvfb-run || true)"
-  -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
-  -         if [ -e ./CMakeLists.txt ]; then
-  -             cd build/gtk3/
-  -             ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
-  -             cd -
-  -             cd build/gtk2/
-  -             ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
-  -             cd -
-  -         fi
+  - XVFB_RUN="$(which xvfb-run || true)"
+  - if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
+  -     if [ -e ./CMakeLists.txt ]; then
+  -         cd build/gtk3/
+  -         ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
+  -         cd -
+  -         cd build/gtk2/
+  -         ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
+  -         cd -
   -     fi
   - fi
