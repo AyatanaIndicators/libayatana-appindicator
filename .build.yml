@@ -143,17 +143,17 @@ build_scripts:
   -     mkdir -p build/gtk3/
   -     cd build/gtk3/
   -     if [ ${DISTRO_NAME} == "debian" ] && [ ${DISTRO_NAME} == "ubuntu" ]; then
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAOUR_GTK3=ON
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK3=ON
   -     else
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAOUR_GTK3=ON
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK3=ON
   -     fi
   -     cd -
   -     mkdir -p build/gtk2/
   -     cd build/gtk2/
   -     if [ ${DISTRO_NAME} == "debian" ] && [ ${DISTRO_NAME} == "ubuntu" ]; then
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAOUR_GTK2=ON
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK2=ON
   -     else
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAOUR_GTK2=ON
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK2=ON
   -     fi
   -     cd -
   - else
