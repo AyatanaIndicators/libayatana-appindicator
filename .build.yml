@@ -172,7 +172,12 @@ build_scripts:
   -         make clean
   -         cd -
   -     fi
+  -     cd build/gtk3/
   -     scan-build $CHECKERS --keep-cc -o html-report make -j $CPU_COUNT
+  -     cd -
+  -     cd build/gtk2/
+  -     scan-build $CHECKERS --keep-cc -o html-report make -j $CPU_COUNT
+  -     cd -
   - else
   -     if [ ${DISTRO_NAME} == "debian" ];then
   -         cd build/gtk3/
