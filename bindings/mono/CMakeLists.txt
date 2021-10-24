@@ -118,7 +118,7 @@ if (FLAVOUR_GTK3)
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/NewStatusHandler.cs"
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/AppIndicatorStatus.cs"
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/NewIconHandler.cs"
-        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ApplicationIndicator.cs.raw"
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ApplicationIndicator.cs"
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/NewIconThemePathHandler.cs"
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ScrollEventHandler.cs"
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/AyatanaAppIndicator/ConnectionChangedHandler.cs"
