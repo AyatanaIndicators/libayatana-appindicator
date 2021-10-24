@@ -27,9 +27,9 @@ requires:
     - g++
     - cppcheck
     - git
+    - at-spi2-core
     - cmake
     - cmake-extras
-    - mate-common
     - cli-common-dev
     - gobject-introspection
     - intltool
@@ -43,10 +43,10 @@ requires:
     - libglib2.0-dev
     - libgtk-3-dev
     - libgtk2.0-dev
+    - gtk-sharp3-gapi
+    - libgtk3.0-cil-dev
     - gtk-sharp2-gapi
     - libgtk2.0-cil-dev
-    - libgtk3.0-cil-dev
-    - gtk-sharp3-gapi
     - libdbus-1-dev
     - libdbus-glib-1-dev
     - libdbusmenu-glib-dev
@@ -59,10 +59,11 @@ requires:
     - clang
     - clang-tools
     - g++
+    - cppcheck
     - git
+    - at-spi2-core
     - cmake
     - cmake-extras
-    - mate-common
     - cli-common-dev
     - gobject-introspection
     - intltool
@@ -76,10 +77,10 @@ requires:
     - libglib2.0-dev
     - libgtk-3-dev
     - libgtk2.0-dev
+    - gtk-sharp3-gapi
+    - libgtk3.0-cil-dev
     - gtk-sharp2-gapi
     - libgtk2.0-cil-dev
-    - libgtk3.0-cil-dev
-    - gtk-sharp3-gapi
     - libdbus-1-dev
     - libdbus-glib-1-dev
     - libdbusmenu-glib-dev
@@ -114,6 +115,8 @@ before_scripts:
   - cmake . -DCMAKE_INSTALL_PREFIX=/usr
   - make
   - make install
+  - cd ../
+  - rm -Rf ayatana-ido-build/
   -
   - cd ${START_DIR}
   - if [ ! -d libayatana-indicator-build ]; then
@@ -132,6 +135,8 @@ before_scripts:
   - make
   - make install
   - cd -
+  - cd ../
+  - rm -Rf libayatana-indicator-build/
 
 build_scripts:
   - if [ ${DISTRO_NAME} == "debian" ];then
@@ -142,7 +147,7 @@ build_scripts:
   - if [ -e ./CMakeLists.txt ]; then
   -     mkdir -p build/gtk3/
   -     cd build/gtk3/
-  -     if [ ${DISTRO_NAME} == "debian" ] && [ ${DISTRO_NAME} == "ubuntu" ]; then
+  -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK3=ON
   -     else
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK3=ON
@@ -150,7 +155,7 @@ build_scripts:
   -     cd -
   -     mkdir -p build/gtk2/
   -     cd build/gtk2/
-  -     if [ ${DISTRO_NAME} == "debian" ] && [ ${DISTRO_NAME} == "ubuntu" ]; then
+  -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK2=ON
   -     else
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK2=ON
@@ -171,7 +176,12 @@ build_scripts:
   -         make clean
   -         cd -
   -     fi
+  -     cd build/gtk3/
   -     scan-build $CHECKERS --keep-cc -o html-report make -j $CPU_COUNT
+  -     cd -
+  -     cd build/gtk2/
+  -     scan-build $CHECKERS --keep-cc -o html-report make -j $CPU_COUNT
+  -     cd -
   - else
   -     if [ ${DISTRO_NAME} == "debian" ];then
   -         cd build/gtk3/
@@ -194,7 +204,7 @@ build_scripts:
 after_scripts:
   - if [ ${BUILD_TYPE} == "scripts" ];then
   -     XVFB_RUN="$(which xvfb-run || true)"
-  -     if [ ${DISTRO_NAME} == "debian" ] && [ ${DISTRO_NAME} == "ubuntu" ]; then
+  -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
   -         if [ -e ./CMakeLists.txt ]; then
   -             cd build/gtk3/
   -             ${XVFB_RUN} env CTEST_OUTPUT_ON_FAILURE=1 make test
