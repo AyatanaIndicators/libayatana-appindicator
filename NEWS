@@ -1,3 +1,13 @@
+Overview of changes in libayatana-appindicator 0.5.90
+
+  - Mono bindings: Change namespace from ayatana-appindicator-sharp3
+    to ayatana-appindicator3-sharp (and similar).
+  - Port to CMake.
+  - Default to GTK+-3.0 as default build flavour.
+  - Add Travis CI configuration.
+  - Add --keep-env option to dbus-test-runner calls. Allows propagating
+    e.g. a build HOME into the DBus test environment.
+
 Overview of changes in libayatana-appindicator 0.5.5
 
   - Drop Python2 support.
