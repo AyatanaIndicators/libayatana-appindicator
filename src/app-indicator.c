@@ -2081,7 +2081,7 @@ append_snap_prefix (const gchar *path)
 	g_autofree gchar *canon_path = NULL;
 
 	if (snap != NULL && path != NULL) {
-		canon_path = canonicalize_file_name(path);
+		canon_path = realpath(path, NULL);
 
 		if (g_str_has_prefix (canon_path, "/tmp/")) {
 			g_warning ("Using '/tmp' paths in SNAP environment will lead to unreadable resources");
