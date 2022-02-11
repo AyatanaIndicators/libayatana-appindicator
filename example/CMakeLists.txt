@@ -31,7 +31,7 @@ if (FLAVOUR_GTK3)
 
     # simple-client-vala
 
-    set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/simple-client-vala.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
+    set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/simple-client-vala.c" PROPERTIES COMPILE_FLAGS " -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
     add_executable("simple-client-vala" "${CMAKE_CURRENT_BINARY_DIR}/simple-client-vala.c")
     target_include_directories("simple-client-vala" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
     target_link_libraries("simple-client-vala" "${PROJECT_DEPS_LIBRARIES} -l${ayatana_appindicator_gtkver} -L${CMAKE_BINARY_DIR}/src")
@@ -41,7 +41,6 @@ endif()
 
 # simple-client
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/simple-client.c" PROPERTIES COMPILE_FLAGS ${COMPILE_FLAGS})
 add_executable("simple-client" "${CMAKE_CURRENT_SOURCE_DIR}/simple-client.c")
 target_compile_definitions("simple-client" PUBLIC LOCAL_ICON="${CMAKE_CURRENT_SOURCE_DIR}/simple-client-test-icon.png")
 target_include_directories("simple-client" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})

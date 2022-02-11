@@ -118,7 +118,6 @@ file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/gen-notification-watcher.xml.c" ${GEN_NO
 
 # libayatana-appindicator{,3}.so
 
-set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS ${COMPILE_FLAGS})
 add_library("${ayatana_appindicator_gtkver}" SHARED ${SOURCES})
 set_target_properties("${ayatana_appindicator_gtkver}" PROPERTIES VERSION 1.0.0 SOVERSION 1)
 target_compile_definitions("${ayatana_appindicator_gtkver}" PUBLIC G_LOG_DOMAIN="libayatana-appindicator")
