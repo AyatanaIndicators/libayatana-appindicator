@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 project(libayatana-appindicator C)
 
+set(PROJECT_VERSION "0.5.90")
+set(PROJECT_NAME "libayatana-appindicator")
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "..." FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -24,8 +27,13 @@ else()
 endif()
 
 if(ENABLE_WERROR)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+    add_definitions("-Werror")
+endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    add_definitions("-Weverything")
+else()
+    add_definitions("-Wall")
 endif()
 
 # Check for prerequisites
@@ -62,6 +70,7 @@ if(ENABLE_TESTS)
     set(DEPS ${DEPS} dbus-1>=1.12 dbus-glib-1>=0.82)
 endif()
 
+include(GNUInstallDirs)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PROJECT_DEPS REQUIRED ${DEPS})
 
@@ -71,24 +80,6 @@ if (ENABLE_GTKDOC)
         message(WARNING "Building the gtk-doc API documentation is enabled, but the gtkdoc-scan executable has not been found.  Disabling API documentation building, although requested.")
         set (ENABLE_GTKDOC OFF)
     endif()
-endif()
-
-# Set global variables
-
-include(GNUInstallDirs)
-set(PROJECT_VERSION "0.5.90")
-set(PROJECT_NAME "libayatana-appindicator")
-
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-
-    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Weverything")
-    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wno-c++98-compat -Wno-padded")
-    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wno-documentation")
-
-else()
-
-    set(COMPILE_FLAGS "${COMPILE_FLAGS} -Wall")
-
 endif()
 
 # Make everything

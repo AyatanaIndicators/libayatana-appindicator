@@ -6,7 +6,7 @@ endif()
 
 # test-libappindicator
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
+set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator.c" PROPERTIES COMPILE_FLAGS " -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
 add_executable("test-libappindicator" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator.c")
 target_compile_definitions("test-libappindicator" PUBLIC SRCDIR="${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories("test-libappindicator" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
@@ -17,7 +17,6 @@ add_dependencies("test-libappindicator" "${ayatana_appindicator_gtkver}")
 
 # test-libappindicator-dbus-client
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-dbus-client" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-dbus-client.c")
 target_include_directories("test-libappindicator-dbus-client" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_include_directories("test-libappindicator-dbus-client" PUBLIC "${CMAKE_SOURCE_DIR}/src")
@@ -27,7 +26,6 @@ add_dependencies("test-libappindicator-dbus-client" "${ayatana_appindicator_gtkv
 
 # test-libappindicator-dbus-server
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-dbus-server.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-dbus-server" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-dbus-server.c")
 target_include_directories("test-libappindicator-dbus-server" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_include_directories("test-libappindicator-dbus-server" PUBLIC "${CMAKE_SOURCE_DIR}/src")
@@ -37,7 +35,6 @@ add_dependencies("test-libappindicator-dbus-server" "${ayatana_appindicator_gtkv
 
 # test-libappindicator-status-client
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-status-client.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-status-client" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-status-client.c")
 target_include_directories("test-libappindicator-status-client" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_link_libraries("test-libappindicator-status-client" "${PROJECT_DEPS_LIBRARIES} -l${ayatana_appindicator_gtkver}")
@@ -46,7 +43,6 @@ add_dependencies("test-libappindicator-status-client" "${ayatana_appindicator_gt
 
 # test-libappindicator-status-server
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-status-server.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-status-server" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-status-server.c")
 target_include_directories("test-libappindicator-status-server" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_include_directories("test-libappindicator-status-server" PUBLIC "${CMAKE_SOURCE_DIR}/src")
@@ -56,7 +52,6 @@ add_dependencies("test-libappindicator-status-server" "${ayatana_appindicator_gt
 
 # test-libappindicator-fallback-item
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-fallback-item.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-fallback-item" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-fallback-item.c")
 target_include_directories("test-libappindicator-fallback-item" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_include_directories("test-libappindicator-fallback-item" PUBLIC "${CMAKE_SOURCE_DIR}/src")
@@ -66,7 +61,6 @@ add_dependencies("test-libappindicator-fallback-item" "${ayatana_appindicator_gt
 
 # test-libappindicator-fallback-watcher
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-fallback-watcher.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-libappindicator-fallback-watcher" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-fallback-watcher.c")
 target_include_directories("test-libappindicator-fallback-watcher" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_link_libraries("test-libappindicator-fallback-watcher" "${PROJECT_DEPS_LIBRARIES} -l${ayatana_appindicator_gtkver}")
@@ -75,7 +69,6 @@ add_dependencies("test-libappindicator-fallback-watcher" "${ayatana_appindicator
 
 # test-simple-app
 
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/test-simple-app.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS}")
 add_executable("test-simple-app" "${CMAKE_CURRENT_SOURCE_DIR}/test-simple-app.c")
 target_include_directories("test-simple-app" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_include_directories("test-simple-app" PUBLIC "${CMAKE_SOURCE_DIR}/src")

@@ -21,7 +21,7 @@ add_custom_command(
 
 # ayatana-indicator-example
 
-set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c" PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
+set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c" PROPERTIES COMPILE_FLAGS " -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h")
 add_executable("ayatana-indicator-example" "${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c")
 target_include_directories("ayatana-indicator-example" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
 target_link_libraries("ayatana-indicator-example" "${PROJECT_DEPS_LIBRARIES} -layatana-appindicator3 -L${CMAKE_BINARY_DIR}/src")
