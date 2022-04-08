@@ -509,7 +509,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                  G_STRUCT_OFFSET (AppIndicatorClass, new_icon),
 	                                  NULL, NULL,
 	                                  g_cclosure_marshal_VOID__VOID,
-	                                  G_TYPE_NONE, 0, G_TYPE_NONE);
+	                                  G_TYPE_NONE, 0);
 
 	/**
 	 * AppIndicator::new-attention-icon:
@@ -523,7 +523,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            G_STRUCT_OFFSET (AppIndicatorClass, new_attention_icon),
 	                                            NULL, NULL,
 	                                            g_cclosure_marshal_VOID__VOID,
-	                                            G_TYPE_NONE, 0, G_TYPE_NONE);
+	                                            G_TYPE_NONE, 0);
 
 	/**
 	 * AppIndicator::new-status:
@@ -571,7 +571,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
 	                                            G_STRUCT_OFFSET (AppIndicatorClass, connection_changed),
 	                                            NULL, NULL,
 	                                            g_cclosure_marshal_VOID__BOOLEAN,
-	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN, G_TYPE_NONE);
+	                                            G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	/**
 	 * AppIndicator::new-icon-theme-path:
@@ -1281,7 +1281,7 @@ signal_label_change_idle (gpointer user_data)
 	gchar * guide = priv->label_guide != NULL ? priv->label_guide : "";
 
 	g_signal_emit(G_OBJECT(self), signals[NEW_LABEL], 0,
-	              label, guide, TRUE);
+	              label, guide);
 	if (priv->dbus_registration != 0 && priv->connection != NULL) {
 		GError * error = NULL;
 
@@ -1498,7 +1498,7 @@ fallback_timer_expire (gpointer data)
 static void
 theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
 {
-	g_signal_emit (user_data, signals[NEW_ICON], 0, TRUE);
+	g_signal_emit (user_data, signals[NEW_ICON], 0);
 
 	AppIndicator * self = (AppIndicator *)user_data;
 	AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
@@ -1619,16 +1619,18 @@ status_icon_changes (AppIndicator * self, gpointer data)
 		gint n_elements, i;
 		gboolean found=FALSE;
 		gtk_icon_theme_get_search_path(icon_theme, &path, &n_elements);
-		for (i=0; i< n_elements || path[i] == NULL; i++) {
-			if(g_strcmp0(path[i], theme_path) == 0) {
-				found=TRUE;
-				break;
+		if (path != NULL) {
+			for (i=0; i< n_elements; i++) {
+				if(g_strcmp0(path[i], theme_path) == 0) {
+					found=TRUE;
+					break;
+				}
 			}
+			g_strfreev (path);
 		}
 		if(!found) {
 			gtk_icon_theme_append_search_path(icon_theme, theme_path);
 		}
-		g_strfreev (path);
 	}
 
 	const gchar * icon_name = NULL;
@@ -1930,7 +1932,7 @@ app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_nam
 	}
 
 	if (changed) {
-		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0, TRUE);
+		g_signal_emit (self, signals[NEW_ATTENTION_ICON], 0);
 
 		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			GError * error = NULL;
@@ -2018,7 +2020,7 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 	}
 
 	if (changed) {
-		g_signal_emit (self, signals[NEW_ICON], 0, TRUE);
+		g_signal_emit (self, signals[NEW_ICON], 0);
 
 		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			GError * error = NULL;
@@ -2148,7 +2150,7 @@ app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_p
 		g_free (priv->absolute_icon_theme_path);
 		priv->absolute_icon_theme_path = get_real_theme_path (self);
 
-		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, priv->icon_theme_path, TRUE);
+		g_signal_emit (self, signals[NEW_ICON_THEME_PATH], 0, priv->icon_theme_path);
 
 		if (priv->dbus_registration != 0 && priv->connection != NULL) {
 			const gchar *theme_path = priv->absolute_icon_theme_path ?
