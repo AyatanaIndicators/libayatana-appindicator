@@ -1,6 +1,77 @@
+2022-04-08 Mike Gabriel
+
+        * release 0.5.91 (HEAD -> master, tag: 0.5.91)
+        * Merge branch 'pr/discord-segfaulting' (59e472a)
+
+2022-04-01 Mike Gabriel
+
+        * src/appindicator.c: Clean up all g_signal_emit and g_signal_new
+          calls so that they correspond with each other. (05dee64)
+        * src/appindicator.c: Fix path NULL check in status_icon_change().
+          (540b7bf)
+
+2022-04-01 Robert Tari
+
+        * Merge branch 'sunweaver-pr/gpl-3-copying-file' (5b0a474)
+
+2022-04-01 Mike Gabriel
+
+        * COPYING.GPL.3: Add file. Some code files are licensed GPL-3. Thanks
+          to Luca Weiss for spotting this. (6c01f2c)
+
+2022-02-16 Mike Gabriel
+
+        * Merge branch 'tari01-pr/cleanup-compile-flags' (420dcd2)
+
+2022-02-11 Robert Tari
+
+        * .build.yml: Drop extra compilation flags (0ea872f)
+        * Clean up compilation flags (e6b34ef)
+
+2022-02-09 Robert Tari
+
+        * Merge branch 'sunweaver-pr/let-run-xvfv-sh-run-in-bin-sh' (3bec2d1)
+
+2022-02-08 Mike Gabriel
+
+        * tests/run-xvfb.sh: Allow sourcing run-xvfb.sh with /bin/sh.
+          (772bab7)
+        * Merge branch 'z3ntu-tests-bash' (ea135ed)
+
+2022-02-06 Luca Weiss
+
+        * Use /bin/sh for running tests (dc4d76b)
+
+2022-02-08 Robert Tari
+
+        * .travis.yml: Run CI builds on Travis CI's Ubuntu focal base system
+          (b09086c)
+
+2022-01-27 Robert Tari
+
+        * Merge branch 'sunweaver-pr/pkg-config-file-for-gtk2-broken'
+          (43cfc1e)
+
+2021-12-21 Mike Gabriel
+
+        * src/ayatana-appindicator3-0.1.pc.in: Update description field and
+          mention GTK-3+. (1f74aa3)
+        * src/ayatana-appindicator-0.1.pc.in: Adapt file for CMake builds.
+          This slipped through when porting from autotools to CMake,
+          it seems. (Thanks to Unit193 for reporting this via IRC).
+          (7019d68)
+
+2021-12-08 Mike Gabriel
+
+        * Merge branch 'z3ntu-canonicalize_file_name' (e689457)
+
+2021-12-07 Luca Weiss
+
+        * Fix build with musl libc (89415c0)
+
 2021-11-18 Mike Gabriel
 
-        * release 0.5.90 (HEAD -> master, tag: 0.5.90)
+        * release 0.5.90 (afb37c4) (tag: 0.5.90)
 
 2021-10-24 Mike Gabriel
 

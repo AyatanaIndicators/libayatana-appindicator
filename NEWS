@@ -1,3 +1,14 @@
+Overview of changes in libayatana-appindicator 0.5.91
+
+  - src/appindicator.c: Clean up all g_signal_emit and g_signal_new calls
+    so that they correspond with each other.
+  - src/appindicator.c: Fix path NULL check in status_icon_change().
+  - Clean up compilation flags.
+  - tests/run-xvfb.sh: Allow sourcing run-xvfb.sh with /bin/sh.
+  - Use /bin/sh for running tests.
+  - src/ayatana-appindicator-0.1.pc.in. Fix for use with CMake.
+  - Fix build with musl libc.
+
 Overview of changes in libayatana-appindicator 0.5.90
 
   - Mono bindings: Change namespace from ayatana-appindicator-sharp3
