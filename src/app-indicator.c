@@ -3,10 +3,12 @@ An object to represent the application as an application indicator
 in the system panel.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2022 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
     Cody Russell <cody.russell@canonical.com>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of either or both of the following licenses:
@@ -990,7 +992,9 @@ app_indicator_set_property (GObject * object, guint prop_id, const GValue * valu
           }
 
           if (priv->status_icon != NULL) {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
             gtk_status_icon_set_title(priv->status_icon, priv->title ? priv->title : "");
+G_GNUC_END_IGNORE_DEPRECATIONS
           }
           break;
         }
@@ -1528,12 +1532,15 @@ theme_changed_cb (GtkIconTheme * theme, gpointer user_data)
 static GtkStatusIcon *
 fallback (AppIndicator * self)
 {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     GtkStatusIcon * icon = gtk_status_icon_new();
-
     gtk_status_icon_set_name(icon, app_indicator_get_id(self));
+G_GNUC_END_IGNORE_DEPRECATIONS
     const gchar * title = app_indicator_get_title(self);
     if (title != NULL) {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         gtk_status_icon_set_title(icon, title);
+G_GNUC_END_IGNORE_DEPRECATIONS
     }
 
     g_signal_connect(G_OBJECT(self), APP_INDICATOR_SIGNAL_NEW_STATUS,
@@ -1637,17 +1644,23 @@ status_icon_changes (AppIndicator * self, gpointer data)
     switch (app_indicator_get_status(self)) {
     case APP_INDICATOR_STATUS_PASSIVE:
         /* hide first to avoid that the change is visible to the user */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         gtk_status_icon_set_visible(icon, FALSE);
+G_GNUC_END_IGNORE_DEPRECATIONS
         icon_name = app_indicator_get_icon(self);
         break;
     case APP_INDICATOR_STATUS_ACTIVE:
         icon_name = app_indicator_get_icon(self);
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         gtk_status_icon_set_visible(icon, TRUE);
+G_GNUC_END_IGNORE_DEPRECATIONS
         break;
     case APP_INDICATOR_STATUS_ATTENTION:
         /* get the _attention_ icon here */
         icon_name = app_indicator_get_attention_icon(self);
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         gtk_status_icon_set_visible(icon, TRUE);
+G_GNUC_END_IGNORE_DEPRECATIONS
         break;
     };
 
@@ -1655,16 +1668,24 @@ status_icon_changes (AppIndicator * self, gpointer data)
         gchar *snapped_icon = append_snap_prefix(icon_name);
 
         if (g_file_test(icon_name, G_FILE_TEST_EXISTS)) {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
             gtk_status_icon_set_from_file(icon, icon_name);
+G_GNUC_END_IGNORE_DEPRECATIONS
         } else if (snapped_icon && g_file_test(snapped_icon, G_FILE_TEST_EXISTS)) {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
             gtk_status_icon_set_from_file(icon, snapped_icon);
+G_GNUC_END_IGNORE_DEPRECATIONS
         } else {
             gchar *longname = append_panel_icon_suffix(icon_name);
 
             if (longname != NULL && gtk_icon_theme_has_icon (icon_theme, longname)) {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 gtk_status_icon_set_from_icon_name(icon, longname);
+G_GNUC_END_IGNORE_DEPRECATIONS
             } else {
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 gtk_status_icon_set_from_icon_name(icon, icon_name);
+G_GNUC_END_IGNORE_DEPRECATIONS
             }
 
             g_free(longname);
@@ -1684,7 +1705,7 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
     GtkMenu * menu = app_indicator_get_menu(APP_INDICATOR(data));
     if (menu == NULL)
         return;
-
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     gtk_menu_popup(menu,
                    NULL, /* Parent Menu */
                    NULL, /* Parent item */
@@ -1692,7 +1713,7 @@ status_icon_activate (GtkStatusIcon * icon, gpointer data)
                    icon,
                    1, /* Button */
                    gtk_get_current_event_time());
-
+G_GNUC_END_IGNORE_DEPRECATIONS
     return;
 }
 
@@ -1713,7 +1734,9 @@ unfallback (AppIndicator * self, GtkStatusIcon * status_icon)
     g_signal_handlers_disconnect_by_func(G_OBJECT(self), status_icon_changes, status_icon);
     g_signal_handlers_disconnect_by_func(G_OBJECT(self), scroll_event_wrapper, status_icon);
     g_signal_handlers_disconnect_by_func(G_OBJECT(self), middle_click_wrapper, status_icon);
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     gtk_status_icon_set_visible(status_icon, FALSE);
+G_GNUC_END_IGNORE_DEPRECATIONS
     g_object_unref(G_OBJECT(status_icon));
     return;
 }
