@@ -127,16 +127,16 @@ G_BEGIN_DECLS
  * @APP_INDICATOR_CATEGORY_SYSTEM_SERVICES: A system indicator relating to something in the user's system.
  * @APP_INDICATOR_CATEGORY_HARDWARE: An indicator relating to the user's hardware.
  * @APP_INDICATOR_CATEGORY_OTHER: Something not defined in this enum, please don't use unless you really need it.
- * 
+ *
  * The category provides grouping for the indicators so that
  * users can find indicators that are similar together.
  */
 typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
-	APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*< nick=ApplicationStatus >*/
-	APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*< nick=Communications >*/
-	APP_INDICATOR_CATEGORY_SYSTEM_SERVICES, /*< nick=SystemServices >*/
-	APP_INDICATOR_CATEGORY_HARDWARE, /*< nick=Hardware >*/
-	APP_INDICATOR_CATEGORY_OTHER /*< nick=Other >*/
+    APP_INDICATOR_CATEGORY_APPLICATION_STATUS, /*< nick=ApplicationStatus >*/
+    APP_INDICATOR_CATEGORY_COMMUNICATIONS, /*< nick=Communications >*/
+    APP_INDICATOR_CATEGORY_SYSTEM_SERVICES, /*< nick=SystemServices >*/
+    APP_INDICATOR_CATEGORY_HARDWARE, /*< nick=Hardware >*/
+    APP_INDICATOR_CATEGORY_OTHER /*< nick=Other >*/
 } AppIndicatorCategory;
 
 /**
@@ -151,9 +151,9 @@ typedef enum { /*< prefix=APP_INDICATOR_CATEGORY >*/
  * shown by setting it to @APP_INDICATOR_STATUS_ACTIVE.
  */
 typedef enum { /*< prefix=APP_INDICATOR_STATUS >*/
-	APP_INDICATOR_STATUS_PASSIVE, /*< nick=Passive >*/
-	APP_INDICATOR_STATUS_ACTIVE, /*< nick=Active >*/
-	APP_INDICATOR_STATUS_ATTENTION /*< nick=NeedsAttention >*/
+    APP_INDICATOR_STATUS_PASSIVE, /*< nick=Passive >*/
+    APP_INDICATOR_STATUS_ACTIVE, /*< nick=Active >*/
+    APP_INDICATOR_STATUS_ATTENTION /*< nick=NeedsAttention >*/
 } AppIndicatorStatus;
 
 typedef struct _AppIndicator        AppIndicator;
@@ -180,54 +180,54 @@ typedef struct _AppIndicatorClass   AppIndicatorClass;
  * @app_indicator_reserved_4: Reserved for future use.
  * @app_indicator_reserved_5: Reserved for future use.
  * @app_indicator_reserved_6: Reserved for future use.
- * 
+ *
  * The signals and external functions that make up the #AppIndicator
  * class object.
  */
 struct _AppIndicatorClass {
-	/* Parent */
-	GObjectClass parent_class;
+    /* Parent */
+    GObjectClass parent_class;
 
-	/* DBus Signals */
-	void (* new_icon)               (AppIndicator      *indicator,
-	                                 gpointer            user_data);
-	void (* new_attention_icon)     (AppIndicator      *indicator,
-	                                 gpointer            user_data);
-	void (* new_status)             (AppIndicator      *indicator,
-	                                 const gchar       *status,
-	                                 gpointer            user_data);
-	void (* new_icon_theme_path)    (AppIndicator      *indicator,
-	                                 const gchar       *icon_theme_path,
-	                                 gpointer            user_data);
-	void (* new_label)              (AppIndicator       *indicator,
-	                                 const gchar        *label,
-	                                 const gchar        *guide,
-	                                 gpointer            user_data);
+    /* DBus Signals */
+    void (* new_icon)               (AppIndicator      *indicator,
+                                     gpointer            user_data);
+    void (* new_attention_icon)     (AppIndicator      *indicator,
+                                     gpointer            user_data);
+    void (* new_status)             (AppIndicator      *indicator,
+                                     const gchar       *status,
+                                     gpointer            user_data);
+    void (* new_icon_theme_path)    (AppIndicator      *indicator,
+                                     const gchar       *icon_theme_path,
+                                     gpointer            user_data);
+    void (* new_label)              (AppIndicator       *indicator,
+                                     const gchar        *label,
+                                     const gchar        *guide,
+                                     gpointer            user_data);
 
-	/* Local Signals */
-	void (* connection_changed)     (AppIndicator * indicator,
-	                                 gboolean          connected,
-	                                 gpointer          user_data);
+    /* Local Signals */
+    void (* connection_changed)     (AppIndicator * indicator,
+                                     gboolean          connected,
+                                     gpointer          user_data);
 
-	void (* scroll_event)           (AppIndicator * indicator,
-	                                 gint                  delta,
-	                                 GdkScrollDirection direction,
-	                                 gpointer          user_data);
+    void (* scroll_event)           (AppIndicator * indicator,
+                                     gint                  delta,
+                                     GdkScrollDirection direction,
+                                     gpointer          user_data);
 
-	void (*app_indicator_reserved_ats)(void);
+    void (*app_indicator_reserved_ats)(void);
 
-	/* Overridable Functions */
-	GtkStatusIcon * (*fallback)     (AppIndicator * indicator);
-	void (*unfallback)              (AppIndicator * indicator,
-	                                 GtkStatusIcon * status_icon);
+    /* Overridable Functions */
+    GtkStatusIcon * (*fallback)     (AppIndicator * indicator);
+    void (*unfallback)              (AppIndicator * indicator,
+                                     GtkStatusIcon * status_icon);
 
-	/* Reserved */
-	void (*app_indicator_reserved_1)(void);
-	void (*app_indicator_reserved_2)(void);
-	void (*app_indicator_reserved_3)(void);
-	void (*app_indicator_reserved_4)(void);
-	void (*app_indicator_reserved_5)(void);
-	void (*app_indicator_reserved_6)(void);
+    /* Reserved */
+    void (*app_indicator_reserved_1)(void);
+    void (*app_indicator_reserved_2)(void);
+    void (*app_indicator_reserved_3)(void);
+    void (*app_indicator_reserved_4)(void);
+    void (*app_indicator_reserved_5)(void);
+    void (*app_indicator_reserved_6)(void);
 };
 
 /**
@@ -242,7 +242,7 @@ struct _AppIndicatorClass {
  *
  */
 struct _AppIndicator {
-	GObject parent;
+    GObject parent;
 };
 
 /* GObject Stuff */
