@@ -3,9 +3,11 @@ A small piece of sample code demonstrating a very simple application
 with an indicator.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2022 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -92,9 +94,15 @@ toggle_sensitivity_cb (GtkWidget *widget, gpointer data)
 static void
 image_clicked_cb (GtkWidget *widget, gpointer data)
 {
-  gtk_image_set_from_stock (GTK_IMAGE (gtk_image_menu_item_get_image (
-                            GTK_IMAGE_MENU_ITEM (widget))),
-                            GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+  GList *pList = gtk_container_get_children(GTK_CONTAINER(widget));
+  GtkContainer *pContainer = GTK_CONTAINER(g_list_nth_data(pList, 0));
+  pList = gtk_container_get_children(pContainer);
+#if GTK_MAJOR_VERSION >= 3
+  GtkImage *pImage = GTK_IMAGE(g_list_nth_data(pList, 1));
+#else
+  GtkImage *pImage = GTK_IMAGE(g_list_nth_data(pList, 0));
+#endif
+  gtk_image_set_from_icon_name(pImage, "document-open", GTK_ICON_SIZE_MENU);
 }
 
 static void
@@ -198,7 +206,21 @@ main (int argc, char ** argv)
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), toggle_item);
         gtk_widget_show(toggle_item);
 
-        item = gtk_image_menu_item_new_from_stock (GTK_STOCK_NEW, NULL);
+        GtkWidget *pImage = gtk_image_new_from_icon_name("document-new", GTK_ICON_SIZE_MENU);
+        GtkWidget *pLabel = gtk_label_new("New");
+#if GTK_MAJOR_VERSION >= 3
+        GtkWidget *pGrid = gtk_grid_new();
+        gtk_container_add(GTK_CONTAINER(pGrid), pImage);
+        gtk_container_add(GTK_CONTAINER(pGrid), pLabel);
+        item = gtk_menu_item_new();
+        gtk_container_add(GTK_CONTAINER(item), pGrid);
+#else
+        GtkWidget *pBox = gtk_hbox_new(FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(pBox), pImage, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(pBox), pLabel, FALSE, FALSE, 0);
+        item = gtk_menu_item_new();
+        gtk_container_add(GTK_CONTAINER(item), pBox);
+#endif
         g_signal_connect (item, "activate",
                           G_CALLBACK (image_clicked_cb), NULL);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);

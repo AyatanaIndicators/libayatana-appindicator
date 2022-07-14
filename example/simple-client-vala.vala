@@ -3,9 +3,11 @@ A small piece of sample code demonstrating a very simple application
 with an indicator.
 
 Copyright 2011 Canonical Ltd.
+Copyright 2022 Robert Tari
 
 Authors:
     Marco Trevisan <mail@3v1n0.net>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -44,7 +46,7 @@ class SimpleClient {
                            IndicatorCategory.APPLICATION_STATUS);
 
         ci.set_status(IndicatorStatus.ACTIVE);
-        ci.set_attention_icon("indicator-messages-new");
+        ci.set_attention_icon_full("indicator-messages-new", null);
         ci.set_label("1%", "100%");
         ci.set_title("Test Indicator (vala)");
 
@@ -135,10 +137,17 @@ class SimpleClient {
         menu.append(toggle_item);
         toggle_item.show();
 
-        var imgitem = new Gtk.ImageMenuItem.from_stock(Stock.NEW, null);
+        var pImage = new Gtk.Image.from_icon_name("document-new", IconSize.MENU);
+        var pLabel = new Gtk.Label("New");
+        var pGrid = new Gtk.Grid();
+        pGrid.add(pImage);
+        pGrid.add(pLabel);
+        var imgitem = new Gtk.MenuItem();
+        imgitem.add(pGrid);
         imgitem.activate.connect(() => {
-            Image img = (Image) imgitem.get_image();
-            img.set_from_stock(Stock.OPEN, IconSize.MENU);
+            Grid pGridLocal = (Grid)imgitem.get_children().nth_data(0);
+            Image img = (Image) pGridLocal.get_children().nth_data(1);
+            img.set_from_icon_name("document-open", IconSize.MENU);
         });
         menu.append(imgitem);
         imgitem.show();
@@ -167,9 +176,9 @@ class SimpleClient {
         var icon = new Gtk.CheckMenuItem.with_label("Set Local Icon");
         icon.activate.connect(() => {
             if (icon.get_active()) {
-                ci.set_icon("simple-client-test-icon.png");
+                ci.set_icon_full("simple-client-test-icon.png", null);
             } else {
-                ci.set_icon("indicator-messages");
+                ci.set_icon_full("indicator-messages", null);
             }
         });
         menu.append(icon);

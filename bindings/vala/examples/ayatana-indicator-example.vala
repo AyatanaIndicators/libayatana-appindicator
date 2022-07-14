@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Canonical Ltd.
+ * Copyright 2022 Robert Tari
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 3, as published
@@ -15,6 +16,7 @@
  *
  * Authors:
  *   Marco Trevisan (Treviño) <mail@3v1n0.net>
+ *   Robert Tari <robert@tari.in>
  */
 
 using Gtk;
@@ -37,7 +39,7 @@ public class IndicatorExample {
         if (!(indicator is Indicator)) return -1;
 
         indicator.set_status(IndicatorStatus.ACTIVE);
-        indicator.set_attention_icon("indicator-messages-new");
+        indicator.set_attention_icon_full("indicator-messages-new", null);
 
         var menu = new Gtk.Menu();
 
