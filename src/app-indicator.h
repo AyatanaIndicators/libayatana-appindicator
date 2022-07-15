@@ -52,13 +52,13 @@ G_BEGIN_DECLS
  * Safely convert a #GObjectClass into a #AppIndicatorClass.
  */
 /**
- * IS_APP_INDICATOR:
+ * APP_IS_INDICATOR:
  * @obj: An #GObject to check
  *
  * Checks to see if @obj is in the object hierarchy of #AppIndicator.
  */
 /**
- * IS_APP_INDICATOR_CLASS:
+ * APP_IS_INDICATOR_CLASS:
  * @klass: An #GObjectClass to check
  *
  * Checks to see if @klass is in the object class hierarchy of #AppIndicatorClass.
@@ -73,8 +73,8 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_TYPE            (app_indicator_get_type ())
 #define APP_INDICATOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), APP_INDICATOR_TYPE, AppIndicator))
 #define APP_INDICATOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), APP_INDICATOR_TYPE, AppIndicatorClass))
-#define IS_APP_INDICATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APP_INDICATOR_TYPE))
-#define IS_APP_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APP_INDICATOR_TYPE))
+#define APP_IS_INDICATOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), APP_INDICATOR_TYPE))
+#define APP_IS_INDICATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), APP_INDICATOR_TYPE))
 #define APP_INDICATOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), APP_INDICATOR_TYPE, AppIndicatorClass))
 
 /**

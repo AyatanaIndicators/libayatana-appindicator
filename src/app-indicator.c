@@ -1159,7 +1159,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
                  const gchar * method, GVariant * params,
                  GDBusMethodInvocation * invocation, gpointer user_data)
 {
-    g_return_if_fail(IS_APP_INDICATOR(user_data));
+    g_return_if_fail(APP_IS_INDICATOR(user_data));
 
     AppIndicator * app = APP_INDICATOR(user_data);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
@@ -1206,7 +1206,7 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 static GVariant *
 bus_get_prop (GDBusConnection * connection, const gchar * sender, const gchar * path, const gchar * interface, const gchar * property, GError ** error, gpointer user_data)
 {
-    g_return_val_if_fail(IS_APP_INDICATOR(user_data), NULL);
+    g_return_val_if_fail(APP_IS_INDICATOR(user_data), NULL);
     AppIndicator * app = APP_INDICATOR(user_data);
     AppIndicatorPrivate *priv = app_indicator_get_instance_private(app);
 
@@ -1411,7 +1411,7 @@ register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
         return;
     }
 
-    g_return_if_fail(IS_APP_INDICATOR(user_data));
+    g_return_if_fail(APP_IS_INDICATOR(user_data));
     AppIndicator * app = APP_INDICATOR(user_data);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
 
@@ -1448,7 +1448,7 @@ category_from_enum (AppIndicatorCategory category)
 static void
 start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 {
-    g_return_if_fail(IS_APP_INDICATOR(self));
+    g_return_if_fail(APP_IS_INDICATOR(self));
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (priv->fallback_timer != 0) {
@@ -1476,7 +1476,7 @@ start_fallback_timer (AppIndicator * self, gboolean disable_timeout)
 static gboolean
 fallback_timer_expire (gpointer data)
 {
-    g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+    g_return_val_if_fail(APP_IS_INDICATOR(data), FALSE);
 
         AppIndicator * app = APP_INDICATOR(data);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
@@ -1574,7 +1574,7 @@ status_icon_status_wrapper (AppIndicator * self, const gchar * status, gpointer 
 static gboolean
 scroll_event_wrapper (GtkWidget *status_icon, GdkEventScroll *event, gpointer data)
 {
-    g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+    g_return_val_if_fail(APP_IS_INDICATOR(data), FALSE);
     AppIndicator * app = APP_INDICATOR(data);
     g_signal_emit(app, signals[SCROLL_EVENT], 0, 1, event->direction);
 
@@ -1584,7 +1584,7 @@ scroll_event_wrapper (GtkWidget *status_icon, GdkEventScroll *event, gpointer da
 static gboolean
 middle_click_wrapper (GtkWidget *status_icon, GdkEventButton *event, gpointer data)
 {
-    g_return_val_if_fail(IS_APP_INDICATOR(data), FALSE);
+    g_return_val_if_fail(APP_IS_INDICATOR(data), FALSE);
     AppIndicator * app = APP_INDICATOR(data);
     AppIndicatorPrivate *priv = app_indicator_get_instance_private(app);
 
@@ -1762,7 +1762,7 @@ append_panel_icon_suffix (const gchar *icon_name)
 static gboolean
 widget_is_menu_child(AppIndicator * self, GtkWidget *child)
 {
-    g_return_val_if_fail(IS_APP_INDICATOR(self), FALSE);
+    g_return_val_if_fail(APP_IS_INDICATOR(self), FALSE);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (!priv->menu) return FALSE;
@@ -1787,7 +1787,7 @@ static void
 sec_activate_target_parent_changed(GtkWidget *menuitem, GtkWidget *old_parent,
                                    gpointer data)
 {
-    g_return_if_fail(IS_APP_INDICATOR(data));
+    g_return_if_fail(APP_IS_INDICATOR(data));
     AppIndicator *self = APP_INDICATOR(data);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
     priv->sec_activate_enabled = widget_is_menu_child(self, menuitem);
@@ -1872,7 +1872,7 @@ app_indicator_new_with_path (const gchar          *id,
 void
 app_indicator_set_status (AppIndicator *self, AppIndicatorStatus status)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (priv->status != status) {
@@ -1929,7 +1929,7 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_attention_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     g_return_if_fail (icon_name != NULL);
     gboolean changed = FALSE;
 
@@ -2011,7 +2011,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
 void
 app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     g_return_if_fail (icon_name != NULL);
     gboolean changed = FALSE;
 
@@ -2080,7 +2080,7 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
 void
 app_indicator_set_label (AppIndicator *self, const gchar * label, const gchar * guide)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     /* Note: The label can be NULL, it's okay */
     /* Note: The guide can be NULL, it's okay */
 
@@ -2162,7 +2162,7 @@ get_real_theme_path (AppIndicator * self)
 void
 app_indicator_set_icon_theme_path (AppIndicator *self, const gchar *icon_theme_path)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (g_strcmp0 (priv->icon_theme_path, icon_theme_path) != 0) {
@@ -2244,7 +2244,7 @@ setup_dbusmenu (AppIndicator *self)
 void
 app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 {
-  g_return_if_fail (IS_APP_INDICATOR (self));
+  g_return_if_fail (APP_IS_INDICATOR (self));
   g_return_if_fail (GTK_IS_MENU (menu));
 
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
@@ -2282,7 +2282,7 @@ app_indicator_set_menu (AppIndicator *self, GtkMenu *menu)
 void
 app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
 
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
@@ -2308,7 +2308,7 @@ app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
 void
 app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menuitem)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (priv->sec_activate_target) {
@@ -2351,7 +2351,7 @@ app_indicator_set_secondary_activate_target (AppIndicator *self, GtkWidget *menu
 void
 app_indicator_set_title (AppIndicator *self, const gchar * title)
 {
-    g_return_if_fail (IS_APP_INDICATOR (self));
+    g_return_if_fail (APP_IS_INDICATOR (self));
 
     g_object_set(G_OBJECT(self),
                  PROP_TITLE_S, title == NULL ? "": title,
@@ -2371,7 +2371,7 @@ app_indicator_set_title (AppIndicator *self, const gchar * title)
 const gchar *
 app_indicator_get_id (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->id;
@@ -2388,7 +2388,7 @@ app_indicator_get_id (AppIndicator *self)
 AppIndicatorCategory
 app_indicator_get_category (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->category;
@@ -2405,7 +2405,7 @@ app_indicator_get_category (AppIndicator *self)
 AppIndicatorStatus
 app_indicator_get_status (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), APP_INDICATOR_STATUS_PASSIVE);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), APP_INDICATOR_STATUS_PASSIVE);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->status;
@@ -2422,7 +2422,7 @@ app_indicator_get_status (AppIndicator *self)
 const gchar *
 app_indicator_get_icon (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->icon_name;
@@ -2439,7 +2439,7 @@ app_indicator_get_icon (AppIndicator *self)
 const gchar *
 app_indicator_get_icon_desc (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->accessible_desc;
@@ -2456,7 +2456,7 @@ app_indicator_get_icon_desc (AppIndicator *self)
 const gchar *
 app_indicator_get_icon_theme_path (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->icon_theme_path;
@@ -2473,7 +2473,7 @@ app_indicator_get_icon_theme_path (AppIndicator *self)
 const gchar *
 app_indicator_get_attention_icon (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->attention_icon_name;
@@ -2490,7 +2490,7 @@ app_indicator_get_attention_icon (AppIndicator *self)
 const gchar *
 app_indicator_get_attention_icon_desc (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->att_accessible_desc;
@@ -2511,7 +2511,7 @@ app_indicator_get_attention_icon_desc (AppIndicator *self)
 const gchar *
 app_indicator_get_title (AppIndicator *self)
 {
-    g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+    g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
     return priv->title;
 }
@@ -2529,7 +2529,7 @@ app_indicator_get_title (AppIndicator *self)
 GtkMenu *
 app_indicator_get_menu (AppIndicator *self)
 {
-    g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+    g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
 
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
@@ -2547,7 +2547,7 @@ app_indicator_get_menu (AppIndicator *self)
 const gchar *
 app_indicator_get_label (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->label;
@@ -2564,7 +2564,7 @@ app_indicator_get_label (AppIndicator *self)
 const gchar *
 app_indicator_get_label_guide (AppIndicator *self)
 {
-  g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+  g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
   AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
   return priv->label_guide;
@@ -2581,7 +2581,7 @@ app_indicator_get_label_guide (AppIndicator *self)
 guint32
 app_indicator_get_ordering_index (AppIndicator *self)
 {
-    g_return_val_if_fail (IS_APP_INDICATOR (self), 0);
+    g_return_val_if_fail (APP_IS_INDICATOR (self), 0);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     if (priv->ordering_index == 0) {
@@ -2602,7 +2602,7 @@ app_indicator_get_ordering_index (AppIndicator *self)
 GtkWidget *
 app_indicator_get_secondary_activate_target (AppIndicator *self)
 {
-    g_return_val_if_fail (IS_APP_INDICATOR (self), NULL);
+    g_return_val_if_fail (APP_IS_INDICATOR (self), NULL);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     return GTK_WIDGET(priv->sec_activate_target);
@@ -2618,7 +2618,7 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
     gchar * nick = g_object_get_data(G_OBJECT(mi), APP_INDICATOR_SHORTY_NICK);
     g_return_if_fail(nick != NULL);
 
-    g_return_if_fail(IS_APP_INDICATOR(user_data));
+    g_return_if_fail(APP_IS_INDICATOR(user_data));
     AppIndicator * self = APP_INDICATOR(user_data);
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
@@ -2641,7 +2641,7 @@ shorty_activated_cb (DbusmenuMenuitem * mi, guint timestamp, gpointer user_data)
 void
 app_indicator_build_menu_from_desktop (AppIndicator * self, const gchar * desktop_file, const gchar * desktop_profile)
 {
-    g_return_if_fail(IS_APP_INDICATOR(self));
+    g_return_if_fail(APP_IS_INDICATOR(self));
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(self);
 
     /* Build a new shortcuts object */

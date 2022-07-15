@@ -1,5 +1,6 @@
 /*
- Copyright (C) 2011 Canonical, Ltd.
+ Copyright 2011 Canonical, Ltd.
+ Copyright 2022 Robert Tari
 
   This program is free software: you can redistribute it and/or modify it
   under the terms of either or both of the following licenses:
@@ -19,11 +20,13 @@
   License version 3 and version 2.1 along with this program.  If not, see
   <http://www.gnu.org/licenses/>
 
-  Authored by Michal Hruby <michal.hruby@canonical.com>
+  Authors:
+      Michal Hruby <michal.hruby@canonical.com>
+      Robert Tari <robert@tari.in>
 */
 
 namespace AppIndicator {
-  [CCode (type_check_function = "IS_APP_INDICATOR", type_id = "app_indicator_get_type ()")]
+  [CCode (type_check_function = "APP_IS_INDICATOR", type_id = "app_indicator_get_type ()")]
   public class Indicator : GLib.Object {
   }
 }

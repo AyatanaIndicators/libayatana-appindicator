@@ -169,7 +169,7 @@ main (int argc, char ** argv)
                                 "indicator-messages",
                                 APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
-    g_assert (IS_APP_INDICATOR (ci));
+    g_assert (APP_IS_INDICATOR (ci));
         g_assert (G_IS_OBJECT (ci));
 
     app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
