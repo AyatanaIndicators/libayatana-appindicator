@@ -578,6 +578,7 @@ app_indicator_class_init (AppIndicatorClass *klass)
     /**
      * AppIndicator::new-icon-theme-path:
      * @arg0: The #AppIndicator object
+     * @arg1: The icon theme path
      *
      * Signaled when there is a new icon set for the
      * object.
@@ -1921,7 +1922,7 @@ app_indicator_set_attention_icon (AppIndicator *self, const gchar *icon_name)
  * app_indicator_set_attention_icon_full:
  * @self: The #AppIndicator object to use
  * @icon_name: The name of the attention icon to set for this indicator
- * @icon_desc: A textual description of the icon
+ * @icon_desc: (nullable): A textual description of the icon
  *
  * Wrapper function for property #AppIndicator:attention-icon-name.
  */
@@ -1998,7 +1999,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
  * app_indicator_set_icon_full:
  * @self: The #AppIndicator object to use
  * @icon_name: The icon name to set.
- * @icon_desc: A textual description of the icon for accessibility
+ * @icon_desc: (nullable): A textual description of the icon for accessibility
  *
  * Sets the default icon to use when the status is active but
  * not set to attention.  In most cases, this should be the
