@@ -1,3 +1,7 @@
+Overview of changes in libayatana-appindicator 0.5.92
+
+  - Fix/silence plenty deprecation warnings.
+
 Overview of changes in libayatana-appindicator 0.5.91
 
   - src/appindicator.c: Clean up all g_signal_emit and g_signal_new calls
