@@ -3,9 +3,11 @@ Tests for the libappindicator library that are over DBus.  This is
 the server side of those tests.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2023 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -68,7 +70,7 @@ main (gint argc, gchar * argv[])
     g_debug("DBus Name: %s", g_dbus_connection_get_unique_name (connection));
 
     AppIndicator * ci = app_indicator_new ("my-id", "my-icon-name", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
-    app_indicator_set_attention_icon (ci, "my-attention-icon");
+    app_indicator_set_attention_icon_full (ci, "my-attention-icon", NULL);
 
     GtkMenu * menu = GTK_MENU(gtk_menu_new());
     GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Label"));

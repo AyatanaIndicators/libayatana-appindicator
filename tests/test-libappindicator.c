@@ -2,9 +2,11 @@
 Tests for the libappindicator library.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2023 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -80,28 +82,28 @@ test_libappindicator_prop_signals (void)
 
 
     signaled = FALSE;
-    app_indicator_set_icon(ci, "bob");
+    app_indicator_set_icon_full (ci, "bob", NULL);
     g_assert(signaled);
 
     signaled = FALSE;
-    app_indicator_set_icon(ci, "bob");
+    app_indicator_set_icon_full (ci, "bob", NULL);
     g_assert(!signaled);
 
     signaled = FALSE;
-    app_indicator_set_icon(ci, "al");
+    app_indicator_set_icon_full (ci, "al", NULL);
     g_assert(signaled);
 
 
     signaled = FALSE;
-    app_indicator_set_attention_icon(ci, "bob");
+    app_indicator_set_attention_icon_full (ci, "bob", NULL);
     g_assert(signaled);
 
     signaled = FALSE;
-    app_indicator_set_attention_icon(ci, "bob");
+    app_indicator_set_attention_icon_full (ci, "bob", NULL);
     g_assert(!signaled);
 
     signaled = FALSE;
-    app_indicator_set_attention_icon(ci, "al");
+    app_indicator_set_attention_icon_full (ci, "al", NULL);
     g_assert(signaled);
 
 
@@ -136,7 +138,7 @@ test_libappindicator_init_set_props (void)
     g_assert(ci != NULL);
 
     app_indicator_set_status(ci, APP_INDICATOR_STATUS_ACTIVE);
-    app_indicator_set_attention_icon(ci, "my-attention-name");
+    app_indicator_set_attention_icon_full (ci, "my-attention-name", NULL);
     app_indicator_set_title(ci, "My Title");
 
     g_assert(!g_strcmp0("my-id", app_indicator_get_id(ci)));
@@ -160,7 +162,7 @@ test_libappindicator_init_with_props (void)
                                                APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
         app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-        app_indicator_set_attention_icon (ci, "my-attention-name");
+        app_indicator_set_attention_icon_full (ci, "my-attention-name", NULL);
 
     g_assert(ci != NULL);
 
