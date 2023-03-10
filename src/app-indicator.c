@@ -142,7 +142,8 @@ enum {
     PROP_LABEL_GUIDE,
     PROP_ORDERING_INDEX,
     PROP_DBUS_MENU_SERVER,
-    PROP_TITLE
+    PROP_TITLE,
+    PROP_MENU
 };
 
 /* The strings so that they can be slowly looked up. */
@@ -160,6 +161,7 @@ enum {
 #define PROP_ORDERING_INDEX_S        "ordering-index"
 #define PROP_DBUS_MENU_SERVER_S      "dbus-menu-server"
 #define PROP_TITLE_S                 "title"
+#define PROP_MENU_S                 "menu"
 
 /* Default Path */
 #define DEFAULT_ITEM_PATH   "/org/ayatana/NotificationItem"
@@ -494,6 +496,20 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                     g_param_spec_string (PROP_TITLE_S,
                                                          "Title of the application indicator",
                                                          "A human readable way to refer to this application indicator in the UI.",
+                                                         NULL,
+                                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+    /**
+     * AppIndicator:menu:
+     *
+     * The menu that should be shown when the Application Indicator
+     * is clicked on in the panel.
+     */
+    g_object_class_install_property(object_class,
+                                    PROP_MENU,
+                                    g_param_spec_string (PROP_MENU_S,
+                                                         "The menu of the application indicator",
+                                                         "The menu that should be shown when the Application Indicator is clicked on in the panel.",
                                                          NULL,
                                                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -1031,6 +1047,11 @@ G_GNUC_END_IGNORE_DEPRECATIONS
             priv->menuservice = DBUSMENU_SERVER (g_value_dup_object(value));
             break;
 
+        case PROP_MENU:
+            g_clear_object (&priv->menu);
+            priv->menu = GTK_WIDGET (g_value_dup_object(value));
+            break;
+
         default:
           G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
           break;
@@ -1115,6 +1136,10 @@ app_indicator_get_property (GObject * object, guint prop_id, GValue * value, GPa
 
         case PROP_TITLE:
             g_value_set_string(value, priv->title);
+            break;
+
+        case PROP_MENU:
+            g_value_set_object(value, priv->menu);
             break;
 
         default:
@@ -2006,7 +2031,7 @@ app_indicator_set_icon (AppIndicator *self, const gchar *icon_name)
  * application icon for the program.
  *
  * Wrapper function for property #AppIndicator:icon-name and
- * #AppIndicator::icon-desc.
+ * #AppIndicator:icon-desc.
  */
 void
 app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const gchar * icon_desc)
@@ -2074,7 +2099,7 @@ app_indicator_set_icon_full (AppIndicator *self, const gchar *icon_name, const g
  * @guide: A guide to size the label correctly.
  *
  * This is a wrapper function for the #AppIndicator:label and
- * #AppIndicator:guide properties.  This function can take #NULL
+ * #AppIndicator:label-guide properties.  This function can take #NULL
  * as either @label or @guide and will clear the entries.
 */
 void
@@ -2300,7 +2325,7 @@ app_indicator_set_ordering_index (AppIndicator *self, guint32 ordering_index)
  * middle-click) is emitted over the #AppIndicator icon/label.
  *
  * The @menuitem can be also a complex #GtkWidget, but to get activated when
- * a secondary activation occurs in the #Appindicator, it must be a visible and
+ * a secondary activation occurs in the #AppIndicator, it must be a visible and
  * active child (or inner-child) of the #AppIndicator:menu.
  *
  * Setting @menuitem to %NULL causes to disable this feature.
