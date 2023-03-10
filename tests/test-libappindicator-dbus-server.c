@@ -30,33 +30,33 @@ static GMainLoop * mainloop = NULL;
 gboolean
 kill_func (gpointer userdata)
 {
-	g_main_loop_quit(mainloop);
-	return FALSE;
+    g_main_loop_quit(mainloop);
+    return FALSE;
 }
 
 gint
 main (gint argc, gchar * argv[])
 {
-	gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv);
 
-	AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
+    AppIndicator * ci = app_indicator_new (TEST_ID, TEST_ICON_NAME, TEST_CATEGORY);
 
-	app_indicator_set_status (ci, TEST_STATE);
-	app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
+    app_indicator_set_status (ci, TEST_STATE);
+    app_indicator_set_attention_icon (ci, TEST_ATTENTION_ICON_NAME);
 
-	GtkMenu * menu = GTK_MENU(gtk_menu_new());
-	GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Label"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(item));
+    GtkMenu * menu = GTK_MENU(gtk_menu_new());
+    GtkMenuItem * item = GTK_MENU_ITEM(gtk_menu_item_new_with_label("Label"));
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(item));
 
-	app_indicator_set_menu(ci, menu);
+    app_indicator_set_menu(ci, menu);
 
-	g_timeout_add_seconds(2, kill_func, NULL);
+    g_timeout_add_seconds(2, kill_func, NULL);
 
-	mainloop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(mainloop);
+    mainloop = g_main_loop_new(NULL, FALSE);
+    g_main_loop_run(mainloop);
 
-	g_object_unref(G_OBJECT(ci));
-	g_debug("Quiting");
+    g_object_unref(G_OBJECT(ci));
+    g_debug("Quiting");
 
-	return 0;
+    return 0;
 }
