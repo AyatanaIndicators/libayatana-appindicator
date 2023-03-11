@@ -3,7 +3,7 @@ An object to represent the application as an application indicator
 in the system panel.
 
 Copyright 2009 Canonical Ltd.
-Copyright 2022 Robert Tari
+Copyright 2022-2023 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
@@ -207,9 +207,9 @@ static void bus_method_call (GDBusConnection * connection, const gchar * sender,
 static void bus_creation (GObject * obj, GAsyncResult * res, gpointer user_data);
 
 static const GDBusInterfaceVTable item_interface_table = {
-    method_call:    bus_method_call,
-    get_property:   bus_get_prop,
-    set_property:   NULL /* No properties that can be set */
+    .method_call = bus_method_call,
+    .get_property = bus_get_prop,
+    .set_property = NULL /* No properties that can be set */
 };
 
 /* GObject type */
