@@ -248,7 +248,7 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.${ayatana_appindicator_gtkver}-sharp.config"
+    -link:"policy.0.0.${ayatana_appindicator_gtkver}-sharp.config"
     -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.${ayatana_appindicator_gtkver}-sharp.dll"
     -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/${ayatana_appindicator_gtkver}-sharp.snk"
 )
@@ -271,7 +271,7 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.${ayatana_appindicator_gtkver}-sharp.config"
+    -link:"policy.0.1.${ayatana_appindicator_gtkver}-sharp.config"
     -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.${ayatana_appindicator_gtkver}-sharp.dll"
     -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/${ayatana_appindicator_gtkver}-sharp.snk"
 )
