@@ -18,6 +18,7 @@ requires:
     - libdbusmenu-gtk3
     - dbus-glib
     - gobject-introspection
+    - gtk3-docs
 
   debian:
     # Useful URL: https://salsa.debian.org/debian-ayatana-team/libayatana-appindicator
@@ -53,6 +54,8 @@ requires:
     - libdbusmenu-gtk3-dev
     - libdbusmenu-gtk-dev
     - libgirepository1.0-dev
+    - libgtk-3-doc
+    - libdbusmenu-glib-doc
 
   ubuntu:
     - autopoint
@@ -87,6 +90,8 @@ requires:
     - libdbusmenu-gtk3-dev
     - libdbusmenu-gtk-dev
     - libgirepository1.0-dev
+    - libgtk-3-doc
+    - libdbusmenu-glib-doc
 
 variables:
   - 'CHECKERS="
@@ -147,7 +152,8 @@ build_scripts:
   -     mkdir -p build/gtk3/
   -     cd build/gtk3/
   -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK3=ON
+            # We could use -DENABLE_WERROR=ON, but Debian Stable has an ancient Clang.
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK3=ON -DENABLE_GTKDOC=ON
   -     else
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK3=ON
   -     fi
@@ -155,7 +161,7 @@ build_scripts:
   -     mkdir -p build/gtk2/
   -     cd build/gtk2/
   -     if [ ${DISTRO_NAME} == "debian" ] || [ ${DISTRO_NAME} == "ubuntu" ]; then
-  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK2=ON
+  -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DENABLE_TESTS=ON -DFLAVOUR_GTK2=ON -DENABLE_GTKDOC=ON
   -     else
   -         scan-build $CHECKERS cmake ../../ -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON -DFLAVOUR_GTK2=ON
   -     fi
