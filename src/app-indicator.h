@@ -32,6 +32,10 @@ License version 3 and version 2.1 along with this program.  If not, see
 
 #include <gtk/gtk.h>
 
+#define APP_INDICATOR_INSIDE
+#include "app-indicator-version.h"
+#undef  APP_INDICATOR_INSIDE
+
 G_BEGIN_DECLS
 
 /**
@@ -98,6 +102,11 @@ G_BEGIN_DECLS
  * String identifier for the #AppIndicator::new-label signal.
  */
 /**
+ * APP_INDICATOR_SIGNAL_NEW_TOOLTIP:
+ *
+ * String identifier for the #AppIndicator::new-tooltip signal.
+ */
+/**
  * APP_INDICATOR_SIGNAL_CONNECTION_CHANGED:
  *
  * String identifier for the #AppIndicator::connection-changed signal.
@@ -116,6 +125,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
 #define APP_INDICATOR_SIGNAL_NEW_LABEL           "new-label"
+#define APP_INDICATOR_SIGNAL_NEW_TOOLTIP         "new-tooltip"
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
@@ -174,6 +184,7 @@ typedef struct _AppIndicatorClass   AppIndicatorClass;
  *            there is no Application Indicator area available.
  * @unfallback: The function that gets called if an Application
  *              Indicator area appears after the fallback has been created.
+ * @new_tooltip: Slot for #AppIndicator::new-tooltip.
  * @app_indicator_reserved_1: Reserved for future use.
  * @app_indicator_reserved_2: Reserved for future use.
  * @app_indicator_reserved_3: Reserved for future use.
@@ -203,6 +214,8 @@ struct _AppIndicatorClass {
                                      const gchar        *label,
                                      const gchar        *guide,
                                      gpointer            user_data);
+    void (* new_tooltip)            (AppIndicator      *indicator,
+                                     gpointer           user_data);
 
     /* Local Signals */
     void (* connection_changed)     (AppIndicator * indicator,
@@ -271,6 +284,16 @@ void                            app_indicator_set_icon           (AppIndicator  
 void                            app_indicator_set_icon_full      (AppIndicator       *self,
                                                                   const gchar        *icon_name,
                                                                   const gchar        *icon_desc);
+void                            app_indicator_set_tooltip_icon   (AppIndicator       *self,
+                                                                  const gchar        *icon_name);
+void                            app_indicator_set_tooltip_title  (AppIndicator       *self,
+                                                                  const gchar        *title);
+void                            app_indicator_set_tooltip_body   (AppIndicator       *self,
+                                                                  const gchar        *body);
+void                            app_indicator_set_tooltip_full   (AppIndicator       *self,
+                                                                  const gchar        *icon_name,
+                                                                  const gchar        *title,
+                                                                  const gchar        *body);
 void                            app_indicator_set_label          (AppIndicator       *self,
                                                                   const gchar        *label,
                                                                   const gchar        *guide);
@@ -295,6 +318,9 @@ const gchar *                   app_indicator_get_attention_icon_desc  (AppIndic
 const gchar *                   app_indicator_get_title                (AppIndicator *self);
 
 GtkMenu *                       app_indicator_get_menu                 (AppIndicator *self);
+const gchar *                   app_indicator_get_tooltip_icon         (AppIndicator *self);
+const gchar *                   app_indicator_get_tooltip_title        (AppIndicator *self);
+const gchar *                   app_indicator_get_tooltip_body         (AppIndicator *self);
 const gchar *                   app_indicator_get_label                (AppIndicator *self);
 const gchar *                   app_indicator_get_label_guide          (AppIndicator *self);
 guint32                         app_indicator_get_ordering_index       (AppIndicator *self);

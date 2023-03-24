@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
-project(libayatana-appindicator C)
+project(libayatana-appindicator
+    VERSION 0.5.90
+    LANGUAGES C
+)
 
 set(PROJECT_VERSION "0.5.92")
 set(PROJECT_NAME "libayatana-appindicator")
@@ -81,6 +84,8 @@ if (ENABLE_GTKDOC)
         set (ENABLE_GTKDOC OFF)
     endif()
 endif()
+
+add_compile_definitions(APP_INDICATOR_COMPILATION)
 
 # Make everything
 
