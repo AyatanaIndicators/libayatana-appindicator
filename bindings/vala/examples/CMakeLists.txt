@@ -4,6 +4,7 @@ add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c"
     DEPENDS "bindings-vala"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/src" "${CMAKE_CURRENT_BINARY_DIR}/libayatana-appindicator"
     COMMAND
     ${VALA_COMPILER}
     --pkg ayatana-appindicator3-0.1
@@ -12,16 +13,11 @@ add_custom_command(
     -C ayatana-indicator-example.vala
     --metadatadir "${CMAKE_SOURCE_DIR}/src"
     --directory=${CMAKE_CURRENT_BINARY_DIR}
-    VERBATIM
-    COMMAND
-    sed
-    -i "s|#include\\s*<\\s*libayatana-appindicator/app-indicator.h\\s*>||g"
-    "${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c"
 )
 
 # ayatana-indicator-example
 
-set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c" PROPERTIES COMPILE_FLAGS " -include ${CMAKE_SOURCE_DIR}/src/app-indicator.h -Wno-incompatible-pointer-types")
+set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c" PROPERTIES COMPILE_FLAGS " -Wno-incompatible-pointer-types")
 add_executable("ayatana-indicator-example" "${CMAKE_CURRENT_BINARY_DIR}/ayatana-indicator-example.c")
-target_include_directories("ayatana-indicator-example" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
+target_include_directories("ayatana-indicator-example" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries("ayatana-indicator-example" "${PROJECT_DEPS_LIBRARIES} -layatana-appindicator3 -L${CMAKE_BINARY_DIR}/src")
