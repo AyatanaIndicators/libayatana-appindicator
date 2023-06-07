@@ -260,14 +260,14 @@ AppIndicator                   *app_indicator_new_with_path      (const gchar   
 void                            app_indicator_set_status         (AppIndicator       *self,
                                                                   AppIndicatorStatus  status);
 void                            app_indicator_set_attention_icon (AppIndicator       *self,
-                                                                  const gchar        *icon_name);
+                                                                  const gchar        *icon_name) G_GNUC_DEPRECATED_FOR (app_indicator_set_attention_icon_full);
 void                            app_indicator_set_attention_icon_full (AppIndicator       *self,
                                                                   const gchar        *icon_name,
                                                                   const gchar        *icon_desc);
 void                            app_indicator_set_menu           (AppIndicator       *self,
                                                                   GtkMenu            *menu);
 void                            app_indicator_set_icon           (AppIndicator       *self,
-                                                                  const gchar        *icon_name);
+                                                                  const gchar        *icon_name) G_GNUC_DEPRECATED_FOR (app_indicator_set_icon_full);
 void                            app_indicator_set_icon_full      (AppIndicator       *self,
                                                                   const gchar        *icon_name,
                                                                   const gchar        *icon_desc);

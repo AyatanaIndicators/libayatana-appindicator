@@ -82,13 +82,10 @@ add_custom_command(
     -e "s|PROP_ATTENTION_ICON_DESC_S|AttentionIconDesc|"
     -e "s|PROP_ATTENTION_ICON_DESC_S|attention-icon-desc|"
     -e "s|PROP_ICON_THEME_PATH_S|icon-theme-path|"
-    -e "s|PROP_MENU_S|menu|"
     -e "s|PROP_CONNECTED_S|connected|"
     -e "s|PROP_LABEL_S|label|"
     -e "s|PROP_LABEL_GUIDE_S|label-guide|"
     -e "s|PROP_ORDERING_INDEX_S|ordering-index|"
-    -e "s|PROP_DBUS_MENU_SERVER_S|DbusMenuServer|"
-    -e "s|PROP_DBUS_MENU_SERVER_S|dbus-menu-server|"
     -e "s|PROP_TITLE_S|Title|"
     -e "s|PROP_TITLE_S|title|"
     "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}-api.middle" > "${CMAKE_CURRENT_BINARY_DIR}/lib${ayatana_appindicator_gtkver}-api.xml"
@@ -251,7 +248,7 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.${ayatana_appindicator_gtkver}-sharp.config"
+    -link:"policy.0.0.${ayatana_appindicator_gtkver}-sharp.config"
     -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.0.${ayatana_appindicator_gtkver}-sharp.dll"
     -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/${ayatana_appindicator_gtkver}-sharp.snk"
 )
@@ -274,7 +271,7 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND
     ${AL}
-    -link:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.${ayatana_appindicator_gtkver}-sharp.config"
+    -link:"policy.0.1.${ayatana_appindicator_gtkver}-sharp.config"
     -out:"${CMAKE_CURRENT_BINARY_DIR}/policy.0.1.${ayatana_appindicator_gtkver}-sharp.dll"
     -keyfile:"${CMAKE_CURRENT_SOURCE_DIR}/${ayatana_appindicator_gtkver}-sharp.snk"
 )
