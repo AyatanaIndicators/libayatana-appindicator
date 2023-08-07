@@ -326,14 +326,16 @@ app_indicator_class_init (AppIndicatorClass *klass)
     /**
      * AppIndicator:status:
      *
-     * Whether the indicator is shown or requests attention. Defaults to
-     * 'Passive'.
+     * Whether the indicator is shown or requests attention. Can be one of
+     * 'Passive' (the indicator should not be shown), 'Active' (the indicator
+     * should be shown in its default state), and 'Attention' (the indicator
+     * should now show it's attention icon). Defaults to 'Passive'.
      */
     g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_string (PROP_STATUS_S,
                                                               "Indicator Status",
-                                                              "Whether the indicator is shown or requests attention. Defaults to 'Passive'.",
+                                                              "Whether the indicator is shown or requests attention. Can be one of 'Passive' (the indicator should not be shown), 'Active' (the indicator should be shown in its default state), and 'Attention' (the indicator should now show it's attention icon). Defaults to 'Passive'.",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
