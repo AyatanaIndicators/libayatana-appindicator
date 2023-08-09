@@ -68,15 +68,12 @@ test_libappindicator_prop_signals (void)
     gboolean signaled = FALSE;
     gulong handlerid;
 
-    handlerid = 0;
     handlerid = g_signal_connect(G_OBJECT(ci), "new-icon", G_CALLBACK(test_libappindicator_prop_signals_helper), &signaled);
     g_assert(handlerid != 0);
 
-    handlerid = 0;
     handlerid = g_signal_connect(G_OBJECT(ci), "new-attention-icon", G_CALLBACK(test_libappindicator_prop_signals_helper), &signaled);
     g_assert(handlerid != 0);
 
-    handlerid = 0;
     handlerid = g_signal_connect(G_OBJECT(ci), "new-status", G_CALLBACK(test_libappindicator_prop_signals_status_helper), &signaled);
     g_assert(handlerid != 0);
 
