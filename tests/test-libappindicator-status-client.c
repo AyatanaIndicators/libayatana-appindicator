@@ -3,9 +3,11 @@ Tests for the libappindicator library that are over DBus.  This is
 the client side of those tests.
 
 Copyright 2009 Canonical Ltd.
+Copyright 2023 Robert Tari
 
 Authors:
     Ted Gould <ted@canonical.com>
+    Robert Tari <robert@tari.in>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3, as published
@@ -20,11 +22,8 @@ You should have received a copy of the GNU General Public License along
 with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include <glib.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 #include "../src/dbus-shared.h"
 
 static GMainLoop * mainloop = NULL;
@@ -37,115 +36,127 @@ static guint toggle_count = 0;
 #define ACTIVE_STR   "Active"
 #define ATTN_STR     "NeedsAttention"
 
-static DBusHandlerResult
-dbus_reg_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
+static GDBusMessage* dbus_reg_filter (GDBusConnection *pConnection, GDBusMessage *pMessage, gboolean bIncoming, void *pUserData)
 {
-	if (dbus_message_is_method_call(message, NOTIFICATION_WATCHER_DBUS_ADDR, "RegisterStatusNotifierItem")) {
-		DBusMessage * reply = dbus_message_new_method_return(message);
-		dbus_connection_send(connection, reply, NULL);
-		dbus_message_unref(reply);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	}
+    GDBusMessageType cType = g_dbus_message_get_message_type (pMessage);
+    const gchar *sInterface = g_dbus_message_get_interface (pMessage);
+    const gchar *sMember = g_dbus_message_get_member (pMessage);
+    int nInterfaceComp = g_strcmp0 (sInterface, NOTIFICATION_WATCHER_DBUS_ADDR);
+    int nMemberComp = g_strcmp0 (sMember, "RegisterStatusNotifierItem");
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    if (cType == G_DBUS_MESSAGE_TYPE_METHOD_CALL && nInterfaceComp == 0 && nMemberComp == 0)
+    {
+        GDBusMessage *pReply = g_dbus_message_new_method_reply (pMessage);
+        g_dbus_connection_send_message (pConnection, pReply, G_DBUS_SEND_MESSAGE_FLAGS_NONE, NULL, NULL);
+        g_object_unref (pReply);
+
+        g_object_unref (pMessage);
+        pMessage = NULL;
+    }
+
+    return pMessage;
 }
 
-
-static DBusHandlerResult
-dbus_filter (DBusConnection * connection, DBusMessage * message, void * user_data)
+void onNewStatus (GDBusConnection* pConnection, const gchar *sSender, const gchar *sPath, const gchar *sInterface, const gchar *sSignal, GVariant *pParameters, gpointer pUserData)
 {
-	if (!dbus_message_is_signal(message, NOTIFICATION_ITEM_DBUS_IFACE, "NewStatus")) {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
+    const gchar *sParam = NULL;
+    g_variant_get (pParameters, "(s)", &sParam);
 
-	gchar * string;
+    if (!sParam)
+    {
+        g_warning ("Couldn't get parameter");
 
-	DBusError derror;
-	dbus_error_init(&derror);
-	if (!dbus_message_get_args(message, &derror,
-				DBUS_TYPE_STRING, &string,
-				DBUS_TYPE_INVALID)) {
-		g_warning("Couldn't get parameters");
-		dbus_error_free(&derror);
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
+        return;
+    }
 
-	watchdog_hit = TRUE;
+    watchdog_hit = TRUE;
+    int nComp = g_strcmp0 (sParam, ACTIVE_STR);
 
-	if (g_strcmp0(string, ACTIVE_STR) == 0) {
-		if (active) {
-			g_warning("Got active when already active");
-			passed = FALSE;
-			return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-		}
-		active = TRUE;
-	} else {
-		active = FALSE;
-	}
+    if (!nComp)
+    {
+        if (active)
+        {
+            g_warning ("Got active when already active");
+            passed = FALSE;
 
-	toggle_count++;
+            return;
+        }
 
-	if (toggle_count == 100) {
-		g_main_loop_quit(mainloop);
-	}
+        active = TRUE;
+    }
+    else
+    {
+        active = FALSE;
+    }
 
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    toggle_count++;
+
+    if (toggle_count == 100)
+    {
+        g_main_loop_quit (mainloop);
+    }
 }
 
 gboolean
 kill_func (gpointer userdata)
 {
-	if (watchdog_hit == FALSE) {
-		g_main_loop_quit(mainloop);
-		g_warning("Forced to Kill");
-		g_warning("Toggle count: %d", toggle_count);
-		passed = FALSE;
-		return FALSE;
-	}
-	watchdog_hit = FALSE;
-	return TRUE;
+    if (watchdog_hit == FALSE) {
+        g_main_loop_quit(mainloop);
+        g_warning("Forced to Kill");
+        g_warning("Toggle count: %d", toggle_count);
+        passed = FALSE;
+        return FALSE;
+    }
+    watchdog_hit = FALSE;
+    return TRUE;
 }
 
 gint
 main (gint argc, gchar * argv[])
 {
-	GError * error = NULL;
-	DBusGConnection * session_bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-	if (error != NULL) {
-		g_error("Unable to get session bus: %s", error->message);
-		return 1;
-	}
+    GError *pError = NULL;
+    GDBusProxy *pProxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION, G_DBUS_PROXY_FLAGS_NONE, NULL, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS, NULL, &pError);
 
-	DBusGProxy * bus_proxy = dbus_g_proxy_new_for_name(session_bus, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
-	guint nameret = 0;
+    if (pError != NULL)
+    {
+        g_error("Unable to get session bus: %s", pError->message);
+        g_error_free (pError);
 
-	if (!org_freedesktop_DBus_request_name(bus_proxy, NOTIFICATION_WATCHER_DBUS_ADDR, 0, &nameret, &error)) {
-		g_error("Unable to call to request name");
-		return 1;
-	}   
+        return 1;
+    }
 
-	if (nameret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-		g_error("Unable to get name");
-		return 1;
-	}
+    GDBusConnection *pConnection = g_dbus_proxy_get_connection (pProxy);
+    guint nName = g_bus_own_name_on_connection (pConnection, NOTIFICATION_WATCHER_DBUS_ADDR, G_BUS_NAME_OWNER_FLAGS_NONE, NULL, NULL, NULL, NULL);
 
-	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_reg_filter, NULL, NULL);
+    if (!nName)
+    {
+        g_error ("Unable to call to request name");
 
-	dbus_connection_add_filter(dbus_g_connection_get_connection(session_bus), dbus_filter, NULL, NULL);
-	dbus_bus_add_match(dbus_g_connection_get_connection(session_bus), "type='signal',interface='" NOTIFICATION_ITEM_DBUS_IFACE "',member='NewStatus'", NULL);
+        return 1;
+    }
 
-	watchdog_hit = TRUE;
-	g_timeout_add_seconds(20, kill_func, NULL);
+    if (nName != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
+    {
+        g_error ("Unable to get name");
 
-	mainloop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(mainloop);
+        return 1;
+    }
 
-	if (passed) {
-		g_debug("Quiting");
-		return 0;
-	} else {
-		g_debug("Quiting as we're a failure");
-		return 1;
-	}
-	return 0;
+    g_dbus_connection_add_filter (pConnection, dbus_reg_filter, NULL, NULL);
+    g_dbus_connection_signal_subscribe (pConnection, NULL, NOTIFICATION_ITEM_DBUS_IFACE, "NewStatus", NULL, NULL, G_DBUS_SIGNAL_FLAGS_NONE, onNewStatus, NULL, NULL);
+
+    watchdog_hit = TRUE;
+    g_timeout_add_seconds(20, kill_func, NULL);
+
+    mainloop = g_main_loop_new(NULL, FALSE);
+    g_main_loop_run(mainloop);
+
+    if (passed) {
+        g_debug("Quiting");
+        return 0;
+    } else {
+        g_debug("Quiting as we're a failure");
+        return 1;
+    }
+    return 0;
 }
