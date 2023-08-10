@@ -1,4 +1,4 @@
-# Ayatana System Indicator &mdash; Display [![Build Status](https://api.travis-ci.com/AyatanaIndicators/libayatana-appindicator.svg)](https://travis-ci.com/github/AyatanaIndicators/libayatana-appindicator)
+# Ayatana Application Indicator (Shared Library) [![Build Status](https://api.travis-ci.com/AyatanaIndicators/libayatana-appindicator.svg)](https://travis-ci.com/github/AyatanaIndicators/libayatana-appindicator)
 
 ## About Ayatana Indicators
 
@@ -32,7 +32,7 @@ to the Ayatana Indicators project.
 For further info, please visit:
 https://ayatana-indicators.org
 
-## The Ayatana Application Indicators (Shared Library)
+## The Ayatana Application Indicator (Shared Library)
 
 A library to allow applications to export a menu into the an Application
 Indicators aware menu bar. Based on KSNI it also works in KDE and will
