@@ -66,10 +66,6 @@ elseif (FLAVOUR_GTK2)
     )
 endif()
 
-if(ENABLE_TESTS)
-    set(DEPS ${DEPS} dbus-1>=1.12 dbus-glib-1>=0.82)
-endif()
-
 include(GNUInstallDirs)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PROJECT_DEPS REQUIRED ${DEPS})

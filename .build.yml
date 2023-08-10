@@ -16,7 +16,6 @@ requires:
     - gtk3
     - glib2
     - libdbusmenu-gtk3
-    - dbus-glib
     - gobject-introspection
     - gtk3-docs
 
@@ -48,8 +47,6 @@ requires:
     - libgtk3.0-cil-dev
     - gtk-sharp2-gapi
     - libgtk2.0-cil-dev
-    - libdbus-1-dev
-    - libdbus-glib-1-dev
     - libdbusmenu-glib-dev
     - libdbusmenu-gtk3-dev
     - libdbusmenu-gtk-dev
@@ -84,8 +81,6 @@ requires:
     - libgtk3.0-cil-dev
     - gtk-sharp2-gapi
     - libgtk2.0-cil-dev
-    - libdbus-1-dev
-    - libdbus-glib-1-dev
     - libdbusmenu-glib-dev
     - libdbusmenu-gtk3-dev
     - libdbusmenu-gtk-dev
