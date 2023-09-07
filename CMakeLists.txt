@@ -15,7 +15,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(ENABLE_TESTS "Enable all tests and checks" OFF)
 option(ENABLE_COVERAGE "Enable coverage reports (includes enabling all tests and checks)" OFF)
 option(ENABLE_WERROR "Treat all build warnings as errors" OFF)
-option(ENABLE_GTKDOC "Enable building GTK documentation" OFF)
+option(ENABLE_GTKDOC "Enable building GTK documentation" ON)
 option(ENABLE_BINDINGS_VALA "Enable Vala bindings (GTK+-3.0 and beyond only)" ON)
 option(ENABLE_BINDINGS_MONO "Enable Mono bindings" ON)
 
