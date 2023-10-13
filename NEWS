@@ -1,3 +1,23 @@
+Overview of changes in libayatana-appindicator 0.5.93
+
+  - bindings/mono/libayatana-appindicator*-api.metadata: Drop/fix
+    properties, methods and signals.
+  - bindings/mono/CMakeLists.txt: Drop unused properties.
+  - src/AyatanaAppIndicator*-0.1.metadata: Drop unused metadata.
+  - Explicitly mark deprecated functions and use substitutes.
+  - src/app-indicator.c: Fix documentation related errors
+    extension.
+  - src/app-indicator.c: Don't use GNU old-style field designator.
+  - bindings/mono/CMakeLists.txt: Drop path from linked resource file.
+  - Document the status property a bit more clearly.
+  - tests/test-libappindicator.c: Drop unread value.
+  - Replace DBus-GLib with GDBus and drop libdus.
+  - Add info and build instructions.
+  - Limit exported symbols.
+  - cmake: Install library as library.
+  - README.md: Fix title copy-paste mistake.
+  - CMakeLists.txt: Generate GTK documentation by default.
+
 Overview of changes in libayatana-appindicator 0.5.92
 
   - Fix/silence plenty deprecation warnings.

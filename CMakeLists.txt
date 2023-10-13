@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 project(libayatana-appindicator C)
 
-set(PROJECT_VERSION "0.5.92")
+set(PROJECT_VERSION "0.5.93")
 set(PROJECT_NAME "libayatana-appindicator")
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

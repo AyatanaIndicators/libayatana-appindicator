@@ -1,6 +1,90 @@
+2023-10-13 Mike Gabriel
+
+        * release 0.5.93 (HEAD -> master, tag: 0.5.93)
+
+2023-09-10 Mike Gabriel
+
+        * Merge branch 'tari01-pr/enable-docs' (a80f3b7)
+
+2023-09-07 Robert Tari
+
+        * CMakeLists.txt: Generate GTK documentation by default (277f584)
+
+2023-08-10 Robert Tari
+
+        * README.md: Fix title copy-paste mistake (05ee0c7)
+
+2023-09-07 Robert Tari
+
+        * Merge branch 'tyll-executable_so' (54fc06c)
+
+2023-09-06 Till Maas
+
+        * cmake: Install library as library (12dc6d2)
+
+2023-08-10 Mike Gabriel
+
+        * debian/libayatana-appindicator*.symbols: Update .symbols after
+          having limited the number of exported symbols. (86f8bb3)
+        * Merge branch 'tari01-pr/limit-symbols' (ef6ee22)
+
+2023-08-09 Robert Tari
+
+        * Limit exported symbols (4d97676)
+
+2023-08-10 Mike Gabriel
+
+        * Merge branch 'tari01-pr/build-instructions' (2a3ed01)
+
+2023-08-09 Robert Tari
+
+        * Add info and build instructions (e0c8e15)
+
+2023-08-10 Mike Gabriel
+
+        * Merge branch 'tari01-pr/drop-dbus-glib' (3b69c23)
+
+2023-08-09 Robert Tari
+
+        * .build.yml: Drop dbus-glib and dbus dependencies (d6cdc24)
+        * debian/control: Drop libdbus-glib-1-dev and libdbus-1-dev (1ac50df)
+        * Replace DBus-GLib with GDBus and drop libdus (f3cf535)
+        * tests/test-libappindicator.c: Drop unread value (25001b0)
+
+2023-08-07 Mike Gabriel
+
+        * Merge branch 'WPettersson-document-status' (9201035)
+
+2023-07-20 William Pettersson
+
+        * Document the status property a bit more clearly. (864b830)
+
+2023-06-07 Mike Gabriel
+
+        * Merge branch 'tari01-pr/build-fixes' (2b32292)
+
+2023-03-11 Robert Tari
+
+        * .build.yml: Add doc requirements and build with GTKDOC (05913e6)
+        * bindings/mono/CMakeLists.txt: Drop path from linked resource file
+          (e67e62e)
+        * src/app-indicator.c: Don't use GNU old-style field designator
+          extension (d848644)
+
+2023-03-10 Robert Tari
+
+        * src/app-indicator.c: Fix documentation related errors (f7f4a8d)
+        * Explicitly mark deprecated functions and use substitutes (aec1741)
+        * src/AyatanaAppIndicator*-0.1.metadata: Drop unused metadata
+          (483cd99)
+        * bindings/mono/CMakeLists.txt: Drop unused properties (6f8cdd5)
+        * bindings/mono/libayatana-appindicator*-api.metadata: Drop/fix
+          properties, methods and signals (833d2c9)
+        * Whitespace fix (9f92d34)
+
 2023-02-02 Mike Gabriel
 
-        * release 0.5.92 (HEAD -> master, tag: 0.5.92)
+        * release 0.5.92 (d214fe3) (tag: 0.5.92)
         * Merge branch 'tari01-pr/fix-build-warnings' (4f9c4e9)
 
 2022-07-15 Robert Tari
