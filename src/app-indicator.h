@@ -112,6 +112,11 @@ G_BEGIN_DECLS
  *
  * String identifier for the #AppIndicator::scroll-event signal.
  */
+/**
+ * APP_INDICATOR_SIGNAL_ACTIVATE_EVENT:
+ *
+ * String identifier for the #AppIndicator::activate-event signal.
+ */
 #define APP_INDICATOR_SIGNAL_NEW_ICON            "new-icon"
 #define APP_INDICATOR_SIGNAL_NEW_ATTENTION_ICON  "new-attention-icon"
 #define APP_INDICATOR_SIGNAL_NEW_STATUS          "new-status"
@@ -119,6 +124,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
+#define APP_INDICATOR_SIGNAL_ACTIVATE_EVENT      "activate-event"
 
 /**
  * AppIndicatorCategory:
@@ -221,13 +227,17 @@ struct _AppIndicatorClass {
     void (*unfallback)              (AppIndicator * indicator,
                                      GtkStatusIcon * status_icon);
 
+    void (* activate_event)          (AppIndicator * indicator,
+                                     gint                  x,
+                                     gint                  y,
+                                     gpointer          user_data);
+
     /* Reserved */
     void (*app_indicator_reserved_1)(void);
     void (*app_indicator_reserved_2)(void);
     void (*app_indicator_reserved_3)(void);
     void (*app_indicator_reserved_4)(void);
     void (*app_indicator_reserved_5)(void);
-    void (*app_indicator_reserved_6)(void);
 };
 
 /**
