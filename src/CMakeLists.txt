@@ -125,7 +125,9 @@ target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${PROJECT_DEP
 target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories("${ayatana_appindicator_gtkver}" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries("${ayatana_appindicator_gtkver}" ${PROJECT_DEPS_LIBRARIES})
-target_link_options ("${ayatana_appindicator_gtkver}" PRIVATE "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.symbols")
+if(NOT APPLE)
+    target_link_options ("${ayatana_appindicator_gtkver}" PRIVATE "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/app-indicator.symbols")
+endif()
 install(TARGETS "${ayatana_appindicator_gtkver}" LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
 
 # AyatanaAppIndicator{,3}-0.1.gir
