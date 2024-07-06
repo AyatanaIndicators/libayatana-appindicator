@@ -120,6 +120,7 @@ enum {
     CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
     SCROLL_EVENT,
+    ACTIVATE_EVENT,
     LAST_SIGNAL
 };
 
@@ -624,6 +625,22 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                       NULL, NULL,
                                       _application_service_marshal_VOID__INT_UINT,
                                       G_TYPE_NONE, 2, G_TYPE_INT, GDK_TYPE_SCROLL_DIRECTION);
+
+    /**
+     * AppIndicator::activate-event:
+     * @arg0: The #AppIndicator object
+	 * @arg1: X
+	 * @arg2: Y
+     *
+     * Signaled when the #AppIndicator receives a scroll event.
+     */
+    signals[ACTIVATE_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_ACTIVATE_EVENT,
+                                      G_TYPE_FROM_CLASS(klass),
+                                      G_SIGNAL_RUN_LAST,
+                                      G_STRUCT_OFFSET (AppIndicatorClass, activate_event),
+                                      NULL, NULL,
+                                      _application_service_marshal_VOID__INT_UINT,
+                                      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 
     /* DBus interfaces */
     if (item_node_info == NULL) {
@@ -1210,7 +1227,10 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
 
         delta = ABS(delta);
         g_signal_emit(app, signals[SCROLL_EVENT], 0, delta, direction);
-
+    } else if (g_strcmp0(method, "Activate") == 0) {
+        gint x, y;
+        g_variant_get(params, "(ii)", &x, &y);
+        g_signal_emit(app, signals[ACTIVATE_EVENT], 0, x, y);
     } else if (g_strcmp0(method, "SecondaryActivate") == 0 ||
                g_strcmp0(method, "XAyatanaSecondaryActivate") == 0) {
         GtkWidget *menuitem = priv->sec_activate_target;
