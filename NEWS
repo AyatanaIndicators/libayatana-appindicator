@@ -1,3 +1,10 @@
+Overview of changes in libayatana-appindicator 0.5.94
+
+  - Fix build on macOS.
+  - Correct symbols in version script file.
+  - Deprecate libayatana-appindicator in favour of
+    libayatana-appindicator-glib.
+
 Overview of changes in libayatana-appindicator 0.5.93
 
   - bindings/mono/libayatana-appindicator*-api.metadata: Drop/fix

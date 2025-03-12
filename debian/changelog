@@ -1,3 +1,10 @@
+libayatana-appindicator (0.5.94-0) unstable; urgency=medium
+
+  * Upstream-provided Debian package for libayatana-appindicator.
+    See upstream ChangeLog for recent changes.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Wed, 12 Mar 2025 09:29:06 +0100
+
 libayatana-appindicator (0.5.93-0) unstable; urgency=medium
 
   * Upstream-provided Debian package for libayatana-appindicator.
