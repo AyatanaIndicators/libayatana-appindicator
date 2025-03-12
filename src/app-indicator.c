@@ -1842,6 +1842,8 @@ app_indicator_new (const gchar          *id,
                    const gchar          *icon_name,
                    AppIndicatorCategory  category)
 {
+  g_warning ("libayatana-appindicator is deprecated. Please use libayatana-appindicator-glib in newly written code.");
+
   AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
                                           PROP_ID_S, id,
                                           PROP_CATEGORY_S, category_from_enum (category),
@@ -1871,6 +1873,8 @@ app_indicator_new_with_path (const gchar          *id,
                              AppIndicatorCategory  category,
                              const gchar          *icon_theme_path)
 {
+    g_warning ("libayatana-appindicator is deprecated. Please use libayatana-appindicator-glib in newly written code.");
+
     AppIndicator *indicator = g_object_new (APP_INDICATOR_TYPE,
                                             PROP_ID_S, id,
                                             PROP_CATEGORY_S, category_from_enum (category),
