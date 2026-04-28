@@ -120,6 +120,7 @@ enum {
     CONNECTION_CHANGED,
     NEW_ICON_THEME_PATH,
     SCROLL_EVENT,
+    ACTIVATE_EVENT,
     LAST_SIGNAL
 };
 
@@ -624,6 +625,23 @@ app_indicator_class_init (AppIndicatorClass *klass)
                                       NULL, NULL,
                                       _application_service_marshal_VOID__INT_UINT,
                                       G_TYPE_NONE, 2, G_TYPE_INT, GDK_TYPE_SCROLL_DIRECTION);
+
+    /**
+     * AppIndicator::activate:
+     * @arg0: The #AppIndicator object
+     * @arg1: The x coordinate of the activation
+     * @arg2: The y coordinate of the activation
+     *
+     * Signaled when the #AppIndicator receives a primary activation event
+     * (e.g. left-click on the tray icon).
+     */
+    signals[ACTIVATE_EVENT] = g_signal_new (APP_INDICATOR_SIGNAL_ACTIVATE_EVENT,
+                                      G_TYPE_FROM_CLASS(klass),
+                                      G_SIGNAL_RUN_LAST,
+                                      G_STRUCT_OFFSET (AppIndicatorClass, activate_event),
+                                      NULL, NULL,
+                                      _application_service_marshal_VOID__INT_INT,
+                                      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 
     /* DBus interfaces */
     if (item_node_info == NULL) {
@@ -1192,7 +1210,23 @@ bus_method_call (GDBusConnection * connection, const gchar * sender,
     AppIndicatorPrivate * priv = app_indicator_get_instance_private(app);
     GVariant * retval = NULL;
 
-    if (g_strcmp0(method, "Scroll") == 0) {
+    if (g_strcmp0(method, "Activate") == 0) {
+        gint x, y;
+        g_variant_get(params, "(ii)", &x, &y);
+
+        if (g_signal_has_handler_pending(app, signals[ACTIVATE_EVENT], 0, FALSE)) {
+            g_signal_emit(app, signals[ACTIVATE_EVENT], 0, x, y);
+            g_dbus_method_invocation_return_value(invocation, retval);
+        } else {
+            /* No handler connected — return error so the panel falls back
+             * to showing the context menu for backward compatibility. */
+            g_dbus_method_invocation_return_error(invocation,
+                G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_METHOD,
+                "No handler for Activate");
+        }
+        return;
+
+    } else if (g_strcmp0(method, "Scroll") == 0) {
         GdkScrollDirection direction;
         gint delta;
         const gchar *orientation;
