@@ -1,0 +1,9 @@
+Document: libayatana-appindicator-doc
+Title: libayatana-appindicator API documentation
+Author: Ayatana Indicators Team
+Abstract: This document describes the API of the libayatana-appindicator (GTK-3 variant) library.
+Section: Programming/C
+
+Format: HTML
+Index: /usr/share/doc/libayatana-appindicator3-dev/html/index.html
+Files: /usr/share/doc/libayatana-appindicator3-dev/html/*

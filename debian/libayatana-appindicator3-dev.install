@@ -1,4 +1,5 @@
 usr/lib/*/libayatana-appindicator3.so
+usr/lib/*/libappindicator3.so
 usr/lib/*/pkgconfig/ayatana-appindicator3-0.1.pc
 usr/include/libayatana-appindicator3-0.1/*
 usr/share/gir-1.0/AyatanaAppIndicator3-0.1.gir

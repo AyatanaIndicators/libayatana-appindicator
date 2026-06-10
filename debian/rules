@@ -2,7 +2,7 @@
 
 include /usr/share/dpkg/architecture.mk
 
-FLAVOURS = gtk3 gtk2
+FLAVOURS = gtk3
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
@@ -10,22 +10,19 @@ include /usr/share/dpkg/buildflags.mk
 
 API_VERSION = 0.1
 
-CONFIGURE_COMMON_FLAGS = -DENABLE_TESTS=ON
-ifeq (,$(filter $(DEB_HOST_ARCH),amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64))
-# CONFIGURE_COMMON_FLAGS += -DENABLE_MONO_TESTS=OFF
-  CONFIGURE_COMMON_FLAGS +=
-else
-  dh_extra_args = ,cli
-endif
-CONFIGURE_FLAGS_gtk2 = -DFLAVOUR_GTK2=ON -DENABLE_GTKDOC=OFF
-CONFIGURE_FLAGS_gtk3 = -DFLAVOUR_GTK3=ON -DENABLE_GTKDOC=ON
+DO_PACKAGES := $(shell dh_listpackages)
+
+CONFIGURE_COMMON_FLAGS = -DENABLE_TESTS=ON -DENABLE_BINDINGS_MONO=OFF
+CONFIGURE_FLAGS_gtk3 = \
+	-DFLAVOUR_GTK3=ON \
+	-DENABLE_GTKDOC=$(if $(filter libayatana-appindicator-doc,$(DO_PACKAGES)),ON,OFF)
 
 export DPKG_GENSYMBOLS_CHECK_LEVEL = 4
 
 CFLAGS += -fPIC
 
 %:
-	dh $@ --with gir$(dh_extra_args)
+	dh $@ --with gir
 
 override_dh_auto_configure: $(FLAVOURS:%=doconfigure-%)
 
@@ -47,21 +44,30 @@ override_dh_install:
 	find debian/tmp -name \*.a -exec rm {} \;
 	rm -rf debian/tmp/*/usr/lib/mono
 	rm -rf debian/tmp/*/usr/share/vala/vapi/ayatana-appindicator*-0.1.deps
-	dh_install -plibayatana-appindicator1 --fail-missing --sourcedir=debian/tmp/gtk2
-	dh_install -pgir1.2-ayatanaappindicator-0.1 --fail-missing --sourcedir=debian/tmp/gtk2
-	dh_install -plibayatana-appindicator-dev --fail-missing --sourcedir=debian/tmp/gtk2
-	dh_install -plibayatana-appindicator-doc --fail-missing --sourcedir=debian/tmp/gtk3
-	dh_install -plibayatana-appindicator3-1 --fail-missing --sourcedir=debian/tmp/gtk3
-	dh_install -plibayatana-appindicator3-dev --fail-missing --sourcedir=debian/tmp/gtk3
-	dh_install -pgir1.2-ayatanaappindicator3-0.1 --fail-missing --sourcedir=debian/tmp/gtk3
-	if echo amd64 arm64 armel armhf i386 mipsel ppc64el s390x kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 | grep -q $(DEB_HOST_ARCH); then \
-	    dh_install -plibayatana-appindicator3-0.1-cil --fail-missing --sourcedir=debian/tmp/gtk3; \
-	    dh_install -plibayatana-appindicator3-0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk3; \
-	    dh_install -plibayatana-appindicator0.1-cil --fail-missing --sourcedir=debian/tmp/gtk2; \
-	    dh_install -plibayatana-appindicator0.1-cil-dev --fail-missing --sourcedir=debian/tmp/gtk2; \
-	fi
+	mkdir -p debian/tmp/gtk3/usr/share/doc/libayatana-appindicator3-dev/
+ifneq ($(filter libayatana-appindicator-doc,$(DO_PACKAGES)),)
+	mv debian/tmp/gtk3/usr/share/gtk-doc/html/libayatana-appindicator3 debian/tmp/gtk3/usr/share/doc/libayatana-appindicator3-dev/html
+endif
+
+	ln -s libayatana-appindicator3.so   debian/tmp/gtk3/usr/lib/$(DEB_HOST_MULTIARCH)/libappindicator3.so
+	ln -s libayatana-appindicator3.so.1 debian/tmp/gtk3/usr/lib/$(DEB_HOST_MULTIARCH)/libappindicator3.so.1
+
+	dh_install -plibayatana-appindicator-doc --sourcedir=debian/tmp/gtk3
+	dh_install -plibayatana-appindicator3-1 --sourcedir=debian/tmp/gtk3
+	dh_install -plibayatana-appindicator3-dev --sourcedir=debian/tmp/gtk3
+	dh_install -pgir1.2-ayatanaappindicator3-0.1 --sourcedir=debian/tmp/gtk3
+
+override_dh_missing:
+	dh_missing -plibayatana-appindicator-doc --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_missing -plibayatana-appindicator3-1 --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_missing -plibayatana-appindicator3-dev --fail-missing --sourcedir=debian/tmp/gtk3
+	dh_missing -pgir1.2-ayatanaappindicator3-0.1 --fail-missing --sourcedir=debian/tmp/gtk3
+
+override_dh_link:
+	dh_link -plibayatana-appindicator-doc
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p $(CURDIR)/debian/tmphome-gtk3/.local/share
 	mkdir -p $(CURDIR)/debian/tmphome-gtk3/.cache
 	export HOME=$(CURDIR)/debian/tmphome-gtk3 \
@@ -72,18 +78,14 @@ override_dh_auto_test:
 	# View test's log file for better debugging of problems when built in clean chroots.
 	if [ -e build/gtk3/tests/test-suite.log ]; then cat build/gtk3/tests/test-suite.log; fi
 	rm -Rf $(CURDIR)/debian/tmphome-gtk3
-
-	mkdir -p $(CURDIR)/debian/tmphome-gtk2/.local/share
-	mkdir -p $(CURDIR)/debian/tmphome-gtk2/.cache
-	export HOME=$(CURDIR)/debian/tmphome-gtk2 \
-	    && export XDG_DATA_HOME=$(CURDIR)/debian/tmphome-gtk2/.local/share \
-	    && export XDG_CACHE_HOME=$(CURDIR)/debian/tmphome-gtk2/.cache \
-	    && unset DBUS_SESSION_BUS_ADDRESS \
-	    && dh_auto_test --no-parallel --builddirectory=build/gtk2
-	# View test's log file for better debugging of problems when built in clean chroots.
-	if [ -e build/gtk2/tests/test-suite.log ]; then cat build/gtk2/tests/test-suite.log; fi
-	rm -Rf $(CURDIR)/debian/tmphome-gtk2
+endif
 
 override_dh_auto_clean:
 	dh_auto_clean
 	rm -rf build
+
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS
+
+get-orig-source:
+	uscan --noconf --force-download --rename --download-current-version --destdir=..
