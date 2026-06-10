@@ -119,6 +119,7 @@ G_BEGIN_DECLS
 #define APP_INDICATOR_SIGNAL_CONNECTION_CHANGED  "connection-changed"
 #define APP_INDICATOR_SIGNAL_NEW_ICON_THEME_PATH "new-icon-theme-path"
 #define APP_INDICATOR_SIGNAL_SCROLL_EVENT        "scroll-event"
+#define APP_INDICATOR_SIGNAL_ACTIVATE_EVENT      "activate"
 
 /**
  * AppIndicatorCategory:
@@ -169,6 +170,7 @@ typedef struct _AppIndicatorClass   AppIndicatorClass;
  * @new_label: Slot for #AppIndicator::new-label.
  * @connection_changed: Slot for #AppIndicator::connection-changed.
  * @scroll_event: Slot for #AppIndicator::scroll-event
+ * @activate_event: Slot for #AppIndicator::activate
  * @app_indicator_reserved_ats: Reserved for future use.
  * @fallback: Function that gets called to make a #GtkStatusIcon when
  *            there is no Application Indicator area available.
@@ -212,6 +214,11 @@ struct _AppIndicatorClass {
     void (* scroll_event)           (AppIndicator * indicator,
                                      gint                  delta,
                                      GdkScrollDirection direction,
+                                     gpointer          user_data);
+
+    void (* activate_event)         (AppIndicator * indicator,
+                                     gint                  x,
+                                     gint                  y,
                                      gpointer          user_data);
 
     void (*app_indicator_reserved_ats)(void);
