@@ -72,7 +72,7 @@ main (int argv, char ** argc)
         return 1;
     }
 
-    g_usleep (500000);
+    g_usleep (750000);
     gboolean bOwner = FALSE;
     GVariant *pResult = g_dbus_proxy_call_sync (pProxy, "NameHasOwner", g_variant_new ("(s)", "org.test"), G_DBUS_CALL_FLAGS_NONE, -1, NULL, &pError);
 
