@@ -1,0 +1,109 @@
+/*
+Copyright (C) 2021 Guido Berhoerster <guido+ayatana@berhoerster.name>
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of either or both of the following licenses:
+
+1) the GNU Lesser General Public License version 3, as published by the
+   Free Software Foundation; and/or
+2) the GNU Lesser General Public License version 2.1, as published by
+   the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranties of
+MERCHANTABILITY, SATISFACTORY QUALITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the applicable version of the GNU Lesser General Public
+License for more details.
+
+You should have received a copy of both the GNU Lesser General Public
+License version 3 and version 2.1 along with this program.  If not, see
+<http://www.gnu.org/licenses/>
+*/
+
+#ifndef APP_INDICATOR_VERSION_H
+#define APP_INDICATOR_VERSION_H
+
+#if !defined(APP_INDICATOR_INSIDE) && !defined(APP_INDICATOR_COMPILATION)
+#error "Only <app-indicator.h> can be included directly."
+#endif
+
+G_BEGIN_DECLS
+
+/**
+ * SECTION:app-indicator-version
+ * @Title: Versioning
+ * @short_description: Ayatana Application Indicators version checking
+ *
+ * ayatana-appindicator provides macros for checking the version of the library
+ * an application is compiled against.
+ */
+
+/**
+ * AYATANA_APP_INDICATOR_MAJOR_VERSION:
+ *
+ * Ayatana Application Indicators major version component (e.g. 1 if
+ * %AYATANA_APP_INDICATOR_VERSION is 1.2.3)
+ */
+#define AYATANA_APP_INDICATOR_MAJOR_VERSION (@PROJECT_VERSION_MAJOR@)
+
+/**
+ * AYATANA_APP_INDICATOR_MINOR_VERSION:
+ *
+ * Ayatana Application Indicators minor version component (e.g. 2 if
+ * %AYATANA_APP_INDICATOR_VERSION is 1.2.3)
+ */
+#define AYATANA_APP_INDICATOR_MINOR_VERSION (@PROJECT_VERSION_MINOR@)
+
+/**
+ * AYATANA_APP_INDICATOR_MICRO_VERSION:
+ *
+ * Ayatana Application Indicators micro version component (e.g. 3 if
+ * %AYATANA_APP_INDICATOR_VERSION is 1.2.3)
+ */
+#define AYATANA_APP_INDICATOR_MICRO_VERSION (@PROJECT_VERSION_PATCH@)
+
+/**
+ * AYATANA_APP_INDICATOR_VERSION
+ *
+ * Ayatana Application Indicators version, e.g. 1.2.3.
+ */
+#define AYATANA_APP_INDICATOR_VERSION       (@PROJECT_VERSION@)
+
+/**
+ * AYATANA_APP_INDICATOR_VERSION_S:
+ *
+ * Ayatana Application Indicators version, encoded as a string which may be
+ * concatenated, e.g. "1.2.3".
+ */
+#define AYATANA_APP_INDICATOR_VERSION_S     "@PROJECT_VERSION@"
+
+#define AYATANA_APP_INDICATOR_ENCODE_VERSION(major,minor,micro) \
+        ((major) << 24 | (minor) << 16 | (micro) << 8)
+
+/**
+ * AYATANA_APP_INDICATOR_VERSION_HEX:
+ *
+ * Ayatana Application Indicators version, encoded as an hexadecimal number
+ * which may be compared to an integer number, e.g. 0x010203.
+ */
+#define AYATANA_APP_INDICATOR_VERSION_HEX \
+        (AYATANA_APP_INDICATOR_ENCODE_VERSION (AYATANA_APP_INDICATOR_MAJOR_VERSION, AYATANA_APP_INDICATOR_MINOR_VERSION, AYATANA_APP_INDICATOR_MICRO_VERSION))
+
+/**
+ * AYATANA_APP_INDICATOR_CHECK_VERSION:
+ * @major: required major version
+ * @minor: required minor version
+ * @micro: required micro version
+ *
+ * Compile-time version checking. Evaluates to %TRUE if the version of
+ * ayatana-appindicator is greater than the given @major, @minor, and @micro
+ * numbers.
+ */
+#define AYATANA_APP_INDICATOR_CHECK_VERSION(major,minor,micro) \
+        (AYATANA_APP_INDICATOR_MAJOR_VERSION > (major) || \
+        (AYATANA_APP_INDICATOR_MAJOR_VERSION == (major) && AYATANA_APP_INDICATOR_MINOR_VERSION > (minor)) || \
+        (AYATANA_APP_INDICATOR_MAJOR_VERSION == (major) && AYATANA_APP_INDICATOR_MINOR_VERSION == (minor) && AYATANA_APP_INDICATOR_MICRO_VERSION >= (micro)))
+
+G_END_DECLS
+
+#endif /* APP_INDICATOR_VERSION_H */
