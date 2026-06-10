@@ -1,3 +1,16 @@
+Overview of changes in libayatana-appindicator 0.6.0
+
+  - CMake: Add ${CMAKE_BINARY_DIR}/src to target_include_directories().
+  - debian/: Prepare release v0.6.0. Update packaging from Debian
+    unstable.
+  - tests/test-libappindicator-fallback-watcher.c: Increase test
+    timeout, fix unit test on riscv64.
+  - Add support for tooltips.
+  - Add macros for compile-time version checking.
+  - Use symlink in the build directory for includes.
+  - Revert "Explicitly mark deprecated functions and use substitutes".
+  - Implement the Activate D-Bus method for primary click handling.
+
 Overview of changes in libayatana-appindicator 0.5.94
 
   - Fix build on macOS.

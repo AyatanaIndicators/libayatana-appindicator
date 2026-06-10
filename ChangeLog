@@ -1,6 +1,43 @@
+2026-06-10 Mike Gabriel
+
+        * Release 0.6.0 (HEAD -> main, tag: 0.6.0)
+        * CMake: Add ${CMAKE_BINARY_DIR}/src to target_include_directories()
+          (540df103)
+        * debian/: Prepare release v0.6.0. Update packaging from Debian
+          unstable. (3bca2cde)
+
+2026-06-10 Aurelien Jarno
+
+        * tests/test-libappindicator-fallback-watcher.c: Increase test
+          timeout, fix unit test on riscv64. (54e1f824)
+
+2026-06-10 Mike Gabriel
+
+        * Merge branch 'sunweaver-pr/tooltip-support' (13fa5796)
+
+2021-03-01 Guido Berhoerster
+
+        * Add support for tooltips (bfef7f60)
+        * Add macros for compile-time version checking (808727b9)
+
+2023-03-24 Guido Berhoerster
+
+        * Use symlink in the build directory for includes (2ea7c4ae)
+
+2026-06-10 Mike Gabriel
+
+        * Revert "Explicitly mark deprecated functions and use substitutes"
+          (0a1de621)
+        * Merge branch 'mikhailnov-activate-signal' (c45150ea)
+
+2026-04-28 Mikhail Novosyolov
+
+        * Implement the Activate D-Bus method for primary click handling
+          (90ce95a6)
+
 2025-03-12 Mike Gabriel
 
-        * release 0.5.94 (HEAD -> main, tag: 0.5.94)
+        * release 0.5.94 (31e8bb08) (tag: 0.5.94)
         * Merge branch 'tari01-pr/add-deprecation' (739dc8d3)
 
 2025-03-07 Robert Tari
