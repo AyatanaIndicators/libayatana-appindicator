@@ -9,6 +9,7 @@ set(SOURCES
     generate-id.c
     gen-notification-item.xml.c
     gen-notification-watcher.xml.c
+    indicator-desktop-shortcuts.c
 )
 
 if (FLAVOUR_GTK3)

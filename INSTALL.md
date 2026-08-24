@@ -15,7 +15,6 @@
  - gtk3
  - gtk3-docs
  - gtk-sharp-3
- - libayatana-indicator
  - libdbusmenu-gtk3
  - libdbusmenu-glib
  - libgirepository
