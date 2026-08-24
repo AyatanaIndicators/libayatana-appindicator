@@ -41,7 +41,7 @@ License version 3 and version 2.1 along with this program.  If not, see
 #include <libdbusmenu-gtk/client.h>
 #include <libdbusmenu-gtk/parser.h>
 
-#include <libayatana-indicator/indicator-desktop-shortcuts.h>
+#include <indicator-desktop-shortcuts.h>
 
 #include <stdlib.h>
 

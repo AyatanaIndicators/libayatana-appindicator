@@ -56,14 +56,12 @@ set(DEPS glib-2.0>=2.58)
 if (FLAVOUR_GTK3)
     set(DEPS
         ${DEPS}
-        ayatana-indicator3-0.4>=0.8.4
         gtk+-3.0>=3.24
         dbusmenu-gtk3-0.4
     )
 elseif (FLAVOUR_GTK2)
     set(DEPS
         ${DEPS}
-        ayatana-indicator-0.4>=0.8.4
         gtk+-2.0>=2.18
         dbusmenu-gtk-0.4
     )
