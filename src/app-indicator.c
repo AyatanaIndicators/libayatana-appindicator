@@ -110,6 +110,7 @@ typedef struct {
     /* StatusNotifierWatcher */
     GDBusProxy           *watcher_proxy;
     guint                 watcher_id;
+    gboolean              is_host_registered;
 
     /* Might be used */
     IndicatorDesktopShortcuts * shorties;
@@ -229,6 +230,37 @@ static const GDBusInterfaceVTable item_interface_table = {
 G_DEFINE_TYPE_WITH_PRIVATE (AppIndicator, app_indicator, G_TYPE_OBJECT);
 
 static void
+check_is_host_registered (AppIndicator *self)
+{
+    AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
+    GVariant *variant;
+
+    variant = g_dbus_proxy_get_cached_property (priv->watcher_proxy,
+                                                "IsStatusNotifierHostRegistered");
+
+    if (variant != NULL) {
+        priv->is_host_registered = g_variant_get_boolean (variant);
+        g_variant_unref (variant);
+    }
+
+    if (!priv->is_host_registered) {
+        start_fallback_timer (self, FALSE);
+        return;
+    }
+
+    check_connect (self);
+}
+
+static void
+watcher_properties_changed_cb (GDBusProxy   *proxy,
+                               GVariant     *changed_properties,
+                               GStrv         invalidated_properties,
+                               AppIndicator *self)
+{
+    check_is_host_registered (self);
+}
+
+static void
 watcher_ready_cb (GObject      *source_object,
                   GAsyncResult *res,
                   gpointer      user_data)
@@ -248,7 +280,12 @@ watcher_ready_cb (GObject      *source_object,
         return;
     }
 
-    check_connect (self);
+    g_signal_connect (priv->watcher_proxy,
+                      "g-properties-changed",
+                      G_CALLBACK (watcher_properties_changed_cb),
+                      self);
+
+    check_is_host_registered (self);
     g_object_unref (self);
 }
 
@@ -262,7 +299,6 @@ name_appeared_handler (GDBusConnection *connection,
     AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
     g_dbus_proxy_new (priv->connection,
-                      G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
                       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
                       watcher_interface_info,
                       NOTIFICATION_WATCHER_DBUS_ADDR,
@@ -286,6 +322,7 @@ name_vanished_handler (GDBusConnection *connection,
     /* Emit the AppIndicator::connection-changed signal*/
     g_signal_emit (self, signals[CONNECTION_CHANGED], 0, FALSE);
 
+    priv->is_host_registered = FALSE;
     start_fallback_timer (self, FALSE);
 }
 
@@ -806,6 +843,7 @@ app_indicator_init (AppIndicator *self)
                                          (GBusNameAppearedCallback) name_appeared_handler,
                                          (GBusNameVanishedCallback) name_vanished_handler,
                                          self, NULL);
+    priv->is_host_registered = FALSE;
 
     /* Start getting the session bus */
     g_object_ref(self); /* ref for the bus creation callback */
@@ -1634,7 +1672,18 @@ register_service_cb (GObject * obj, GAsyncResult * res, gpointer user_data)
     /* Emit the AppIndicator::connection-changed signal*/
     g_signal_emit (app, signals[CONNECTION_CHANGED], 0, TRUE);
 
-    if (priv->status_icon) {
+    /* If no StatusNotifierHost is registered, don't do unfallback */
+    if (!priv->is_host_registered) {
+        g_object_unref(G_OBJECT(user_data));
+        return;
+    }
+
+    if (priv->fallback_timer != 0) {
+        g_source_remove (priv->fallback_timer);
+        priv->fallback_timer = 0;
+    }
+
+    if (priv->status_icon != NULL) {
         AppIndicatorClass * class = APP_INDICATOR_GET_CLASS(app);
         if (class->unfallback != NULL) {
             class->unfallback(app, priv->status_icon);
