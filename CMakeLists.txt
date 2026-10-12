@@ -4,7 +4,7 @@ project(libayatana-appindicator
     LANGUAGES C
 )
 
-set(PROJECT_VERSION "0.6.0")
+set(PROJECT_VERSION "0.6.1")
 set(PROJECT_NAME "libayatana-appindicator")
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

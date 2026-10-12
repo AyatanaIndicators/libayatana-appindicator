@@ -1,6 +1,26 @@
+2026-10-12 Mike Gabriel
+
+        * Release 0.6.1 (HEAD -> main, tag: 0.6.1)
+        * Merge branch 'City-busz-systray-fallback' (65ae59c4)
+
+2026-08-26 Balló György
+
+        * Fall back to tray icon when StatusNotifierHost is not available
+          (02d827a5)
+
+2026-10-12 Mike Gabriel
+
+        * Merge branch 'City-busz-vendorize-indicator' (9925f835)
+
+2026-08-24 Balló György
+
+        * Vendorize indicator-desktop-shortcuts from libayatana-indicator
+          project (be2707c0)
+
 2026-06-10 Mike Gabriel
 
-        * Release 0.6.0 (HEAD -> main, tag: 0.6.0)
+        * d/changelog: fix recent changelog entry (eaa41f51)
+        * Release 0.6.0 (27f9d9dd) (tag: 0.6.0)
         * CMake: Add ${CMAKE_BINARY_DIR}/src to target_include_directories()
           (540df103)
         * debian/: Prepare release v0.6.0. Update packaging from Debian

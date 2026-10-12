@@ -1,3 +1,9 @@
+Overview of changes in libayatana-appindicator 0.6.1
+
+  - Fall back to tray icon when StatusNotifierHost is not available.
+  - Vendorize indicator-desktop-shortcuts from libayatana-indicator
+    project.
+
 Overview of changes in libayatana-appindicator 0.6.0
 
   - CMake: Add ${CMAKE_BINARY_DIR}/src to target_include_directories().
