@@ -51,6 +51,7 @@ test_libappindicator_fallback_item_init (TestLibappindicatorFallbackItem *self)
 
 GMainLoop * mainloop = NULL;
 gboolean passed = FALSE;
+gboolean timed_out = FALSE;
 
 enum {
     STATE_INIT,
@@ -98,6 +99,7 @@ gboolean
 kill_func (gpointer data)
 {
     g_debug("Kill Function");
+    timed_out = TRUE;
     g_main_loop_quit(mainloop);
     return FALSE;
 }
@@ -155,7 +157,7 @@ main (int argc, char ** argv)
 
     g_object_unref(G_OBJECT(item));
 
-    if (passed) {
+    if (passed && !timed_out) {
         return 0;
     } else {
         return 1;
