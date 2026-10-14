@@ -29,11 +29,78 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 gboolean kill_func (gpointer userdata);
 
 static GMainLoop * mainloop = NULL;
+static guint watcher_owner_id = 0;
+static gboolean watcher_restarted = FALSE;
+
+static gboolean
+reacquire_watcher_name (gpointer userdata)
+{
+    watcher_owner_id = g_bus_own_name_on_connection (
+        G_DBUS_CONNECTION (userdata),
+        NOTIFICATION_WATCHER_DBUS_ADDR,
+        G_BUS_NAME_OWNER_FLAGS_NONE,
+        NULL, NULL, NULL, NULL);
+
+    return G_SOURCE_REMOVE;
+}
+
+static gboolean
+restart_watcher (gpointer userdata)
+{
+    g_bus_unown_name (watcher_owner_id);
+    watcher_owner_id = 0;
+
+    g_timeout_add (100, reacquire_watcher_name, userdata);
+
+    return G_SOURCE_REMOVE;
+}
 
 static GDBusMessage* dbus_filter (GDBusConnection *pConnection, GDBusMessage *pMessage, gboolean bIncoming, void *pUserData)
 {
     GDBusMessageType cType = g_dbus_message_get_message_type (pMessage);
     const gchar *sMember = g_dbus_message_get_member (pMessage);
+
+    if (cType == G_DBUS_MESSAGE_TYPE_METHOD_CALL &&
+        g_strcmp0 (g_dbus_message_get_path (pMessage),
+                   NOTIFICATION_WATCHER_DBUS_OBJ) == 0 &&
+        g_strcmp0 (g_dbus_message_get_interface (pMessage),
+                   DBUS_INTERFACE_PROPERTIES) == 0 &&
+        g_strcmp0 (sMember, "GetAll") == 0)
+    {
+        GVariant *pBody = g_dbus_message_get_body (pMessage);
+
+        if (pBody == NULL ||
+            !g_variant_is_of_type (pBody, G_VARIANT_TYPE ("(s)")))
+        {
+            return pMessage;
+        }
+
+        const gchar *sInterface = NULL;
+        g_variant_get (pBody, "(&s)", &sInterface);
+
+        if (g_strcmp0 (sInterface, NOTIFICATION_WATCHER_DBUS_IFACE) == 0)
+        {
+            GVariantBuilder builder;
+            g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
+            g_variant_builder_add (&builder, "{sv}",
+                                   "IsStatusNotifierHostRegistered",
+                                   g_variant_new_boolean (TRUE));
+
+            GDBusMessage *pReply =
+                g_dbus_message_new_method_reply (pMessage);
+            g_dbus_message_set_body (
+                pReply,
+                g_variant_new ("(@a{sv})",
+                               g_variant_builder_end (&builder)));
+            g_dbus_connection_send_message (pConnection, pReply,
+                                            G_DBUS_SEND_MESSAGE_FLAGS_NONE,
+                                            NULL, NULL);
+            g_object_unref (pReply);
+            g_object_unref (pMessage);
+            return NULL;
+        }
+    }
+
     int nMemberComp = g_strcmp0 (sMember, "RegisterStatusNotifierItem");
 
     if (cType == G_DBUS_MESSAGE_TYPE_METHOD_CALL && nMemberComp == 0)
@@ -41,7 +108,10 @@ static GDBusMessage* dbus_filter (GDBusConnection *pConnection, GDBusMessage *pM
         GDBusMessage *pReply = g_dbus_message_new_method_reply (pMessage);
         g_dbus_connection_send_message (pConnection, pReply, G_DBUS_SEND_MESSAGE_FLAGS_NONE, NULL, NULL);
         g_object_unref (pReply);
-        g_timeout_add (50, kill_func, NULL);
+        if (!watcher_restarted) {
+            watcher_restarted = TRUE;
+            g_timeout_add (50, restart_watcher, pConnection);
+        }
         g_object_unref (pMessage);
         pMessage = NULL;
     }
@@ -100,18 +170,11 @@ main (int argv, char ** argc)
     g_debug("Initing");
 
     GDBusConnection *pConnection = g_dbus_proxy_get_connection (pProxy);
-    guint nName = g_bus_own_name_on_connection (pConnection, NOTIFICATION_WATCHER_DBUS_ADDR, G_BUS_NAME_OWNER_FLAGS_NONE, NULL, NULL, NULL, NULL);
+    watcher_owner_id = g_bus_own_name_on_connection (pConnection, NOTIFICATION_WATCHER_DBUS_ADDR, G_BUS_NAME_OWNER_FLAGS_NONE, NULL, NULL, NULL, NULL);
 
-    if (!nName)
+    if (!watcher_owner_id)
     {
         g_error ("Unable to call to request name");
-
-        return 1;
-    }
-
-    if (nName != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
-    {
-        g_error ("Unable to get name");
 
         return 1;
     }
