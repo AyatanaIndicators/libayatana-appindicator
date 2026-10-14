@@ -59,7 +59,6 @@ Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          ${gir:Depends},
-         libayatana-indicator3-dev (>= 0.9.0),
          libdbusmenu-glib-dev,
          libgtk-3-dev,
          libayatana-appindicator3-1 (= ${binary:Version}),
