@@ -296,9 +296,10 @@ name_appeared_handler (GDBusConnection *connection,
                        gpointer         user_data)
 {
     AppIndicator *self = APP_INDICATOR(user_data);
-    AppIndicatorPrivate *priv = app_indicator_get_instance_private(self);
 
-    g_dbus_proxy_new (priv->connection,
+    /* Use the connection of the name watcher. priv->connection is NULL
+       if this handler runs before bus_creation(). */
+    g_dbus_proxy_new (connection,
                       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
                       watcher_interface_info,
                       NOTIFICATION_WATCHER_DBUS_ADDR,
