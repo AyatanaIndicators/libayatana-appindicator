@@ -99,7 +99,7 @@ if (ENABLE_TESTS)
     if(ENABLE_COVERAGE)
 
         find_package(CoverageReport)
-        ENABLE_COVERAGE_REPORT(TARGETS "ayatana-appindicator3" TESTS "test-libappindicator" "test-libappindicator-dbus-client" "test-libappindicator-dbus-server" "test-libappindicator-status-client" "test-libappindicator-status-server" "test-libappindicator-fallback-item" "test-libappindicator-fallback-watcher" FILTER /usr/include ${CMAKE_BINARY_DIR}/*)
+        ENABLE_COVERAGE_REPORT(TARGETS "ayatana-appindicator3" TESTS "test-libappindicator" "test-libappindicator-dbus-client" "test-libappindicator-dbus-server" "test-libappindicator-status-client" "test-libappindicator-status-server" "test-libappindicator-fallback-item" "test-libappindicator-fallback-watcher" "test-libappindicator-watcher-race" FILTER /usr/include ${CMAKE_BINARY_DIR}/*)
 
     endif()
 

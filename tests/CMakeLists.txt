@@ -72,6 +72,18 @@ target_link_libraries("test-libappindicator-fallback-watcher" "${PROJECT_DEPS_LI
 target_link_directories("test-libappindicator-fallback-watcher" PUBLIC "${CMAKE_BINARY_DIR}/src")
 add_dependencies("test-libappindicator-fallback-watcher" "${ayatana_appindicator_gtkver}")
 
+# test-libappindicator-watcher-race
+
+add_executable("test-libappindicator-watcher-race" "${CMAKE_CURRENT_SOURCE_DIR}/test-libappindicator-watcher-race.c")
+target_include_directories("test-libappindicator-watcher-race" PUBLIC ${PROJECT_DEPS_INCLUDE_DIRS})
+target_include_directories("test-libappindicator-watcher-race" PUBLIC "${CMAKE_SOURCE_DIR}/src")
+target_include_directories("test-libappindicator-watcher-race" PUBLIC "${CMAKE_BINARY_DIR}/src")
+target_link_libraries("test-libappindicator-watcher-race" "${PROJECT_DEPS_LIBRARIES} -l${ayatana_appindicator_gtkver}" ${CMAKE_DL_LIBS})
+target_link_directories("test-libappindicator-watcher-race" PUBLIC "${CMAKE_BINARY_DIR}/src")
+# The test defines g_bus_get() and g_bus_watch_name(). Export them, so that the library uses them.
+set_target_properties("test-libappindicator-watcher-race" PROPERTIES ENABLE_EXPORTS ON)
+add_dependencies("test-libappindicator-watcher-race" "${ayatana_appindicator_gtkver}")
+
 # test-simple-app
 
 add_executable("test-simple-app" "${CMAKE_CURRENT_SOURCE_DIR}/test-simple-app.c")
@@ -150,6 +162,27 @@ add_custom_command(
 
 add_test("test-libappindicator-status" "test-libappindicator-status")
 
+# test-libappindicator-watcher-race-dbus
+
+add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    VERBATIM
+    COMMAND
+    echo "#!/bin/sh" > "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+    COMMAND
+    echo "export DISPLAY=" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+    COMMAND
+    echo ". ${CMAKE_CURRENT_SOURCE_DIR}/run-xvfb.sh" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+    COMMAND
+    echo "${DBUS_TEST_RUNNER} --keep-env -m 300 --dbus-config /usr/share/dbus-test-runner/session.conf --task ${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race --task-name WatcherRace" >> "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+    COMMAND
+    chmod +x "${CMAKE_CURRENT_BINARY_DIR}/test-libappindicator-watcher-race-dbus"
+)
+
+add_test("test-libappindicator-watcher-race" "test-libappindicator-watcher-race-dbus")
+
 # libappindicator-tests-gtester
 
 add_custom_command(
@@ -186,4 +219,4 @@ add_custom_command(
 
 add_test("libappindicator-tests" "libappindicator-tests")
 
-add_custom_target("tests" ALL DEPENDS "test-libappindicator-fallback" "test-libappindicator-dbus" "test-libappindicator-status" "libappindicator-tests")
+add_custom_target("tests" ALL DEPENDS "test-libappindicator-fallback" "test-libappindicator-dbus" "test-libappindicator-status" "test-libappindicator-watcher-race-dbus" "libappindicator-tests")
